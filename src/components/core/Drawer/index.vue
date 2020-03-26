@@ -1,35 +1,39 @@
 <template>
-  <v-navigation-drawer color="whitesnow" app floating permanent width="180">
-    <div  class="drawer__header">
+  <v-navigation-drawer color="whitesnow" app floating permanent  width="230" >
+    <div class="drawer__header">
       <div class="d-flex justify-center">
         <v-avatar size="62" color="grey">
           <span class="white--text"></span>
         </v-avatar>
       </div>
-			<div class="d-flex justify-center">
-				 <v-chip color="white" class="mt-2">
-          <span class="primary--text">{{user}}</span>
+      <div class="d-flex justify-center">
+        <v-chip color="white" class="mt-2">
+          <span class="primary--text">{{ user }}</span>
         </v-chip>
-			</div>
+      </div>
     </div>
-    <v-list nav dense>
-      <v-list-item-group v-model="selected">
-        <v-list-item 
-					v-for="(nav, i) in navigations" 
-					:key="i" 
-					color="carmine"
-					:to="nav.path"
-				>
+
+    <v-list  nav dense>
+      <v-list-group
+        v-for="(item, i) in items"
+        :key="i"
+				color="carmine"
+				:to="item.path"
+      >
+        <template v-slot:activator>
+          <v-list-item-content  >
+						<div class="d-flex align-center">
+						<v-icon size="20">{{item.action }}</v-icon>
+            <div class="drawer__label ml-3"> {{ item.title }} </div>
+						</div>
+          </v-list-item-content>
+        </template>
+        <v-list-item  :to="sub.path" v-for="(sub, i) in item.items" :key="i">
           <v-list-item-content>
-            <div class="d-flex justify-start align-center">
-              <v-icon size="16">{{ nav.icon }}</v-icon>
-              <div class="ml-4 drawer__label">
-                {{ nav.name }}
-              </div>
-            </div>
+						<div class="drawer__label drawer__sub ml-3"> {{ sub.title }} </div>
           </v-list-item-content>
         </v-list-item>
-      </v-list-item-group>
+      </v-list-group>
     </v-list>
     <div class="drawer__button">
       <v-btn elevation="0" @click="handleLogout" color="logout">
@@ -43,39 +47,76 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations } from "vuex";
 export default {
-	computed : {
-		...mapState([
-			'user'
-		])
-	},
+  computed: {
+    ...mapState(["user"])
+  },
   data() {
     return {
       selected: 0,
-      navigations: [
+      items: [
+				{
+					action : 'mdi-folder',
+					title : 'Dashboard',
+					items : [
+						{
+							title : 'default',
+							path : '/'
+						}
+					]
+				},
         {
-          name: "Dashboard",
-					icon: "mdi-folder",
-					path : '/'
-        },
-        {
-          name: "Article",
-					icon: "mdi-folder",
-					path : '/article'
-        }
-      ]
+          action: "desktop_windows",
+          title: "Manager Socmed",
+          items: [
+						{ 
+							title: "List Channel",
+							path : '/channel'
+						},
+						{
+							title : 'List Donation',
+							path : '/donation'
+						},
+						{
+							title : 'Reported Account',
+							path : '/report'
+						}
+					]
+				},
+				{
+					action : 'text_fields',
+					title : 'Publikasi',
+					path : '/publisher',
+					items : [
+						{
+							title : 'Artikel',
+							path : '/publisher'
+						}
+					]
+				},
+				{
+					action : 'edit',
+					title : 'Editor Space',
+					items : [
+						{
+							title : 'Editor',
+							path : '/editor'
+						}
+					]
+				}
+      ],
     };
-	},
-	methods : {
-		handleLogout () {
-			this.$router.push('/auth')
-			this.clear()
-		},
-		...mapMutations({
-			clear : 'clearUser'
-		})
-	}
+  },
+  methods: {
+    handleLogout() {
+      this.$router.push("/auth");
+      this.clear();
+    },
+    ...mapMutations({
+      clear: "clearUser"
+    })
+  }
 };
 </script>
 
@@ -83,6 +124,8 @@ export default {
 .drawer
 	&__label
 		font-size: $font-size-root
+	&__sub
+		padding-left: 20px
 	&__header
 		margin-top: 24px
 		margin-bottom: 40px

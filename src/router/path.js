@@ -4,6 +4,14 @@ import Dashboard from '../views/Dashboard'
 import Article from '../views/Article'
 import CreateArticle from '../views/Article/Editor/create.vue'
 import Profile from '../views/Profile';
+import Channel from '../views/Manager/Channel';
+import ChannelCreate from '../views/Manager/Channel/create.vue';
+import Donation from '../views/Manager/Donation';
+import DonationCreate from '../views/Manager/Donation/create.vue';
+import ReportedAccount from '../views/Manager/ReportedAccount';
+import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
+import Publisher from '../views/Article/Publisher';
+import Editor from '../views/Article/Editor';
 const routes = [
   {
     path: '/',
@@ -29,6 +37,46 @@ const routes = [
 				path : '/profile',
 				name : 'Profile',
 				component : Profile
+			},
+			{
+				path : '/channel',
+				name : 'channel',
+				component : Channel
+			},
+			{
+				path : '/channel/create',
+				name : 'channelCreate',
+				component : ChannelCreate
+			},
+			{
+				path : '/donation',
+				name : 'donation',
+				component : Donation
+			},
+			{
+				path : '/donation/create',
+				name : 'donationCreate',
+				component : DonationCreate
+			},
+			{
+				path : '/report',
+				name : 'report',
+				component : ReportedAccount
+			},
+			{
+				path : '/report/detail',
+				name : 'reportDetail',
+				component : DetailReport
+			},
+			{
+				path : '/publisher',
+				name : 'publisher',
+				component : Publisher
+			},
+			{
+				path : '/editor',
+				name : 'editor',
+				component : Editor
 			}
 		]
   },

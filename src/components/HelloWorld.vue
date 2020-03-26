@@ -9,12 +9,10 @@
           height="200"
         />
       </v-col>
-
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Vuetify
         </h1>
-
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
           <br>please join our online
@@ -24,7 +22,6 @@
           >Discord Community</a>
         </p>
       </v-col>
-
       <v-col
         class="mb-5"
         cols="12"
