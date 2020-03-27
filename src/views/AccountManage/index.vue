@@ -1,32 +1,26 @@
 <template>
   <div>
-    <div>
-      <span class="account-manage__title font-weight-medium">List Management Account</span>
-      <div class="account-manage__subTitle font-weight-medium">
-        <span class="carmine--text">Account Manage</span>&nbsp;
-        <span class="grey--text">&#47;&nbsp;List Account</span>
-      </div>
-    </div>
+    <HeaderContent :list="items" label="Edit Management Account" @click="handleClick" />
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
         <div class="d-flex align-center">
           <span class="mr-4">Sort</span>
-          <custom-select hideDetails dense :items="sort" />
+          <custom-select hideDetails outlined dense :items="sort" />
         </div>
         <div class="d-flex align-center">
           <span class="mr-4">Filter</span>
-          <custom-select hideDetails dense :items="filter" />
+          <custom-select hideDetails outlined dense :items="filter" />
         </div>
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input></custom-input>
+          <custom-input outlined placeholder="Search"></custom-input>
         </div>
       </v-col>
     </v-row>
 
-    <div>
+    <div class="mt-6">
       <v-data-table
         :headers="headers"
         :items="data"
@@ -38,12 +32,25 @@
         show-select
         @page-count="pageCount = $event"
       >
+        <template v-slot:item.user="{ item }">
+          <div class="d-flex align-center">
+            <v-avatar size="35" class="mr-2">
+              <img :src="item.photo" />
+            </v-avatar>
+            <div class="d-flex flex-column">
+              <span class="account-manage__user__title font-weight-medium">{{ item.user }}</span>
+              <span class="account-manage__user__subtitle font-weight-light">{{ item.role }}</span>
+            </div>
+          </div>
+        </template>
+
         <template v-slot:item.status="{ item }">
           <span v-if="item.status == 'Active'" class="primary--text">{{ item.status }}</span>
           <span v-else class="silver--text">{{ item.status }}</span>
         </template>
+
         <template v-slot:item.manage>
-          <custom-button icon>
+          <custom-button icon @click="editData">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
           <custom-button icon>
@@ -72,9 +79,24 @@
 </template>
 
 <script>
+import HeaderContent from "@/containers/HeaderContent";
+
 export default {
+  components: {
+    HeaderContent
+  },
   data() {
     return {
+      items: [
+        {
+          text: "Manage Account",
+          disabled: false,
+          href: "channel"
+        },
+        {
+          text: "List Management"
+        }
+      ],
       sort: ["Oldest", "Newest"],
       filter: ["Today", "This Month"],
       page: 1,
@@ -117,16 +139,25 @@ export default {
       data: [
         {
           user: "Si Tampan",
+          photo:
+            "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7",
           role: "Staff",
           status: "Active"
         },
         {
           user: "Si Berani",
+          photo:
+            "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7",
           role: "Manager",
           status: "Inactive"
         }
       ]
     };
+  },
+  methods: {
+    editData() {
+      this.$router.push("/admin/edit");
+    }
   }
 };
 </script>
@@ -137,4 +168,9 @@ export default {
     font-size: $font-size-24
   &__subTitle
     font-size: $font-size-12
+  &__user
+    &__title
+      font-size: $font-size-12
+    &__subtitle
+      font-size: $font-size-10
 </style>
