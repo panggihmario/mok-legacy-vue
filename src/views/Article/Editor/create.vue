@@ -43,12 +43,6 @@ export default {
 	computed : {
 		...mapState(['user'])
 	},
-	mounted () {
-		if(this.user === 'publisher'){
-			this.$router.push('/article')
-		}
-
-	},
   data() {
     return {
       article: ""

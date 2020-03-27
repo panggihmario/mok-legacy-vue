@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer color="whitesnow" app floating permanent width="180">
+  <v-navigation-drawer color="whitesnow" app floating permanent width="230">
     <div class="drawer__header">
       <div class="d-flex justify-center">
         <v-avatar size="62" color="grey">
@@ -8,46 +8,27 @@
       </div>
       <div class="d-flex justify-center">
         <v-chip color="white" class="mt-2">
-          <span class="primary--text">{{user}}</span>
+          <span class="primary--text">{{ user }}</span>
         </v-chip>
       </div>
     </div>
 
     <v-list nav dense>
-      <div v-for="(nav, i) in navigations" :key="i">
-        <v-list-item v-if="!nav.items" color="carmine" :to="nav.path">
-          <v-row class="d-flex justify-start align-center">
-            <v-col cols="2">
-              <v-icon size="16">{{ nav.icon }}</v-icon>
-            </v-col>
-            <v-col cols="10">
-              <div class="drawer__label">{{ nav.name }}</div>
-            </v-col>
-          </v-row>
+      <v-list-group v-for="(item, i) in items" :key="i" color="carmine" :to="item.path">
+        <template v-slot:activator>
+          <v-list-item-content>
+            <div class="d-flex align-center">
+              <v-icon size="20">{{item.action }}</v-icon>
+              <div class="drawer__label ml-3">{{ item.title }}</div>
+            </div>
+          </v-list-item-content>
+        </template>
+        <v-list-item :to="sub.path" v-for="(sub, i) in item.items" :key="i">
+          <v-list-item-content>
+            <div class="drawer__label drawer__sub ml-3">{{ sub.title }}</div>
+          </v-list-item-content>
         </v-list-item>
-
-        <v-list-group v-else :value="groupValue" color="carmine" append-icon>
-          <template v-slot:activator>
-            <v-row class="d-flex justify-start align-center">
-              <v-col cols="2">
-                <v-icon size="16">{{ nav.icon }}</v-icon>
-              </v-col>
-              <v-col cols="10">
-                <div class="drawer__label">{{ nav.name }}</div>
-              </v-col>
-            </v-row>
-          </template>
-
-          <v-list-item v-for="subNav in nav.items" :key="subNav.name" :to="subNav.path">
-            <v-row class="d-flex justify-start align-center">
-              <v-col cols="2"></v-col>
-              <v-col cols="10" class="py-0">
-                <div class="drawer__label">{{ subNav.name }}</div>
-              </v-col>
-            </v-row>
-          </v-list-item>
-        </v-list-group>
-      </div>
+      </v-list-group>
     </v-list>
 
     <div class="drawer__button">
@@ -68,30 +49,67 @@ export default {
   data() {
     return {
       selected: 0,
-      groupValue: false,
-      navigations: [
+      items: [
         {
-          name: "Dashboard",
-          icon: "mdi-folder",
-          path: "/"
-        },
-        {
-          name: "Article",
-          icon: "mdi-folder",
-          path: "/article"
-        },
-        {
-          name: "Account Manage",
-          icon: "mdi-cog",
-          path: "/admin",
+          action: "mdi-folder",
+          title: "Dashboard",
           items: [
             {
-              name: "List Account",
+              title: "default",
+              path: "/"
+            }
+          ]
+        },
+        {
+          action: "mdi-cog",
+          title: "Manage Account",
+          items: [
+            {
+              title: "List Management",
               path: "/admin"
             },
             {
-              name: "Create Account",
-              path: "/admin/create"
+              title: "List User",
+              path: "/user"
+            }
+          ]
+        },
+        {
+          action: "desktop_windows",
+          title: "Manager Socmed",
+          items: [
+            {
+              title: "List Channel",
+              path: "/channel"
+            },
+            {
+              title: "List Donation",
+              path: "/donation"
+            },
+            {
+              title: "Reported Account",
+              path: "/report"
+            }
+          ]
+        },
+        {
+          action: "text_fields",
+          title: "Publikasi",
+          path: "/publisher",
+          items: [
+            {
+              title: "Artikel",
+              path: "/publisher"
+            }
+          ]
+        },
+        {
+          action: "edit",
+          title: "Editor Space",
+          items: [
+            {
+              title: "Editor",
+              path: "/editor"
             }
           ]
         }
@@ -114,6 +132,8 @@ export default {
 .drawer
   &__label
     font-size: $font-size-root
+  &__sub
+    padding-left: 20px
   &__header
     margin-top: 24px
     margin-bottom: 40px

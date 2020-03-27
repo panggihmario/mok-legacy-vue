@@ -8,7 +8,6 @@
       solo
       flat
       :hide-details="hideDetails"
-      background-color="whitesnow"
       :error-messages="errors"
       :value="value"
       v-bind="$attrs"

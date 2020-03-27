@@ -10,17 +10,19 @@ export default {
 				info: '#00d3ee',
 				success: '#5cb860',
 				warning: '#ffa21a',
-				whitesnow: '#FAFAFA',
 				black: '#000000',
 				charcoal: '#4A4A4A',
 				truewhite: '#FFFFFF',
+				whitesnow: '#FAFAFA',
 				grey: '#777777',
 				silver : '#BBBBBB',
 				orangered : '#F63700',
 				dodgerblue : '#1890FF',
 				safetyorange: '#FB6900',
 				logout : '#FFD6CA',
-				carmine : '#A8071A'
+				carmine : '#A8071A',
+				whitesmoke : '#EEEEEE',
+				gainsboro : '#DDDDDD'
 			},
 		},
 	},
@@ -33,6 +35,6 @@ export default {
 				component : 'icon-link'
 			}
 		},
-		iconfont : 'md'
+		iconfont : 'mdi' || 'md'
 	}
 }
