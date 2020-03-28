@@ -10,6 +10,20 @@ export default [
 		]
 	},
 	{
+		action: "mdi-cog",
+		title: "Manage Account",
+		items: [
+			{
+				title: "List Management",
+				path: "/admin"
+			},
+			{
+				title: "List User",
+				path: "/user"
+			}
+		]
+	},
+	{
 		action: "desktop_windows",
 		title: "Manager Socmed",
 		items: [

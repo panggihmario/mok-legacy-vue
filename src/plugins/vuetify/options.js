@@ -2,7 +2,6 @@ export default {
 	theme: {
 		themes: {
 			light: {
-				whitesnow: '#FAFAFA',
 				primary: '#52C41A',
 				secondary: '#4caf50',
 				tertiary: '#495057',
@@ -14,6 +13,7 @@ export default {
 				black: '#000000',
 				charcoal: '#4A4A4A',
 				truewhite: '#FFFFFF',
+				whitesnow: '#FAFAFA',
 				grey: '#777777',
 				silver : '#BBBBBB',
 				orangered : '#F63700',

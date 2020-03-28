@@ -12,7 +12,6 @@
         </v-chip>
       </div>
     </div>
-
     <v-list  nav dense>
       <v-list-group
         v-for="(item, i) in items"
@@ -38,9 +37,7 @@
     <div class="drawer__button">
       <v-btn elevation="0" @click="handleLogout" color="logout">
         <v-icon size="15" class="orangered--text" left>mdi-logout</v-icon>
-        <span class="orangered--text text-capitalize" style="letterSpacing : 0">
-          Log Out
-        </span>
+        <span class="orangered--text text-capitalize" style="letterSpacing : 0">Log Out</span>
       </v-btn>
     </div>
   </v-navigation-drawer>
