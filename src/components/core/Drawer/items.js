@@ -47,5 +47,27 @@ export default [
 				path: '/editor'
 			}
 		]
+	},
+	{
+		action : 'local_mall',
+		title : 'Shop',
+		items : [
+			{
+				title : 'Product',
+				path : '/product'
+			},
+			{
+				title : 'Category',
+				path : '/category'
+			},
+			{
+				title : 'Seller',
+				path : '/seller'
+			},
+			{
+				title : 'Report',
+				path : '/reported-seller'
+			}
+		]
 	}
 ]

@@ -12,6 +12,10 @@ import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import Editor from '../views/Article/Editor';
+import Product from '../views/Shop/Product';
+import Category from '../views/Shop/Category';
+import Seller from '../views/Shop/Seller';
+import ReportedSeller from '../views/Shop/ReportedSeller';
 const routes = [
   {
     path: '/',
@@ -77,6 +81,26 @@ const routes = [
 				path : '/editor',
 				name : 'editor',
 				component : Editor
+			},
+			{
+				path : '/product',
+				name : 'product',
+				component : Product
+			},
+			{
+				path : '/category',
+				name : 'category',
+				component : Category
+			},
+			{
+				path : '/seller',
+				name : 'seller',
+				component : Seller
+			},
+			{
+				path : '/reported-seller',
+				name : 'reportedSeller',
+				component : ReportedSeller
 			}
 		]
   },
