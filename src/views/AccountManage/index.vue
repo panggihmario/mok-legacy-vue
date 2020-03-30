@@ -50,10 +50,10 @@
         </template>
 
         <template v-slot:item.manage>
-          <custom-button icon @click="editData">
+          <custom-button icon @click="editData('edit')">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
-          <custom-button icon>
+          <custom-button icon @click="editData('delete')">
             <v-icon small color="safetyorange">mdi-delete</v-icon>
           </custom-button>
         </template>
@@ -155,8 +155,8 @@ export default {
     };
   },
   methods: {
-    editData() {
-      this.$router.push("/admin/edit");
+    editData(params) {
+      this.$router.push(`/admin/${params}`);
     }
   }
 };

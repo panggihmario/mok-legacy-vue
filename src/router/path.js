@@ -15,6 +15,7 @@ import Publisher from '../views/Article/Publisher';
 import Editor from '../views/Article/Editor';
 import User from '../views/AccountManage/User';
 import AdminEdit from '../views/AccountManage/AdminEdit';
+import AdminDelete from '../views/AccountManage/AdminDelete';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 
 const routes = [
@@ -57,6 +58,11 @@ const routes = [
 				path: '/admin/edit',
 				name: 'AdminEdit',
 				component: AdminEdit
+			},
+			{
+				path: '/admin/delete',
+				name: 'AdminDelete',
+				component: AdminDelete
 			},
 			{
 				path: '/user/edit',
