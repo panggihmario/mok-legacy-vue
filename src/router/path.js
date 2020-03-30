@@ -13,6 +13,10 @@ import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import Editor from '../views/Article/Editor';
+import Product from '../views/Shop/Product';
+import Category from '../views/Shop/Category';
+import Seller from '../views/Shop/Seller';
+import ReportedSeller from '../views/Shop/ReportedSeller';
 import User from '../views/AccountManage/User';
 import AdminEdit from '../views/AccountManage/AdminEdit';
 import AdminDelete from '../views/AccountManage/AdminDelete';
@@ -75,39 +79,69 @@ const routes = [
 				component: Channel
 			},
 			{
-				path: '/channel/create',
-				name: 'channelCreate',
-				component: ChannelCreate
+				path : '/profile',
+				name : 'Profile',
+				component : Profile
 			},
 			{
-				path: '/donation',
-				name: 'donation',
-				component: Donation
+				path : '/channel',
+				name : 'channel',
+				component : Channel
 			},
 			{
-				path: '/donation/create',
-				name: 'donationCreate',
-				component: DonationCreate
+				path : '/channel/create',
+				name : 'channelCreate',
+				component : ChannelCreate
 			},
 			{
-				path: '/report',
-				name: 'report',
-				component: ReportedAccount
+				path : '/donation',
+				name : 'donation',
+				component : Donation
 			},
 			{
-				path: '/report/detail',
-				name: 'reportDetail',
-				component: DetailReport
+				path : '/donation/create',
+				name : 'donationCreate',
+				component : DonationCreate
 			},
 			{
-				path: '/publisher',
-				name: 'publisher',
-				component: Publisher
+				path : '/report',
+				name : 'report',
+				component : ReportedAccount
 			},
 			{
-				path: '/editor',
-				name: 'editor',
-				component: Editor
+				path : '/report/detail',
+				name : 'reportDetail',
+				component : DetailReport
+			},
+			{
+				path : '/publisher',
+				name : 'publisher',
+				component : Publisher
+			},
+			{
+				path : '/editor',
+				name : 'editor',
+				component : Editor
+			},
+			{
+				path : '/product',
+				name : 'product',
+				component : Product
+			},
+			{
+				path : '/category',
+				name : 'category',
+				component : Category
+			},
+			{
+				path : '/seller',
+				name : 'seller',
+				component : Seller
+			},
+			{
+				path : '/reported-seller',
+				name : 'reportedSeller',
+				component : ReportedSeller
 			}
 		]
 	},
