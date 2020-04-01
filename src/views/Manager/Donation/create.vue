@@ -13,6 +13,10 @@
 					<custom-input  
 						label="Judul Donasi" 
 						placeholder="Masukkan nama judul donasi"
+						rules="required"
+						v-model="donation.label"
+						:value="donation.label"
+						name="Donation Label"
 					/>
 					<div class="d-flex align-center">
 						<v-avatar color="whitesmoke" class="mr-4" size="100">
@@ -26,6 +30,10 @@
 					<custom-textarea
 						label="Deskripsi Donasi"
 						placeholder="Masukkan deskripsi donasi"
+						rules="required"
+						name="Decription"
+						v-model="donation.description"
+						:value="donation.description"
 					/>
 					<div class="form__upload d-flex justify-center align-center">
 						<custom-upload
@@ -37,16 +45,32 @@
 					<custom-input
 						label="Nama Penyelenggara"
 						placeholder="Masukkan nama penyelenggara"
+						v-model="donation.name.organizer"
+						rules="required"
+						name="Organizer"
+						:value="donation.name.organizer"
 					/>
 					<custom-input
 						label="Kebutuhan Donasi"
+						rules="required"
+						v-model="donation.cost"
+						name="Donation Cost"
+						:value="donation.cost"
 					/>
 					<custom-input
 						label="Batas Donasi"
+						rules="required"
+						v-model="donation.limit"
+						:value="donation.limit"
+						name="Donation Limit"
 					/>
 					<custom-input
 						label="Nama Wali/Penerima Uang"
 						placeholder="Masukkan nama wali"
+						rules="required"
+						v-model="donation.name.receiver"
+						:value="donation.name.receiver"
+						name="Receiver Name"
 					/>
 					<custom-button 
 						color="carmine"
@@ -77,11 +101,23 @@ export default {
 					text : 'Buat Donasi',
 					disabled : true
 				}
-			]
+			],
+			donation : {
+				label : '',
+				description : '',
+				name : {
+					organizer : '',
+					receiver : ''
+				},
+				cost : '',
+				limit : ''
+			}
 		}
 	},
 	methods : {
-		handleSubmit ( ){}
+		handleSubmit ( ){
+			console.log(this.donation)
+		}
 	}
 }
 </script>

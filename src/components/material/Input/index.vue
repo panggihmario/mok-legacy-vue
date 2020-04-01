@@ -8,9 +8,8 @@
       v-bind="$attrs"
       :value="value"
       v-on="inputListener"
-      hide-details
       :error-messages="errors"
-      dense
+			background-color="whitesnow"
     />
   </ValidationProvider>
 </template>
