@@ -2,7 +2,7 @@
   <div>
     <HeaderContent
       :list="items"
-      label="Edit Management Account"
+      label="Delete Management Account"
       @click="handleClick"
       labelAction="Save"
     />

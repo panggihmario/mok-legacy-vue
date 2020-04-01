@@ -56,7 +56,7 @@
         </template>
 
         <template v-slot:item.manage>
-          <custom-button icon>
+          <custom-button icon @click="goTo('edit')">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
         </template>
@@ -144,6 +144,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    goTo(params) {
+      this.$router.push(`/user/${params}`);
+    }
   }
 };
 </script>

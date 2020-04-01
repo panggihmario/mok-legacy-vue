@@ -1,6 +1,6 @@
 <template>
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
-    <label-field class="mb-4">{{label}}</label-field>
+    <label-field class="mb-4">{{ label }}</label-field>
     <v-text-field
       solo
       flat
@@ -8,7 +8,6 @@
       v-bind="$attrs"
       :value="value"
       v-on="inputListener"
-      hide-details
       :error-messages="errors"
       dense
     />

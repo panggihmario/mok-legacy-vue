@@ -14,7 +14,7 @@
         </v-avatar>
         <div class="d-flex flex-column">
           <span class="account-edit__title font-weight-medium charcoal--text">{{ data.user }}</span>
-          <span class="font-weight-medium grey--text">&commat;{{ data.username }}</span>
+          <span class="account-edit__subtitle font-weight-medium grey--text">&commat;{{ data.username }}</span>
         </div>
       </div>
 
@@ -85,4 +85,6 @@ export default {
 .account-edit
   &__title
     font-size: $font-size-24
+  &__subtitle
+    font-size: $font-size-12
 </style>
