@@ -4,7 +4,6 @@
       :list="items"
       label="Edit Management Account"
       @click="handleClick"
-      labelAction="Save"
     />
 
     <div class="mt-8">
@@ -14,26 +13,32 @@
         </v-avatar>
         <div class="d-flex flex-column">
           <span class="account-edit__title font-weight-medium charcoal--text">{{ data.user }}</span>
-          <span class="account-edit__subtitle font-weight-medium grey--text">&commat;{{ data.username }}</span>
+          <span
+            class="account-edit__subtitle font-weight-medium grey--text"
+          >&commat;{{ data.username }}</span>
         </div>
       </div>
 
       <v-row>
         <v-col cols="6">
           <div class="d-flex justify-space-between">
-            <custom-select label="Pilih jenis akun" background-color="whitesnow" placeholder="Pilih jenis akun"></custom-select>
+            <custom-select
+              label="Pilih jenis akun"
+              background-color="whitesnow"
+              placeholder="Pilih jenis akun"
+            ></custom-select>
             <custom-select label="Gender" background-color="whitesnow"></custom-select>
           </div>
-            <custom-input label="Name" background-color="whitesnow"></custom-input>
-            <custom-input label="Username" background-color="whitesnow"></custom-input>
-            <custom-input label="Password" background-color="whitesnow"></custom-input>
-            <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
-            <custom-input label="Email" background-color="whitesnow"></custom-input>
-            <custom-input label="Phone" background-color="whitesnow"></custom-input>
-        </v-col>
-        <v-col cols="6">
+          <custom-input label="Name" background-color="whitesnow"></custom-input>
+          <custom-input label="Username" background-color="whitesnow"></custom-input>
+          <custom-input label="Password" background-color="whitesnow"></custom-input>
+          <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
+          <custom-input label="Email" background-color="whitesnow"></custom-input>
+          <custom-input label="Phone" background-color="whitesnow"></custom-input>
           <custom-textarea label="Address"></custom-textarea>
+          <custom-button color="carmine" class="white--text">Save</custom-button>
         </v-col>
+        <v-col cols="6"></v-col>
       </v-row>
     </div>
   </div>
@@ -52,12 +57,12 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "channel"
+          href: "/admin"
         },
         {
           text: "List Management",
           disabled: false,
-          href: "channel"
+          href: "/admin"
         },
         {
           text: "Edit Management"

@@ -46,12 +46,12 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "channel"
+          href: "/admin"
         },
         {
           text: "List Management",
           disabled: false,
-          href: "channel"
+          href: "/admin"
         },
         {
           text: "Edit Management"

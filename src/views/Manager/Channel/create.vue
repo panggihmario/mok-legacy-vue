@@ -1,6 +1,9 @@
 <template>
   <div>
-    <HeaderContent label="Buat Channel" :list="items" />
+    <HeaderContent 
+			label="Buat Channel" 
+			:list="items" 
+		/>
 		<div class="mt-4"/>
     <custom-form :onSubmit="handleSubmit">
       <div class="d-flex align-center">
@@ -16,9 +19,21 @@
         <custom-upload id="channel" @response="getResponse" />
         {{ status }}
       </div>
-      <div :style="{width : '400px'}" >
-        <custom-input label="Nama Channel" />
-        <custom-textarea label="Deskripsi Channel" />
+      <div class="form__box" >
+        <custom-input 
+					label="Nama Channel" 
+					v-model="channel.name"
+					:value="channel.name"
+					rules="required"
+					name="Name"
+				/>
+        <custom-textarea 
+					label="Deskripsi Channel" 
+					v-model="channel.description"
+					:value="channel.description"
+					rules="required"
+					name="Description"
+				/>
       </div>
 			<custom-button
 				color="carmine"
@@ -37,6 +52,11 @@ export default {
   },
   data() {
     return {
+			channel : {
+				name : '',
+				description : '',
+				image : ''
+			},
       image: "",
       status: "",
       items: [
@@ -59,7 +79,8 @@ export default {
       this.image = payload.response.url;
     },
     handleSubmit() {
-			this.$router.push('/channel')
+			// this.$router.push('/channel')
+			console.log(this.channel)
 		}
   }
 };
@@ -80,4 +101,6 @@ export default {
 		height: 100%
 		background-color: #EEEEEE
 		border-radius: 5px
+	&__box
+		width: 400px
 </style>

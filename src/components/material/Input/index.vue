@@ -9,7 +9,7 @@
       :value="value"
       v-on="inputListener"
       :error-messages="errors"
-      dense
+			background-color="whitesnow"
     />
   </ValidationProvider>
 </template>

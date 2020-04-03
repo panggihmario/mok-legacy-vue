@@ -29,10 +29,10 @@
           <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
           <custom-input label="Email" background-color="whitesnow"></custom-input>
           <custom-input label="Phone" background-color="whitesnow"></custom-input>
-        </v-col>
-        <v-col cols="6">
           <custom-textarea label="Address"></custom-textarea>
+          <custom-button color="carmine" class="white--text">Save</custom-button>
         </v-col>
+        <v-col cols="6"></v-col>
       </v-row>
     </div>
   </div>
@@ -51,12 +51,12 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "channel"
+          href: "/user"
         },
         {
           text: "List Management",
           disabled: false,
-          href: "channel"
+          href: "/user"
         },
         {
           text: "Edit Management"

@@ -1,11 +1,10 @@
 <template>
   <div>
-		{{user}}
     <div class="d-flex justify-space-between">
       <div class="black--text create-article__label">Buat Article</div>
       <div class="d-flex">
-        <custom-button class="primary--text mr-6">Safe To Draft</custom-button>
-        <custom-button color="primary">Submit</custom-button>
+        <custom-button class="carmine--text mr-6">Safe To Draft</custom-button>
+        <custom-button color="carmine" class="white--text" >Submit</custom-button>
       </div>
     </div>
     <v-row align="center">

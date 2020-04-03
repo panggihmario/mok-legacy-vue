@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <label-field>{{ label }}</label-field>
     <v-textarea
       solo
@@ -8,8 +8,9 @@
       background-color="whitesnow"
       class="field-area"
 			v-on="inputListeners"
+			:error-messages="errors"
     />
-  </div>
+  </ValidationProvider>
 </template>
 
 <script>
@@ -17,7 +18,13 @@ export default {
   props: {
     label: {
       type: String
-    }
+		},
+		rules : {
+			type : String
+		},
+		name : {
+			type : String
+		}
   },
   computed: {
     inputListeners() {

@@ -9,7 +9,7 @@ Object.keys(rules).forEach(rule => {
 extend('required', {
 	...required , 
 	message (fieldname){
-		const [realFieldName] = fieldname.split(" ")
-		return `The field ${realFieldName} is required`
+		const [realFieldName] = fieldname.split("-")
+		return `The ${realFieldName} field is required`
 	}
 })

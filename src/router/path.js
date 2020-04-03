@@ -17,9 +17,11 @@ import Product from '../views/Shop/Product';
 import Category from '../views/Shop/Category';
 import Seller from '../views/Shop/Seller';
 import ReportedSeller from '../views/Shop/ReportedSeller';
-import User from '../views/AccountManage/User';
+import AdminCreate from '../views/AccountManage/AdminCreate';
 import AdminEdit from '../views/AccountManage/AdminEdit';
 import AdminDelete from '../views/AccountManage/AdminDelete';
+import User from '../views/AccountManage/User';
+import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 
 const routes = [
@@ -54,9 +56,9 @@ const routes = [
 				component: AccountManage
 			},
 			{
-				path: '/user',
-				name: 'User',
-				component: User
+				path: '/admin/create',
+				name: 'AdminCreate',
+				component: AdminCreate
 			},
 			{
 				path: '/admin/edit',
@@ -69,6 +71,16 @@ const routes = [
 				component: AdminDelete
 			},
 			{
+				path: '/user',
+				name: 'User',
+				component: User
+			},
+			{
+				path: '/user/create',
+				name: 'UserCreate',
+				component: UserCreate
+			},
+			{
 				path: '/user/edit',
 				name: 'UserEdit',
 				component: UserEdit
@@ -79,69 +91,69 @@ const routes = [
 				component: Channel
 			},
 			{
-				path : '/profile',
-				name : 'Profile',
-				component : Profile
+				path: '/profile',
+				name: 'Profile',
+				component: Profile
 			},
 			{
-				path : '/channel',
-				name : 'channel',
-				component : Channel
+				path: '/channel',
+				name: 'channel',
+				component: Channel
 			},
 			{
-				path : '/channel/create',
-				name : 'channelCreate',
-				component : ChannelCreate
+				path: '/channel/create',
+				name: 'channelCreate',
+				component: ChannelCreate
 			},
 			{
-				path : '/donation',
-				name : 'donation',
-				component : Donation
+				path: '/donation',
+				name: 'donation',
+				component: Donation
 			},
 			{
-				path : '/donation/create',
-				name : 'donationCreate',
-				component : DonationCreate
+				path: '/donation/create',
+				name: 'donationCreate',
+				component: DonationCreate
 			},
 			{
-				path : '/report',
-				name : 'report',
-				component : ReportedAccount
+				path: '/report',
+				name: 'report',
+				component: ReportedAccount
 			},
 			{
-				path : '/report/detail',
-				name : 'reportDetail',
-				component : DetailReport
+				path: '/report/detail',
+				name: 'reportDetail',
+				component: DetailReport
 			},
 			{
-				path : '/publisher',
-				name : 'publisher',
-				component : Publisher
+				path: '/publisher',
+				name: 'publisher',
+				component: Publisher
 			},
 			{
-				path : '/editor',
-				name : 'editor',
-				component : Editor
+				path: '/editor',
+				name: 'editor',
+				component: Editor
 			},
 			{
-				path : '/product',
-				name : 'product',
-				component : Product
+				path: '/product',
+				name: 'product',
+				component: Product
 			},
 			{
-				path : '/category',
-				name : 'category',
-				component : Category
+				path: '/category',
+				name: 'category',
+				component: Category
 			},
 			{
-				path : '/seller',
-				name : 'seller',
-				component : Seller
+				path: '/seller',
+				name: 'seller',
+				component: Seller
 			},
 			{
-				path : '/reported-seller',
-				name : 'reportedSeller',
-				component : ReportedSeller
+				path: '/reported-seller',
+				name: 'reportedSeller',
+				component: ReportedSeller
 			}
 		]
 	},
