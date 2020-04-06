@@ -4,7 +4,6 @@
 			label="Buat Donation"
 			:list="crumbs"
 		/>
-		<div :style="{height : '28px'}" />
 		<custom-form
 			:onSubmit="handleSubmit"
 		>	
@@ -93,10 +92,16 @@ export default {
 		return {
 			crumbs : [
 				{
-					text : 'List Donasi',
-					href : 'donation',
+					text : 'List Channel',
+					href : '/channel',
 					disabled : false
 				},
+						{
+					text : 'List Donasi',
+					href : '/donation',
+					disabled : false
+				},
+			
 				{
 					text : 'Buat Donasi',
 					disabled : true

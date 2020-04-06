@@ -63,11 +63,11 @@ export default {
         {
           text: "Manage Channel",
           disabled: false,
-          href: "channel"
+					href: "/channel",
         },
         {
           text: "Buat Channel",
-          disabled: true
+					disabled: true,
         }
       ]
     };

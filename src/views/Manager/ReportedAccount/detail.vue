@@ -1,7 +1,6 @@
 <template>
   <div>
     <HeaderContent label="Detail Laporan" :list="crumbs" />
-    <div :style="{ height: '35px' }" />
     <div class="detail__header d-flex justify-space-between">
       <div class="d-flex">
         <div class="mr-12 d-flex flex-column justify-space-between">
@@ -52,17 +51,24 @@ import HeaderContent from "../../../containers/HeaderContent";
 export default {
   components: {
     HeaderContent
-  },
+	},
+	methods : {
+		goToDetail () {
+
+		}
+	},
   data() {
     return {
       crumbs: [
         {
           text: "Reported Account",
-          href: "report",
-          disabled: false
+          href: "/report",
+					disabled: false,
+					to : '/report'
         },
         {
-          text: "Detail Laporan"
+					text: "Detail Laporan",
+					disabled : true
         }
       ],
       data: [

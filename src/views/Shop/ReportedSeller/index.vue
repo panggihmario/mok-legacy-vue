@@ -1,6 +1,8 @@
 <template>
   <div>
-    <HeaderContent label="Reported Seller" />
+    <HeaderContent 
+			label="Reported Seller" 
+		/>
     <v-row>
       <v-col cols="2">
         <div class="d-flex align-center">
@@ -18,7 +20,7 @@
 			:items="data"
 		>
 			<template v-slot:item.action>
-				<custom-button class="carmine--text">Read Report</custom-button>
+				<custom-button @click="moveToDetail" class="carmine--text">Read Report</custom-button>
 			</template>
 		</v-data-table>
   </div>
@@ -29,7 +31,12 @@ import HeaderContent from "../../../containers/HeaderContent";
 export default {
   components: {
     HeaderContent
-  },
+	},
+	methods : {
+		moveToDetail () {
+			this.$router.push('/reported-seller/detail')
+		}
+	},
   data() {
     return {
       crumbs: [

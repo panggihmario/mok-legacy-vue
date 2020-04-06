@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between align-center">
-      <div class="black--text article__label">List Article</div>
-    </div>
+		<HeaderContent
+			label="List Article"
+		/>
     <v-tabs @change="changeTabs" v-model="tab">
       <v-tab>
         <span class="text-capitalize">List Article </span>
@@ -24,11 +24,13 @@
 
 <script>
 import ListArticle from './list/article'
+import HeaderContent from "../../../containers/HeaderContent";
 import Draft from './list/draft'
 export default {
 	components : {
 		ListArticle,
-		Draft
+		Draft,
+		HeaderContent
 	},
   data() {
     return {

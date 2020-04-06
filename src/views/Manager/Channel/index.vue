@@ -3,9 +3,18 @@
     <HeaderContent
       :list="items"
       label="List Channel"
-      @click="handleClick"
-      labelAction="Tambah Channel"
-    />
+    >	
+			<custom-input
+				placeholder="Search channel"
+				class="mr-4"
+				width="200"
+			/>
+			<custom-button
+				class="white--text"
+				color="carmine"
+				@click="handleClick"
+			>Tambah Channel</custom-button>
+    </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="channels">
       <template v-slot:item.channelImage>
         <div class="image__container">

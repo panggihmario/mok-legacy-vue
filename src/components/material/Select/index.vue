@@ -4,14 +4,15 @@
     <v-select
       v-on="selectListeners"
       :items="items"
-      :dense="dense"
       solo
       flat
-      :hide-details="hideDetails"
       :error-messages="errors"
       :value="value"
       v-bind="$attrs"
       class="field"
+			background-color="whitesnow"
+			full-width
+			:dense="dense"
     />
   </ValidationProvider>
 </template>

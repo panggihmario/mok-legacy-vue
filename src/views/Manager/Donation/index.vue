@@ -7,7 +7,22 @@
       labelAction="Tambah Donasi"
       @selection="getSelection"
       @click="handleClick"
-    />
+    >	
+			<div class="mr-4 left-action" >
+			<custom-select
+				:items="items"
+				:height="40"
+				:dense="true"
+			/>
+			</div>
+			<custom-button
+				color="carmine"
+				class="white--text"
+				@click="handleClick"
+			>
+				Tambah Donasi
+			</custom-button>
+    </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="data">
       <template v-slot:item.donationImage>
         <div class="image__container">
@@ -38,10 +53,14 @@ export default {
     return {
       crumbs: [
         {
-          text: "Manage Donation",
-          href: "donation",
-          disabled: false
-        }
+          text: "List Channel",
+          href: "/channel",
+					disabled: false,
+				},
+				{
+					text : 'List Donasi',
+					disabled : true
+				}
       ],
       items: ["Finish", "On Progress"],
       data: [
@@ -110,4 +129,6 @@ export default {
 		background-color: grey
 	&__container
 		padding: 10px
+.left-action
+	width: 200px
 </style>

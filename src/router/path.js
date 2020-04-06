@@ -17,6 +17,7 @@ import Product from '../views/Shop/Product';
 import Category from '../views/Shop/Category';
 import Seller from '../views/Shop/Seller';
 import ReportedSeller from '../views/Shop/ReportedSeller';
+import DetailReportedSeller from '../views/Shop/ReportedSeller/detail.vue';
 import User from '../views/AccountManage/User';
 import AdminEdit from '../views/AccountManage/AdminEdit';
 import UserEdit from '../views/AccountManage/User/UserEdit';
@@ -136,6 +137,11 @@ const routes = [
 				path : '/reported-seller',
 				name : 'reportedSeller',
 				component : ReportedSeller
+			},
+			{
+				path : '/reported-seller/detail',
+				name : 'detailReportedSeller',
+				component : DetailReportedSeller
 			}
 		]
 	},
