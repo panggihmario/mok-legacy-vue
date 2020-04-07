@@ -1,6 +1,11 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account" @click="handleClick" />
+    <HeaderContent
+      :list="items"
+      label="Edit Management Account"
+      labelAction="Create Account"
+      @click="handleClick('create')"
+    />
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -50,10 +55,10 @@
         </template>
 
         <template v-slot:item.manage>
-          <custom-button icon @click="editData">
+          <custom-button icon @click="handleClick('edit')">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
-          <custom-button icon>
+          <custom-button icon @click="handleClick('delete')">
             <v-icon small color="safetyorange">mdi-delete</v-icon>
           </custom-button>
         </template>
@@ -155,8 +160,8 @@ export default {
     };
   },
   methods: {
-    editData() {
-      this.$router.push("/admin/edit");
+    handleClick(params) {
+      this.$router.push(`/admin/${params}`);
     }
   }
 };

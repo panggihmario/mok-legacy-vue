@@ -1,12 +1,11 @@
 <template>
   <div>
-    <div>
-      <span class="account-manage__title font-weight-medium">List User Account</span>
-      <div class="account-manage__subTitle font-weight-medium">
-        <span class="carmine--text">Account Manage</span>&nbsp;
-        <span class="grey--text">&#47;&nbsp;List User</span>
-      </div>
-    </div>
+    <HeaderContent
+      :list="items"
+      label="Edit Management Account"
+      labelAction="Create Account"
+      @click="handleClick('create')"
+    />
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">
@@ -56,7 +55,7 @@
         </template>
 
         <template v-slot:item.manage>
-          <custom-button icon>
+          <custom-button icon @click="handleClick('edit')">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
         </template>
@@ -77,9 +76,24 @@
 </template>
 
 <script>
+import HeaderContent from "@/containers/HeaderContent";
+
 export default {
+  components: {
+    HeaderContent
+  },
   data() {
     return {
+      items: [
+        {
+          text: "Manage Account",
+          disabled: false,
+          href: "/user"
+        },
+        {
+          text: "List User"
+        }
+      ],
       sort: ["Oldest", "Newest"],
       filter: ["Today", "This Month"],
       page: 1,
@@ -144,6 +158,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    handleClick(params) {
+      this.$router.push(`/user/${params}`);
+    }
   }
 };
 </script>

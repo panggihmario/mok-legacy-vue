@@ -7,7 +7,7 @@
         </v-avatar>
       </div>
       <div class="d-flex justify-center">
-        <v-chip color="white" class="mt-2">
+        <v-chip color="white" class="mt-2" to="/profile">
           <span class="primary--text">{{ user }}</span>
         </v-chip>
       </div>

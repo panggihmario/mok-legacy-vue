@@ -2,41 +2,30 @@
   <div>
     <HeaderContent
       :list="items"
-      label="Edit Management Account"
+      label="Delete Management Account"
       @click="handleClick"
+      labelAction="Save"
     />
 
     <div class="mt-8">
+      <span class="account-delete__subtitle">Account Name</span>
       <div class="d-flex align-center">
         <v-avatar size="100" class="mr-4">
           <img :src="data.photo" />
         </v-avatar>
         <div class="d-flex flex-column">
-          <span class="account-edit__title font-weight-medium charcoal--text">{{ data.user }}</span>
+          <span class="account-delete__title font-weight-medium charcoal--text">{{ data.user }}</span>
           <span
-            class="account-edit__subtitle font-weight-medium grey--text"
+            class="account-delete__subtitle font-weight-medium grey--text"
           >&commat;{{ data.username }}</span>
         </div>
       </div>
 
       <v-row>
         <v-col cols="6">
-          <div class="d-flex justify-space-between">
-            <custom-select
-              label="Pilih jenis akun"
-              background-color="whitesnow"
-              placeholder="Pilih jenis akun"
-            ></custom-select>
-            <custom-select label="Gender" background-color="whitesnow"></custom-select>
-          </div>
-          <custom-input label="Name" background-color="whitesnow"></custom-input>
-          <custom-input label="Username" background-color="whitesnow"></custom-input>
+          <custom-textarea label="Alasan Menghapus Akun"></custom-textarea>
           <custom-input label="Password" background-color="whitesnow"></custom-input>
           <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
-          <custom-input label="Email" background-color="whitesnow"></custom-input>
-          <custom-input label="Phone" background-color="whitesnow"></custom-input>
-          <custom-textarea label="Address"></custom-textarea>
-          <custom-button color="carmine" class="white--text">Save</custom-button>
         </v-col>
         <v-col cols="6"></v-col>
       </v-row>
@@ -87,7 +76,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.account-edit
+.account-delete
   &__title
     font-size: $font-size-24
   &__subtitle
