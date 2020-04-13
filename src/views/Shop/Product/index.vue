@@ -5,7 +5,15 @@
       labelAction="Create Category"
       :list="crumbs"
       @click="handleClick"
-    />
+    >
+			<custom-button 
+				color="carmine" 
+				class="white--text" 
+				@click="handleClick"
+			>
+				Add Product
+			</custom-button>
+    </HeaderContent>
     <v-row>
       <v-col cols="2">
         <div class="d-flex align-center">
@@ -98,7 +106,9 @@ export default {
     };
   },
   methods: {
-    handleClick() {}
+    handleClick() {
+			this.$router.push('/product/add')
+		}
   }
 };
 </script>

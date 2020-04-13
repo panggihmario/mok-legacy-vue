@@ -14,6 +14,7 @@ import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import Editor from '../views/Article/Editor';
 import Product from '../views/Shop/Product';
+import CreateProduct from '../views/Shop/Product/create.vue';
 import Category from '../views/Shop/Category';
 import Seller from '../views/Shop/Seller';
 import ReportedSeller from '../views/Shop/ReportedSeller';
@@ -140,6 +141,11 @@ const routes = [
 				path: '/product',
 				name: 'product',
 				component: Product
+			},
+			{
+				path : '/product/add',
+				name : 'addProduct',
+				component : CreateProduct
 			},
 			{
 				path: '/category',

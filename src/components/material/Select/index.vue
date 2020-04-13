@@ -10,9 +10,8 @@
       :value="value"
       v-bind="$attrs"
       class="field"
-			background-color="whitesnow"
-			full-width
-			:dense="dense"
+      background-color="whitesnow"
+      full-width
     />
   </ValidationProvider>
 </template>
@@ -33,14 +32,6 @@ export default {
     value: {},
     label: {
       type: String
-    },
-    hideDetails: {
-      type: Boolean,
-      default: false
-    },
-    dense: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
@@ -58,6 +49,6 @@ export default {
 
 <style lang="sass" scoped>
 .field
-	border-radius: $border-radius-root
-	font-size: $font-size-root
+  border-radius: $border-radius-root
+  font-size: $font-size-root
 </style>

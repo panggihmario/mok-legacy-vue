@@ -1,11 +1,8 @@
 <template>
   <div>
-    <HeaderContent
-      :list="items"
-      label="Delete Management Account"
-      @click="handleClick"
-      labelAction="Save"
-    />
+    <HeaderContent :list="items" label="Delete Management Account">
+      <custom-button @click="handleClick" class="carmine--text">Delete</custom-button>
+    </HeaderContent>
 
     <div class="mt-8">
       <span class="account-delete__subtitle">Account Name</span>
@@ -23,8 +20,8 @@
 
       <v-row>
         <v-col cols="6">
-          <custom-textarea label="Alasan Menghapus Akun"></custom-textarea>
-          <custom-input label="Password" background-color="whitesnow"></custom-input>
+          <custom-textarea label="Alasan Menghapus Akun" v-model="reason.description"></custom-textarea>
+          <custom-input label="Password" background-color="whitesnow" v-model="reason.password"></custom-input>
           <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
         </v-col>
         <v-col cols="6"></v-col>
@@ -61,15 +58,17 @@ export default {
         user: "Si Tampan",
         username: "sekaliduakali",
         photo:
-          "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7",
-        role: "Staff",
-        status: "Active"
+          "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7"
+      },
+      reason: {
+        description: "",
+        password: ""
       }
     };
   },
   methods: {
     handleClick() {
-      console.log("saved");
+      console.log("saved", this.reason);
     }
   }
 };
