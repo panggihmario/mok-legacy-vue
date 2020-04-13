@@ -1,11 +1,12 @@
 <template>
   <div>
-    <HeaderContent
-      :list="items"
-      label="Edit Management Account"
-      labelAction="Create Account"
-      @click="handleClick('create')"
-    />
+    <HeaderContent :list="items" label="Edit Management Account">
+      <custom-button
+        color="carmine"
+        class="white--text"
+        @click="handleClick('create')"
+      >Create Account</custom-button>
+    </HeaderContent>
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">

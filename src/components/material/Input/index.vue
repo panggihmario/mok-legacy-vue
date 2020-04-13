@@ -9,8 +9,8 @@
       :value="value"
       v-on="inputListener"
       :error-messages="errors"
-			background-color="whitesnow"
-    />
+      background-color="whitesnow"
+    ></v-text-field>
   </ValidationProvider>
 </template>
 
@@ -53,5 +53,3 @@ export default {
     font-weight: 500
     line-height: 14px
 </style>
-
-
