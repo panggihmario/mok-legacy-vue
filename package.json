@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "test": "vue-cli-service test:unit",
     "start": "vue-cli-service serve"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-pwa": "~4.2.0",
     "@vue/cli-plugin-router": "~4.2.0",
+    "@vue/cli-plugin-unit-jest": "~4.2.0",
     "@vue/cli-plugin-unit-mocha": "~4.2.0",
     "@vue/cli-plugin-vuex": "~4.2.0",
     "@vue/cli-service": "~4.2.0",

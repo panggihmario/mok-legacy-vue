@@ -9,6 +9,22 @@ const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
 module.exports = {
+	chainWebpack: (config) => {
+    if (process.env.NODE_ENV === 'test') {
+      const sassRule = config.module.rule('sass')
+      sassRule.uses.clear()
+      sassRule.use('null-loader').loader('null-loader')
+      const scssRule = config.module.rule('scss')
+      scssRule.uses.clear()
+      scssRule.use('null-loader').loader('null-loader')
+    }
+    // Allow to mix SASS and SCSS
+    // https://vuetifyjs.com/en/customization/sass-variables#single-file-components
+    ['vue-modules', 'vue', 'normal-modules', 'normal'].forEach((match) => {
+      config.module.rule('scss').oneOf(match).use('sass-loader')
+        .tap(opt => Object.assign(opt, { data: '@import "~@/styles/application.scss";' }))
+    })
+  },
 	// The source of CKEditor is encapsulated in ES6 modules. By default, the code
 	// from the node_modules directory is not transpiled, so you must explicitly tell
 	// the CLI tools to transpile JavaScript files in all ckeditor5-* modules.
