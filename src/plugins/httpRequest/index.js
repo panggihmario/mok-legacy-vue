@@ -9,7 +9,7 @@ const apiMethod = function (config) {
 		baseURL : BASE_URL,
 		headers : {
 			timeout : 2000,
-			"Content-type" : "application/x-www-form-urlencoded",
+			// "Content-type" : "application/x-www-form-urlencoded",
 		},
 		...config
 	})
