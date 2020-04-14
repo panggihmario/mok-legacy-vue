@@ -1,3 +1,4 @@
 <template>
-	<h1>form create</h1>
+	<div>
+	</div>
 </template>

@@ -37,11 +37,12 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import axios from 'axios'
 export default {
   data() {
     return {
-      username: "",
-      password: "password"
+      username: "administrator",
+      password: "admin@123"
     };
 	},
 	computed : {
@@ -54,8 +55,23 @@ export default {
 			setUser : 'setUser'
 		}),
     onSubmit() {
-			this.$router.push('/')
-			this.setUser(this.username)
+			// this.$router.push('/')
+			// this.setUser(this.username)
+			const data = {
+				username : this.username,
+				password : this.password
+			}
+			this.$http.post('auth/login', data)
+			// axios.post('https://test.api.persada-entertainment.com/main/v0/auth/login', {
+			// 	username : this.username,
+			// 	password  : this.password
+			// })
+			.then(d => {
+				console.log(d)
+			})
+			.catch (e => {
+				console.log(e)
+			})
     }
   }
 };

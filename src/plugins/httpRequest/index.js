@@ -1,9 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 
-// const BASE_URL = process.env.VUE_APP_BASE_URL_API
-// const BASE_URL = 'http://192.168.11.106:8300'
-const BASE_URL = 'http://bc2f5ec1.ngrok.io'
+const BASE_URL = 'https://test.api.persada-entertainment.com/main/v0/'
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODQzNDM3MDUsInVzZXJfbmFtZSI6InJhamFrdWlzaW4iLCJhdXRob3JpdGllcyI6WyJST0xFX0FETUlOIl0sImp0aSI6IjI3ZjA2M2EwLTJlZGUtNGViYS05ZjRhLTVhY2Y0Z"
 
 const apiMethod = function (config) {
