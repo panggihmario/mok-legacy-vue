@@ -44,11 +44,13 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import listNavigation from './items'
 export default {
   computed: {
-    ...mapState(["user"])
+    ...mapState({
+			user : state => state.authentication.user
+		})
   },
   data() {
     return {
@@ -59,12 +61,15 @@ export default {
   methods: {
     handleLogout() {
       this.$router.push("/auth");
-      this.clear();
+			this.logout()
     },
-    ...mapMutations({
-      clear: "clearUser"
-    })
-  }
+		...mapActions({
+			logout : 'authentication/logout'
+		}),
+		getToken(){
+			const token = localStorage.getItem('persada_token')
+		}
+	},
 };
 </script>
 

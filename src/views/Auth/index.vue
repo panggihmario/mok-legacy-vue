@@ -20,15 +20,10 @@
           rules="required"
         />
         <div class="d-flex justify-space-between align-center">
-          <div class="grey--text auth__form__footer " >Lupa Password ?</div>
-          <custom-button 
-						rounded 
-						size="large" 
-						type="submit" 
-						color="primary"
-          >
-						Login
-					</custom-button>
+          <div class="grey--text auth__form__footer ">Lupa Password ?</div>
+          <custom-button rounded size="large" type="submit" color="primary">
+            Login
+          </custom-button>
         </div>
       </custom-form>
     </div>
@@ -36,26 +31,36 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState, mapActions } from "vuex";
+import axios from "axios";
 export default {
   data() {
     return {
-      username: "",
-      password: "password"
+      username: "administrator",
+      password: "admin@123"
     };
-	},
-	computed : {
-		...mapState([
-			'user'
-		])
-	},
+  },
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
-		...mapMutations({
-			setUser : 'setUser'
+    ...mapMutations({
+      setUser: "setUser"
 		}),
-    onSubmit() {
-			this.$router.push('/')
-			this.setUser(this.username)
+		...mapActions({
+			login : 'authentication/login'
+		}),
+    async onSubmit() {
+			const opts = {
+				username: this.username,
+        password: this.password
+			};
+			const response = await this.login(opts)
+			if(response.status === 200){
+				this.$router.push('/')
+			}else{
+				console.log(response)
+			}
     }
   }
 };

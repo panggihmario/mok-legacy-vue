@@ -36,19 +36,20 @@ export default {
       const file = e.target.files[0];
       let form = new FormData();
       form.append("file", file);
-      const url = "https://persada-upload-test.herokuapp.com";
       let result = {
 				status: "loading",
-				response : {
-					url : ''
-				}
+				response : {}
 			};
+			const payload = {
+				url : 'upload?type=media',
+				method : 'post',
+				data : form
+			}
 			this.$emit("response", result);
-      axios
-        .post(url, form)
-        .then(data => {
+			this.$http(payload)
+        .then(response => {
           result = {
-            response: data.data,
+            response: response.data.data,
             status: "success"
 					};
 					this.$emit("response", result);
@@ -63,23 +64,6 @@ export default {
     handleUpload() {
       document.getElementById(this.id).click();
     },
-    upload() {
-      return axios
-        .post(url, form)
-        .then(data => {
-          result = {
-            response: data.data,
-            status: "success"
-					};
-					return result
-        })
-        .catch(error => {
-          result = {
-            status: "failed"
-					};
-					return result
-        });
-    }
   }
 };
 </script>
