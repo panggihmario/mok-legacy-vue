@@ -62,12 +62,12 @@ export default {
       itemsArticle: [
         {
           image: "https://dummyimage.com/100x100/ddd/000",
-          title: "Reported Account",
+          title: "Ini Pernyataan Pertama Bek Juventus Setelah Divonis Positif Virus Corona",
           link: "reported"
         },
         {
           image: "https://dummyimage.com/100x100/000/fff",
-          title: "Reported Account",
+          title: "Ini Pernyataan Pertama Bek Juventus Setelah Divonis Positif Virus Corona",
           link: "reported"
         }
       ],
