@@ -6,7 +6,6 @@ export default {
 	actions : {
 		async getListChannel({state}) {
 			const path = state
-			console.log("ini path", path)
 			let response;
 			try {
 				response = await this._vm.$httpWithToken().get(state.pathChannel)
@@ -23,6 +22,15 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async deleteChannel({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().delete(`${state.pathChannel}/${payload}`)
+				return response
+			} catch (error) {
+				return error
+			}	
 		}
 	}
 }

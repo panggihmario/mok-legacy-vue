@@ -16,12 +16,12 @@
           </div>
         </div>
       </template>
-      <template v-slot:item.action>
+      <template v-slot:item.action="{item}">
         <div class="d-flex justify-space-between">
           <v-btn icon color="primary">
             <v-icon>edit</v-icon>
           </v-btn>
-          <v-btn icon color="orangered">
+          <v-btn @click="handleDelete(item.id)" icon color="orangered">
             <v-icon>delete_outline</v-icon>
           </v-btn>
         </div>
@@ -40,11 +40,20 @@ export default {
   },
   methods: {
     ...mapActions({
-      listChannel: "channel/getListChannel"
+			listChannel: "channel/getListChannel",
+			deleteChannel : "channel/deleteChannel"
     }),
     handleClick() {
       this.$router.push("/channel/create");
-    },
+		},
+		async handleDelete(id) {
+			const response = await this.deleteChannel(id)
+			if(response.status === 200){
+				this.getResponseChannel()
+			}else{
+				return response
+			}
+		},
     async getResponseChannel() {
       const response = await this.listChannel();
       if (response.status === 200) {
@@ -53,7 +62,8 @@ export default {
           return {
             channelImage: res.photo,
             channelName: res.name,
-            description: res.description
+						description: res.description,
+						id : res.id
           };
         });
         this.channels = newFormatResponse;
