@@ -48,7 +48,7 @@ export default {
       setUser: "setUser"
 		}),
 		...mapActions({
-			login : 'login'
+			login : 'authentication/login'
 		}),
     async onSubmit() {
 			const opts = {
@@ -57,7 +57,8 @@ export default {
 			};
 			const response = await this.login(opts)
 			if(response.status === 200){
-      // this.$router.push('/')
+				this.$router.push('/')
+			}else{
 				console.log(response)
 			}
     }

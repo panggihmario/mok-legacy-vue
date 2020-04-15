@@ -31,6 +31,9 @@ const routes = [
 		path: '/',
 		name: 'Home',
 		component: Home,
+		meta : {
+			requireAuth : false
+		},
 		children: [
 			{
 				path: '/',
@@ -180,7 +183,10 @@ const routes = [
 	{
 		path: '/auth',
 		name: 'Authentication',
-		component: Auth
+		component: Auth,
+		meta : {
+			requireAuth : false
+		}
 	}
 ]
 
