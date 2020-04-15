@@ -3,31 +3,25 @@ import Vue from 'vue'
 
 const BASE_URL = 'https://test.api.persada-entertainment.com/main/v0/'
 const getToken = () => {
-  return window.localStorage.getItem("token");
+  return window.localStorage.getItem("persada_token");
 }
 
-const serviceWithoutToken = function (config) {
-	return axios.create({
-		baseURL: BASE_URL,
-		timeout: 60 * 4 * 1000,
-		headers: {
-			"Content-type": `application/json`,
-		},
-		...config
-	})
-}
+export const serviceWithoutToken = () => axios.create({
+  baseURL: BASE_URL,
+  timeout: 60 * 4 * 1000,
+  headers: {
+    "Content-Type": `application/json`,
+  }
+});
 
-const ssrviceWithToken = function (config, token = getToken()) {
-	return axios.create({
-		baseURL: BASE_URL,
-		timeout: 60 * 4 * 1000,
-		headers: {
-			"Content-type": `application/json`,
-			Authorization: "Bearer " + token,
-		},
-		...config
-	})
-}
+const serviceWithToken = (token = getToken()) => axios.create({
+  baseURL: BASE_URL,
+  timeout: 60 * 4 * 1000,
+  headers: {
+    Authorization: "Bearer " + token,
+    "Content-Type": `application/json`
+	},
+});
 
-Vue.prototype.$http = serviceWithoutToken()
-Vue.prototype.$httpWithToken = ssrviceWithToken()
+Vue.prototype.$http = serviceWithoutToken
+Vue.prototype.$httpWithToken = serviceWithToken

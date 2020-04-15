@@ -9,15 +9,14 @@
       <div class="d-flex align-center">
         <div class="form__image-box mr-6">
           <v-img
-            v-if="image"
-            :src="image"
+            v-if="channel.photo"
+            :src="channel.photo"
             class="form__image"
-            :lazy-src="image"
+            :lazy-src="channel.photo"
           />
           <div v-else class="form__image-no" />
         </div>
         <custom-upload id="channel" @response="getResponse" />
-        {{ status }}
       </div>
       <div class="form__box" >
         <custom-input 
@@ -46,6 +45,7 @@
 
 <script>
 import HeaderContent from "../../../containers/HeaderContent";
+import { mapActions } from "vuex"
 export default {
   components: {
     HeaderContent
@@ -55,7 +55,7 @@ export default {
 			channel : {
 				name : '',
 				description : '',
-				image : ''
+				photo : ''
 			},
       image: "",
       status: "",
@@ -73,14 +73,20 @@ export default {
     };
   },
   methods: {
+		...mapActions({
+			createChannel : 'channel/createChannel'
+		}),
     getResponse(payload) {
-      console.log({ payload });
       this.status = payload.status;
-      this.image = payload.response.url;
+      this.channel.photo = payload.response.url;
     },
-    handleSubmit() {
-			// this.$router.push('/channel')
-			console.log(this.channel)
+    async handleSubmit() {
+			const response = await this.createChannel(this.channel)
+			if(response.status === 200) {
+				this.$router.push('/channel')
+			}else{
+				return response
+			}
 		}
   }
 };
