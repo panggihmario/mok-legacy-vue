@@ -18,6 +18,7 @@
           v-model="password"
           name="Password"
           rules="required"
+					type="password"
         />
         <div class="d-flex justify-space-between align-center">
           <div class="grey--text auth__form__footer ">Lupa Password ?</div>
@@ -59,7 +60,7 @@ export default {
 			if(response.status === 200){
 				this.$router.push('/')
 			}else{
-				console.log(response)
+				return response
 			}
     }
   }
