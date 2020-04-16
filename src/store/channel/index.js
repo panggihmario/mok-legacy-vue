@@ -5,7 +5,6 @@ export default {
 	},
 	actions : {
 		async getListChannel({state}) {
-			const path = state
 			let response;
 			try {
 				response = await this._vm.$httpWithToken().get(state.pathChannel)
@@ -31,6 +30,37 @@ export default {
 			} catch (error) {
 				return error
 			}	
+		},
+		async editChannel({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathChannel}/${payload.id}`,payload)
+				return response
+			} catch (error) {
+				return error
+			}	
+		},
+		async searchChannel({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathChannel}/search`, {
+					params : {
+						name : payload
+					}
+				})
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async getChannelById({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathChannel}/${payload}`)
+				return response
+			} catch (error) {
+				return error
+			}
 		}
 	}
 }

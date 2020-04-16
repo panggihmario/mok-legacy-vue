@@ -19,8 +19,13 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
+	props : ['articles'],
 	methods : {
+		...mapActions({
+			getNews : 'news/getListNews'
+		}),
 		getColor(status) {
 			switch(status) {
 				case 'Approve' : return 'primary--text'
@@ -52,26 +57,6 @@ export default {
           value: "action"
         }
       ],
-      articles: [
-        {
-          date: "02/02/2020",
-          status: "On Inspect",
-          headline:
-            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia "
-        },
-        {
-          date: "02/02/2020",
-          status: "Approve",
-          headline:
-            "Ini Pernyataan Pertama Bek Juventus Setelah Divonis Positif Virus Corona"
-        },
-        {
-          date: "02/02/2020",
-          status: "Reject",
-          headline:
-            "30 Warga di Kota Bekasi Suspect Corona, Ini Langkah Antisipasi Dinkes"
-        }
-      ]
     };
   }
 };

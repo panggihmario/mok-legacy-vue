@@ -2,7 +2,7 @@
 	<v-data-table
 		:headers="headers"
 		hide-default-footer
-		:items="articles"
+		:items="drafts"
 	>
 		<template v-slot:item.action>
 			<div class="d-flex justify-space-between">
@@ -17,6 +17,7 @@
 
 <script>
 export default {
+	props : ['drafts'],
 	data () {
 		return {
 			headers : [

@@ -1,50 +1,139 @@
 <template>
-  <div>
+  <custom-form>
     <div class="d-flex justify-space-between">
       <div class="black--text create-article__label">Buat Article</div>
       <div class="d-flex">
-        <custom-button class="carmine--text mr-6">Safe To Draft</custom-button>
-        <custom-button color="carmine" class="white--text" >Submit</custom-button>
+        <custom-button type="submit" @click="onDraft" class="carmine--text mr-6"
+          >Safe To Draft</custom-button
+        >
+        <custom-button
+          color="carmine"
+          @click="onSubmit"
+          type="submit"
+          class="white--text"
+          >Submit</custom-button
+        >
       </div>
     </div>
+
     <v-row align="center">
       <v-col md="7">
-        <custom-input label="Headline" />
+        <custom-input
+          label="Headline"
+          v-model="payloadNews.headline"
+          :value="payloadNews.headline"
+          rules="required"
+          name="Headline"
+        />
       </v-col>
+			 <v-dialog
+			 		v-model="dialog"
+					 max-width="300"
+			 >
+          <v-img :src="image" />
+        </v-dialog>
       <v-col md="5">
-        <custom-upload class="mb-1 ml-4" id="upload-editor" />
+        <custom-button  @click.stop="dialog = true" v-if="image">Lihat Gambar</custom-button>
+        <custom-upload
+          class="mb-1 ml-4"
+          id="upload-editor"
+          @response="getImage"
+          v-else
+        />
       </v-col>
     </v-row>
-    <v-row :style="{marginTop : '-40px'}" >
+    <v-row :style="{ marginTop: '-20px' }">
       <v-col cols="7">
-        <custom-input label="Judul" />
-        <text-editor v-model="article" />
-				<custom-textarea
-					label="Tag Artikel"
-					placeholder="Tag"
-				/>
+        <custom-input
+          label="Judul"
+          v-model="payloadNews.title"
+          :value="payloadNews.title"
+          rules="required"
+          name="Title"
+        />
+        <text-editor
+          v-model="payloadNews.content"
+          :value="payloadNews.content"
+          rules="required"
+          name="Content"
+        />
+        <custom-textarea
+          label="Tag Artikel"
+          placeholder="Tag"
+          :disabled="true"
+        />
       </v-col>
       <v-col cols="5">
         <div class="ml-4">
-          <custom-input label="Kategori Artikel" placeholder="Kategori" />
-					<icon-input label="Sumber Artikel Utama"/>
-					<icon-input label="Artikel Terkait 1"/>
-					<icon-input label="Artiket Terkait 2"/>
+          <custom-input
+            :disabled="true"
+            label="Kategori Artikel"
+            placeholder="Kategori"
+          />
+          <icon-input
+            label="Sumber Artikel Utama"
+            v-model="payloadNews.linkReference"
+            :value="payloadNews.linkReference"
+            rules="required"
+            name="Link Refrence"
+          />
+          <icon-input :disabled="true" label="Artikel Terkait 1" />
+          <icon-input :disabled="true" label="Artiket Terkait 2" />
         </div>
       </v-col>
     </v-row>
-  </div>
+  </custom-form>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from "vuex";
+import HeaderContent from "../../../containers/HeaderContent";
 export default {
-	computed : {
-		...mapState(['user'])
-	},
+  components: {
+    HeaderContent
+  },
+  computed: {
+    ...mapState(["user"])
+  },
+  methods: {
+    ...mapActions({
+			createNews: "news/createNews",
+			createDraft : "news/createDraft"
+    }),
+    async onDraft() {
+			const response = await this.createDraft(this.payloadNews);
+      if (response.status === 200) {
+        this.$router.push("/editor");
+      } else {
+        return response;
+      }
+    },
+    async onSubmit() {
+      const response = await this.createNews(this.payloadNews);
+      if (response.status === 200) {
+        this.$router.push("/editor");
+      } else {
+        return response;
+      }
+    },
+    getImage(payload) {
+      if (payload.status === "success") {
+        this.image = payload.response.thumbnail;
+        this.payloadNews.media.push(payload.response);
+      }
+    }
+  },
   data() {
     return {
-      article: ""
+      image: "",
+      payloadNews: {
+        headline: "",
+        title: "",
+        content: "",
+        linkReference: "",
+        media: []
+			},
+			dialog : false
     };
   }
 };

@@ -1,0 +1,40 @@
+export default {
+	namespaced: true,
+	state: {
+		pathNews: 'admin/news'
+	},
+	actions: {
+		async getListNews({ state }, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(state.pathNews, {
+					params: {
+						tab: payload.tab,
+						page: payload.page
+					}
+				})
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async createNews({ state }, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().post(`${state.pathNews}/submit`, payload)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async createDraft({ state }, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().post(`${state.pathNews}/draft`, payload)
+				return response
+			} catch (error) {
+				return error
+			}
+		}
+	}
+}

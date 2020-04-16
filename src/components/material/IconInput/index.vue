@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <label-field>{{ label }}</label-field>
     <div class="input-group__container">
       <v-btn
@@ -21,9 +21,10 @@
         class="input-group__field"
         v-bind="$attrs"
         v-on="inputListeners"
+				:error-messages="errors"
       />
     </div>
-  </div>
+  </ValidationProvider>
 </template>
 
 <script>
@@ -35,7 +36,14 @@ export default {
     label: {
       type: String,
       default: "default label"
-    }
+		},
+		rules : {
+			type : String
+		},
+		name : {
+			type : String
+		}
+
   },
   computed: {
     inputListeners() {
