@@ -5,8 +5,8 @@
       <div class="card__box__total white--text ml-2">{{ total }}</div>
     </div>
     <div class="card__content">
-      <div class="card__content__action" @click="handleClick">Show Detail</div>
-      <div class="mt-6">
+      <div class="card__content__action" @click="handleClick">{{ action }}</div>
+      <div class="mt-4">
         <div class="charcoal--text">{{ title }}</div>
         <div class="charcoal--text description__content">{{ description }}</div>
       </div>
@@ -43,6 +43,10 @@ export default {
     color: {
       type: String,
       default: "primary"
+    },
+    action: {
+      type: String,
+      default: "Show Detail"
     },
     noAction: {
       type: Boolean,

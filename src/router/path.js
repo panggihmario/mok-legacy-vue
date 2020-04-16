@@ -14,6 +14,7 @@ import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import Editor from '../views/Article/Editor';
+import EditorArticle from '../views/Article/Editor/Article';
 import Product from '../views/Shop/Product';
 import CreateProduct from '../views/Shop/Product/create/index.vue';
 import Category from '../views/Shop/Category';
@@ -32,8 +33,8 @@ const routes = [
 		path: '/',
 		name: 'Home',
 		component: Home,
-		meta : {
-			requireAuth : false
+		meta: {
+			requireAuth: false
 		},
 		children: [
 			{
@@ -147,14 +148,19 @@ const routes = [
 				component: Editor
 			},
 			{
+				path: '/editor-article',
+				name: 'editorArticle',
+				component: EditorArticle
+			},
+			{
 				path: '/product',
 				name: 'product',
 				component: Product
 			},
 			{
-				path : '/product/add',
-				name : 'addProduct',
-				component : CreateProduct
+				path: '/product/add',
+				name: 'addProduct',
+				component: CreateProduct
 			},
 			{
 				path: '/category',
@@ -167,14 +173,14 @@ const routes = [
 				component: Seller
 			},
 			{
-				path : '/reported-seller',
-				name : 'reportedSeller',
-				component : ReportedSeller
+				path: '/reported-seller',
+				name: 'reportedSeller',
+				component: ReportedSeller
 			},
 			{
-				path : '/reported-seller/detail',
-				name : 'detailReportedSeller',
-				component : DetailReportedSeller
+				path: '/reported-seller/detail',
+				name: 'detailReportedSeller',
+				component: DetailReportedSeller
 			}
 		]
 	},
@@ -190,8 +196,8 @@ const routes = [
 		path: '/auth',
 		name: 'Authentication',
 		component: Auth,
-		meta : {
-			requireAuth : false
+		meta: {
+			requireAuth: false
 		}
 	}
 ]
