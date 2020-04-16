@@ -59,28 +59,32 @@ export default [
 			{
 				title: 'Editor',
 				path: '/editor'
-			}
+			},
+			{
+				title: 'Article',
+				path: '/editor-article'
+			},
 		]
 	},
 	{
-		action : 'local_mall',
-		title : 'Shop',
-		items : [
+		action: 'local_mall',
+		title: 'Shop',
+		items: [
 			{
-				title : 'Product',
-				path : '/product'
+				title: 'Product',
+				path: '/product'
 			},
 			{
-				title : 'Category',
-				path : '/category'
+				title: 'Category',
+				path: '/category'
 			},
 			{
-				title : 'Seller',
-				path : '/seller'
+				title: 'Seller',
+				path: '/seller'
 			},
 			{
-				title : 'Report',
-				path : '/reported-seller'
+				title: 'Report',
+				path: '/reported-seller'
 			}
 		]
 	}
