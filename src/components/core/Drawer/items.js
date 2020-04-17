@@ -95,6 +95,10 @@ export default [
 			{
 				title : 'Feed',
 				path : '/post'
+			},
+			{
+				title : 'Product',
+				path : '/post/product'
 			}
 		]
 	}

@@ -30,6 +30,7 @@ import User from '../views/AccountManage/User';
 import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
+import PostProduct from '../views/Post/product.vue';
 
 const routes = [
 	{
@@ -199,6 +200,11 @@ const routes = [
 				path : '/post',
 				name : 'postFeed',
 				component : PostFeed
+			},
+			{
+				path : '/post/product',
+				name : 'postProduct',
+				component : PostProduct
 			}
 		]
 	},

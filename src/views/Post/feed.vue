@@ -12,8 +12,18 @@
           />
           <div v-else class="form__image-no" />
         </div>
-        <custom-upload id="feedPost" @response="getResponse" />
+        <custom-upload id="feedPost" class="mr-6" @response="getResponse" />
+				{{status}}
+        <video
+          width="200"
+          height="200"
+          v-if="video"
+          :src="video"
+          controls
+          autoplay
+        />
       </div>
+
       <br />
       <custom-textarea
         label="Description"
@@ -29,16 +39,9 @@
       />
       <custom-button type="submit" color="primary">Submit</custom-button>
     </custom-form>
-		 <v-snackbar
-      v-model="snackbar"
-			top
-    >
-			Success Post
-      <v-btn
-        color="pink"
-        text
-        @click="snackbar = false"
-      >
+    <v-snackbar v-model="snackbar" top>
+      Success Post
+      <v-btn color="pink" text @click="snackbar = false">
         Close
       </v-btn>
     </v-snackbar>
@@ -62,7 +65,9 @@ export default {
         media: []
       },
       image: "",
-      snackbar: false
+      video: "",
+			snackbar: false,
+			status : ''
     };
   },
   methods: {
@@ -71,9 +76,16 @@ export default {
       postFeed: "post/postFeed"
     }),
     getResponse(payload) {
+			this.status = payload.status
       if (payload.status === "success") {
-        this.image = payload.response.url;
-        this.payload.media.push(payload.response);
+				this.status = payload.status
+        if (payload.response.type === "image") {
+          this.image = payload.response.url;
+          this.payload.media.push(payload.response);
+        } else {
+					this.video = payload.response.url;
+					this.payload.media.push(payload.response)
+        }
       }
     },
     async handleSubmit() {
@@ -88,9 +100,10 @@ export default {
           description: "",
           channelId: "",
           media: []
-				};
-				this.image = ""
-				this.snackbar = true
+        };
+				this.image = "";
+				this.video = ""
+        this.snackbar = true;
       } else {
         console.log(response);
       }
