@@ -26,16 +26,16 @@ export default {
     Card
   },
   props: {
-    image: {
-      type: String,
-      default: "https://dummyimage.com/100x100/ddd/ddd"
-    },
     title: {
       type: String,
       default: "Title"
     },
     total: {
-      type: String
+      type: Number
+    },
+    size: {
+      type: String,
+      default: "small"
     }
   },
   methods: {
@@ -68,5 +68,5 @@ export default {
 .medium
   width: 500px
 .small
-  width: 274px
+  width: 176px
 </style>
