@@ -35,6 +35,33 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async getNewsById({ state }, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathNews}/${payload}`)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async editDraft({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async deleteDraft({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().delete(`${state.pathNews}/${payload}`)
+				return response
+			} catch (error) {
+				return error
+			}
 		}
 	}
 }

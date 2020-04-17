@@ -3,6 +3,7 @@ import Auth from '../views/Auth'
 import Dashboard from '../views/Dashboard'
 import Article from '../views/Article'
 import CreateArticle from '../views/Article/Editor/create.vue'
+import EditArticle from '../views/Article/Editor/edit.vue'
 import Profile from '../views/Profile';
 import AccountManage from '../views/AccountManage'
 import Channel from '../views/Manager/Channel';
@@ -51,6 +52,11 @@ const routes = [
 				path: '/article/create',
 				name: 'CreateArticle',
 				component: CreateArticle,
+			},
+			{
+				path :'/article/:id',
+				component : EditArticle,
+				name : 'editArticle'
 			},
 			{
 				path: '/profile',

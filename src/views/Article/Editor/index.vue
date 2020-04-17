@@ -24,6 +24,7 @@
       <v-tab-item>
         <Draft 
 					:drafts="drafts"
+					@updateListDraft="updateListDraft"
 				/>
       </v-tab-item>
     </v-tabs-items>
@@ -57,7 +58,10 @@ export default {
   methods: {
     ...mapActions({
       getNews: "news/getListNews"
-    }),
+		}),
+		updateListDraft(){
+			this.getResponseDraft()
+		},
     goToCreateArticle() {
       this.$router.push("/article/create");
     },
@@ -89,7 +93,8 @@ export default {
 					const newFormatDate = this.formatingDate(news.createAt)
           return {
             date: newFormatDate,
-            headline: news.headline
+						headline: news.headline,
+						id : news.id
           };
         });
         this.drafts = formatingList;

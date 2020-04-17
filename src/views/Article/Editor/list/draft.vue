@@ -4,11 +4,11 @@
 		hide-default-footer
 		:items="drafts"
 	>
-		<template v-slot:item.action>
+		<template v-slot:item.action="{item}">
 			<div class="d-flex justify-space-between">
-				<custom-button class="primary--text">Edit</custom-button>
+				<custom-button @click="moveToEdit(item.id)" class="primary--text">Edit</custom-button>
 				<custom-button>
-					<v-icon>delete</v-icon>
+					<v-icon @click="onDelete(item.id)">delete</v-icon>
 				</custom-button>
 			</div>
 		</template>
@@ -16,8 +16,30 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
 	props : ['drafts'],
+	methods : {
+		...mapActions({
+			deleteDraft : 'news/deleteDraft'
+		}),
+		moveToEdit(id){
+			this.$router.push({
+				name : 'editArticle',
+				params : {
+					id : id
+				}
+			})
+		},
+		async onDelete(id) {
+			const response = await this.deleteDraft(id)
+			if(response.status === 200) {
+				this.$emit('updateListDraft')
+			}else{
+				console.log(id)
+			}
+		}
+	},
 	data () {
 		return {
 			headers : [
@@ -37,20 +59,6 @@ export default {
 					sortable : false
 				}
 			],
-			articles : [
-				{
-					date : '02/02/2020',
-					headline : '1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia'
-				},
-				{
-					date : '02/02/2020',
-					headline : 'Ini Pernyataan Pertama Bek Juventus Setelah Divonis Positif Virus Corona'
-				},
-				{
-					date : '02/02/2020',
-					headline : '30 Warga di Kota Bekasi Suspect Corona, Ini Langkah Antisipasi Dinkes'
-				},
-			]
 		}
 	}
 }

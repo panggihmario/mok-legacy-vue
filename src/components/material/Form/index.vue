@@ -1,5 +1,5 @@
 <template>
-	<ValidationObserver v-slot="{ handleSubmit }" >
+	<ValidationObserver :ref="refForm" v-slot="{ handleSubmit }" >
 		<v-form
 			@submit.prevent="handleSubmit(onSubmit)"
 			lazy-validation
@@ -15,6 +15,9 @@ export default {
 		onSubmit : {
 			type : Function,
 			default : () => {}
+		},
+		refForm : {
+			type : String
 		}
 	}
 }
