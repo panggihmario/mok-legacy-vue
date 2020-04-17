@@ -62,6 +62,24 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async publishNews({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publish`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async rejectNews({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/reject`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
 		}
 	}
 }

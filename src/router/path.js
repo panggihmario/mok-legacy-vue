@@ -14,6 +14,7 @@ import DonationCreate from '../views/Manager/Donation/create.vue';
 import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
+import ReviewPublisher from '../views/Article/Publisher/review.vue'
 import Editor from '../views/Article/Editor';
 import EditorArticle from '../views/Article/Editor/Article';
 import Product from '../views/Shop/Product';
@@ -147,6 +148,11 @@ const routes = [
 				path: '/publisher',
 				name: 'publisher',
 				component: Publisher
+			},
+			{
+				path :'/pubisher/review/:id',
+				name : 'reviewPublisher',
+				component : ReviewPublisher
 			},
 			{
 				path: '/editor',

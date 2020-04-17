@@ -12,6 +12,7 @@
 				<custom-button
 					class="primary--text"
 					v-if="item.status === 'Need Review'"
+					@click="moveToReview(item.id)"
 				>
 					Review
 				</custom-button>
@@ -22,6 +23,10 @@
 
 <script>
 export default {
+	props : ['articles'],
+	mounted() {
+		console.log(this.articles)
+	},
 	methods : {
 		getColor(status) {
 			switch(status) {
@@ -29,6 +34,15 @@ export default {
 				case 'Rejected' : return 'carmine--text'
 				default : return 'grey--text'
 			}
+		},
+		moveToReview(id){
+			this.$router.push({
+				name : 'reviewPublisher',
+				params : {
+					id
+				}
+			})
+			console.log(id)
 		}
 	},
 	data () {
@@ -54,26 +68,6 @@ export default {
 					value : 'action'
 				}
 			],
-			articles : [
-				{
-					date : '02/02/2020',
-					status : 'Need Review',
-					headline:
-            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia "
-				},
-				{
-					date : '02/02/2020',
-					status : 'Approved',
-					headline:
-            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia "
-				},
-				{
-					date : "02/02/2020",
-					status : 'Rejected',
-					headline:
-            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia "
-				}
-			]
 		}
 	}
 }
