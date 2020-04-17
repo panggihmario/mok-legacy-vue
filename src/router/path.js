@@ -29,6 +29,7 @@ import AdminDelete from '../views/AccountManage/AdminDelete';
 import User from '../views/AccountManage/User';
 import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
+import PostFeed from '../views/Post/feed.vue';
 
 const routes = [
 	{
@@ -193,6 +194,11 @@ const routes = [
 				path: '/reported-seller/detail',
 				name: 'detailReportedSeller',
 				component: DetailReportedSeller
+			},
+			{
+				path : '/post',
+				name : 'postFeed',
+				component : PostFeed
 			}
 		]
 	},

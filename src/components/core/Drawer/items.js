@@ -87,5 +87,15 @@ export default [
 				path: '/reported-seller'
 			}
 		]
+	},
+	{
+		title : 'Post',
+		action : 'post_add',
+		items : [
+			{
+				title : 'Feed',
+				path : '/post'
+			}
+		]
 	}
 ]
