@@ -35,7 +35,7 @@ export default {
 		async deletePost({state}, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().delete(`${state.pathPost}/profile/${payload}`)
+				response = await this._vm.$httpWithToken().delete(`feeds/${payload}`)
 				return response
 			} catch (error) {	
 				return error

@@ -15,12 +15,12 @@
           Show
         </custom-button>
       </template>
-			<template v-slot:item.action >
-				<!-- <custom-button
+			<template v-slot:item.action="{item}" >
+				<custom-button
 					@click="deleteFeed(item.id)"
 				>
 					<v-icon>delete</v-icon>
-				</custom-button> -->
+				</custom-button>
 			</template>
     </v-data-table>
     <v-dialog v-model="dialog" max-width="350">
@@ -97,7 +97,7 @@ export default {
 		async deleteFeed(id){
 			const response = await this.deletePost(id)
 			if(response.status === 200) {
-				console.log(response)
+				this.handleListFeed()
 			}else{
 				console.log(response);
 			}
@@ -126,7 +126,6 @@ export default {
           }
         });
 				this.items = formatingContent;
-				console.log(content)
       } else {
         console.log(response);
       }
