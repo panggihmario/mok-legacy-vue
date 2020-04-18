@@ -2,24 +2,40 @@
   <div :style="{ width: '350px' }">
     <HeaderContent label="Post Product" />
     <custom-form :onSubmit="handleSubmit">
-      <custom-input label="Name" v-model="params.name" :value="params.name" />
+      <custom-input 
+				label="Name" 
+				name="Name"
+				rules="required"
+				v-model="params.name" 
+				:value="params.name" />
       <custom-input
         label="Price"
         v-model="params.price"
         :value="params.price"
         type="number"
+				rules="required"
+				name="Price"
       />
       <custom-input
         label="Description"
         v-model="params.description"
         :value="params.description"
+				name="Description"
+				rules="required"
       />
       <custom-input
         label="Color"
         v-model="params.color"
         :value="params.color"
+				rules="required"
+				name="Color"
       />
-      <custom-input label="Size" v-model="params.size" :value="params.size" />
+      <custom-input 
+				label="Size"
+				name="Size"
+				rules="required" 
+				v-model="params.size" 
+				:value="params.size" />
       <div class="d-flex align-center">
         <div class="form__image-box mr-6">
           <v-img

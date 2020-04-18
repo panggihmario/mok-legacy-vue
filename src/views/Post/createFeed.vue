@@ -29,6 +29,8 @@
         label="Description"
         v-model="payload.description"
         :value="payload.description"
+				rules="required"
+				name="Description"
       />
       <custom-select
         :items="items"
@@ -36,6 +38,8 @@
         item-value="id"
         v-model="payload.channelId"
         label="Channel"
+				rules="required"
+				name="Channel"
       />
       <custom-button type="submit" color="primary">Submit</custom-button>
     </custom-form>
