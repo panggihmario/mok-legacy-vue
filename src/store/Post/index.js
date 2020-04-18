@@ -13,6 +13,15 @@ export default {
 				return error
 			}
 		},
+		async getListFeed ({state}, payload){
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathPost}/profile/${payload}`)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
 		async postProduct({state}, payload) {
 			let response;
 			try {

@@ -31,6 +31,7 @@ import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
 import PostProduct from '../views/Post/product.vue';
+import CreateFeed from '../views/Post/createFeed.vue'
 
 const routes = [
 	{
@@ -198,8 +199,13 @@ const routes = [
 			},
 			{
 				path : '/post',
-				name : 'postFeed',
+				name : 'listFeed',
 				component : PostFeed
+			},
+			{
+				path : '/post/create',
+				name : 'createFeed',
+				component : CreateFeed
 			},
 			{
 				path : '/post/product',

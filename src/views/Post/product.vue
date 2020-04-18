@@ -82,7 +82,8 @@ export default {
         this.image = "";
         this.video = "";
         this.snackbar = true;
-        console.log("success post");
+				console.log("success post");
+				this.$router.push('/post')
       } else {
         console.log(response);
       }

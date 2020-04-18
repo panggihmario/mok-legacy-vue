@@ -3,6 +3,7 @@ export default {
 	state: {
 		user: 'publisher',
 		token: localStorage.getItem('persada_token') || '',
+		accountId : ""
 	},
 	mutations : {
 		setUser(state, payload) {
@@ -16,6 +17,9 @@ export default {
 		},
 		clearToken (state, payload){
 			state.token = payload
+		},
+		setAccountId(state, payload){
+			state.accountId = payload
 		}
 	},
 	actions: {
@@ -24,7 +28,10 @@ export default {
 			try {
 				response = await this._vm.$http().post('auth/login', payload)
 				const token =	response.data.token
+				const id = response.data.accountId
+				context.commit('setAccountId', id)
 				localStorage.setItem("persada_token", token)
+				localStorage.setItem("persada_id" , id)
 				context.commit('setToken',token)
 				return response
 			} catch (error) {
@@ -34,6 +41,7 @@ export default {
 		logout(context){
 			context.commit('clearToken', '')
 			localStorage.removeItem('persada_token')
+			localStorage.removeItem('persada_id')
 		}
 	},
 	getters : {

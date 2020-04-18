@@ -1,55 +1,35 @@
 <template>
-  <div :style="{ width: '300px' }">
-    <HeaderContent label="Post Feed" />
-    <custom-form :onSubmit="handleSubmit">
-      <div class="d-flex align-center">
-        <div class="form__image-box mr-6">
-          <v-img
-            v-if="image"
-            :src="image"
-            class="form__image"
-            :lazy-src="image"
-          />
-          <div v-else class="form__image-no" />
+  <div>
+    <HeaderContent label="List Feed">
+      <custom-button color="carmine" class="white--text" @click="moveToCreate">
+        Create
+      </custom-button>
+    </HeaderContent>
+    <v-data-table :headers="headers" hide-default-footer :items="items">
+      <template v-slot:item.image="{ item }">
+        <custom-button
+          color="carmine"
+          class="white--text"
+          @click="showMedia(item)"
+        >
+          Show
+        </custom-button>
+      </template>
+    </v-data-table>
+    <v-dialog v-model="dialog" max-width="350">
+      <v-card>
+        <div v-if="dialogMedia">
+          <v-img :src="dialogMedia.url" v-if="dialogMedia.type === 'image'" />
+          <video width="100%" height="100%" v-else :src="dialogMedia.url" controls autoplay />
         </div>
-        <custom-upload id="feedPost" class="mr-6" @response="getResponse" />
-				{{status}}
-        <video
-          width="200"
-          height="200"
-          v-if="video"
-          :src="video"
-          controls
-          autoplay
-        />
-      </div>
-
-      <br />
-      <custom-textarea
-        label="Description"
-        v-model="payload.description"
-        :value="payload.description"
-      />
-      <custom-select
-        :items="items"
-        item-text="name"
-        item-value="id"
-        v-model="payload.channelId"
-        label="Channel"
-      />
-      <custom-button type="submit" color="primary">Submit</custom-button>
-    </custom-form>
-    <v-snackbar v-model="snackbar" top>
-      Success Post
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>
+        <div v-else>no media</div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import HeaderContent from "../../containers/HeaderContent";
 export default {
   components: {
@@ -57,95 +37,76 @@ export default {
   },
   data() {
     return {
+      accountId: "",
+      dialog: false,
+      dialogMedia: {},
       items: [],
-      channel: {},
-      payload: {
-        description: "",
-        channelId: "",
-        media: []
-      },
-      image: "",
-      video: "",
-			snackbar: false,
-			status : ''
+      headers: [
+        {
+          text: "Tanggal",
+          value: "date",
+          width: "100"
+        },
+        {
+          text: "Photo Feed/Product",
+          value: "image",
+          width: "190"
+        },
+        {
+          text: "Deskripsi Feed/Product",
+          value: "description"
+        }
+      ]
     };
+  },
+  mounted() {
+    this.handleListFeed();
   },
   methods: {
     ...mapActions({
-      getChannel: "channel/getListChannel",
-      postFeed: "post/postFeed"
+      getListFeed: "post/getListFeed"
     }),
-    getResponse(payload) {
-			this.status = payload.status
-      if (payload.status === "success") {
-				this.status = payload.status
-        if (payload.response.type === "image") {
-          this.image = payload.response.url;
-          this.payload.media.push(payload.response);
-        } else {
-					this.video = payload.response.url;
-					this.payload.media.push(payload.response)
-        }
-      }
+    showMedia(payload) {
+      this.dialog = true;
+      this.dialogMedia = payload.media[0];
     },
-    async handleSubmit() {
-      const params = {
-        typePost: "seleb",
-        post: this.payload
-      };
-      const response = await this.postFeed(params);
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
+    moveToCreate() {
+      this.$router.push("/post/create");
+    },
+    async handleListFeed() {
+      const id = localStorage.getItem("persada_id");
+      const response = await this.getListFeed(id);
       if (response.status === 200) {
-        console.log("success post");
-        this.payload = {
-          description: "",
-          channelId: "",
-          media: []
-        };
-				this.image = "";
-				this.video = ""
-        this.snackbar = true;
+        const content = response.data.data.content;
+        const formatingContent = content.map(c => {
+          const newDte = this.formatingDate(c.createAt);
+          if (c.post) {
+            return {
+              date: newDte,
+              description: c.post.description,
+              media: c.post.media
+            };
+          } else {
+            return {
+              date: newDte,
+              description: c.postProduct.description,
+              media: c.postProduct.media
+            };
+          }
+        });
+        this.items = formatingContent;
       } else {
         console.log(response);
       }
-    },
-    async getResponseChannel() {
-      const response = await this.getChannel();
-      if (response.status === 200) {
-        const responseData = response.data.data.content;
-        const formatResponse = responseData.map(d => {
-          return {
-            name: d.name,
-            id: d.id
-          };
-        });
-        this.items = formatResponse;
-        console.log(responseData);
-      } else {
-        return response;
-      }
     }
-  },
-  mounted() {
-    this.getResponseChannel();
   }
 };
 </script>
-
-<style lang="sass" scoped>
-.form
-	&__image-box
-		width: 213px
-		height: 145px
-		border-radius: 5px
-	&__image
-		width: 100%
-		height: 100%
-		overflow: hidden
-	&__image-no
-		width: 100%
-		height: 100%
-		background-color: #EEEEEE
-		border-radius: 5px
-	&__box
-		width: 400px
-</style>
