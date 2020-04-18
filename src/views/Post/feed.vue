@@ -15,6 +15,13 @@
           Show
         </custom-button>
       </template>
+			<template v-slot:item.action >
+				<!-- <custom-button
+					@click="deleteFeed(item.id)"
+				>
+					<v-icon>delete</v-icon>
+				</custom-button> -->
+			</template>
     </v-data-table>
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
@@ -54,8 +61,13 @@ export default {
         },
         {
           text: "Deskripsi Feed/Product",
-          value: "description"
-        }
+					value: "description",
+					width : '600'
+				},
+				{
+					text : 'Action',
+					value : 'action'
+				}
       ]
     };
   },
@@ -64,7 +76,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getListFeed: "post/getListFeed"
+			getListFeed: "post/getListFeed",
+			deletePost : "post/deletePost"
     }),
     showMedia(payload) {
       this.dialog = true;
@@ -80,7 +93,15 @@ export default {
     },
     moveToCreate() {
       this.$router.push("/post/create");
-    },
+		},
+		async deleteFeed(id){
+			const response = await this.deletePost(id)
+			if(response.status === 200) {
+				console.log(response)
+			}else{
+				console.log(response);
+			}
+		},
     async handleListFeed() {
       const id = localStorage.getItem("persada_id");
       const response = await this.getListFeed(id);
@@ -92,17 +113,20 @@ export default {
             return {
               date: newDte,
               description: c.post.description,
-              media: c.post.media
+							media: c.post.media,
+							id : c.id
             };
           } else {
             return {
               date: newDte,
               description: c.postProduct.description,
-              media: c.postProduct.media
+							media: c.postProduct.media,
+							id : c.id
             };
           }
         });
-        this.items = formatingContent;
+				this.items = formatingContent;
+				console.log(content)
       } else {
         console.log(response);
       }
