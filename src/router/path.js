@@ -7,6 +7,7 @@ import Profile from '../views/Profile';
 import AccountManage from '../views/AccountManage'
 import Channel from '../views/Manager/Channel';
 import ChannelCreate from '../views/Manager/Channel/create.vue';
+import ChannelEdit from '../views/Manager/Channel/edit.vue';
 import Donation from '../views/Manager/Donation';
 import DonationCreate from '../views/Manager/Donation/create.vue';
 import ReportedAccount from '../views/Manager/ReportedAccount';
@@ -110,6 +111,11 @@ const routes = [
 				path: '/channel/create',
 				name: 'channelCreate',
 				component: ChannelCreate
+			},
+			{
+				path : '/channel/:id',
+				name : 'channelEdit',
+				component : ChannelEdit
 			},
 			{
 				path: '/donation',

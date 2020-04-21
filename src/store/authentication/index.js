@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
 	namespaced: true,
 	state: {
@@ -21,16 +20,11 @@ export default {
 	},
 	actions: {
 		async  login(context, payload) {
-			let params = {
-				method : 'post',
-				data : payload,
-				url : 'auth/login'
-			}
 			let response;
 			try {
-				response = await this._vm.$http(params)
-				const token = `Bearer ${response.data.access_token}`
-				localStorage.setItem('persada_token', token)
+				response = await this._vm.$http().post('auth/login', payload)
+				const token =	response.data.token
+				localStorage.setItem("persada_token", token)
 				context.commit('setToken',token)
 				return response
 			} catch (error) {

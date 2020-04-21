@@ -14,7 +14,7 @@ export default {
 	props : {
 		onSubmit : {
 			type : Function,
-			required: true
+			default : () => {}
 		}
 	}
 }

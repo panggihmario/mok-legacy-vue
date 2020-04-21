@@ -46,7 +46,7 @@ export default {
 				data : form
 			}
 			this.$emit("response", result);
-			this.$http(payload)
+			this.$http().post('upload?type=media', form)
         .then(response => {
           result = {
             response: response.data.data,
