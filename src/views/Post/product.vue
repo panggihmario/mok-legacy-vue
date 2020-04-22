@@ -36,6 +36,34 @@
 				rules="required" 
 				v-model="params.size" 
 				:value="params.size" />
+			<custom-input
+				label="Weight"
+				name="weight"
+				rules="required"
+				v-model="params.measurement.weight"
+				:value="params.measurement.weight"
+			/>
+			<custom-input
+				label="Length"
+				name="length"
+				rules="required"
+				v-model="params.measurement.length"
+				:value="params.measurement.length"
+			/>
+			<custom-input
+				label="Height"
+				name="height"
+				rules="required"
+				v-model="params.measurement.height"
+				:value="params.measurement.height"
+			/>
+			<custom-input
+				label="Width"
+				name="width"
+				rules="required"
+				v-model="params.measurement.width"
+				:value="params.measurement.width"
+			/>
       <div class="d-flex align-center">
         <div class="form__image-box mr-6">
           <v-img
@@ -127,7 +155,13 @@ export default {
         description: "",
         color: "",
         size: "",
-        media: []
+				media: [],
+				measurement : {
+					weight : "",
+					length : "", 
+					height : "",
+					width : ""
+				}
       },
       image: "",
       video: "",
