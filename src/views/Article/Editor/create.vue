@@ -1,21 +1,29 @@
 <template>
   <custom-form refForm="form">
-    <div class="d-flex justify-space-between">
-      <div class="black--text create-article__label">Buat Article</div>
-      <div class="d-flex">
-        <custom-button type="submit" @click="onDraft" class="carmine--text mr-6"
-          >Safe To Draft</custom-button
-        >
-        <custom-button
-          color="carmine"
-          @click="onSubmit"
-          type="submit"
-          class="white--text"
-          >Submit</custom-button
-        >
-      </div>
-    </div>
+    <HeaderContent label="Buat News">
+      <custom-button
+        type="submit"
+        :loading="loadingDraft"
+        @click="onDraft"
+        class="carmine--text mr-6"
+        >Safe To Draft</custom-button
+      >
+      <custom-button
+        color="carmine"
+        @click="onSubmit"
+        type="submit"
+        class="white--text"
+				:loading="loadingSubmit"
+        >Submit</custom-button
+      >
+    </HeaderContent>
     <FormNews :payloadNews="payloadNews" />
+		<v-snackbar top v-model="alertSuccess"  color="success" >
+			Create News Success
+		</v-snackbar>
+		<v-snackbar top v-model="alertFailed"  color="success" >
+			Create News Failed
+		</v-snackbar>
   </custom-form>
 </template>
 
@@ -42,12 +50,23 @@ export default {
       createDraft: "news/createDraft"
     }),
     async onDraft() {
-			const statusValid = this.isFormValid;
+      const statusValid = this.isFormValid;
       if (statusValid) {
+      	this.loadingDraft = true;
         const response = await this.createDraft(this.payloadNews);
         if (response.status === 200) {
-          this.$router.push("/editor");
+					this.alertSuccess = true
+					setTimeout(() => {
+						this.alertSuccess = false
+          	this.$router.push("/editor");
+					}, 500)
+          this.loadingDraft = false;
         } else {
+					this.alertFailed = true
+					setTimeout(() => {
+						this.alertFailed = false
+					}, 1500)
+          this.loadingDraft = false;
           return response;
         }
       }
@@ -55,11 +74,20 @@ export default {
     async onSubmit() {
       const statusValid = this.isFormValid;
       if (statusValid) {
+				this.loadingSubmit = true
         const response = await this.createNews(this.payloadNews);
         if (response.status === 200) {
-          this.$router.push("/editor");
+					this.loadingSubmit = false
+					this.alertSuccess = true
+					setTimeout(() => {
+						this.alertSuccess = false
+          	this.$router.push("/editor");
+					}, 500)
         } else {
-          return response;
+					setTimeout(() => {
+						this.alertFailed = false
+					}, 1500)
+					this.loadingSubmit = false
         }
       } else {
         return;
@@ -75,12 +103,16 @@ export default {
   data() {
     return {
       image: "",
+			loadingDraft: false,
+			loadingSubmit : false,
+			alertSuccess : false,
+			alertFailed : false,
       payloadNews: {
         headline: "",
         title: "",
         content: "",
         linkReference: "",
-				media: [],
+        media: []
       },
       dialog: false
     };

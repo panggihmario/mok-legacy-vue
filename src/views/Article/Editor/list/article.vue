@@ -11,7 +11,8 @@
 			<template v-slot:item.action="{item}">
 				<custom-button
 					class="primary--text"
-					v-if="item.status === 'Reject'"
+					@click="moveToEdit(item.id)"
+					v-if="item.status === 'Rejected'"
 				>Edit</custom-button>
 			</template>
 		</v-data-table>
@@ -26,10 +27,18 @@ export default {
 		...mapActions({
 			getNews : 'news/getListNews'
 		}),
+		moveToEdit(id){
+			this.$router.push({
+				name : 'editArticle',
+				params : {
+					id : id
+				}
+			})
+		},
 		getColor(status) {
 			switch(status) {
-				case 'Approve' : return 'primary--text'
-				case 'Reject' : return 'carmine--text'
+				case 'Approved' : return 'primary--text'
+				case 'Rejected' : return 'carmine--text'
 				default : return 'grey--text'
 			}
 		}

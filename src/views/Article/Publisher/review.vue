@@ -2,9 +2,13 @@
   <div>
     <HeaderContent label="Edit News">
       <div>
-        <custom-button @click="onReject" class="carmine--text mr-4"
-          >Reject</custom-button
+        <custom-button 
+					@click="onReject" 
+					class="carmine--text mr-4"
+					:loading="loading"
         >
+					Reject
+				</custom-button>
         <custom-button @click="onPublish" color="primary"
           >Publish</custom-button
         >
@@ -21,6 +25,7 @@ import HeaderContent from "../../../containers/HeaderContent";
 export default {
   data() {
     return {
+			loading : false,
       payloadNews: {
         headline: "",
         title: "",
@@ -69,11 +74,14 @@ export default {
         id: this.$route.params.id,
         data: this.payloadNews
       };
-      const response = await this.rejectNews(params);
+			const response = await this.rejectNews(params);
+			this.loading = true
       if (response.status === 200) {
-        this.$router.push("/publisher");
+				this.$router.push("/publisher");
+				this.loading = false
       } else {
-        console.log("publish", response);
+				console.log("publish", response);
+				this.loading = false
       }
     }
   },

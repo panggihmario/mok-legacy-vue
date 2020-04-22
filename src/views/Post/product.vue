@@ -47,7 +47,6 @@
           <div v-else class="form__image-no" />
         </div>
         <custom-upload id="feedPost" class="mr-6" @response="getResponse" />
-        {{ status }}
         <video
           width="200"
           height="200"
@@ -58,12 +57,12 @@
         />
       </div>
       <br />
-      <custom-button type="submit" color="primary">Submit</custom-button>
-      <v-snackbar v-model="snackbar" top>
+      <custom-button :loading="loading" type="submit" color="primary">Submit</custom-button>
+      <v-snackbar v-model="snackbar" top right color="success" >
         Success Post
-        <v-btn color="pink" text @click="snackbar = false">
-          Close
-        </v-btn>
+      </v-snackbar>
+			<v-snackbar v-model="snackbarFailed" top right color="error" >
+        Failed Post
       </v-snackbar>
     </custom-form>
   </div>
@@ -84,24 +83,23 @@ export default {
       const payload = {
         typePost: "product",
         postProduct: this.params
-      };
+			};
+			this.loading = true
       const response = await this.postProduct(payload);
       if (response.status === 200) {
-        this.params = {
-          name: "",
-          price: 0,
-          description: "",
-          color: "",
-          size: "",
-          media: []
-        };
-        this.image = "";
-        this.video = "";
-        this.snackbar = true;
-				console.log("success post");
-				this.$router.push('/post')
+				this.snackbar = true;
+				this.loading = false
+				setTimeout(() => {
+					this.$router.push('/post')
+					this.snackbar = false
+				},1000)
       } else {
-        console.log(response);
+				this.loading = false
+				this.snackbarFailed = true
+				setTimeout(() => {
+					this.snackbarFailed = false
+				}, 2500)
+        console.log(response.response);
       }
     },
     getResponse(payload) {
@@ -120,7 +118,9 @@ export default {
   },
   data() {
     return {
-      snackbar: false,
+			snackbar: false,
+			loading : false,
+			snackbarFailed : false,
       params: {
         name: "",
         price: 0,

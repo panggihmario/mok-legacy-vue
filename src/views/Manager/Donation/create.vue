@@ -19,10 +19,16 @@
 					/>
 					<div class="d-flex align-center">
 						<v-avatar color="whitesmoke" class="mr-4" size="100">
-							<v-icon color="gainsboro" size="80">perm_identity</v-icon>
+							<v-img 
+								:src="profilePhoto"
+								v-if="profilePhoto"
+								:lazy-src="profilePhoto"
+							/>
+							<v-icon v-else color="gainsboro" size="80">perm_identity</v-icon>
 						</v-avatar>
 						<custom-upload
 							id="profil-donation"
+							@response="getProfilPhoto"
 						/>
 					</div>
 					<br/>
@@ -35,8 +41,17 @@
 						:value="donation.description"
 					/>
 					<div class="form__upload d-flex justify-center align-center">
+						<v-img
+							:src="donationPhoto"
+							v-show="donationPhoto"
+							@click="reUpload"
+							max-height="100%"
+							max-width="100%"
+						/>
 						<custom-upload
 							id="donation-image"
+							@response="getDonationImage"
+							:class="donationPhoto && 'form__button-upload'"
 						/>
 					</div>
 				</v-col>
@@ -71,6 +86,13 @@
 						:value="donation.name.receiver"
 						name="Receiver Name"
 					/>
+					<custom-button
+						color="carmine"
+						class="white--text mr-6"
+						@click="previewResult"
+					>
+						Preview
+					</custom-button>
 					<custom-button 
 						color="carmine"
 						type="submit"
@@ -79,6 +101,13 @@
 				</v-col>
 			</v-row>
 		</custom-form>
+		<v-dialog  max-width="400px"  v-model="dialog">
+			<v-card>
+				<div class="card__header">
+					<div class="charcoal--text"  >Ikut Berdonasi</div>
+				</div>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -90,6 +119,7 @@ export default {
 	},
 	data () {
 		return {
+			dialog : false,
 			crumbs : [
 				{
 					text : 'List Channel',
@@ -107,6 +137,8 @@ export default {
 					disabled : true
 				}
 			],
+			profilePhoto : "",
+			donationPhoto : "",
 			donation : {
 				label : '',
 				description : '',
@@ -122,7 +154,26 @@ export default {
 	methods : {
 		handleSubmit ( ){
 			console.log(this.donation)
-		}
+		},
+		previewResult(){
+			this.dialog = true
+		},
+		reUpload(){
+			document.getElementById('donation-image').click()
+		},
+		getProfilPhoto(payload) {
+			if(payload.status === 'success') {
+				const urlProfile = payload.response.thumbnail
+				this.profilePhoto = urlProfile
+			}
+		},
+		getDonationImage(payload) {
+			if(payload.status === 'success') {
+				const urlProfile = payload.response.thumbnail
+				this.donationPhoto = urlProfile
+			}
+		},
+		
 	}
 }
 </script>
@@ -134,4 +185,13 @@ export default {
 		height: 145px
 		border-radius: 5px
 		border: 1px dashed #BBBBBB
+	&__button-upload
+		position: absolute
+		visibility: hidden
+.card
+	&__header
+		height: 40px
+		display: flex
+		justify-content: center
+		align-items: center
 </style>

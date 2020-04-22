@@ -6,7 +6,14 @@
 			:channel="channel" 
 			@onSubmit="onSubmit" 
 			labelButton="Add Channel"
+			:loading="loading"
 		/>
+		<v-snackbar top right  v-model="alertSuccess" color="success">
+			Post Success
+		</v-snackbar>
+			<v-snackbar top right  v-model="alertError" color="error">
+			Post Failed
+		</v-snackbar>
   </div>
 </template>
 
@@ -21,10 +28,13 @@ export default {
   },
   data() {
     return {
+			loading : false,
+			alertSuccess : false,
+			alertError : false,
       channel: {
         name: "",
         description: "",
-        photo: ""
+				photo: "",
       },
       image: "",
       status: "",
@@ -32,7 +42,7 @@ export default {
         {
           text: "Manage Channel",
           disabled: false,
-          href: "/channel"
+          href: "/"
         },
         {
           text: "Buat Channel",
@@ -46,11 +56,20 @@ export default {
       createChannel: "channel/createChannel"
     }),
     async onSubmit(payload) {
+			this.loading = true
       const response = await this.createChannel(this.channel);
       if (response.status === 200) {
-        this.$router.push("/channel");
+				this.alertSuccess = true
+				setTimeout(() => {
+					this.$router.push("/");
+					this.alertSuccess = false
+				}, 500)
+				this.loading = false
       } else {
-        return response;
+				this.loading = false
+				setTimeout(() => {
+					this.alertError = false
+				}, 1000)
       }
     },
     getResponse(payload) {

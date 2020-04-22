@@ -9,11 +9,12 @@
             :src="image"
             class="form__image"
             :lazy-src="image"
+						max-width="100%"
+						max-height="100%"
           />
           <div v-else class="form__image-no" />
         </div>
         <custom-upload id="feedPost" class="mr-6" @response="getResponse" />
-				{{status}}
         <video
           width="200"
           height="200"
@@ -41,13 +42,13 @@
 				rules="required"
 				name="Channel"
       />
-      <custom-button type="submit" color="primary">Submit</custom-button>
+      <custom-button  :loading="loading" type="submit" color="primary">Submit</custom-button>
     </custom-form>
-    <v-snackbar v-model="snackbar" top>
+    <v-snackbar v-model="alertSucces" top right color="success">
       Success Post
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
-      </v-btn>
+    </v-snackbar>
+		<v-snackbar v-model="alertFailed" top right color="error">
+      Failed Post
     </v-snackbar>
   </div>
 </template>
@@ -62,7 +63,10 @@ export default {
   data() {
     return {
       items: [],
-      channel: {},
+			channel: {},
+			loading : false,
+			alertSucces : false,
+			alertFailed : false,
       payload: {
         description: "",
         channelId: "",
@@ -97,20 +101,23 @@ export default {
         typePost: "seleb",
         post: this.payload
       };
-      const response = await this.postFeed(params);
+			this.loading = true
+			const response = await this.postFeed(params);
       if (response.status === 200) {
-        console.log("success post");
-        this.payload = {
-          description: "",
-          channelId: "",
-          media: []
-        };
 				this.image = "";
 				this.video = ""
-				this.snackbar = true;
-				this.$router.push('/post')
+				this.alertSucces = true;
+				this.loading = false
+				setTimeout(() => {
+					this.$router.push('/post')
+					this.alertSucces = false
+				}, 500)
       } else {
-        console.log(response);
+				this.loading = false
+				this.alertFailed = true
+				setTimeout(() => {
+					this.alertFailed = false
+				},2000)
       }
     },
     async getResponseChannel() {

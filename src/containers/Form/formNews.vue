@@ -78,6 +78,9 @@ export default {
 		propsImage : {
 			type : String
 		},
+		loadingDraft : {
+			type : Boolean
+		}
 	},
 	computed :{
 		status () {

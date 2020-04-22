@@ -42,11 +42,11 @@ const routes = [
 			requireAuth: false
 		},
 		children: [
-			{
-				path: '/',
-				name: 'Dashboard',
-				component: Dashboard
-			},
+			// {
+			// 	path: '/',
+			// 	name: 'Dashboard',
+			// 	component: Dashboard
+			// },
 			{
 				path: '/article',
 				name: 'Article',
@@ -103,7 +103,7 @@ const routes = [
 				component: UserEdit
 			},
 			{
-				path: '/channel',
+				path: '/',
 				name: 'channel',
 				component: Channel
 			},

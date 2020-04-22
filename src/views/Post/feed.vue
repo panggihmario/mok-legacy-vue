@@ -1,8 +1,11 @@
 <template>
   <div>
     <HeaderContent label="List Feed">
+			<custom-button color="carmine" @click="moveToPostProduct"  class="white--text mr-6" >
+				Post Product
+			</custom-button>
       <custom-button color="carmine" class="white--text" @click="moveToCreate">
-        Create
+        Post Feed
       </custom-button>
     </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="items">
@@ -94,6 +97,9 @@ export default {
     moveToCreate() {
       this.$router.push("/post/create");
 		},
+		moveToPostProduct() {
+			this.$router.push("/post/product")
+		},
 		async deleteFeed(id){
 			const response = await this.deletePost(id)
 			if(response.status === 200) {
@@ -103,10 +109,15 @@ export default {
 			}
 		},
     async handleListFeed() {
-      const id = localStorage.getItem("persada_id");
-      const response = await this.getListFeed(id);
+			const id = localStorage.getItem("persada_id");
+			const payload = {
+				id : id,
+				typePost : 'seleb'
+			}
+      const response = await this.getListFeed(payload);
       if (response.status === 200) {
-        const content = response.data.data.content;
+				const content = response.data.data.content;
+				console.log(content)
         const formatingContent = content.map(c => {
           const newDte = this.formatingDate(c.createAt);
           if (c.post) {
