@@ -11,6 +11,7 @@ import ChannelCreate from '../views/Manager/Channel/create.vue';
 import ChannelEdit from '../views/Manager/Channel/edit.vue';
 import Donation from '../views/Manager/Donation';
 import DonationCreate from '../views/Manager/Donation/create.vue';
+import DonationEdit from '../views/Manager/Donation/edit.vue';
 import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
@@ -136,6 +137,11 @@ const routes = [
 				path: '/donation/create',
 				name: 'donationCreate',
 				component: DonationCreate
+			},
+			{
+				path : '/donation/:id',
+				name : 'donationEdit',
+				component : DonationEdit
 			},
 			{
 				path: '/report',

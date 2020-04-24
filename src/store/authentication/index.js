@@ -1,9 +1,9 @@
 export default {
 	namespaced: true,
 	state: {
-		user: 'publisher',
+		user: localStorage.getItem('persada_username') || '',
 		token: localStorage.getItem('persada_token') || '',
-		accountId : ""
+		accountId : "",
 	},
 	mutations : {
 		setUser(state, payload) {
@@ -29,9 +29,12 @@ export default {
 				response = await this._vm.$http().post('auth/login', payload)
 				const token =	response.data.token
 				const id = response.data.accountId
+				const username = response.data.userName
+				context.commit('setUser', username)
 				context.commit('setAccountId', id)
 				localStorage.setItem("persada_token", token)
 				localStorage.setItem("persada_id" , id)
+				localStorage.setItem("persada_username", username)
 				context.commit('setToken',token)
 				return response
 			} catch (error) {

@@ -4,6 +4,7 @@ import authentication from './authentication'
 import channel from './channel'
 import news from './news'
 import post from './Post'
+import donation from './donation'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
 		authentication : authentication,
 		channel : channel,
 		news : news,
-		post : post
+		post : post,
+		donation : donation
 	}
 })

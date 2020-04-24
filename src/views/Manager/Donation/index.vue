@@ -24,17 +24,26 @@
 			</custom-button>
     </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="data">
-      <template v-slot:item.donationImage>
-        <div class="image__container">
-          <div class="image__box"></div>
+      <template v-slot:item.donationImage="{item}">
+        <div class="image__container d-flex align-center">
+					<div
+						v-if="item.media.length > 0"
+						class="image__box"
+					>
+					<v-img
+						:src="item.media[0].thumbnail"
+						width="100%"
+					/>
+					</div>
+          <div v-else class="image__box"></div>
         </div>
       </template>
-      <template v-slot:item.action>
+      <template v-slot:item.action="{item}">
         <div class="d-flex justify-space-between">
-          <v-btn icon color="primary">
+          <v-btn @click="moveToEdit(item.id)" icon color="primary">
             <v-icon>edit</v-icon>
           </v-btn>
-          <v-btn icon color="orangered">
+          <v-btn @click="handleDelete(item.id)" icon color="orangered">
             <v-icon>delete_outline</v-icon>
           </v-btn>
         </div>
@@ -44,7 +53,9 @@
 </template>
 
 <script>
+import moment from 'moment'
 import HeaderContent from "../../../containers/HeaderContent";
+import { mapActions } from "vuex"
 export default {
   components: {
     HeaderContent
@@ -63,21 +74,12 @@ export default {
 				}
       ],
       items: ["Finish", "On Progress"],
-      data: [
-        {
-          donationImage: "image",
-          donationName: "Rumah Yatim Piatu",
-          startDate: "11/04/2020",
-          endDate: "11/05/2020",
-          donationTarget: "Rp 2.000.000",
-          status: "Finish"
-        }
-      ],
+      data: [],
       headers: [
         {
           text: "Foto Donasi",
           value: "donationImage",
-          width: "150"
+          width: "120"
         },
         {
           text: "Nama Akun Donasi",
@@ -113,11 +115,53 @@ export default {
     };
   },
   methods: {
+		...mapActions({
+			getListDonation : 'donation/getListDonation',
+			deleteDonation : 'donation/deleteDonation'
+		}),
+		moveToEdit(id) {
+			this.$router.push({
+				name : 'donationEdit',
+				params : {
+					id
+				}
+			})
+		},
+		async handleDelete (id) {
+			const response = await this.deleteDonation(id)
+			if(response.status === 200) {
+				this.handleResponse()
+			}
+		},
     getSelection(value) {},
     handleClick() {
 			this.$router.push('/donation/create')
+		},
+		async handleResponse () {
+			const response = await this.getListDonation()
+			if(response.status === 200) {
+				const data = response.data.data.content
+				const formatData = data.map(d => {
+					const newD = moment.unix(d.expiredAt).format('D/M/YYYY')
+					const newS = moment(d.createAt).format('D/M/YYYY')
+					return {
+						donationName : d.organizer.name,
+						status : d.status,
+						donationTarget : d.targetAmount,
+						startDate : newS,
+						endDate : newD,
+						media : d.media,
+						id : d.id
+					}
+				})
+				this.data = formatData
+				// console.log(data)
+			}
 		}
-  }
+	},
+	mounted() {
+		this.handleResponse()
+	}
 };
 </script>
 

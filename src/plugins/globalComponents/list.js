@@ -13,7 +13,8 @@ import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
 import DatePicker from '../../components/material/DatePicker';
 import Select from '../../components/material/Select';
-import CardTotalArticle from '../../components/material/Card/CardTotalArticle'
+import CardTotalArticle from '../../components/material/Card/CardTotalArticle';
+import Autocomplete from '../../components/material/Autocomplete';
 
 export default [
 	{
@@ -83,5 +84,9 @@ export default [
 	{
 		name : 'card-total-article',
 		component : CardTotalArticle
+	},
+	{
+		name : 'custom-autocomplete',
+		component : Autocomplete
 	}
 ]

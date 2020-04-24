@@ -43,29 +43,33 @@ export default [
 	},
 	{
 		action: 'text_fields',
-		title: 'Publikasi',
+		title: 'News',
 		path: '/publisher',
 		items: [
 			{
-				title: 'Artikel',
+				title: 'Publisher',
 				path: '/publisher'
-			}
-		]
-	},
-	{
-		action: 'edit',
-		title: 'Editor Space',
-		items: [
+			},
 			{
 				title: 'Editor',
 				path: '/editor'
 			},
-			// {
-			// 	title: 'Article',
-			// 	path: '/editor-article'
-			// },
 		]
 	},
+	// {
+	// 	action: 'edit',
+	// 	title: 'Editor Space',
+	// 	items: [
+	// 		{
+	// 			title: 'Editor',
+	// 			path: '/editor'
+	// 		},
+	// 		{
+	// 			title: 'Article',
+	// 			path: '/editor-article'
+	// 		},
+	// 	]
+	// },
 	// {
 	// 	action: 'local_mall',
 	// 	title: 'Shop',
