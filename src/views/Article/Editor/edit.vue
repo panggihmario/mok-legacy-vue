@@ -10,6 +10,13 @@
         >
 					Safe To Draft
 				</custom-button>
+				<!-- <custom-button
+					class="white--text"
+					color="carmine"
+					type="submit"
+					@click="onSubmit"
+				>
+				</custom-button> -->
       </div>
     </div>
     <FormNews :payloadNews="payloadNews" :propsImage="propsImage" />
@@ -42,7 +49,8 @@ export default {
   methods: {
     ...mapActions({
 			getNewsById: "news/getNewsById",
-			editDraft : "news/editDraft"
+			editDraft : "news/editDraft",
+			submitNews : "news/createNews"
     }),
     async handleResponse() {
       const id = this.$route.params.id;
@@ -67,6 +75,9 @@ export default {
 			}else{
 				console.log(response)
 			}
+		},
+		async onSubmit() {
+
 		}
   }
 };
