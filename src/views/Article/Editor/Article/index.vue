@@ -2,6 +2,14 @@
   <div>
     <HeaderContent label="Editor Space" :list="list"></HeaderContent>
     <div class="d-flex flex-wrap">
+      <Card-Total-Article
+        :title="publisher.title"
+        :text="publisher.text"
+        :icon="publisher.icon"
+        :description="publisher.description"
+        class="mr-6"
+        noAction
+      ></Card-Total-Article>
       <div v-for="(item, i) in items" :key="i" class="mr-6 mb-6">
         <Card-Total-Article
           :title="item.title"
@@ -109,6 +117,12 @@ export default {
           text: "Artikel"
         }
       ],
+      publisher: {
+        title: "Your Publisher",
+        text: "Anindy Septiani",
+        icon: "account",
+        description: "Publisher yang akan mereviews berita"
+      },
       items: [
         {
           title: "Waiting for Review",
@@ -221,7 +235,7 @@ export default {
   },
   methods: {
     handleAllArticle() {
-      console.log("all article")
+      console.log("all article");
     }
   }
 };

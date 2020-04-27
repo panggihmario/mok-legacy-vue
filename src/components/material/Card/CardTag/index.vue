@@ -4,14 +4,8 @@
       <div class="d-flex pa-3">
         <div class="d-flex flex-column justify-space-between card__subtitle">
           <div class="card__content charcoal--text">{{ title }}</div>
-          <div class="d-flex justify-space-between">
-            <span v-if="total" class="card__action silver--text">{{ total }}&nbsp;Readers</span>
-            <span
-              v-if="!noAction"
-              class="card__action"
-              :class="`${color}--text`"
-              @click="handleClick"
-            >{{ action }}</span>
+          <div class="d-flex justify-space-between card__action">
+            <span v-if="total" class="silver--text">{{ total }}&nbsp;Readers</span>
           </div>
         </div>
       </div>
@@ -61,7 +55,6 @@ export default {
   &__action
     font-size: 12px
     font-weight: 500
-    cursor: pointer
   &__subtitle
     width: 100% !important
 
