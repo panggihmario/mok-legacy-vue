@@ -1,14 +1,22 @@
 <template>
   <Card width="252" height="113" class="card">
-    <div class="d-flex align-center card__box px-4" :class="color">
+    <div
+      class="d-flex align-center card__box px-4 primary"
+      :class="{'card__box__small':!noAction, 'card__box__medium':noAction}"
+    >
       <v-icon color="white">mdi-{{ icon }}</v-icon>
-      <div class="card__box__total white--text ml-2">{{ total }}</div>
+      <div class="white--text ml-2">
+        <span v-if="text" class="card__box__text">{{ text }}</span>
+        <span v-else class="card__box__total">{{ total }}</span>
+      </div>
     </div>
     <div class="card__content">
-      <div class="card__content__action" @click="handleClick">{{ action }}</div>
+      <div class="text-right" :class="{'card__content__action-box':noAction}">
+        <span v-if="!noAction" class="card__content__action" @click="handleClick">{{ action }}</span>
+      </div>
       <div class="mt-4">
-        <div class="charcoal--text">{{ title }}</div>
-        <div class="charcoal--text description__content">{{ description }}</div>
+        <div class="charcoal--text description__title">{{ title }}</div>
+        <div class="grey--text description__content">{{ description }}</div>
       </div>
     </div>
   </Card>
@@ -24,6 +32,9 @@ export default {
     icon: {
       type: String,
       default: "checkbox-marked-circle-outline"
+    },
+    text: {
+      type: String
     },
     total: {
       type: Number,
@@ -64,9 +75,11 @@ export default {
 
 <style lang="sass" scoped>
 .description
+  &__title
+    font-weight: 500
   &__content
     font-size: 12px
-    font-weight: 300
+    line-height: 14px
     letter-spacing: 0.01em
 .card
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05)
@@ -74,8 +87,9 @@ export default {
   &__content
     padding: 12px
     width: 100%
+    &__action-box
+      height: 24px
     &__action
-      text-align: right
       font-size: 12px
       font-weight: 300
       text-decoration: underline
@@ -83,14 +97,20 @@ export default {
     &__description
       margin-top: 36px
   &__box
-    width: 126px
     height: 58px
     position: absolute
     top: -16px
     left: 12px
     border-radius: 4px !important
+    &__small
+      width: 126px
+    &__medium
+      width: 209px
     &__no-action
       width: 209px !important
+    &__text
+      font-weight: 500
     &__total
       font-size: 32px
+      font-weight: 500
 </style>

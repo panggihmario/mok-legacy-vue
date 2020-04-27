@@ -8,15 +8,13 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick"
-        >Tambah Channel</custom-button
-      >
+      <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
     </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="channels">
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
-            <v-img  max-width="100%" max-height="100%" :src="item.channelImage" />
+            <v-img max-width="100%" max-height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
@@ -25,9 +23,23 @@
           <v-btn icon color="primary">
             <v-icon @click="moveEdit(item.id)">edit</v-icon>
           </v-btn>
-          <v-btn @click="handleDelete(item.id)" icon color="orangered">
-            <v-icon>delete_outline</v-icon>
-          </v-btn>
+          <v-dialog v-model="dialog" width="500">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" icon color="orangered">
+                <v-icon>delete_outline</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card class="pa-8">
+              <div>
+                <span>Apakah anda yakin?</span>
+              </div>
+              <div class="d-flex justify-end">
+                <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
+                <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
+              </div>
+            </v-card>
+          </v-dialog>
         </div>
       </template>
     </v-data-table>
@@ -51,21 +63,21 @@ export default {
     async handleSearch() {
       const response = await this.searchChannel(this.payloadSearch);
       if (response.status === 200) {
-				const responseData = response.data.data.content;
-				this.formatingResponse(responseData)
+        const responseData = response.data.data.content;
+        this.formatingResponse(responseData);
         this.channels = newFormatResponse;
       } else {
         return response;
       }
     },
     formatingResponse(response) {
-      const newFormatResponse = response.map((res,index) => {
+      const newFormatResponse = response.map((res, index) => {
         return {
           channelImage: res.photo,
           channelName: res.name,
           description: res.description,
-					id: res.id,
-					no : index + 1
+          id: res.id,
+          no: index + 1
         };
       });
       this.channels = newFormatResponse;
@@ -77,12 +89,13 @@ export default {
       this.$router.push({
         name: "channelEdit",
         params: {
-          id: payload,
+          id: payload
         }
       });
     },
     async handleDelete(id) {
       const response = await this.deleteChannel(id);
+      this.dialog = false;
       if (response.status === 200) {
         this.getResponseChannel();
       } else {
@@ -92,8 +105,8 @@ export default {
     async getResponseChannel() {
       const response = await this.listChannel();
       if (response.status === 200) {
-				const responseData = response.data.data.content;
-				this.formatingResponse(responseData)
+        const responseData = response.data.data.content;
+        this.formatingResponse(responseData);
       } else {
         return response;
       }
@@ -104,6 +117,7 @@ export default {
   },
   data() {
     return {
+      dialog: false,
       items: [
         {
           text: "Manage Channel",
@@ -147,11 +161,11 @@ export default {
 
 <style lang="sass" scoped>
 .image
-	&__box
-		width: 50px
-		height: 50px
-	&__failed
-		background: grey
-	&__container
-		padding: 10px
+  &__box
+    width: 50px
+    height: 50px
+  &__failed
+    background: grey
+  &__container
+    padding: 10px
 </style>

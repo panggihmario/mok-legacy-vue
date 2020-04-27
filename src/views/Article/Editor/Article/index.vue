@@ -2,6 +2,14 @@
   <div>
     <HeaderContent label="Editor Space" :list="list"></HeaderContent>
     <div class="d-flex flex-wrap">
+      <Card-Total-Article
+        :title="publisher.title"
+        :text="publisher.text"
+        :icon="publisher.icon"
+        :description="publisher.description"
+        class="mr-6"
+        noAction
+      ></Card-Total-Article>
       <div v-for="(item, i) in items" :key="i" class="mr-6 mb-6">
         <Card-Total-Article
           :title="item.title"
@@ -15,9 +23,9 @@
 
     <div class="d-flex mt-10">
       <div>
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-end">
           <span>Your Article</span>
-          <span class="silver--text">All Article</span>
+          <span class="article__action silver--text" @click="handleAllArticle">All Article</span>
         </div>
         <div class="article__box mt-3 pa-3">
           <div v-for="(item, i) in itemsArticle" :key="i" class="mb-3">
@@ -34,9 +42,9 @@
       </div>
 
       <div class="ml-6">
-        <div class="d-flex justify-space-between">
+        <div class="d-flex justify-space-between align-end">
           <span>Top 10 Persada News</span>
-          <span class="silver--text">All Article</span>
+          <span class="article__action silver--text" @click="handleAllArticle">All Article</span>
         </div>
         <div class="article__box mt-3 pa-3">
           <div v-for="(item, i) in itemsArticle" :key="i" class="mb-3">
@@ -53,12 +61,18 @@
       </div>
 
       <div class="ml-6">
-        <div class="d-flex justify-space-between">
-          <span>Top 10 Persada News</span>
-          <span class="silver--text">All Article</span>
-        </div>
+        <span>Tags Trending</span>
         <div class="article__box mt-3 pa-3">
           <div v-for="(item, i) in itemsTag" :key="i" class="mb-3">
+            <CardTag :title="item.title" :total="item.total" noAction />
+          </div>
+        </div>
+      </div>
+
+      <div class="ml-6">
+        <span>Words Trending</span>
+        <div class="article__box mt-3 pa-3">
+          <div v-for="(item, i) in itemsWord" :key="i" class="mb-3">
             <CardTag :title="item.title" :total="item.total" noAction />
           </div>
         </div>
@@ -103,6 +117,12 @@ export default {
           text: "Artikel"
         }
       ],
+      publisher: {
+        title: "Your Publisher",
+        text: "Anindy Septiani",
+        icon: "account",
+        description: "Publisher yang akan mereviews berita"
+      },
       items: [
         {
           title: "Waiting for Review",
@@ -200,8 +220,23 @@ export default {
           title: "#staysafe",
           total: 50
         }
+      ],
+      itemsWord: [
+        {
+          title: "diamdirumah",
+          total: 120
+        },
+        {
+          title: "staysafe",
+          total: 50
+        }
       ]
     };
+  },
+  methods: {
+    handleAllArticle() {
+      console.log("all article");
+    }
   }
 };
 </script>
@@ -210,8 +245,11 @@ export default {
 .article
   &__box
     max-height: 500px
-    width: 300px
+    max-width: 300px
     border: 1px solid #eeeeee
     border-radius: 8px
     overflow: auto
+  &__action
+    font-size: $font-size-12
+    cursor: pointer
 </style>

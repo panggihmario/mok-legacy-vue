@@ -7,11 +7,11 @@
         </div>
         <div class="d-flex flex-column justify-space-between ml-4 card__subtitle">
           <div class="card__content charcoal--text">{{ title }}</div>
-          <div class="d-flex justify-space-between">
-            <span v-if="subtitle" class="card__action silver--text">{{ subtitle }}</span>
+          <div class="d-flex justify-space-between card__action">
+            <span v-if="subtitle" class="silver--text">{{ subtitle }}</span>
             <span
               v-if="!noAction"
-              class="card__action"
+              class="card__action__pointer"
               :class="`${color}--text`"
               @click="handleClick"
             >{{ action }}</span>
@@ -88,7 +88,8 @@ export default {
   &__action
     font-size: 12px
     font-weight: 500
-    cursor: pointer
+    &__pointer
+      cursor: pointer
   &__subtitle
     width: 100% !important
 
