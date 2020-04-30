@@ -196,7 +196,9 @@ export default {
     async getDataBaseOnPage() {
       const params = {
         type: "users",
-        page: this.page - 1
+				param : {
+					 page: this.page - 1
+				}
       };
       const response = await this.getListRespone(params);
       if (response.status === 200) {
