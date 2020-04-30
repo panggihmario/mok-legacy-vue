@@ -8,8 +8,11 @@
 		<FormAdmin
 			:data="data"
 			:loading="loading"
-			@handleSubmit="handleSubmit"
+			@onSubmit="onSubmit"
 		/>
+			<v-snackbar top right  v-model="alertSuccess" color="success">
+				Create Success
+		</v-snackbar>
 			<v-snackbar top right  v-model="alertError" color="error">
 			{{errorMessage}}
 		</v-snackbar>
@@ -60,6 +63,7 @@ export default {
         mobile: ""
 			},
 			alertError : false,
+			alertSuccess : false,
 			errorMessage : ''
     };
   },
@@ -74,16 +78,21 @@ export default {
       this.status = payload.status;
       this.data.photo = payload.response.url;
     },
-    async handleSubmit(params) {
+    async onSubmit(params) {
       const payload = {
 				...params,
 				role : this.data.accountType
 			};
 			this.loading = true
-      const response = await this.createAdmin(payload);
+			const response = await this.createAdmin(payload);
+			console.log(response)
       if (response.status === 201) {
-				this.$router.push("/admin");
 				this.loading = false
+				this.alertSuccess = true
+				setTimeout(() => {
+					this.alertSuccess = false
+				this.$router.push("/admin");
+				}, 3000)
       } else {
 				this.loading = false
 				this.alertError = true
