@@ -85,14 +85,13 @@ export default {
 			};
 			this.loading = true
 			const response = await this.createAdmin(payload);
-			console.log(response)
       if (response.status === 201) {
 				this.loading = false
 				this.alertSuccess = true
 				setTimeout(() => {
 					this.alertSuccess = false
 				this.$router.push("/admin");
-				}, 3000)
+				}, 1000)
       } else {
 				this.loading = false
 				this.alertError = true
