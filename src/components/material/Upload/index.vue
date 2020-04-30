@@ -35,7 +35,11 @@ export default {
     },
     label: {
       type: String
-    }
+		},
+		typeUpload : {
+			type : String,
+			default : 'media'
+		}
   },
   methods: {
     onLoad(e) {
@@ -53,7 +57,7 @@ export default {
 			}
 			this.loadingUpload = true
 			this.$emit("response", result);
-			this.$http().post('upload?type=media', form)
+			this.$http().post(`upload?type=${this.typeUpload}`, form)
         .then(response => {
           result = {
             response: response.data.data,

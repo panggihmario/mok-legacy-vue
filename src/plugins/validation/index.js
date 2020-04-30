@@ -13,3 +13,7 @@ extend('required', {
 		return `The ${realFieldName} field is required`
 	}
 })
+
+extend('positive', (value) => {
+  return 'Password is not same';
+});

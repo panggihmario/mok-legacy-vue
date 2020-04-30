@@ -1,60 +1,31 @@
 <template>
   <div>
     <HeaderContent :list="items" label="Edit Management Account" />
-    <custom-form :onSubmit="handleClick">
-      <div class="mt-8">
-        <div class="d-flex align-center">
-          <v-avatar size="100" class="mr-4">
-            <img :src="data.photo" />
-          </v-avatar>
-          <div class="d-flex flex-column">
-            <span class="account-edit__title font-weight-medium charcoal--text">{{ data.name }}</span>
-            <span
-              class="account-edit__subtitle font-weight-medium grey--text"
-            >&commat;{{ data.username }}</span>
-          </div>
-        </div>
-
-        <v-row>
-          <v-col cols="6">
-            <custom-input dense label="Name" v-model="data.name"></custom-input>
-            <custom-select dense label="Gender" v-model="data.gender"></custom-select>
-            <custom-input dense label="Username" v-model="data.username"></custom-input>
-            <custom-input dense label="Password" v-model="data.password"></custom-input>
-            <custom-input dense label="Email" v-model="data.email"></custom-input>
-            <custom-input dense label="Phone" v-model="data.phone"></custom-input>
-
-            <div class="verified-box my-10 pa-6 font-weight-medium whitesnow">
-              <p>Verified Account</p>
-              <span>
-                Akun ini sudah memenuhi
-                <span class="dodgerblue--text">Syarat & Ketentuan</span> untuk dirubah statusnya
-                menjadi Verified Account
-              </span>
-              <div class="verified-box d-flex align-center justify-space-between mt-6 pa-2 white">
-                <span class="dodgerblue--text">Change this account to Verified Account</span>
-                <v-checkbox v-model="data.isVerified" hide-details class="pa-0 ma-0"></v-checkbox>
-              </div>
-            </div>
-
-            <custom-button color="carmine" class="white--text" type="submit">Save</custom-button>
-          </v-col>
-          <v-col cols="6"></v-col>
-        </v-row>
-      </div>
-    </custom-form>
+    <FormUser :data="data" :loading="loading" @onSubmit="onSubmit" />
+    <v-snackbar top right v-model="alertError" color="error">
+      Edit Failed
+    </v-snackbar>
+    <v-snackbar top right v-model="alertSuccess" color="success">
+      Edit Success
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-
+import FormUser from "@/containers/Form/formUser";
+import { mapActions, mapState } from "vuex";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    FormUser
   },
   data() {
     return {
+      loading: false,
+      alertError: false,
+      alertSuccess: false,
+      oldPassword: "",
       items: [
         {
           text: "Manage Account",
@@ -71,23 +42,83 @@ export default {
         }
       ],
       data: {
-        name: "Si Tampan",
-        username: "sekaliduakali",
-        photo:
-          "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7",
-        gender: "Foo",
-        password: "bleh123",
-        address: "Indonesia, Jakarta",
-        email: "sitampan@mail.com",
-        phone: "08784510****",
-        isVerified: false
+        name: "",
+        username: "",
+        photo: "",
+        gender: "",
+        password: "",
+        address: "di ujung langit",
+        email: "",
+        mobile: "",
+        isVerified: false,
+        accountType: "SELEB",
+				role: "SELEB",
       }
     };
   },
   methods: {
-    handleClick() {
-      console.log("saved");
+    ...mapActions({
+      getAccountById: "account/getAccountById",
+      updateAccount: "account/updateAccount"
+    }),
+    async onSubmit(params) {
+      const id = this.$route.params.id;
+      let data = {};
+      if (params.password) {
+        data = params;
+      } else {
+        const newParams = {
+          ...params,
+          password: this.oldPassword
+        };
+        data = newParams;
+      }
+      const payload = {
+        id,
+        data
+			};
+			console.log(payload)
+			this.loading = true
+      const response = await this.updateAccount(payload);
+      if (response.status === 200) {
+        this.loading = false;
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.$router.push("/user");
+        }, 1000);
+      } else {
+				this.loading = false
+				this.alertError = true
+      }
+    },
+    async handleResponseById() {
+      const id = this.$route.params.id;
+      const params = {
+        id: id,
+        type: "users"
+      };
+      const response = await this.getAccountById(params);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        const tempData = { ...this.data };
+        const dataById = {
+          ...tempData,
+          name: responseData.name,
+          username: responseData.username,
+          photo: responseData.photo,
+          gender: responseData.gender,
+          mobile: responseData.mobile,
+					email: responseData.email,
+					isVerified : responseData.isVerified,
+				};
+				console.log(dataById)
+        this.oldPassword = responseData.password;
+        this.data = dataById;
+      }
     }
+  },
+  mounted() {
+    this.handleResponseById();
   }
 };
 </script>

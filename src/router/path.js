@@ -79,8 +79,8 @@ const routes = [
 				component: AdminCreate
 			},
 			{
-				path: '/admin/edit',
-				name: 'AdminEdit',
+				path: '/admin/:id',
+				name: 'adminEdit',
 				component: AdminEdit
 			},
 			{
@@ -99,8 +99,8 @@ const routes = [
 				component: UserCreate
 			},
 			{
-				path: '/user/edit',
-				name: 'UserEdit',
+				path: '/user/:id',
+				name: 'userEdit',
 				component: UserEdit
 			},
 			{

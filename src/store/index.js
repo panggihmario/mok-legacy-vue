@@ -5,6 +5,7 @@ import channel from './channel'
 import news from './news'
 import post from './Post'
 import donation from './donation'
+import account from './account'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
 		channel : channel,
 		news : news,
 		post : post,
-		donation : donation
+		donation : donation,
+		account
 	}
 })

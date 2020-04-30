@@ -64,8 +64,7 @@ export default {
       const response = await this.searchChannel(this.payloadSearch);
       if (response.status === 200) {
         const responseData = response.data.data.content;
-        this.formatingResponse(responseData);
-        this.channels = newFormatResponse;
+       	this.formatingResponse(responseData);
       } else {
         return response;
       }

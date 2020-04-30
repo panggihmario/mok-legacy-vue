@@ -1,8 +1,9 @@
 <template>
   <custom-form refForm="form">
-    <div class="d-flex justify-space-between">
-      <div class="black--text create-article__label">Buat Article</div>
-      <div class="d-flex">
+		<HeaderContent
+			label="Edit News"
+		>
+			 <div class="d-flex">
         <custom-button 
 					type="submit"  
 					class="carmine--text mr-6"
@@ -10,15 +11,16 @@
         >
 					Safe To Draft
 				</custom-button>
-				<!-- <custom-button
+				<custom-button
 					class="white--text"
 					color="carmine"
 					type="submit"
 					@click="onSubmit"
 				>
-				</custom-button> -->
+					Submit
+				</custom-button>
       </div>
-    </div>
+		</HeaderContent>
     <FormNews :payloadNews="payloadNews" :propsImage="propsImage" />
   </custom-form>
 </template>
@@ -29,7 +31,7 @@ import HeaderContent from "../../../containers/HeaderContent";
 import FormNews from "../../../containers/Form/formNews";
 export default {
 	components : {
-		FormNews
+		FormNews, HeaderContent
 	},
   mounted() {
     this.handleResponse();
