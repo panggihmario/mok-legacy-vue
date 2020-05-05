@@ -12,6 +12,14 @@
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <ListArticle :articles="articles" />
+        <v-pagination
+          class="d-flex justify-end"
+          :length="totalPages"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right"
+          v-model="pageNews"
+          @input="getNewsBaseOnPage"
+        ></v-pagination>
       </v-tab-item>
       <v-tab-item>
         <Draft :drafts="drafts" />
@@ -34,8 +42,10 @@ export default {
   data() {
     return {
       tab: null,
-			articles: [],
-			drafts : []
+      articles: [],
+      drafts: [],
+      totalPages: 0,
+      pageNews: 1
     };
   },
   mounted() {
@@ -69,6 +79,7 @@ export default {
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const listNews = response.data.data.content;
+        this.totalPages = response.data.data.totalPages;
         const formatingList = listNews.map(news => {
           const newFormatDate = this.formatingDate(news.createAt);
           return {
@@ -89,21 +100,38 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-				const listNews = response.data.data.content;
-        const formatingList = listNews.map(news => {
-          const newFormatDate = this.formatingDate(news.createAt);
-          return {
-            date: newFormatDate,
-            status: news.status,
-            headline: news.headline,
-            id: news.id
-          };
-        });
-        this.articles = formatingList;
+        this.formatingResponse(response)
       } else {
-				console.log(response)
-				return response;
+        console.log(response);
+        return response;
       }
+    },
+    async getNewsBaseOnPage() {
+      const payload = {
+        tab: "list",
+        page: this.pageNews - 1
+      };
+      const response = await this.getNews(payload);
+      if (response.status === 200) {
+        this.formatingResponse(response)
+      } else {
+        console.log(response);
+        return response;
+      }
+    },
+    formatingResponse(response) {
+			const listNews = response.data.data.content;
+			this.totalPages = response.data.data.totalPages;
+      const formatingList = listNews.map(news => {
+        const newFormatDate = this.formatingDate(news.createAt);
+        return {
+          date: newFormatDate,
+          status: news.status,
+          headline: news.headline,
+          id: news.id
+        };
+      });
+      this.articles = formatingList;
     }
   }
 };

@@ -4,10 +4,14 @@ export default {
 		pathChannel : 'admin/channel'
 	},
 	actions : {
-		async getListChannel({state}) {
+		async getListChannel({state}, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().get(state.pathChannel)
+				response = await this._vm.$httpWithToken().get(state.pathChannel,{
+					params : {
+						page : payload.page
+					}
+				})
 				return response
 			} catch (error) {
 				return error

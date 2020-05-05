@@ -8,13 +8,19 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
+      <custom-button class="white--text" color="carmine" @click="handleClick"
+        >Tambah Channel</custom-button
+      >
     </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="channels">
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
-            <v-img max-width="100%" max-height="100%" :src="item.channelImage" />
+            <v-img
+              max-width="100%"
+              max-height="100%"
+              :src="item.channelImage"
+            />
           </div>
         </div>
       </template>
@@ -29,20 +35,37 @@
                 <v-icon>delete_outline</v-icon>
               </v-btn>
             </template>
-
             <v-card class="pa-8">
               <div>
                 <span>Apakah anda yakin?</span>
               </div>
               <div class="d-flex justify-end">
-                <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
-                <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
+                <v-btn
+                  color="carmine"
+                  class="white--text"
+                  @click="dialog = false"
+                  >No</v-btn
+                >
+                <v-btn
+                  color="primary"
+                  class="ml-4"
+                  @click="handleDelete(item.id)"
+                  >Yes</v-btn
+                >
               </div>
             </v-card>
           </v-dialog>
         </div>
       </template>
     </v-data-table>
+    <v-pagination
+      class="d-flex justify-end"
+      prev-icon="mdi-menu-left"
+      next-icon="mdi-menu-right"
+      v-model="page"
+      :length="totalPages"
+      @input="getChannelByPage"
+    ></v-pagination>
   </div>
 </template>
 
@@ -63,14 +86,16 @@ export default {
     async handleSearch() {
       const response = await this.searchChannel(this.payloadSearch);
       if (response.status === 200) {
-        const responseData = response.data.data.content;
-       	this.formatingResponse(responseData);
+        const responseData = response.data.data;
+        this.formatingResponse(responseData);
       } else {
         return response;
       }
     },
     formatingResponse(response) {
-      const newFormatResponse = response.map((res, index) => {
+			this.totalPages = response.totalPages
+			const content = response.content
+      const newFormatResponse = content.map((res, index) => {
         return {
           channelImage: res.photo,
           channelName: res.name,
@@ -102,21 +127,38 @@ export default {
       }
     },
     async getResponseChannel() {
-      const response = await this.listChannel();
+      const payload = {
+        page: 0
+      };
+      const response = await this.listChannel(payload);
       if (response.status === 200) {
-        const responseData = response.data.data.content;
+        const responseData = response.data.data;
         this.formatingResponse(responseData);
       } else {
         return response;
       }
-    }
+		},
+		async getChannelByPage() {
+			const payload = {
+        page: this.page - 1
+      };
+      const response = await this.listChannel(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.formatingResponse(responseData);
+      } else {
+        return response;
+      }
+		},
   },
   created() {
     this.getResponseChannel();
   },
   data() {
     return {
-      dialog: false,
+			dialog: false,
+			page : 1,
+			totalPages : 0,
       items: [
         {
           text: "Manage Channel",

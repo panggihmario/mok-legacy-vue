@@ -20,12 +20,25 @@
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <ListArticle :articles="articles" />
+        <v-pagination
+          class="d-flex justify-end"
+          :length="totalPages"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right"
+          v-model="pageNews"
+          @input="getNewsBaseOnPage"
+        ></v-pagination>
       </v-tab-item>
       <v-tab-item>
-        <Draft 
-					:drafts="drafts"
-					@updateListDraft="updateListDraft"
-				/>
+        <Draft :drafts="drafts" @updateListDraft="updateListDraft" />
+        <v-pagination
+          class="d-flex justify-end"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right"
+          v-model="pageDraft"
+          :length="draftPages"
+          @input="getDraftBaseOnPage"
+        ></v-pagination>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -48,8 +61,12 @@ export default {
   data() {
     return {
       tab: null,
-			articles: [],
-			drafts : []
+      articles: [],
+      drafts: [],
+      totalPages: 0,
+      pageNews: 1,
+      pageDraft: 1,
+      draftPages: 0
     };
   },
   mounted() {
@@ -58,29 +75,29 @@ export default {
   methods: {
     ...mapActions({
       getNews: "news/getListNews"
-		}),
-		updateListDraft(){
-			this.getResponseDraft()
-		},
+    }),
+    updateListDraft() {
+      this.getResponseDraft();
+    },
     goToCreateArticle() {
       this.$router.push("/article/create");
     },
     changeTabs(e) {
       const positionTabs = e;
       if (e === 1) {
-				this.getResponseDraft()
-			}else{
-				this.getResponseNews()
-			}
-		},
-		formatingDate(rawDate){
-			const newDt = new Date (rawDate)
-			const day = newDt.getDate()
-			const month = newDt.getMonth() + 1
-			const year = newDt.getFullYear()
-			const newFormat = `${day}/${month}/${year}`
-			return newFormat
-		},
+        this.getResponseDraft();
+      } else {
+        this.getResponseNews();
+      }
+    },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
     async getResponseDraft() {
       const payload = {
         tab: "draft",
@@ -88,19 +105,35 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        const listNews = response.data.data.content;
-        const formatingList = listNews.map(news => {
-					const newFormatDate = this.formatingDate(news.createAt)
-          return {
-            date: newFormatDate,
-						headline: news.headline,
-						id : news.id
-          };
-        });
-        this.drafts = formatingList;
+        this.formatingResponseDraft(response);
       } else {
         return response;
       }
+    },
+    async getDraftBaseOnPage() {
+      const payload = {
+        tab: "draft",
+        page: this.pageDraft - 1
+      };
+      const response = await this.getNews(payload);
+      if (response.status === 200) {
+        this.formatingResponseDraft(response);
+      } else {
+        return response;
+      }
+    },
+    formatingResponseDraft(response) {
+      this.draftPages = response.data.data.totalPages;
+      const listNews = response.data.data.content;
+      const formatingList = listNews.map(news => {
+        const newFormatDate = this.formatingDate(news.createAt);
+        return {
+          date: newFormatDate,
+          headline: news.headline,
+          id: news.id
+        };
+      });
+      this.drafts = formatingList;
     },
     async getResponseNews() {
       const payload = {
@@ -109,20 +142,36 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-				const listNews = response.data.data.content;
-        const formatingList = listNews.map(news => {
-					const newFormatDate = this.formatingDate(news.createAt)
-          return {
-            date: newFormatDate,
-            status: news.status,
-						headline: news.headline,
-						id : news.id
-          };
-        });
-        this.articles = formatingList;
+        this.formatingResponse(response);
       } else {
         return response;
       }
+    },
+    async getNewsBaseOnPage() {
+      const payload = {
+        tab: "list",
+        page: this.pageNews - 1
+      };
+      const response = await this.getNews(payload);
+      if (response.status === 200) {
+        this.formatingResponse(response);
+      } else {
+        return response;
+      }
+    },
+    formatingResponse(response) {
+      this.totalPages = response.data.data.totalPages;
+      const listNews = response.data.data.content;
+      const formatingList = listNews.map(news => {
+        const newFormatDate = this.formatingDate(news.createAt);
+        return {
+          date: newFormatDate,
+          status: news.status,
+          headline: news.headline,
+          id: news.id
+        };
+      });
+      this.articles = formatingList;
     }
   }
 };

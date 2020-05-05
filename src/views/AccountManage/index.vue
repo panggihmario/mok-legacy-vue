@@ -193,7 +193,6 @@ export default {
 				},
 			};
 			const response = await this.getListAdmin(data);
-			console.log(response)
     },
     filterByStatus() {
       const payload = {
