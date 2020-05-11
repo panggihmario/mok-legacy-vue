@@ -81,7 +81,8 @@ export default {
   methods: {
     ...mapActions({
       getChannel: "channel/getListChannel",
-      postFeed: "post/postFeed"
+			postFeed: "post/postFeed",
+			getAllChannel : "channel/getAllChannel"
     }),
     getResponse(payload) {
 			this.status = payload.status
@@ -121,9 +122,10 @@ export default {
       }
     },
     async getResponseChannel() {
-      const response = await this.getChannel();
+			const response = await this.getAllChannel();
+			console.log(response)
       if (response.status === 200) {
-        const responseData = response.data.data.content;
+        const responseData = response.data.data;
         const formatResponse = responseData.map(d => {
           return {
             name: d.name,

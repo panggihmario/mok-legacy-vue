@@ -17,6 +17,15 @@ export default {
 				return error
 			}
 		},
+		async getAllChannel({state}) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathChannel}/list`)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
 		async createChannel({state}, payload) {
 			let response;
 			try {
