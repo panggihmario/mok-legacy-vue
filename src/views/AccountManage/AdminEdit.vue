@@ -80,7 +80,6 @@ export default {
         id,
         data
 			};
-			console.log(payload)
       this.loading = true;
       const response = await this.updateAccount(payload);
       if (response.status === 200) {
@@ -122,7 +121,6 @@ export default {
         this.oldPassword = data.password;
         this.data = newD;
       }
-      console.log(response);
     }
   },
   mounted() {
