@@ -7,7 +7,7 @@ export default {
 		async postFeed ({state}, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().post(`${state.pathPost}/social`, payload)
+				response = await this._vm.$httpWithToken().post(`${state.pathPost}/seleb`, payload)
 				return response
 			} catch (error) {
 				return error

@@ -39,8 +39,6 @@
         item-value="id"
         v-model="payload.channelId"
         label="Channel"
-				rules="required"
-				name="Channel"
       />
       <custom-button  :loading="loading" type="submit" color="primary">Submit</custom-button>
     </custom-form>

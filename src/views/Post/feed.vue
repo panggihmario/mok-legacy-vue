@@ -65,7 +65,10 @@ export default {
         {
           text: "Deskripsi Feed/Product",
 					value: "description",
-					width : '600'
+				},
+				{
+					text : 'Type Post' ,
+					value : 'type',
 				},
 				{
 					text : 'Action',
@@ -114,25 +117,35 @@ export default {
 				id : id,
 				typePost : 'seleb'
 			}
-      const response = await this.getListFeed(payload);
+			const response = await this.getListFeed(payload);
       if (response.status === 200) {
 				const content = response.data.data.content;
-				console.log(content)
+				console.log({content})
         const formatingContent = content.map(c => {
           const newDte = this.formatingDate(c.createAt);
-          if (c.post) {
+          if (c.typePost === 'seleb') {
             return {
               date: newDte,
               description: c.post.description,
 							media: c.post.media,
-							id : c.id
-            };
-          } else {
+							id : c.id,
+							type : c.typePost
+						};
+					} 
+					else if(c.typePost === 'product') {
+						return {
+							date: newDte,
+              description: c.postProduct.name || '' ,
+							media: c.postProduct.media,
+							id : c.id,
+							type : c.typePost
+						}
+					}
+					else {
             return {
               date: newDte,
-              description: c.postProduct.description,
-							media: c.postProduct.media,
-							id : c.id
+							id : c.id,
+							type : c.typePost
             };
           }
         });
