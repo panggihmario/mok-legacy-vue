@@ -85,10 +85,11 @@ export default {
       editDonation: "donation/editDonation"
     }),
     async handleSubmit(value) {
-      const x = moment(value.expiredAt, "YYYY-MM-DD").unix();
+			const x = moment(value.expiredAt, "YYYY-MM-DD").unix();
+			const mili = x * 1000
       const params = {
         ...value,
-        expiredAt: x
+        expiredAt: mili
       };
       const payload = {
         id: this.$route.params.id,

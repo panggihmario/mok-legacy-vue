@@ -97,9 +97,10 @@ export default {
 		},
     async handleSubmit(payload) {
 			const x = moment(payload.expiredAt, 'YYYY-MM-DD').unix();
+			const mili = x * 1000
 			const newPayload = {
 				...payload,
-				expiredAt : x
+				expiredAt : mili
 			}
       this.loading = true;
       const response = await this.createDonation(newPayload);
