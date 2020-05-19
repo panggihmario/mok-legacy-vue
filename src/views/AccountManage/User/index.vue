@@ -65,8 +65,36 @@
           <custom-button icon @click="moveToEdit(item.id)">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
+					<custom-button @click="openModalDelete(item.id)"  icon>
+						<v-icon small>delete</v-icon>
+					</custom-button>
         </template>
       </v-data-table>
+			<v-dialog 
+				max-width="300"
+				v-model="dialogDelete"
+				persistent
+			>
+				<v-card>
+					<v-card-title>Delete Confirmation</v-card-title>
+					<v-card-text>
+						<div>You are about to delete the user</div>
+						<div>Are you sure ?</div>
+					</v-card-text>
+					<v-card-actions>
+						<custom-button @click="cancelDelete" >cancel</custom-button>
+						<v-spacer/>
+						<custom-button 
+							color="carmine" 
+							class="white--text"
+							@click="handleDeleteUser"
+							:loading="loading"
+						>
+							delete
+						</custom-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
       <div class="mt-8">
         <v-pagination
           class="d-flex justify-end"
@@ -75,6 +103,7 @@
           prev-icon="mdi-menu-left"
           next-icon="mdi-menu-right"
           @input="getDataBaseOnPage"
+					:total-visible="6"
         ></v-pagination>
       </div>
     </div>
@@ -90,7 +119,10 @@ export default {
   },
   data() {
     return {
-      payloadSearch: "",
+			payloadSearch: "",
+			loading : false,
+			dialogDelete : false,
+			idUser : '',
       items: [
         {
           text: "Manage Account",
@@ -152,8 +184,32 @@ export default {
   methods: {
     ...mapActions({
       getListRespone: "account/getListRespone",
-      searchAccount: "account/searchAccount"
-    }),
+			searchAccount: "account/searchAccount",
+			deleteUser : "account/deleteUser"
+		}),
+		openModalDelete(id) {
+			this.dialogDelete = true
+			this.idUser = id
+		},
+		async handleDeleteUser () {
+			const id = this.idUser
+			this.loading = true
+			const response = await this.deleteUser(id)
+			if(response.status === 200) {
+				this.dialogDelete = false
+				this.loading = false
+				this.idUser = ''
+				this.getDataBaseOnPage ()
+			}else {
+				this.loading = false
+				this.idUser = ''
+				this.dialogDelete = false
+			}
+		},
+		cancelDelete () {
+			this.dialogDelete = false
+			this.idUse = ''
+		},
     async onSearch() {
       const payload = {
         params: this.payloadSearch,

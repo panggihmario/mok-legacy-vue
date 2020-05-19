@@ -127,7 +127,8 @@ export default {
         "ADMIN",
         "ADMIN_SOCIAL",
         "SUPERVISOR",
-        "EDITOR"
+				"EDITOR",
+				"MODERATOR"
       ],
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",

@@ -16,7 +16,7 @@ export default {
 		async getListFeed ({state}, payload){
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathPost}/${payload.typePost}/profile/${payload.id}`)
+				response = await this._vm.$httpWithToken().get(`${state.pathPost}/${payload.typePost}/profile/${payload.id}?page=${payload.page}`)
 				// ?size=10&page=0&direction=DESC&sort=createAt
 				return response
 			} catch (error) {

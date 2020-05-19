@@ -71,6 +71,15 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async deleteUser ({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().delete(`${state.pathAccount}/${payload}/deleted`)
+				return response
+			} catch (error) {
+				return error
+			}
 		}
 	}
 }
