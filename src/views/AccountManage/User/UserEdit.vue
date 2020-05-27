@@ -51,8 +51,8 @@ export default {
         email: "",
         mobile: "",
         isVerified: false,
-        accountType: "SELEB",
-				role: "SELEB",
+        accountType: "",
+				role: "",
       }
     };
   },
@@ -97,7 +97,7 @@ export default {
         id: id,
         type: "users"
       };
-      const response = await this.getAccountById(params);
+			const response = await this.getAccountById(params);
       if (response.status === 200) {
         const responseData = response.data.data;
         const tempData = { ...this.data };
@@ -110,8 +110,9 @@ export default {
           mobile: responseData.mobile,
 					email: responseData.email,
 					isVerified : responseData.isVerified,
+					role : responseData.role,
+					accountType : responseData.accountType
 				};
-				console.log(dataById)
         this.oldPassword = responseData.password;
         this.data = dataById;
       }
