@@ -113,8 +113,8 @@ export default {
         postProduct: this.params
 			};
 			this.loading = true
-      const response = await this.postProduct(payload);
-      if (response.status === 200) {
+			const response = await this.postProduct(payload);
+      if (response.status === 201) {
 				this.snackbar = true;
 				this.loading = false
 				setTimeout(() => {
@@ -127,7 +127,6 @@ export default {
 				setTimeout(() => {
 					this.snackbarFailed = false
 				}, 2500)
-        console.log(response.response);
       }
     },
     getResponse(payload) {

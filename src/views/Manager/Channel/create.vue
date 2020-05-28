@@ -57,8 +57,8 @@ export default {
     }),
     async onSubmit(payload) {
 			this.loading = true
-      const response = await this.createChannel(this.channel);
-      if (response.status === 200) {
+			const response = await this.createChannel(this.channel);
+      if (response.status === 201) {
 				this.alertSuccess = true
 				setTimeout(() => {
 					this.$router.push("/");

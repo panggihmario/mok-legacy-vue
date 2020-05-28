@@ -104,7 +104,7 @@ export default {
 			}
       this.loading = true;
       const response = await this.createDonation(newPayload);
-      if (response.status === 200) {
+      if (response.status === 201) {
         this.loading = false;
         this.alertSuccess = true;
         setTimeout(() => {

@@ -102,7 +102,7 @@ export default {
       };
 			this.loading = true
 			const response = await this.postFeed(params);
-      if (response.status === 200) {
+      if (response.status === 201) {
 				this.image = "";
 				this.video = ""
 				this.alertSucces = true;
@@ -121,7 +121,6 @@ export default {
     },
     async getResponseChannel() {
 			const response = await this.getAllChannel();
-			console.log(response)
       if (response.status === 200) {
         const responseData = response.data.data;
         const formatResponse = responseData.map(d => {
