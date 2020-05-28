@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 
-const BASE_URL = 'https://test.api.persada-entertainment.com/main/v0/'
+const BASE_URL = process.env.VUE_APP_BASE_URL
 const getToken = () => {
   return window.localStorage.getItem("persada_token");
 }
