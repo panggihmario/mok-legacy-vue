@@ -13,7 +13,7 @@
         v-model="params.price"
         :value="params.price"
         type="number"
-				rules="required"
+				rules="required|min_value:1"
 				name="Price"
       />
       <custom-input
@@ -24,22 +24,23 @@
 				rules="required"
       />
       <custom-input
-        label="Color"
+        label="Variant"
         v-model="params.color"
         :value="params.color"
-				rules="required"
-				name="Color"
+				name="Variant"
+				placeholder="Jika ada beberapa, pisahkan dengan koma"
       />
       <custom-input 
 				label="Size"
 				name="Size"
-				rules="required" 
 				v-model="params.size" 
+				placeholder="Jika ada beberapa, pisahkan dengan koma"
 				:value="params.size" />
 			<custom-input
 				label="Weight"
 				name="weight"
 				rules="required"
+				suffix="gram"
 				v-model="params.measurement.weight"
 				:value="params.measurement.weight"
 			/>
@@ -47,6 +48,7 @@
 				label="Length"
 				name="length"
 				rules="required"
+				suffix="cm"
 				v-model="params.measurement.length"
 				:value="params.measurement.length"
 			/>
@@ -54,6 +56,7 @@
 				label="Height"
 				name="height"
 				rules="required"
+				suffix="cm"
 				v-model="params.measurement.height"
 				:value="params.measurement.height"
 			/>
@@ -61,6 +64,7 @@
 				label="Width"
 				name="width"
 				rules="required"
+				suffix="cm"
 				v-model="params.measurement.width"
 				:value="params.measurement.width"
 			/>

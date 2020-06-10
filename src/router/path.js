@@ -32,7 +32,7 @@ import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
 import PostProduct from '../views/Post/product.vue';
-import CreateFeed from '../views/Post/createFeed.vue'
+import CreateFeed from '../views/Post/createFeed.vue';
 
 const routes = [
 	{

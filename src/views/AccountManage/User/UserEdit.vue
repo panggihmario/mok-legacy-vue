@@ -77,7 +77,6 @@ export default {
         id,
         data
 			};
-			console.log(payload)
 			this.loading = true
       const response = await this.updateAccount(payload);
       if (response.status === 200) {
@@ -114,7 +113,8 @@ export default {
 					accountType : responseData.accountType
 				};
         this.oldPassword = responseData.password;
-        this.data = dataById;
+				this.data = dataById;
+				console.log(dataById)
       }
     }
   },
