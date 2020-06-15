@@ -1,130 +1,154 @@
 <template>
-	<div>
-		<HeaderContent
-			label="Buat Donation"
-			:list="crumbs"
+  <div>
+    <HeaderContent label="Buat Donation" :list="crumbs" />
+		<FormDonation
+			:donation="donation"
+			:listVerifier="listVerifier"
+			:items="items"
+			:verifier="verifier"
+			:organizers="organizers"
+			:donationPhoto="donationPhoto"
+			:loading="loading"
+			@getParamOrganizer="getParamOrganizer"
+			@getParamsVerifier="getParamsVerifier"
+			@handleSubmit="handleSubmit"
+			@getDonationPhoto="getDonationPhoto"
 		/>
-		<custom-form
-			:onSubmit="handleSubmit"
-		>	
-			<v-row>
-				<v-col cols="4">
-					<custom-input  
-						label="Judul Donasi" 
-						placeholder="Masukkan nama judul donasi"
-						rules="required"
-						v-model="donation.label"
-						:value="donation.label"
-						name="Donation Label"
-					/>
-					<div class="d-flex align-center">
-						<v-avatar color="whitesmoke" class="mr-4" size="100">
-							<v-icon color="gainsboro" size="80">perm_identity</v-icon>
-						</v-avatar>
-						<custom-upload
-							id="profil-donation"
-						/>
-					</div>
-					<br/>
-					<custom-textarea
-						label="Deskripsi Donasi"
-						placeholder="Masukkan deskripsi donasi"
-						rules="required"
-						name="Decription"
-						v-model="donation.description"
-						:value="donation.description"
-					/>
-					<div class="form__upload d-flex justify-center align-center">
-						<custom-upload
-							id="donation-image"
-						/>
-					</div>
-				</v-col>
-				<v-col cols="4">
-					<custom-input
-						label="Nama Penyelenggara"
-						placeholder="Masukkan nama penyelenggara"
-						v-model="donation.name.organizer"
-						rules="required"
-						name="Organizer"
-						:value="donation.name.organizer"
-					/>
-					<custom-input
-						label="Kebutuhan Donasi"
-						rules="required"
-						v-model="donation.cost"
-						name="Donation Cost"
-						:value="donation.cost"
-					/>
-					<custom-input
-						label="Batas Donasi"
-						rules="required"
-						v-model="donation.limit"
-						:value="donation.limit"
-						name="Donation Limit"
-					/>
-					<custom-input
-						label="Nama Wali/Penerima Uang"
-						placeholder="Masukkan nama wali"
-						rules="required"
-						v-model="donation.name.receiver"
-						:value="donation.name.receiver"
-						name="Receiver Name"
-					/>
-					<custom-button 
-						color="carmine"
-						type="submit"
-						class="white--text"
-					>Buat Donasi</custom-button>
-				</v-col>
-			</v-row>
-		</custom-form>
-	</div>
+    <v-snackbar v-model="alertSuccess" right top color="success">
+      Create Donation Success
+    </v-snackbar>
+    <v-snackbar v-model="alertFailed" right top color="error">
+      Create Donation Failed
+    </v-snackbar>
+  </div>
 </template>
 
 <script>
-import HeaderContent from '../../../containers/HeaderContent'
+import moment from "moment";
+import HeaderContent from "../../../containers/HeaderContent";
+import FormDonation from '../../../containers/Form/formDonation';
+import { mapActions } from "vuex";
 export default {
-	components : {
-		HeaderContent
-	},
-	data () {
-		return {
-			crumbs : [
-				{
-					text : 'List Channel',
-					href : '/channel',
-					disabled : false
-				},
-						{
-					text : 'List Donasi',
-					href : '/donation',
-					disabled : false
-				},
-			
-				{
-					text : 'Buat Donasi',
-					disabled : true
-				}
-			],
-			donation : {
-				label : '',
-				description : '',
-				name : {
-					organizer : '',
-					receiver : ''
-				},
-				cost : '',
-				limit : ''
+  components: {
+		HeaderContent,
+		FormDonation
+  },
+  data() {
+    return {
+      dialog: false,
+      loading: false,
+      alertSuccess: false,
+      alertFailed: false,
+      value: "",
+      organizers: "",
+      verifier: "",
+      listVerifier: [],
+      expire: "",
+      items: [],
+      crumbs: [
+        {
+          text: "List Channel",
+          href: "/channel",
+          disabled: false
+        },
+        {
+          text: "List Donasi",
+          href: "/donation",
+          disabled: false
+        },
+
+        {
+          text: "Buat Donasi",
+          disabled: true
+        }
+      ],
+      donationPhoto: "",
+      donation: {
+        title: "",
+        description: "",
+        targetAmount: "",
+        organizer: {
+          id: ""
+        },
+        verifier: {
+          id: ""
+        },
+        recipientName: "",
+        media: [],
+        expiredAt: ""
+      }
+    };
+  },
+  methods: {
+    ...mapActions({
+      getListOrganizer: "donation/getListOrganizer",
+      getListVerifier: "donation/getListVerifier",
+      createDonation: "donation/createDonation"
+		}),
+		getParamOrganizer(payload) {
+			this.organizers = payload
+		},
+		getParamsVerifier(payload) {
+			this.verifier = payload
+		},
+		getDonationPhoto(payload) {
+			this.donationPhoto = payload.thumbnail
+			this.donation.media.splice(0,1,  payload)
+		},
+    async handleSubmit(payload) {
+			const x = moment(payload.expiredAt, 'YYYY-MM-DD').unix();
+			const newPayload = {
+				...payload,
+				expiredAt : x
 			}
-		}
-	},
-	methods : {
-		handleSubmit ( ){
-			console.log(this.donation)
-		}
-	}
-}
+      this.loading = true;
+      const response = await this.createDonation(newPayload);
+      if (response.status === 200) {
+        this.loading = false;
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.alertSuccess = false;
+          this.$router.push("/donation");
+        }, 1000);
+      } else {
+        this.loading = false;
+        this.alertFailed = true;
+        setTimeout(() => {
+          this.alertFailed = false;
+        }, 2500);
+      }
+    },
+    previewResult() {
+      this.dialog = true;
+    },
+    async handleResponseOrganizer(value) {
+      const response = await this.getListOrganizer(value);
+      if (response.status === 200) {
+        const result = response.data.data.content;
+        this.items = result;
+      } else {
+        console.log({ error: response.response });
+      }
+    },
+    async handleResponseVerifier(value) {
+      const response = await this.getListVerifier(value);
+      if (response.status === 200) {
+        const result = response.data.data.content;
+        this.listVerifier = result;
+      } else {
+        console.log({ error: response.response });
+      }
+    }
+  },
+  watch: {
+    organizers(value) {
+      this.handleResponseOrganizer(value);
+    },
+    verifier(value) {
+      this.handleResponseVerifier(value);
+    }
+  }
+};
 </script>
 
 <style lang="sass" scoped>
@@ -134,4 +158,13 @@ export default {
 		height: 145px
 		border-radius: 5px
 		border: 1px dashed #BBBBBB
+	&__button-upload
+		position: absolute
+		visibility: hidden
+.card
+	&__header
+		height: 40px
+		display: flex
+		justify-content: center
+		align-items: center
 </style>

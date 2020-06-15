@@ -3,6 +3,7 @@ import Auth from '../views/Auth'
 import Dashboard from '../views/Dashboard'
 import Article from '../views/Article'
 import CreateArticle from '../views/Article/Editor/create.vue'
+import EditArticle from '../views/Article/Editor/edit.vue'
 import Profile from '../views/Profile';
 import AccountManage from '../views/AccountManage'
 import Channel from '../views/Manager/Channel';
@@ -10,9 +11,11 @@ import ChannelCreate from '../views/Manager/Channel/create.vue';
 import ChannelEdit from '../views/Manager/Channel/edit.vue';
 import Donation from '../views/Manager/Donation';
 import DonationCreate from '../views/Manager/Donation/create.vue';
+import DonationEdit from '../views/Manager/Donation/edit.vue';
 import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
+import ReviewPublisher from '../views/Article/Publisher/review.vue'
 import Editor from '../views/Article/Editor';
 import EditorArticle from '../views/Article/Editor/Article';
 import Product from '../views/Shop/Product';
@@ -27,6 +30,9 @@ import AdminDelete from '../views/AccountManage/AdminDelete';
 import User from '../views/AccountManage/User';
 import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
+import PostFeed from '../views/Post/feed.vue';
+import PostProduct from '../views/Post/product.vue';
+import CreateFeed from '../views/Post/createFeed.vue'
 
 const routes = [
 	{
@@ -37,11 +43,11 @@ const routes = [
 			requireAuth: false
 		},
 		children: [
-			{
-				path: '/',
-				name: 'Dashboard',
-				component: Dashboard
-			},
+			// {
+			// 	path: '/',
+			// 	name: 'Dashboard',
+			// 	component: Dashboard
+			// },
 			{
 				path: '/article',
 				name: 'Article',
@@ -51,6 +57,11 @@ const routes = [
 				path: '/article/create',
 				name: 'CreateArticle',
 				component: CreateArticle,
+			},
+			{
+				path :'/article/:id',
+				component : EditArticle,
+				name : 'editArticle'
 			},
 			{
 				path: '/profile',
@@ -93,7 +104,7 @@ const routes = [
 				component: UserEdit
 			},
 			{
-				path: '/channel',
+				path: '/',
 				name: 'channel',
 				component: Channel
 			},
@@ -128,6 +139,11 @@ const routes = [
 				component: DonationCreate
 			},
 			{
+				path : '/donation/:id',
+				name : 'donationEdit',
+				component : DonationEdit
+			},
+			{
 				path: '/report',
 				name: 'report',
 				component: ReportedAccount
@@ -141,6 +157,11 @@ const routes = [
 				path: '/publisher',
 				name: 'publisher',
 				component: Publisher
+			},
+			{
+				path :'/pubisher/review/:id',
+				name : 'reviewPublisher',
+				component : ReviewPublisher
 			},
 			{
 				path: '/editor',
@@ -181,6 +202,21 @@ const routes = [
 				path: '/reported-seller/detail',
 				name: 'detailReportedSeller',
 				component: DetailReportedSeller
+			},
+			{
+				path : '/post',
+				name : 'listFeed',
+				component : PostFeed
+			},
+			{
+				path : '/post/create',
+				name : 'createFeed',
+				component : CreateFeed
+			},
+			{
+				path : '/post/product',
+				name : 'postProduct',
+				component : PostProduct
 			}
 		]
 	},

@@ -11,6 +11,8 @@
           <span class="primary--text">{{ user }}</span>
         </v-chip>
       </div>
+			<br/>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >0.0.1</div>
     </div>
     <v-list  nav dense>
       <v-list-group

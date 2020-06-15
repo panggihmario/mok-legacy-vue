@@ -4,12 +4,13 @@
       <label-field :class="label && 'mb-5'">{{ label }}</label-field>
     </div>
     <v-btn
-      height="24px"
+      height="29px"
       outlined
       elevation="0"
       color="carmine"
       class="upload__button"
       @click="handleUpload"
+			:loading="loadingUpload"
     >
       <v-icon color="carmine" left>$upload</v-icon>
       <span class="text-capitalize carmine--text upload__label"
@@ -23,6 +24,11 @@
 <script>
 import axios from "axios";
 export default {
+	data () {
+		return {
+			loadingUpload : false
+		}
+	},
   props: {
     id: {
       type: [String, Number]
@@ -45,6 +51,7 @@ export default {
 				method : 'post',
 				data : form
 			}
+			this.loadingUpload = true
 			this.$emit("response", result);
 			this.$http().post('upload?type=media', form)
         .then(response => {
@@ -52,12 +59,14 @@ export default {
             response: response.data.data,
             status: "success"
 					};
+					this.loadingUpload = false
 					this.$emit("response", result);
         })
         .catch(error => {
           result = {
             status: "failed"
 					};
+					this.loadingUpload = false
 					this.$emit("response", result);
         });
     },

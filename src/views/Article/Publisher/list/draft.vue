@@ -3,7 +3,7 @@
 		<v-data-table
 			hide-default-footer
 			:headers="headers"
-			:items="articles"
+			:items="drafts"
 		>
 			<template v-slot:item.status="{item}">
 				<span :class="getColor(item.status)" >{{item.status}}</span>
@@ -21,6 +21,7 @@
 
 <script>
 export default {
+	props : ['drafts'],
 	methods : {
 		getColor(status) {
 			switch(status) {

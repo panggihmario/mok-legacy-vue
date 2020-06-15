@@ -10,7 +10,8 @@
       />
       <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
     </HeaderContent>
-    <v-data-table :headers="headers" hide-default-footer :items="channels">
+
+    <v-data-table :headers="headers" hide-default-footer :items="channelsDummy">
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
@@ -26,22 +27,19 @@
           <v-btn icon color="orangered" @click.stop="dialog = true">
             <v-icon>delete_outline</v-icon>
           </v-btn>
-          <v-dialog v-model="dialog" width="500">
-            <!-- <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon color="orangered">
-                <v-icon>delete_outline</v-icon>
-              </v-btn>
-            </template> -->
 
-            <div class="pa-8">
-              <div>
-                <span>Apakah anda yakin?</span>
+          <v-dialog v-model="dialog" width="500">
+            <v-card>
+              <div class="pa-8">
+                <div>
+                  <span>Apakah anda yakin?</span>
+                </div>
+                <div class="d-flex justify-end">
+                  <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
+                  <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
+                </div>
               </div>
-              <div class="d-flex justify-end">
-                <!-- <v-btn color="carmine" class="white--text" @click="dialog = !dialog">No</v-btn> -->
-                <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
-              </div>
-            </div>
+            </v-card>
           </v-dialog>
         </div>
       </template>
@@ -153,10 +151,20 @@ export default {
         {
           text: "Manage",
           value: "action",
-          align: "center"
+          align: "center",
+          sortable: false
         }
       ],
-      channels: []
+      channels: [],
+      channelsDummy: [
+        {
+          channelImage: "",
+          channelName: "dummy",
+          description: "yah",
+          id: 1,
+          no: 1
+        }
+      ]
     };
   }
 };

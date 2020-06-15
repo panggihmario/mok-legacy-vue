@@ -22,23 +22,40 @@
         />
         <div class="d-flex justify-space-between align-center">
           <div class="grey--text auth__form__footer ">Lupa Password ?</div>
-          <custom-button rounded size="large" type="submit" color="primary">
+          <custom-button 
+						rounded 
+						size="large" 
+						type="submit" 
+						color="primary"
+						:loading="loading"
+					>
             Login
           </custom-button>
         </div>
       </custom-form>
     </div>
+		<v-alert class="auth__alert" :value="alertError"  type="error">
+			Authorization Failed
+    </v-alert>
+		<v-alert class="auth__alert" :value="alertSuccess"  type="success">
+			Authorization Success
+    </v-alert>
   </div>
 </template>
 
 <script>
+// username: "administrator",
+// 			password: "admin@123",
 import { mapMutations, mapState, mapActions } from "vuex";
 import axios from "axios";
 export default {
   data() {
     return {
-      username: "administrator",
-      password: "admin@123"
+      username: "",
+			password: "",
+			loading : false,
+			alertError: false,
+			alertSuccess : false
     };
   },
   computed: {
@@ -52,15 +69,25 @@ export default {
 			login : 'authentication/login'
 		}),
     async onSubmit() {
+			this.loading = true
 			const opts = {
 				username: this.username,
         password: this.password
 			};
 			const response = await this.login(opts)
 			if(response.status === 200){
-				this.$router.push('/')
+				this.alertSuccess = true
+				this.loading = false
+				setTimeout(() => {
+					this.$router.push('/')
+					this.alertSuccess = false
+				},500)
 			}else{
-				return response
+				this.alertError = true
+				this.loading = false
+				setTimeout(() => {
+					this.alertError = false
+				}, 3000)
 			}
     }
   }
@@ -78,4 +105,8 @@ export default {
 			font-weight: 500
 		&__footer
 			font-size: 12px
+	&__alert
+		position: absolute
+		top: 20px
+		right: 20px
 </style>

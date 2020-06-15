@@ -28,7 +28,7 @@
         name="Description"
       />
     </div>
-    <custom-button color="carmine" class="white--text" type="submit"
+    <custom-button :loading="loading" color="carmine" class="white--text" type="submit"
       >{{labelButton}}</custom-button
     >
   </custom-form>
@@ -42,6 +42,9 @@ export default {
 		},
 		labelButton : {
 			type : String
+		},
+		loading : {
+			type : Boolean
 		}
   },
   data() {

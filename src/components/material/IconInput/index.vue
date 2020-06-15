@@ -22,6 +22,7 @@
         v-bind="$attrs"
         v-on="inputListeners"
 				:error-messages="errors"
+				:value="value"
       />
     </div>
   </ValidationProvider>
@@ -43,7 +44,6 @@ export default {
 		name : {
 			type : String
 		}
-
   },
   computed: {
     inputListeners() {

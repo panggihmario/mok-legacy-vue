@@ -1,17 +1,17 @@
 <template>
   <div>
-    <HeaderContent label="List Article">
+    <HeaderContent label="List News">
       <custom-button
         color="carmine"
         class="white--text"
         @click="goToCreateArticle"
       >
-        Buat Article
+        Buat News
       </custom-button>
     </HeaderContent>
     <v-tabs @change="changeTabs" v-model="tab">
       <v-tab>
-        <span class="text-capitalize">List Article </span>
+        <span class="text-capitalize">List News </span>
       </v-tab>
       <v-tab>
         <span class="text-capitalize">Draft</span>
@@ -24,6 +24,7 @@
       <v-tab-item>
         <Draft 
 					:drafts="drafts"
+					@updateListDraft="updateListDraft"
 				/>
       </v-tab-item>
     </v-tabs-items>
@@ -57,7 +58,10 @@ export default {
   methods: {
     ...mapActions({
       getNews: "news/getListNews"
-    }),
+		}),
+		updateListDraft(){
+			this.getResponseDraft()
+		},
     goToCreateArticle() {
       this.$router.push("/article/create");
     },
@@ -89,7 +93,8 @@ export default {
 					const newFormatDate = this.formatingDate(news.createAt)
           return {
             date: newFormatDate,
-            headline: news.headline
+						headline: news.headline,
+						id : news.id
           };
         });
         this.drafts = formatingList;
@@ -110,7 +115,8 @@ export default {
           return {
             date: newFormatDate,
             status: news.status,
-            headline: news.headline
+						headline: news.headline,
+						id : news.id
           };
         });
         this.articles = formatingList;

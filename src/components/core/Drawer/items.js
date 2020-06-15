@@ -1,15 +1,16 @@
 export default [
+	// {
+	// 	action: 'mdi-folder',
+	// 	title: 'Dashboard',
+	// 	items: [
+	// 		{
+	// 			title: 'default',
+	// 			path: '/'
+	// 		}
+	// 	]
+	// },
 	{
-		action: 'mdi-folder',
-		title: 'Dashboard',
-		items: [
-			{
-				title: 'default',
-				path: '/'
-			}
-		]
-	},
-	{
+
 		action: "mdi-cog",
 		title: "Manage Account",
 		items: [
@@ -29,63 +30,81 @@ export default [
 		items: [
 			{
 				title: "List Channel",
-				path: '/channel'
+				path: '/'
 			},
 			{
 				title: 'List Donation',
 				path: '/donation'
 			},
-			{
-				title: 'Reported Account',
-				path: '/report'
-			}
+			// {
+			// 	title: 'Reported Account',
+			// 	path: '/report'
+			// }
 		]
 	},
 	{
 		action: 'text_fields',
-		title: 'Publikasi',
+		title: 'News',
 		path: '/publisher',
 		items: [
 			{
-				title: 'Artikel',
+				title: 'Publisher',
 				path: '/publisher'
-			}
-		]
-	},
-	{
-		action: 'edit',
-		title: 'Editor Space',
-		items: [
+			},
 			{
 				title: 'Editor',
 				path: '/editor'
 			},
-			{
-				title: 'Article',
-				path: '/editor-article'
-			},
 		]
 	},
+	// {
+	// 	action: 'edit',
+	// 	title: 'Editor Space',
+	// 	items: [
+	// 		{
+	// 			title: 'Editor',
+	// 			path: '/editor'
+	// 		},
+	// 		{
+	// 			title: 'Article',
+	// 			path: '/editor-article'
+	// 		},
+	// 	]
+	// },
+	// {
+	// 	action: 'local_mall',
+	// 	title: 'Shop',
+	// 	items: [
+	// 		{
+	// 			title: 'Product',
+	// 			path: '/product'
+	// 		},
+	// 		{
+	// 			title: 'Category',
+	// 			path: '/category'
+	// 		},
+	// 		{
+	// 			title: 'Seller',
+	// 			path: '/seller'
+	// 		},
+	// 		{
+	// 			title: 'Report',
+	// 			path: '/reported-seller'
+	// 		}
+	// 	]
+	// },
 	{
-		action: 'local_mall',
-		title: 'Shop',
-		items: [
+		title : 'Post',
+		action : 'post_add',
+		items : [
 			{
-				title: 'Product',
-				path: '/product'
+				title : 'Feed',
+				path : '/post'
 			},
-			{
-				title: 'Category',
-				path: '/category'
-			},
-			{
-				title: 'Seller',
-				path: '/seller'
-			},
-			{
-				title: 'Report',
-				path: '/reported-seller'
-			}
+			// {
+			// 	title : 'Product',
+			// 	path : '/post/product'
+			// }
 		]
 	}
 ]
