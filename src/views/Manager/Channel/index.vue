@@ -23,22 +23,25 @@
           <v-btn icon color="primary">
             <v-icon @click="moveEdit(item.id)">edit</v-icon>
           </v-btn>
+          <v-btn icon color="orangered" @click.stop="dialog = true">
+            <v-icon>delete_outline</v-icon>
+          </v-btn>
           <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on }">
+            <!-- <template v-slot:activator="{ on }">
               <v-btn v-on="on" icon color="orangered">
                 <v-icon>delete_outline</v-icon>
               </v-btn>
-            </template>
+            </template> -->
 
-            <v-card class="pa-8">
+            <div class="pa-8">
               <div>
                 <span>Apakah anda yakin?</span>
               </div>
               <div class="d-flex justify-end">
-                <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
+                <!-- <v-btn color="carmine" class="white--text" @click="dialog = !dialog">No</v-btn> -->
                 <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
               </div>
-            </v-card>
+            </div>
           </v-dialog>
         </div>
       </template>
