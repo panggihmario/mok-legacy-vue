@@ -22,7 +22,8 @@ export default {
 				logout : '#FFD6CA',
 				carmine : '#A8071A',
 				whitesmoke : '#EEEEEE',
-				gainsboro : '#DDDDDD'
+				gainsboro : '#DDDDDD',
+				irisblue: '#00B9BD'
 			},
 		},
 	},

@@ -14,7 +14,7 @@
       <custom-button color="carmine" class="white--text" @click="handleClick">Tambah Donasi</custom-button>
     </HeaderContent>
 
-    <v-data-table :headers="headers" hide-default-footer :items="dataDummy">
+    <v-data-table :headers="headers" hide-default-footer :items="data" class="grey--text">
       <template v-slot:item.donationImage="{item}">
         <div class="image__container d-flex align-center">
           <div v-if="item.media.length > 0" class="image__box">
@@ -24,13 +24,19 @@
         </div>
       </template>
 
+      <template v-slot:item.status="{item}">
+        <div>
+          <span v-text="item.status" :class="{'silver--text':item.status === 'Finish'}"></span>
+        </div>
+      </template>
+
       <template v-slot:item.action="{item}">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
-            <v-btn @click="moveToEdit(item.id)" icon color="primary">
+            <v-btn @click="moveToEdit(item.id)" icon color="grey" x-small>
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn @click="dialog = true" icon color="orangered">
+            <v-btn @click="dialog = true" icon color="carmine" x-small>
               <v-icon>delete_outline</v-icon>
             </v-btn>
 
@@ -48,6 +54,12 @@
               </v-card>
             </v-dialog>
           </div>
+        </div>
+      </template>
+
+      <template v-slot:item.detail="{item}">
+        <div>
+          <span v-if="item.status == 'Finish'" class="irisblue--text detail">Detail</span>
         </div>
       </template>
     </v-data-table>
@@ -78,53 +90,69 @@ export default {
       ],
       items: ["Finish", "On Progress"],
       data: [],
-      dataDummy: [
-        {
-          donationName: "nama",
-          status: "Finish",
-          donationTarget: 120000,
-          startDate: "12-02-2000",
-          endDate: "12-12-12",
-          media: "wes",
-          id: 1
-        }
-      ],
       headers: [
         {
           text: "Foto Donasi",
           value: "donationImage",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "120"
         },
         {
           text: "Nama Akun Donasi",
           value: "donationName",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "160"
         },
         {
           text: "Tanggal Mulai",
           value: "startDate",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "150"
         },
         {
           text: "Tanggal Selesai",
           value: "endDate",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "150"
         },
         {
           text: "Target Donasi",
           value: "donationTarget",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "150"
         },
         {
-          text: "Status",
+          text: "Status Donasi",
           value: "status",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "150"
         },
         {
           text: "Manage",
           value: "action",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           align: "center",
           sortable: false
+        },
+        {
+          value: "detail",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         }
       ]
     };
@@ -186,11 +214,16 @@ export default {
     width: 50px
     height: 50px
     background-color: grey
+    border-radius: 5px
+    overflow: hidden
   &__container
     padding: 10px
 .left-action
   width: 200px
 .manage
   &__box
-    width: 90px
+    width: 100px
+.detail
+  text-decoration: underline
+  cursor: pointer
 </style>

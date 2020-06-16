@@ -11,7 +11,7 @@
       <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
     </HeaderContent>
 
-    <v-data-table :headers="headers" hide-default-footer :items="channelsDummy">
+    <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
@@ -19,27 +19,37 @@
           </div>
         </div>
       </template>
+      <template v-slot:item.channelType="{ item }">
+        <div>
+          <span
+            v-text="item.channelType"
+            :class="{'carmine--text':item.channelType === 'Sensitive'}"
+          ></span>
+        </div>
+      </template>
       <template v-slot:item.action="{ item }">
-        <div class="d-flex justify-space-between">
-          <v-btn icon color="primary">
-            <v-icon @click="moveEdit(item.id)">edit</v-icon>
-          </v-btn>
-          <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon color="orangered">
-                <v-icon>delete_outline</v-icon>
-              </v-btn>
-            </template>
-            <v-card class="pa-8">
-              <div>
-                <span>Apakah anda yakin?</span>
-              </div>
-              <div class="d-flex justify-end">
-                <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
-                <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
-              </div>
-            </v-card>
-          </v-dialog>
+        <div class="d-flex justify-center">
+          <div class="d-flex justify-space-between manage__box">
+            <v-btn icon color="grey" x-small>
+              <v-icon @click="moveEdit(item.id)">edit</v-icon>
+            </v-btn>
+            <v-dialog v-model="dialog" width="500">
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" icon color="carmine" x-small>
+                  <v-icon>delete_outline</v-icon>
+                </v-btn>
+              </template>
+              <v-card class="pa-8">
+                <div>
+                  <span>Apakah anda yakin?</span>
+                </div>
+                <div class="d-flex justify-end">
+                  <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
+                  <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
+                </div>
+              </v-card>
+            </v-dialog>
+          </div>
         </div>
       </template>
     </v-data-table>
@@ -80,6 +90,7 @@ export default {
     formatingResponse(response) {
       this.totalPages = response.totalPages;
       const content = response.content;
+      console.log({content})
       const newFormatResponse = content.map((res, index) => {
         return {
           channelImage: res.photo,
@@ -156,40 +167,54 @@ export default {
         {
           text: "No",
           value: "no",
-          width: "70"
+          width: "70",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Gambar Channel",
           value: "channelImage",
-          width: "150"
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Nama Channel",
           value: "channelName",
-          width: "150"
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
+        },
+        {
+          text: "Jenis",
+          value: "channelType",
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          align: "center"
         },
         {
           text: "Deskripsi",
           value: "description",
-          width: "600"
+          width: "400",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Manage",
           value: "action",
-          align: "center",
-          sortable: false
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          align: "center"
         }
       ],
-      channels: [],
-      channelsDummy: [
-        {
-          channelImage: "",
-          channelName: "dummy",
-          description: "yah",
-          id: 1,
-          no: 1
-        }
-      ]
+      channels: []
     };
   }
 };
@@ -200,8 +225,14 @@ export default {
   &__box
     width: 50px
     height: 50px
+    background-color: grey
+    border-radius: 5px
+    overflow: hidden
   &__failed
     background: grey
   &__container
     padding: 10px
+.manage
+  &__box
+    width: 100px
 </style>
