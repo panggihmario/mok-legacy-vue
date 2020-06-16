@@ -8,56 +8,59 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick"
-        >Tambah Channel</custom-button
-      >
+      <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
     </HeaderContent>
-    <v-data-table :headers="headers" hide-default-footer :items="channels">
+
+    <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
-            <v-img
-              max-width="100%"
-              max-height="100%"
-              :src="item.channelImage"
-            />
+            <v-img max-width="100%" max-height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
+      <template v-slot:item.channelType="{ item }">
+        <div>
+          <span
+            v-text="item.channelType"
+            :class="{'carmine--text':item.channelType === 'Sensitive'}"
+          ></span>
+        </div>
+      </template>
       <template v-slot:item.action="{ item }">
-        <div class="d-flex justify-space-between">
-          <v-btn icon color="primary">
-            <v-icon @click="moveEdit(item.id)">edit</v-icon>
-          </v-btn>
-          <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon color="orangered">
-                <v-icon>delete_outline</v-icon>
-              </v-btn>
-            </template>
-            <v-card class="pa-8">
-              <div>
-                <span>Apakah anda yakin?</span>
-              </div>
-              <div class="d-flex justify-end">
-                <v-btn
-                  color="carmine"
-                  class="white--text"
-                  @click="dialog = false"
-                  >No</v-btn
-                >
-                <v-btn
-                  color="primary"
-                  class="ml-4"
-                  @click="handleDelete(item.id)"
-                  >Yes</v-btn
-                >
-              </div>
-            </v-card>
-          </v-dialog>
+        <div class="d-flex justify-center">
+          <div class="d-flex justify-space-between manage__box">
+            <v-btn icon color="grey" x-small>
+              <v-icon @click="moveEdit(item.id)">edit</v-icon>
+            </v-btn>
+            <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
+              <v-icon>delete_outline</v-icon>
+            </v-btn>
+          </div>
         </div>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="dialog" persistent width="300">
+      <v-card>
+        <v-card-title>Delete Confirmation</v-card-title>
+        <v-card-text>
+          <div>You are about to delete the channel</div>
+          <div>Are you sure ?</div>
+        </v-card-text>
+        <v-card-actions>
+          <custom-button @click="closeModalDelete">cancel</custom-button>
+          <v-spacer />
+          <custom-button
+            color="carmine"
+            class="white--text"
+            @click="handleDelete"
+            :loading="loading"
+          >delete</custom-button>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-pagination
       class="d-flex justify-end"
       prev-icon="mdi-menu-left"
@@ -93,8 +96,8 @@ export default {
       }
     },
     formatingResponse(response) {
-			this.totalPages = response.totalPages
-			const content = response.content
+      this.totalPages = response.totalPages;
+      const content = response.content;
       const newFormatResponse = content.map((res, index) => {
         return {
           channelImage: res.photo,
@@ -117,13 +120,28 @@ export default {
         }
       });
     },
-    async handleDelete(id) {
-      const response = await this.deleteChannel(id);
+    openModalDelete(id) {
+      this.dialog = true;
+      this.idUser = id;
+    },
+    closeModalDelete(id) {
       this.dialog = false;
+      this.idUser = "";
+    },
+    async handleDelete() {
+      const id = this.idUser;
+      const response = await this.deleteChannel(id);
+      this.loading = true;
       if (response.status === 200) {
         this.getResponseChannel();
+        this.dialog = false;
+        this.idUser = "";
+        this.loading = false;
       } else {
         return response;
+        this.dialog = false;
+        this.idUser = "";
+        this.loading = false;
       }
     },
     async getResponseChannel() {
@@ -137,9 +155,9 @@ export default {
       } else {
         return response;
       }
-		},
-		async getChannelByPage() {
-			const payload = {
+    },
+    async getChannelByPage() {
+      const payload = {
         page: this.page - 1
       };
       const response = await this.listChannel(payload);
@@ -149,16 +167,18 @@ export default {
       } else {
         return response;
       }
-		},
+    }
   },
   created() {
     this.getResponseChannel();
   },
   data() {
     return {
-			dialog: false,
-			page : 1,
-			totalPages : 0,
+      idUser: "",
+      dialog: false,
+      loading: false,
+      page: 1,
+      totalPages: 0,
       items: [
         {
           text: "Manage Channel",
@@ -171,26 +191,50 @@ export default {
         {
           text: "No",
           value: "no",
-          width: "70"
+          width: "70",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Gambar Channel",
           value: "channelImage",
-          width: "150"
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Nama Channel",
           value: "channelName",
-          width: "150"
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
+        },
+        {
+          text: "Jenis",
+          value: "channelType",
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          align: "center"
         },
         {
           text: "Deskripsi",
           value: "description",
-          width: "600"
+          width: "400",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Manage",
           value: "action",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           align: "center"
         }
       ],
@@ -205,8 +249,14 @@ export default {
   &__box
     width: 50px
     height: 50px
+    background-color: grey
+    border-radius: 5px
+    overflow: hidden
   &__failed
     background: grey
   &__container
     padding: 10px
+.manage
+  &__box
+    width: 100px
 </style>
