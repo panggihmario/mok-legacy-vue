@@ -36,23 +36,9 @@
             <v-btn @click="moveToEdit(item.id)" icon color="grey" x-small>
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn @click="dialog = true" icon color="carmine" x-small>
+            <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
               <v-icon>delete_outline</v-icon>
             </v-btn>
-
-            <v-dialog v-model="dialog" width="500">
-              <v-card>
-                <div class="pa-8">
-                  <div>
-                    <span>Apakah anda yakin?</span>
-                  </div>
-                  <div class="d-flex justify-end">
-                    <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
-                    <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
-                  </div>
-                </div>
-              </v-card>
-            </v-dialog>
           </div>
         </div>
       </template>
@@ -63,6 +49,20 @@
         </div>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="dialog" persistent width="500">
+      <v-card>
+        <div class="pa-8">
+          <div>
+            <span>Apakah anda yakin?</span>
+          </div>
+          <div class="d-flex justify-end">
+            <v-btn color="carmine" class="white--text" @click="closeModalDelete">No</v-btn>
+            <v-btn color="primary" class="ml-4" @click="handleDelete">Yes</v-btn>
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -76,6 +76,7 @@ export default {
   },
   data() {
     return {
+      idUser: "",
       dialog: false,
       crumbs: [
         {
@@ -170,11 +171,25 @@ export default {
         }
       });
     },
-    async handleDelete(id) {
-      const response = await this.deleteDonation(id);
+    openModalDelete(id) {
+      this.dialog = true;
+      this.idUser = id;
+    },
+    closeModalDelete() {
       this.dialog = false;
+      this.idUser = "";
+    },
+    async handleDelete() {
+      const id = this.idUser;
+      const response = await this.deleteDonation(id);
       if (response.status === 200) {
         this.handleResponse();
+        this.dialog = false;
+        this.idUser = "";
+      } else {
+        return response;
+        this.dialog = false;
+        this.idUser = "";
       }
     },
     getSelection(value) {},

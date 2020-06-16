@@ -33,26 +33,26 @@
             <v-btn icon color="grey" x-small>
               <v-icon @click="moveEdit(item.id)">edit</v-icon>
             </v-btn>
-            <v-dialog v-model="dialog" width="500">
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on" icon color="carmine" x-small>
-                  <v-icon>delete_outline</v-icon>
-                </v-btn>
-              </template>
-              <v-card class="pa-8">
-                <div>
-                  <span>Apakah anda yakin?</span>
-                </div>
-                <div class="d-flex justify-end">
-                  <v-btn color="carmine" class="white--text" @click="dialog = false">No</v-btn>
-                  <v-btn color="primary" class="ml-4" @click="handleDelete(item.id)">Yes</v-btn>
-                </div>
-              </v-card>
-            </v-dialog>
+            <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
+              <v-icon>delete_outline</v-icon>
+            </v-btn>
           </div>
         </div>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="dialog" persistent width="500">
+      <v-card class="pa-8">
+        <div>
+          <span>Apakah anda yakin?</span>
+        </div>
+        <div class="d-flex justify-end">
+          <v-btn color="carmine" class="white--text" @click="closeModalDelete">No</v-btn>
+          <v-btn color="primary" class="ml-4" @click="handleDelete">Yes</v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-pagination
       class="d-flex justify-end"
       prev-icon="mdi-menu-left"
@@ -90,7 +90,7 @@ export default {
     formatingResponse(response) {
       this.totalPages = response.totalPages;
       const content = response.content;
-      console.log({content})
+      console.log({ content });
       const newFormatResponse = content.map((res, index) => {
         return {
           channelImage: res.photo,
@@ -113,13 +113,25 @@ export default {
         }
       });
     },
-    async handleDelete(id) {
-      const response = await this.deleteChannel(id);
+    openModalDelete(id) {
+      this.dialog = true;
+      this.idUser = id;
+    },
+    closeModalDelete(id) {
       this.dialog = false;
+      this.idUser = "";
+    },
+    async handleDelete() {
+      const id = this.idUser;
+      const response = await this.deleteChannel(id);
       if (response.status === 200) {
         this.getResponseChannel();
+        this.dialog = false;
+        this.idUser = "";
       } else {
         return response;
+        this.dialog = false;
+        this.idUser = "";
       }
     },
     async getResponseChannel() {
@@ -152,6 +164,7 @@ export default {
   },
   data() {
     return {
+      idUser: "",
       dialog: false,
       page: 1,
       totalPages: 0,
