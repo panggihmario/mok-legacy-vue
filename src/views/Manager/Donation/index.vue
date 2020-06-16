@@ -50,23 +50,22 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" persistent width="300">
+    <v-dialog v-model="dialog" persistent max-width="300">
       <v-card>
-        <div class="pa-8">
           <v-card-title>Delete Confirmation</v-card-title>
 					<v-card-text>
 						<div>You are about to delete the donation</div>
 						<div>Are you sure ?</div>
 					</v-card-text>
-          <div class="d-flex justify-end">
+          <v-card-actions>
             <custom-button   @click="closeModalDelete">Cancel</custom-button>
+						<v-spacer/>
             <custom-button 
 							color="carmine" 
-							class="ml-4 white--text" 
+							class="white--text" 
 							@click="handleDelete"
 						>Delete</custom-button>
-          </div>
-        </div>
+          </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
