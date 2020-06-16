@@ -50,17 +50,23 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" persistent width="500">
+    <v-dialog v-model="dialog" persistent width="300">
       <v-card>
-        <div class="pa-8">
-          <div>
-            <span>Apakah anda yakin?</span>
-          </div>
-          <div class="d-flex justify-end">
-            <v-btn color="carmine" class="white--text" @click="closeModalDelete">No</v-btn>
-            <v-btn color="primary" class="ml-4" @click="handleDelete">Yes</v-btn>
-          </div>
-        </div>
+        <v-card-title>Delete Confirmation</v-card-title>
+        <v-card-text>
+          <div>You are about to delete the donation</div>
+          <div>Are you sure ?</div>
+        </v-card-text>
+        <v-card-actions>
+          <custom-button @click="closeModalDelete">cancel</custom-button>
+          <v-spacer />
+          <custom-button
+            color="carmine"
+            class="white--text"
+            @click="handleDelete"
+            :loading="loading"
+          >delete</custom-button>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -78,6 +84,7 @@ export default {
     return {
       idUser: "",
       dialog: false,
+      loading: false,
       crumbs: [
         {
           text: "List Channel",
@@ -182,14 +189,17 @@ export default {
     async handleDelete() {
       const id = this.idUser;
       const response = await this.deleteDonation(id);
+      this.loading = true;
       if (response.status === 200) {
         this.handleResponse();
         this.dialog = false;
         this.idUser = "";
+        this.loading = false;
       } else {
         return response;
         this.dialog = false;
         this.idUser = "";
+        this.loading = false;
       }
     },
     getSelection(value) {},
