@@ -53,12 +53,18 @@
     <v-dialog v-model="dialog" persistent width="500">
       <v-card>
         <div class="pa-8">
-          <div>
-            <span>Apakah anda yakin?</span>
-          </div>
+          <v-card-title>Delete Confirmation</v-card-title>
+					<v-card-text>
+						<div>You are about to delete the donation</div>
+						<div>Are you sure ?</div>
+					</v-card-text>
           <div class="d-flex justify-end">
-            <v-btn color="carmine" class="white--text" @click="closeModalDelete">No</v-btn>
-            <v-btn color="primary" class="ml-4" @click="handleDelete">Yes</v-btn>
+            <custom-button   @click="closeModalDelete">Cancel</custom-button>
+            <custom-button 
+							color="carmine" 
+							class="ml-4 white--text" 
+							@click="handleDelete"
+						>Delete</custom-button>
           </div>
         </div>
       </v-card>
@@ -201,7 +207,8 @@ export default {
       if (response.status === 200) {
         const data = response.data.data.content;
         const formatData = data.map(d => {
-          const newD = moment.unix(d.expiredAt).format("D/M/YYYY");
+					const second = d.expiredAt/1000
+					const newD = moment.unix(second).format("D/M/YYYY");
           const newS = moment(d.createAt).format("D/M/YYYY");
           return {
             donationName: d.organizer.name,
