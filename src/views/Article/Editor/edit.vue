@@ -25,7 +25,7 @@
     <v-snackbar top v-model="alertSuccess" color="success">
       Edit News Success
     </v-snackbar>
-    <v-snackbar top v-model="alertFailed" color="success">
+    <v-snackbar top v-model="alertFailed" color="error">
       Edit News Failed
     </v-snackbar>
   </custom-form>
