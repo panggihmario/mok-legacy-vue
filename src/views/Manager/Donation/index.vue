@@ -50,7 +50,7 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" persistent width="500">
+    <v-dialog v-model="dialog" persistent width="300">
       <v-card>
         <div class="pa-8">
           <v-card-title>Delete Confirmation</v-card-title>
@@ -84,6 +84,7 @@ export default {
     return {
       idUser: "",
       dialog: false,
+      loading: false,
       crumbs: [
         {
           text: "List Channel",
@@ -188,14 +189,17 @@ export default {
     async handleDelete() {
       const id = this.idUser;
       const response = await this.deleteDonation(id);
+      this.loading = true;
       if (response.status === 200) {
         this.handleResponse();
         this.dialog = false;
         this.idUser = "";
+        this.loading = false;
       } else {
         return response;
         this.dialog = false;
         this.idUser = "";
+        this.loading = false;
       }
     },
     getSelection(value) {},
