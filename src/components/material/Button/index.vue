@@ -18,13 +18,21 @@ export default {
       styleLarge: {
         height: "54px",
         "padding-left": "64px",
-        "padding-right": "64px"
+				"padding-right": "64px",
+				"font-size" : "16px"
       },
       styleMedium: {
         height: "40px",
         "padding-left": "32px",
-        "padding-right": "32px"
-      }
+				"padding-right": "32px",
+				"font-size" : "16px"
+			},
+			styleSmall : {
+				height : '24px',
+				"padding-left": "14px",
+				"padding-right": "14px",
+				"font-size" : "12px"
+			}
     };
   },
   props: {
@@ -38,7 +46,10 @@ export default {
       switch (this.size) {
         case "large":
           return this.styleLarge;
-          break;
+					break;
+				case "small" :
+					return this.styleSmall
+					break;
         default:
           return this.styleMedium;
       }
@@ -51,5 +62,4 @@ export default {
 .custom-button
 	text-transform: capitalize
 	letter-spacing: 0 !important
-	font-size: 16px
 </style>

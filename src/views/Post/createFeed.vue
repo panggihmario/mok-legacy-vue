@@ -39,8 +39,6 @@
         item-value="id"
         v-model="payload.channelId"
         label="Channel"
-				rules="required"
-				name="Channel"
       />
       <custom-button  :loading="loading" type="submit" color="primary">Submit</custom-button>
     </custom-form>
@@ -81,7 +79,8 @@ export default {
   methods: {
     ...mapActions({
       getChannel: "channel/getListChannel",
-      postFeed: "post/postFeed"
+			postFeed: "post/postFeed",
+			getAllChannel : "channel/getAllChannel"
     }),
     getResponse(payload) {
 			this.status = payload.status
@@ -103,7 +102,7 @@ export default {
       };
 			this.loading = true
 			const response = await this.postFeed(params);
-      if (response.status === 200) {
+      if (response.status === 201) {
 				this.image = "";
 				this.video = ""
 				this.alertSucces = true;
@@ -121,9 +120,9 @@ export default {
       }
     },
     async getResponseChannel() {
-      const response = await this.getChannel();
+			const response = await this.getAllChannel();
       if (response.status === 200) {
-        const responseData = response.data.data.content;
+        const responseData = response.data.data;
         const formatResponse = responseData.map(d => {
           return {
             name: d.name,

@@ -107,7 +107,6 @@ export default {
 	},
 	watch : {
 		propsImage () {
-				console.log("cek")
 				this.image = this.propsImage
 		}
 	}

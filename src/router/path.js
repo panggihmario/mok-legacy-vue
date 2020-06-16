@@ -32,7 +32,7 @@ import UserCreate from '../views/AccountManage/User/UserCreate';
 import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
 import PostProduct from '../views/Post/product.vue';
-import CreateFeed from '../views/Post/createFeed.vue'
+import CreateFeed from '../views/Post/createFeed.vue';
 
 const routes = [
 	{
@@ -79,8 +79,8 @@ const routes = [
 				component: AdminCreate
 			},
 			{
-				path: '/admin/edit',
-				name: 'AdminEdit',
+				path: '/admin/:id',
+				name: 'adminEdit',
 				component: AdminEdit
 			},
 			{
@@ -99,8 +99,8 @@ const routes = [
 				component: UserCreate
 			},
 			{
-				path: '/user/edit',
-				name: 'UserEdit',
+				path: '/user/:id',
+				name: 'userEdit',
 				component: UserEdit
 			},
 			{

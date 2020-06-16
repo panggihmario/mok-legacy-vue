@@ -1,56 +1,36 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Create Management Account" @click="handleClick" />
-    <custom-form :onSubmit="handleSubmit">
-      <div class="mt-8">
-        <div class="d-flex align-center">
-          <v-avatar size="100" class="mr-4">
-            <img :src="data.photo" />
-          </v-avatar>
-          <div class="d-flex flex-column">
-            <span
-              class="account-edit__subtitle font-weight-medium charcoal--text mb-3"
-            >Unggah foto profil</span>
-            <custom-upload id="create" @response="getResponse"></custom-upload>
-          </div>
-        </div>
-
-        <v-row>
-          <v-col cols="6">
-            <div class="d-flex justify-space-between">
-              <custom-select
-                label="Pilih jenis akun"
-                background-color="whitesnow"
-                placeholder="Pilih jenis akun"
-                v-model="data.role"
-              ></custom-select>
-              <custom-select label="Gender" background-color="whitesnow" v-model="data.gender"></custom-select>
-            </div>
-            <custom-input label="Name" background-color="whitesnow" v-model="data.name"></custom-input>
-            <custom-input label="Username" background-color="whitesnow" v-model="data.username"></custom-input>
-            <custom-input label="Password" background-color="whitesnow" v-model="data.password"></custom-input>
-            <custom-input label="Confirm Password" background-color="whitesnow"></custom-input>
-            <custom-input label="Email" background-color="whitesnow" v-model="data.email"></custom-input>
-            <custom-input label="Phone" background-color="whitesnow" v-model="data.phone"></custom-input>
-            <custom-textarea label="Address" v-model="data.address"></custom-textarea>
-            <custom-button color="carmine" class="white--text" type="submit">Save</custom-button>
-          </v-col>
-          <v-col cols="6"></v-col>
-        </v-row>
-      </div>
-    </custom-form>
+    <HeaderContent
+      :list="items"
+      label="Create Management Account"
+      @click="handleClick"
+    />
+		<FormAdmin
+			:data="data"
+			:loading="loading"
+			@onSubmit="onSubmit"
+		/>
+			<v-snackbar top right  v-model="alertSuccess" color="success">
+				Create Success
+		</v-snackbar>
+			<v-snackbar top right  v-model="alertError" color="error">
+			{{errorMessage}}
+		</v-snackbar>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-
+import FormAdmin from "@/containers/Form/formAdmin"
+import { mapActions } from "vuex";
 export default {
   components: {
-    HeaderContent
+		HeaderContent,
+		FormAdmin
   },
   data() {
     return {
+			loading : false,
       items: [
         {
           text: "Manage Account",
@@ -63,44 +43,69 @@ export default {
           href: "/admin"
         },
         {
-          text: "Edit Management"
+					text: "Create Management",
+					disabled : true
         }
       ],
       status: "",
       data: {
-        name: "",
         username: "",
+        name: "",
         photo: "",
-        role: "",
+        birthDate: "2020-04-22T14:39:59.608Z",
         gender: "",
-        password: "",
-        address: "",
+        mobile: "",
         email: "",
-        phone: ""
-      }
+        accountType: "",
+        note: "",
+        password: "",
+        role: "",
+        mobile: ""
+			},
+			alertError : false,
+			alertSuccess : false,
+			errorMessage : ''
     };
   },
   methods: {
+    ...mapActions({
+      createAdmin: "account/createAdmin"
+    }),
     handleClick() {
       console.log("saved");
     },
     getResponse(payload) {
-      console.log({ payload });
       this.status = payload.status;
       this.data.photo = payload.response.url;
     },
-    handleSubmit() {
-      const payload = this.data;
-      console.log("submitted", payload);
+    async onSubmit(params) {
+      const payload = {
+				...params,
+				role : this.data.accountType
+			};
+			this.loading = true
+			const response = await this.createAdmin(payload);
+      if (response.status === 201) {
+				this.loading = false
+				this.alertSuccess = true
+				setTimeout(() => {
+					this.alertSuccess = false
+				this.$router.push("/admin");
+				}, 1000)
+      } else {
+				this.loading = false
+				this.alertError = true
+				if(response.response) {
+					this.errorMessage = response.response.data.data
+				}else{
+					this.errorMessage = 'Failed Create Account'
+				}
+				setTimeout(() => {
+					this.alertError = false
+				}, 3000)
+      }
     }
   }
 };
 </script>
 
-<style lang="sass" scoped>
-.account-edit
-  &__title
-    font-size: $font-size-24
-  &__subtitle
-    font-size: $font-size-12
-</style>

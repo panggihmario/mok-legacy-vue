@@ -54,7 +54,7 @@ export default {
       if (statusValid) {
       	this.loadingDraft = true;
         const response = await this.createDraft(this.payloadNews);
-        if (response.status === 200) {
+        if (response.status === 201) {
 					this.alertSuccess = true
 					setTimeout(() => {
 						this.alertSuccess = false
@@ -76,7 +76,7 @@ export default {
       if (statusValid) {
 				this.loadingSubmit = true
         const response = await this.createNews(this.payloadNews);
-        if (response.status === 200) {
+        if (response.status === 201) {
 					this.loadingSubmit = false
 					this.alertSuccess = true
 					setTimeout(() => {

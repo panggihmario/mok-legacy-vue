@@ -1,56 +1,28 @@
 <template>
   <div>
     <HeaderContent :list="items" label="Edit Management Account" />
-
-    <custom-form :onSubmit="handleSubmit">
-      <div class="mt-8">
-        <div class="d-flex align-center">
-          <v-avatar size="100" class="mr-4">
-            <img :src="data.photo" />
-          </v-avatar>
-          <div class="d-flex flex-column">
-            <span class="account-edit__title font-weight-medium charcoal--text">{{ data.user }}</span>
-            <span
-              class="account-edit__subtitle font-weight-medium grey--text"
-            >&commat;{{ data.username }}</span>
-          </div>
-        </div>
-
-        <v-row>
-          <v-col cols="6">
-            <div class="d-flex justify-space-between">
-              <custom-select
-                label="Pilih jenis akun"
-                background-color="whitesnow"
-                placeholder="Pilih jenis akun"
-                v-model="data.role"
-              ></custom-select>
-              <custom-select label="Gender" background-color="whitesnow" v-model="data.gender"></custom-select>
-            </div>
-            <custom-input label="Name" background-color="whitesnow" v-model="data.name"></custom-input>
-            <custom-input label="Username" background-color="whitesnow" v-model="data.username"></custom-input>
-            <custom-input label="Password" background-color="whitesnow" v-model="data.password"></custom-input>
-            <custom-input label="Email" background-color="whitesnow" v-model="data.email"></custom-input>
-            <custom-input label="Phone" background-color="whitesnow" v-model="data.phone"></custom-input>
-            <custom-textarea label="Address" v-model="data.address"></custom-textarea>
-            <custom-button color="carmine" class="white--text" type="submit">Save</custom-button>
-          </v-col>
-          <v-col cols="6"></v-col>
-        </v-row>
-      </div>
-    </custom-form>
+    <FormAdmin :data="data" :loading="loading" @onSubmit="onSubmit" />
+    <v-snackbar top right v-model="alertError" color="error">
+      {{ errorMessage }}
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-
+import { mapActions } from "vuex";
+import FormAdmin from "@/containers/Form/formAdmin";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    FormAdmin
   },
   data() {
     return {
+      loading: false,
+      oldPassword: "",
+			errorMessage: "",
+			alertError : false,
       items: [
         {
           text: "Manage Account",
@@ -67,24 +39,92 @@ export default {
         }
       ],
       data: {
-        name: "Si Tampan",
-        username: "sekaliduakali",
-        photo:
-          "https://instagram.fcgk12-1.fna.fbcdn.net/v/t51.2885-19/s320x320/24838845_192490384661021_8458923387798945792_n.jpg?_nc_ht=instagram.fcgk12-1.fna.fbcdn.net&_nc_ohc=qWhDOYy5AicAX_UJ7pW&oh=311d0058734e21883b3d6ab0cb6e9c8c&oe=5EB66DA7",
-        role: "Foo",
-        gender: "Bar",
-        status: "Active",
-        password: "tampansekali",
-        email: "tampan@banget.com",
-        phone: "081-123-234",
-        address: "Jakardah, Indonesia"
+        username: "",
+        name: "",
+        photo: "",
+        birthDate: "2020-04-22T14:39:59.608Z",
+        gender: "",
+        mobile: "",
+        email: "",
+        accountType: "",
+        password: "",
+        role: "",
+        mobile: "",
+        note: ""
       }
     };
   },
   methods: {
-    handleSubmit() {
-      console.log("saved");
+    ...mapActions({
+      getAccountById: "account/getAccountById",
+      updateAccount: "account/updateAccount"
+    }),
+    async onSubmit(params) {
+      const id = this.$route.params.id;
+      let data = {};
+      if (params.password) {
+        const newParams = {
+          ...params,
+          role: params.accountType
+        };
+        data = newParams;
+      } else {
+        const newParams = {
+          ...params,
+          password: this.oldPassword,
+          role: params.accountType
+        };
+        data = newParams;
+      }
+      const payload = {
+        id,
+        data
+			};
+      this.loading = true;
+      const response = await this.updateAccount(payload);
+      if (response.status === 200) {
+        this.$router.push("/admin");
+        this.loading = false;
+      } else {
+        this.loading = false;
+        this.alertError = true;
+        if (response.response) {
+          this.errorMessage = response.response.data.data;
+        } else {
+          this.errorMessage = "Failed Create Account";
+        }
+        setTimeout(() => {
+          this.alertError = false;
+        }, 3000);
+      }
+    },
+    async getResponseById() {
+      const id = this.$route.params.id;
+      const params = {
+        id: id,
+        type: "management"
+      };
+      const response = await this.getAccountById(params);
+      if (response.status === 200) {
+        const data = response.data.data;
+        const newD = {
+          ...this.data,
+          username: data.username,
+          name: data.name,
+          photo: data.photo,
+          accountType: data.accountType,
+          mobile: data.mobile,
+          email: data.email,
+          gender: data.gender,
+          note: data.note
+        };
+        this.oldPassword = data.password;
+        this.data = newD;
+      }
     }
+  },
+  mounted() {
+    this.getResponseById();
   }
 };
 </script>

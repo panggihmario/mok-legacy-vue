@@ -54,6 +54,15 @@ export default {
 				return error
 			}
 		},
+		async updateNews({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/editor/${payload.type}`, payload.params)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
 		async deleteDraft({state}, payload) {
 			let response;
 			try {
@@ -66,7 +75,7 @@ export default {
 		async publishNews({state}, payload){
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publish`, payload.data)
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/publish`, payload.data)
 				return response
 			} catch (error) {
 				return error
@@ -75,7 +84,7 @@ export default {
 		async rejectNews({state}, payload){
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/reject`, payload.data)
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/reject`, payload.data)
 				return response
 			} catch (error) {
 				return error

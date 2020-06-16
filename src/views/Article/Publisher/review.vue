@@ -9,12 +9,21 @@
         >
 					Reject
 				</custom-button>
-        <custom-button @click="onPublish" color="primary"
-          >Publish</custom-button
+        <custom-button 
+					@click="onPublish" 
+					color="primary"
+					:loading="loadingPublish"
+        >Publish</custom-button
         >
       </div>
     </HeaderContent>
     <FormNews :payloadNews="payloadNews" :propsImage="propsImage" />
+		<v-snackbar top v-model="alertSuccess" color="success">
+			{{successMessage}}
+    </v-snackbar>
+    <v-snackbar top v-model="alertFailed" color="success">
+			{{failedMessage}}
+    </v-snackbar>
   </div>
 </template>
 
@@ -26,6 +35,11 @@ export default {
   data() {
     return {
 			loading : false,
+			loadingPublish : false,
+			alertSuccess : false,
+			alertFailed : false,
+			successMessage : "",
+			failedMessage : "",
       payloadNews: {
         headline: "",
         title: "",
@@ -61,12 +75,24 @@ export default {
       const params = {
         id: this.$route.params.id,
         data: this.payloadNews
-      };
+			};
+			this.loadingPublish = true
       const response = await this.publishNews(params);
       if (response.status === 200) {
-        this.$router.push("/publisher");
+				this.loadingPublish = false
+				this.alertSuccess = true
+				this.successMessage = 'Publish Success'
+				setTimeout(() => {
+					this.$router.push("/publisher");
+					this.alertSuccess = false
+				},1500)
       } else {
-        console.log("publish", response);
+				this.loadingPublish = false
+				this.alertFailed = true
+				this.failedMessage = "Publish Failed"
+				setTimeout(() => {
+					this.alertFailed = false
+				},3000)
       }
     },
     async onReject() {
@@ -77,8 +103,13 @@ export default {
 			const response = await this.rejectNews(params);
 			this.loading = true
       if (response.status === 200) {
-				this.$router.push("/publisher");
 				this.loading = false
+					this.alertSuccess = true
+					this.successMessage = 'Reject Success'
+				setTimeout(() => {
+					this.$router.push("/publisher");
+					this.alertSuccess = false
+				},1500)
       } else {
 				console.log("publish", response);
 				this.loading = false

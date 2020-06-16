@@ -29,7 +29,7 @@
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vue-wysiwyg": "^1.7.2",
-    "vuetify": "^2.2.18",
+    "vuetify": "^2.2.30",
     "vuex": "^3.1.2"
   },
   "devDependencies": {
@@ -44,10 +44,10 @@
     "@vue/test-utils": "1.0.0-beta.31",
     "chai": "^4.1.2",
     "deepmerge": "^4.2.2",
-    "fibers": "^4.0.2",
+    "fibers": "^5.0.0",
     "material-design-icons-iconfont": "^5.0.1",
     "node-sass": "^4.12.0",
-    "sass": "^1.26.3",
+    "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-vuetify": "~2.0.5",
     "vue-template-compiler": "^2.6.11",

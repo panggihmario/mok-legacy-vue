@@ -1,9 +1,13 @@
 <template>
   <div>
     <HeaderContent label="List Feed">
-			<custom-button color="carmine" @click="moveToPostProduct"  class="white--text mr-6" >
-				Post Product
-			</custom-button>
+      <custom-button
+        color="carmine"
+        @click="moveToPostProduct"
+        class="white--text mr-6"
+      >
+        Post Product
+      </custom-button>
       <custom-button color="carmine" class="white--text" @click="moveToCreate">
         Post Feed
       </custom-button>
@@ -14,23 +18,40 @@
           color="carmine"
           class="white--text"
           @click="showMedia(item)"
+          size="small"
         >
-          Show
+          Show Media
         </custom-button>
       </template>
-			<template v-slot:item.action="{item}" >
-				<custom-button
-					@click="deleteFeed(item.id)"
-				>
-					<v-icon>delete</v-icon>
-				</custom-button>
-			</template>
+      <template v-slot:item.action="{ item }">
+        <custom-button @click="deleteFeed(item.id)">
+          <v-icon>delete</v-icon>
+        </custom-button>
+      </template>
     </v-data-table>
+    <div class="mt-8">
+      <v-pagination
+        class="d-flex justify-end"
+        v-model="page"
+        :length="totalPage"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        :total-visible="6"
+        @input="getDataBaseOnPage"
+      ></v-pagination>
+    </div>
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
         <div v-if="dialogMedia">
           <v-img :src="dialogMedia.url" v-if="dialogMedia.type === 'image'" />
-          <video width="100%" height="100%" v-else :src="dialogMedia.url" controls autoplay />
+          <video
+            width="100%"
+            height="100%"
+            v-else
+            :src="dialogMedia.url"
+            controls
+            autoplay
+          />
         </div>
         <div v-else>no media</div>
       </v-card>
@@ -48,6 +69,8 @@ export default {
   data() {
     return {
       accountId: "",
+      page: 1,
+      totalPage: 0,
       dialog: false,
       dialogMedia: {},
       items: [],
@@ -64,13 +87,16 @@ export default {
         },
         {
           text: "Deskripsi Feed/Product",
-					value: "description",
-					width : '600'
-				},
-				{
-					text : 'Action',
-					value : 'action'
-				}
+          value: "description"
+        },
+        {
+          text: "Type Post",
+          value: "type"
+        },
+        {
+          text: "Action",
+          value: "action"
+        }
       ]
     };
   },
@@ -79,8 +105,8 @@ export default {
   },
   methods: {
     ...mapActions({
-			getListFeed: "post/getListFeed",
-			deletePost : "post/deletePost"
+      getListFeed: "post/getListFeed",
+      deletePost: "post/deletePost"
     }),
     showMedia(payload) {
       this.dialog = true;
@@ -96,50 +122,71 @@ export default {
     },
     moveToCreate() {
       this.$router.push("/post/create");
-		},
-		moveToPostProduct() {
-			this.$router.push("/post/product")
-		},
-		async deleteFeed(id){
-			const response = await this.deletePost(id)
-			if(response.status === 200) {
-				this.handleListFeed()
-			}else{
-				console.log(response);
-			}
-		},
-    async handleListFeed() {
-			const id = localStorage.getItem("persada_id");
-			const payload = {
-				id : id,
-				typePost : 'seleb'
-			}
-      const response = await this.getListFeed(payload);
+    },
+    moveToPostProduct() {
+      this.$router.push("/post/product");
+    },
+    async deleteFeed(id) {
+      const response = await this.deletePost(id);
       if (response.status === 200) {
-				const content = response.data.data.content;
-				console.log(content)
+        this.handleListFeed();
+      } else {
+        console.log(response);
+      }
+    },
+    getDataBaseOnPage() {
+      const id = localStorage.getItem("persada_id");
+      const payload = {
+        id: id,
+        typePost: "seleb",
+        page: this.page - 1
+			};
+			this.getResponseFeed(payload)
+		},
+		async getResponseFeed (payload) {
+			   const response = await this.getListFeed(payload);
+      if (response.status === 200) {
+        const content = response.data.data.content;
+        this.totalPage = response.data.data.totalPages;
         const formatingContent = content.map(c => {
           const newDte = this.formatingDate(c.createAt);
-          if (c.post) {
+          if (c.typePost === "seleb") {
             return {
               date: newDte,
               description: c.post.description,
-							media: c.post.media,
-							id : c.id
+              media: c.post.media,
+              id: c.id,
+              type: c.typePost
+            };
+          } else if (c.typePost === "product") {
+            return {
+              date: newDte,
+              description: c.postProduct.name || "",
+              media: c.postProduct.media,
+              id: c.id,
+              type: c.typePost
             };
           } else {
             return {
               date: newDte,
-              description: c.postProduct.description,
-							media: c.postProduct.media,
-							id : c.id
+              id: c.id,
+              type: c.typePost
             };
           }
         });
-				this.items = formatingContent;
+        this.items = formatingContent;
       } else {
         console.log(response);
       }
+		},
+    handleListFeed() {
+      const id = localStorage.getItem("persada_id");
+      const payload = {
+        id: id,
+        typePost: "seleb",
+        page: 0
+      };
+			this.getResponseFeed(payload)
     }
   }
 };
