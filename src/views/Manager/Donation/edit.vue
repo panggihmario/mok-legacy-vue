@@ -116,8 +116,9 @@ export default {
       const id = this.$route.params.id;
       const response = await this.getDonationById(id);
       if (response.status === 200) {
-        const data = response.data.data;
-        const x = moment.unix(data.expiredAt).format("YYYY-MM-DD");
+				const data = response.data.data;
+				const z = data.expiredAt/1000
+        const x = moment.unix(z).format("YYYY-MM-DD");
         this.donation.title = data.title;
 				this.donation.description = data.description;
 				if(data.media.length > 0) {
