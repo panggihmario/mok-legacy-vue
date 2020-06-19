@@ -18,7 +18,7 @@
       <template v-slot:item.donationImage="{item}">
         <div class="image__container d-flex align-center">
           <div v-if="item.media.length > 0" class="image__box">
-            <v-img :src="item.media[0].thumbnail" width="100%" />
+            <v-img :src="item.media[0].thumbnail" height="100%" />
           </div>
           <div v-else class="image__box"></div>
         </div>
@@ -201,7 +201,8 @@ export default {
       if (response.status === 200) {
         const data = response.data.data.content;
         const formatData = data.map(d => {
-          const newD = moment.unix(d.expiredAt).format("D/M/YYYY");
+          const second = d.expiredAt / 1000;
+          const newD = moment.unix(second).format("D/M/YYYY");
           const newS = moment(d.createAt).format("D/M/YYYY");
           return {
             donationName: d.organizer.name,

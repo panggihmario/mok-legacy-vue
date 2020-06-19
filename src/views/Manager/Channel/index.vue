@@ -15,7 +15,7 @@
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
-            <v-img max-width="100%" max-height="100%" :src="item.channelImage" />
+            <v-img max-width="100%" height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
