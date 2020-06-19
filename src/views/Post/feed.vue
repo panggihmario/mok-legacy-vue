@@ -5,30 +5,27 @@
         color="carmine"
         @click="moveToPostProduct"
         class="white--text mr-6"
-      >
-        Post Product
-      </custom-button>
-      <custom-button color="carmine" class="white--text" @click="moveToCreate">
-        Post Feed
-      </custom-button>
+      >Post Product</custom-button>
+      <custom-button color="carmine" class="white--text" @click="moveToCreate">Post Feed</custom-button>
     </HeaderContent>
-    <v-data-table :headers="headers" hide-default-footer :items="items">
+
+    <v-data-table :headers="headers" hide-default-footer :items="itemsDummy" class="grey--text">
       <template v-slot:item.image="{ item }">
         <custom-button
           color="carmine"
           class="white--text"
           @click="showMedia(item)"
           size="small"
-        >
-          Show Media
-        </custom-button>
+        >Show Media</custom-button>
       </template>
+
       <template v-slot:item.action="{ item }">
-        <custom-button @click="deleteFeed(item.id)">
-          <v-icon>delete</v-icon>
+        <custom-button @click="openModalDelete(item.id)" size="small">
+          <v-icon small color="carmine">delete</v-icon>
         </custom-button>
       </template>
     </v-data-table>
+
     <div class="mt-8">
       <v-pagination
         class="d-flex justify-end"
@@ -40,62 +37,94 @@
         @input="getDataBaseOnPage"
       ></v-pagination>
     </div>
+
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
         <div v-if="dialogMedia">
           <v-img :src="dialogMedia.url" v-if="dialogMedia.type === 'image'" />
-          <video
-            width="100%"
-            height="100%"
-            v-else
-            :src="dialogMedia.url"
-            controls
-            autoplay
-          />
+          <video width="100%" height="100%" v-else :src="dialogMedia.url" controls autoplay />
         </div>
         <div v-else>no media</div>
       </v-card>
     </v-dialog>
+
+    <Dialog-Delete
+      title="Yakin menghapus feed ini?"
+      description="Feed yang kamu hapus tidak akan tampil di halaman feed lagi"
+      :dialog="dialogDelete"
+      :closeModalDelete="closeModalDelete"
+      :handleDelete="deleteFeed"
+    ></Dialog-Delete>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-import HeaderContent from "../../containers/HeaderContent";
+import HeaderContent from "@/containers/HeaderContent";
+import DialogDelete from "@/components/material/DialogDelete";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    DialogDelete
   },
   data() {
     return {
       accountId: "",
+      idUser: "",
       page: 1,
       totalPage: 0,
       dialog: false,
       dialogMedia: {},
+      dialogDelete: false,
+      loading: false,
       items: [],
+      itemsDummy: [
+        {
+          date: "20/02/2020",
+          description: "Desc",
+          media: "Media",
+          id: 1,
+          type: "Type"
+        }
+      ],
       headers: [
         {
           text: "Tanggal",
           value: "date",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "100"
         },
         {
           text: "Photo Feed/Product",
           value: "image",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
           width: "190"
         },
         {
           text: "Deskripsi Feed/Product",
-          value: "description"
+          value: "description",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Type Post",
-          value: "type"
+          value: "type",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false
         },
         {
           text: "Action",
-          value: "action"
+          value: "action",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width: 200
         }
       ]
     };
@@ -126,12 +155,27 @@ export default {
     moveToPostProduct() {
       this.$router.push("/post/product");
     },
-    async deleteFeed(id) {
+    openModalDelete(id) {
+      this.dialogDelete = true;
+      this.idUser = id;
+    },
+    closeModalDelete() {
+      this.dialogDelete = false;
+      this.idUser = "";
+    },
+    async deleteFeed() {
+      const id = this.idUser;
       const response = await this.deletePost(id);
       if (response.status === 200) {
         this.handleListFeed();
+        this.dialogDelete = false;
+        this.idUser = "";
+        this.loading = false;
       } else {
         console.log(response);
+        this.dialogDelete = false;
+        this.idUser = "";
+        this.loading = false;
       }
     },
     getDataBaseOnPage() {
@@ -140,11 +184,11 @@ export default {
         id: id,
         typePost: "seleb",
         page: this.page - 1
-			};
-			this.getResponseFeed(payload)
-		},
-		async getResponseFeed (payload) {
-			   const response = await this.getListFeed(payload);
+      };
+      this.getResponseFeed(payload);
+    },
+    async getResponseFeed(payload) {
+      const response = await this.getListFeed(payload);
       if (response.status === 200) {
         const content = response.data.data.content;
         this.totalPage = response.data.data.totalPages;
@@ -178,7 +222,7 @@ export default {
       } else {
         console.log(response);
       }
-		},
+    },
     handleListFeed() {
       const id = localStorage.getItem("persada_id");
       const payload = {
@@ -186,7 +230,7 @@ export default {
         typePost: "seleb",
         page: 0
       };
-			this.getResponseFeed(payload)
+      this.getResponseFeed(payload);
     }
   }
 };
