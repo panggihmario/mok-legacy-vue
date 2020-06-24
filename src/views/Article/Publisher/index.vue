@@ -1,17 +1,20 @@
 <template>
   <div>
     <HeaderContent label="List Article" />
-    <v-tabs @change="changeTabs" v-model="tab">
+    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
       <v-tab>
-        <span class="text-capitalize">List Article </span>
+        <span class="text-capitalize">List News</span>
       </v-tab>
       <v-tab>
         <span class="text-capitalize">Draft</span>
       </v-tab>
+      <v-tab>
+        <span class="text-capitalize">History</span>
+      </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <ListArticle :articles="articles" />
+        <ListArticle :articles="articles" class="mt-4" />
         <v-pagination
           class="d-flex justify-end"
           :length="totalPages"
@@ -22,22 +25,27 @@
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>
-        <Draft :drafts="drafts" />
+        <Draft :drafts="drafts" class="mt-4"></Draft>
+      </v-tab-item>
+      <v-tab-item>
+        <history :history="drafts" class="mt-4"></history>
       </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
 
 <script>
-import ListArticle from "./list/article";
+import HeaderContent from "@/containers/HeaderContent";
 import { mapState, mapActions } from "vuex";
-import HeaderContent from "../../../containers/HeaderContent";
+import ListArticle from "./list/article";
 import Draft from "./list/draft";
+import History from "./list/history";
 export default {
   components: {
+    HeaderContent,
     ListArticle,
     Draft,
-    HeaderContent
+    History
   },
   data() {
     return {
@@ -100,7 +108,7 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        this.formatingResponse(response)
+        this.formatingResponse(response);
       } else {
         console.log(response);
         return response;
@@ -113,15 +121,15 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        this.formatingResponse(response)
+        this.formatingResponse(response);
       } else {
         console.log(response);
         return response;
       }
     },
     formatingResponse(response) {
-			const listNews = response.data.data.content;
-			this.totalPages = response.data.data.totalPages;
+      const listNews = response.data.data.content;
+      this.totalPages = response.data.data.totalPages;
       const formatingList = listNews.map(news => {
         const newFormatDate = this.formatingDate(news.createAt);
         return {
@@ -139,7 +147,7 @@ export default {
 
 <style lang="sass" scoped>
 .article
-	&__label
-		font-size: 24px
-		font-weight: 500
+  &__label
+    font-size: 24px
+    font-weight: 500
 </style>

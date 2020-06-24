@@ -9,7 +9,7 @@
       <custom-button color="carmine" class="white--text" @click="moveToCreate">Post Feed</custom-button>
     </HeaderContent>
 
-    <v-data-table :headers="headers" hide-default-footer :items="itemsDummy" class="grey--text">
+    <v-data-table :headers="headers" hide-default-footer :items="items" class="grey--text">
       <template v-slot:item.image="{ item }">
         <custom-button
           color="carmine"
@@ -78,15 +78,6 @@ export default {
       dialogDelete: false,
       loading: false,
       items: [],
-      itemsDummy: [
-        {
-          date: "20/02/2020",
-          description: "Desc",
-          media: "Media",
-          id: 1,
-          type: "Type"
-        }
-      ],
       headers: [
         {
           text: "Tanggal",

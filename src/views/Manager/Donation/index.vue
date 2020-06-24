@@ -37,7 +37,7 @@
               <v-icon>edit</v-icon>
             </v-btn>
             <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
-              <v-icon>delete_outline</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </div>
         </div>

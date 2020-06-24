@@ -1,12 +1,11 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account">
+    <HeaderContent :list="items" label="Edit User Account">
       <custom-button
         color="carmine"
         class="white--text"
         @click="handleClick('create')"
-        >Create Account</custom-button
-      >
+      >Create Account</custom-button>
     </HeaderContent>
 
     <v-row dense class="mt-8">
@@ -17,15 +16,11 @@
         <!-- <div class="d-flex align-center font-weight-medium">
           <span class="mr-4">Filter</span>
           <custom-select hideDetails :items="filter" />
-        </div> -->
+        </div>-->
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input
-            placeholder="Search"
-            @keyup.enter="onSearch"
-            v-model="payloadSearch"
-          />
+          <custom-input placeholder="Search" @keyup.enter="onSearch" v-model="payloadSearch" />
         </div>
       </v-col>
     </v-row>
@@ -50,9 +45,7 @@
         </template>
 
         <template v-slot:item.type="{ item }">
-          <span v-if="item.type == 'General'" class="grey--text">{{
-            item.type
-          }}</span>
+          <span v-if="item.type == 'General'" class="grey--text">{{item.type}}</span>
           <span v-else class="primary--text">{{ item.type }}</span>
         </template>
 
@@ -65,36 +58,19 @@
           <custom-button icon @click="moveToEdit(item.id)">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
-					<custom-button @click="openModalDelete(item.id)"  icon>
-						<v-icon small>delete</v-icon>
-					</custom-button>
+          <custom-button @click="openModalDelete(item.id)" icon>
+            <v-icon small color="carmine">delete</v-icon>
+          </custom-button>
         </template>
       </v-data-table>
-			<v-dialog 
-				max-width="300"
-				v-model="dialogDelete"
-				persistent
-			>
-				<v-card>
-					<v-card-title>Delete Confirmation</v-card-title>
-					<v-card-text>
-						<div>You are about to delete the user</div>
-						<div>Are you sure ?</div>
-					</v-card-text>
-					<v-card-actions>
-						<custom-button @click="cancelDelete" >cancel</custom-button>
-						<v-spacer/>
-						<custom-button 
-							color="carmine" 
-							class="white--text"
-							@click="handleDeleteUser"
-							:loading="loading"
-						>
-							delete
-						</custom-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+
+      <Dialog-Delete
+        title="Yakin menghapus user ini?"
+        description="User yang kamu hapus tidak akan tampil di halaman user lagi"
+        :dialog="dialog"
+        :closeModalDelete="closeModalDelete"
+        :handleDelete="handleDelete"
+      ></Dialog-Delete>
       <div class="mt-8">
         <v-pagination
           class="d-flex justify-end"
@@ -103,7 +79,7 @@
           prev-icon="mdi-menu-left"
           next-icon="mdi-menu-right"
           @input="getDataBaseOnPage"
-					:total-visible="6"
+          :total-visible="6"
         ></v-pagination>
       </div>
     </div>
@@ -112,17 +88,19 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import DialogDelete from "@/components/material/DialogDelete";
 import { mapACtions, mapActions } from "vuex";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    DialogDelete
   },
   data() {
     return {
-			payloadSearch: "",
-			loading : false,
-			dialogDelete : false,
-			idUser : '',
+      payloadSearch: "",
+      loading: false,
+      dialog: false,
+      idUser: "",
       items: [
         {
           text: "Manage Account",
@@ -184,32 +162,32 @@ export default {
   methods: {
     ...mapActions({
       getListRespone: "account/getListRespone",
-			searchAccount: "account/searchAccount",
-			deleteUser : "account/deleteUser"
-		}),
-		openModalDelete(id) {
-			this.dialogDelete = true
-			this.idUser = id
-		},
-		async handleDeleteUser () {
-			const id = this.idUser
-			this.loading = true
-			const response = await this.deleteUser(id)
-			if(response.status === 200) {
-				this.dialogDelete = false
-				this.loading = false
-				this.idUser = ''
-				this.getDataBaseOnPage ()
-			}else {
-				this.loading = false
-				this.idUser = ''
-				this.dialogDelete = false
-			}
-		},
-		cancelDelete () {
-			this.dialogDelete = false
-			this.idUse = ''
-		},
+      searchAccount: "account/searchAccount",
+      deleteUser: "account/deleteUser"
+    }),
+    openModalDelete(id) {
+      this.dialog = true;
+      this.idUser = id;
+    },
+    closeModalDelete() {
+      this.dialog = false;
+      this.idUser = "";
+    },
+    async handleDelete() {
+      const id = this.idUser;
+      this.loading = true;
+      const response = await this.deleteUser(id);
+      if (response.status === 200) {
+        this.dialogDelete = false;
+        this.loading = false;
+        this.idUser = "";
+        this.getDataBaseOnPage();
+      } else {
+        this.loading = false;
+        this.idUser = "";
+        this.dialogDelete = false;
+      }
+    },
     async onSearch() {
       const payload = {
         params: this.payloadSearch,
@@ -252,9 +230,9 @@ export default {
     async getDataBaseOnPage() {
       const params = {
         type: "users",
-				param : {
-					 page: this.page - 1
-				}
+        param: {
+          page: this.page - 1
+        }
       };
       const response = await this.getListRespone(params);
       if (response.status === 200) {
