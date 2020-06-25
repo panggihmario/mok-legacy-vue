@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="List Feed">
+    <HeaderContent :list="list" label="List Feed">
       <custom-button
         color="carmine"
         @click="moveToPostProduct"
@@ -9,7 +9,7 @@
       <custom-button color="carmine" class="white--text" @click="moveToCreate">Post Feed</custom-button>
     </HeaderContent>
 
-    <v-data-table :headers="headers" hide-default-footer :items="items" class="grey--text">
+    <v-data-table :headers="headers" hide-default-footer :items="itemsDummy" class="grey--text">
       <template v-slot:item.image="{ item }">
         <custom-button
           color="carmine"
@@ -77,7 +77,31 @@ export default {
       dialogMedia: {},
       dialogDelete: false,
       loading: false,
+      list: [
+        {
+          text: "Post",
+          disabled: false,
+          href: "post"
+        },
+        {
+          text: "List Feed"
+        }
+      ],
       items: [],
+      itemsDummy: [
+        {
+          date: "06/06/20",
+          image: "",
+          description: "coba aja dl",
+          type: "Type"
+        },
+        {
+          date: "06/06/20",
+          image: "",
+          description: "coba aja dl22",
+          type: "Type"
+        }
+      ],
       headers: [
         {
           text: "Tanggal",
@@ -110,9 +134,9 @@ export default {
           filterable: false
         },
         {
-          text: "Action",
           value: "action",
           class: "whitesnow",
+          align: "center",
           sortable: false,
           filterable: false,
           width: 200

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="List Article" />
+    <HeaderContent :list="list" label="List News" />
     <v-tabs @change="changeTabs" v-model="tab" color="carmine">
       <v-tab>
         <span class="text-capitalize">List News</span>
@@ -40,6 +40,7 @@ import { mapState, mapActions } from "vuex";
 import ListArticle from "./list/article";
 import Draft from "./list/draft";
 import History from "./list/history";
+
 export default {
   components: {
     HeaderContent,
@@ -50,6 +51,13 @@ export default {
   data() {
     return {
       tab: null,
+      list: [
+        {
+          text: "News",
+          disabled: false,
+          href: "publisher"
+        }
+      ],
       articles: [],
       drafts: [],
       totalPages: 0,

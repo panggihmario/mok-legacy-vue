@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="List News">
+    <HeaderContent :list="list" label="List News">
       <custom-button color="carmine" class="white--text" @click="goToCreateArticle">Buat News</custom-button>
     </HeaderContent>
     <v-tabs @change="changeTabs" v-model="tab" color="carmine">
@@ -63,6 +63,13 @@ export default {
   data() {
     return {
       tab: null,
+      list: [
+        {
+          text: "News",
+          disabled: false,
+          href: "editor"
+        }
+      ],
       articles: [],
       drafts: [],
       totalPages: 0,
