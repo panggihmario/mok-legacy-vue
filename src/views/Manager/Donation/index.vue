@@ -18,7 +18,7 @@
       <template v-slot:item.donationImage="{item}">
         <div class="image__container d-flex align-center">
           <div v-if="item.media.length > 0" class="image__box">
-            <v-img :src="item.media[0].thumbnail" width="100%" />
+            <v-img :src="item.media[0].thumbnail" height="100%" />
           </div>
           <div v-else class="image__box"></div>
         </div>
@@ -37,7 +37,7 @@
               <v-icon>edit</v-icon>
             </v-btn>
             <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
-              <v-icon>delete_outline</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </div>
         </div>
@@ -50,34 +50,25 @@
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" persistent max-width="300">
-      <v-card>
-          <v-card-title>Delete Confirmation</v-card-title>
-					<v-card-text>
-						<div>You are about to delete the donation</div>
-						<div>Are you sure ?</div>
-					</v-card-text>
-          <v-card-actions>
-            <custom-button   @click="closeModalDelete">Cancel</custom-button>
-						<v-spacer/>
-            <custom-button 
-							color="carmine" 
-							class="white--text" 
-							@click="handleDelete"
-						>Delete</custom-button>
-          </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <Dialog-Delete
+      title="Yakin menghapus donasi ini?"
+      description="Donasi yang kamu hapus tidak akan tampil di halaman donasi lagi"
+      :dialog="dialog"
+      :closeModalDelete="closeModalDelete"
+      :handleDelete="handleDelete"
+    ></Dialog-Delete>
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import HeaderContent from "../../../containers/HeaderContent";
+import DialogDelete from "@/components/material/DialogDelete";
 import { mapActions } from "vuex";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    DialogDelete
   },
   data() {
     return {
@@ -210,8 +201,8 @@ export default {
       if (response.status === 200) {
         const data = response.data.data.content;
         const formatData = data.map(d => {
-					const second = d.expiredAt/1000
-					const newD = moment.unix(second).format("D/M/YYYY");
+          const second = d.expiredAt / 1000;
+          const newD = moment.unix(second).format("D/M/YYYY");
           const newS = moment(d.createAt).format("D/M/YYYY");
           return {
             donationName: d.organizer.name,

@@ -15,7 +15,7 @@
       <template v-slot:item.channelImage="{ item }">
         <div class="image__container">
           <div class="image__box">
-            <v-img max-width="100%" max-height="100%" :src="item.channelImage" />
+            <v-img max-width="100%" height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
@@ -34,32 +34,20 @@
               <v-icon @click="moveEdit(item.id)">edit</v-icon>
             </v-btn>
             <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
-              <v-icon>delete_outline</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </div>
         </div>
       </template>
     </v-data-table>
 
-    <v-dialog v-model="dialog" persistent width="300">
-      <v-card>
-        <v-card-title>Delete Confirmation</v-card-title>
-        <v-card-text>
-          <div>You are about to delete the channel</div>
-          <div>Are you sure ?</div>
-        </v-card-text>
-        <v-card-actions>
-          <custom-button @click="closeModalDelete">cancel</custom-button>
-          <v-spacer />
-          <custom-button
-            color="carmine"
-            class="white--text"
-            @click="handleDelete"
-            :loading="loading"
-          >delete</custom-button>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <Dialog-Delete
+      title="Yakin menghapus channel ini?"
+      description="Channel yang kamu hapus tidak akan tampil di halaman channel lagi"
+      :dialog="dialog"
+      :closeModalDelete="closeModalDelete"
+      :handleDelete="handleDelete"
+    ></Dialog-Delete>
 
     <v-pagination
       class="d-flex justify-end"
@@ -74,11 +62,13 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import DialogDelete from "@/components/material/DialogDelete";
 import { mapActions } from "vuex";
 import axios from "axios";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    DialogDelete
   },
   methods: {
     ...mapActions({

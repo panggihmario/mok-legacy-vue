@@ -1,25 +1,22 @@
 <template>
   <div>
-    <HeaderContent label="List News">
-      <custom-button
-        color="carmine"
-        class="white--text"
-        @click="goToCreateArticle"
-      >
-        Buat News
-      </custom-button>
+    <HeaderContent :list="list" label="List News">
+      <custom-button color="carmine" class="white--text" @click="goToCreateArticle">Buat News</custom-button>
     </HeaderContent>
-    <v-tabs @change="changeTabs" v-model="tab">
+    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
       <v-tab>
-        <span class="text-capitalize">List News </span>
+        <span class="text-capitalize">List News</span>
       </v-tab>
       <v-tab>
         <span class="text-capitalize">Draft</span>
       </v-tab>
+      <v-tab>
+        <span class="text-capitalize">History</span>
+      </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <ListArticle :articles="articles" />
+        <ListArticle :articles="articles" class="mt-4" />
         <v-pagination
           class="d-flex justify-end"
           :length="totalPages"
@@ -30,7 +27,7 @@
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>
-        <Draft :drafts="drafts" @updateListDraft="updateListDraft" />
+        <Draft :drafts="drafts" @updateListDraft="updateListDraft" class="mt-4" />
         <v-pagination
           class="d-flex justify-end"
           prev-icon="mdi-menu-left"
@@ -40,20 +37,25 @@
           @input="getDraftBaseOnPage"
         ></v-pagination>
       </v-tab-item>
+      <v-tab-item>
+        <History class="mt-4" :history="drafts"></History>
+      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import HeaderContent from "@/containers/HeaderContent";
 import ListArticle from "./list/article";
 import Draft from "./list/draft";
-import HeaderContent from "../../../containers/HeaderContent";
+import History from "./list/history";
 export default {
   components: {
+    HeaderContent,
     ListArticle,
     Draft,
-    HeaderContent
+    History
   },
   computed: {
     ...mapState(["user"])
@@ -61,6 +63,13 @@ export default {
   data() {
     return {
       tab: null,
+      list: [
+        {
+          text: "News",
+          disabled: false,
+          href: "editor"
+        }
+      ],
       articles: [],
       drafts: [],
       totalPages: 0,
@@ -179,7 +188,7 @@ export default {
 
 <style lang="sass" scoped>
 .article
-	&__label
-		font-size: 24px
-		font-weight: 500
+  &__label
+    font-size: 24px
+    font-weight: 500
 </style>

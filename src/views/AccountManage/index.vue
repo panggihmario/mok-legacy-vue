@@ -5,8 +5,7 @@
         color="carmine"
         class="white--text"
         @click="handleClick('create')"
-        >Create Account</custom-button
-      >
+      >Create Account</custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -29,15 +28,11 @@
             @change="filterByStatus"
             clearable
           />
-        </div> -->
+        </div>-->
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input
-            placeholder="Search"
-            @keyup.enter="onSearch"
-            v-model="payloadSearch"
-          />
+          <custom-input placeholder="Search" @keyup.enter="onSearch" v-model="payloadSearch" />
         </div>
       </v-col>
     </v-row>
@@ -56,12 +51,8 @@
               <img :src="item.photo" />
             </v-avatar>
             <div class="d-flex flex-column">
-              <span class="account-manage__user__title font-weight-medium">{{
-                item.user
-              }}</span>
-              <span class="account-manage__user__subtitle font-weight-light">{{
-                item.role
-              }}</span>
+              <span class="account-manage__user__title font-weight-medium">{{item.user}}</span>
+              <span class="account-manage__user__subtitle font-weight-light">{{item.role}}</span>
             </div>
           </div>
         </template>
@@ -73,8 +64,8 @@
           <custom-button icon @click="moveEdit(item.id)">
             <v-icon small>mdi-pencil</v-icon>
           </custom-button>
-          <custom-button icon @click="handleDelete(item.id)">
-            <v-icon small color="safetyorange">mdi-delete</v-icon>
+          <custom-button icon @click="openModalDelete(item.id)">
+            <v-icon small color="carmine">mdi-delete</v-icon>
           </custom-button>
         </template>
       </v-data-table>
@@ -93,19 +84,32 @@
           ></v-pagination>
         </v-col>
       </v-row>
+
+      <Dialog-Delete
+        title="Yakin menghapus user ini?"
+        description="User yang kamu hapus tidak akan tampil di halaman user lagi"
+        :dialog="dialog"
+        :closeModalDelete="closeModalDelete"
+        :handleDelete="handleDelete"
+      ></Dialog-Delete>
     </div>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import DialogDelete from "@/components/material/DialogDelete";
 import { mapActions } from "vuex";
 export default {
   components: {
-    HeaderContent
+    HeaderContent,
+    DialogDelete
   },
   data() {
     return {
+      idUser: "",
+      dialog: false,
+      loading: false,
       payloadSearch: "",
       items: [
         {
@@ -172,7 +176,7 @@ export default {
   },
   methods: {
     async getByRole() {
-			let payload;
+      let payload;
       if (this.role) {
         payload = {
           ...this.params,
@@ -180,19 +184,19 @@ export default {
         };
       } else {
         payload = {
-					...this.params,
-					sortBy : ""
+          ...this.params,
+          sortBy: ""
         };
       }
-			this.params = payload;
-			const data = {
-				type: "management",
-				param : {
-					page : this.page - 1,
-					...this.params
-				},
-			};
-			const response = await this.getListAdmin(data);
+      this.params = payload;
+      const data = {
+        type: "management",
+        param: {
+          page: this.page - 1,
+          ...this.params
+        }
+      };
+      const response = await this.getListAdmin(data);
     },
     filterByStatus() {
       const payload = {
@@ -213,10 +217,25 @@ export default {
         }
       });
     },
-    async handleDelete(id) {
+    openModalDelete(id) {
+      this.dialog = true;
+      this.idUser = id;
+    },
+    closeModalDelete() {
+      this.dialog = false;
+      this.idUser = "";
+    },
+    async handleDelete() {
+      const id = this.idUser;
       const response = await this.deleteAccount(id);
       if (response.status === 200) {
         this.handleResponseListAdmin();
+        this.dialog = false;
+        this.idUser = "";
+      } else {
+        console.log(response);
+        this.dialog = false;
+        this.idUser = "";
       }
     },
     async onSearch() {
@@ -253,11 +272,11 @@ export default {
     },
     async getDataBaseOnPage() {
       const payload = {
-				type: "management",
-				param : {
-					page : this.page - 1,
-					...this.params
-				},
+        type: "management",
+        param: {
+          page: this.page - 1,
+          ...this.params
+        }
       };
       const response = await this.getListAdmin(payload);
       if (response.status === 200) {
