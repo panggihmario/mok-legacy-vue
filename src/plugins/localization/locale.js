@@ -7,7 +7,8 @@ export default {
 			failed : 'Authorization Failed',
 			username : 'Username',
 			password : 'Password',
-			forgotPassword : 'Lupa Password ?'
+			forgotPassword : 'Lupa Password ?',
+			logout : 'Log Out'
 		}
 	}
 }
