@@ -1,11 +1,11 @@
 <template>
   <div>
-    <HeaderContent label="Buat Channel" :list="items" />
+    <HeaderContent :label="$t('title.channelAdd')" :list="items" />
     <div class="mt-4" />
     <FormChannel 
 			:channel="channel" 
 			@onSubmit="onSubmit" 
-			labelButton="Add Channel"
+			:labelButton="$t('button.channelAdd')"
 			:loading="loading"
 		/>
 		<v-snackbar top right  v-model="alertSuccess" color="success">

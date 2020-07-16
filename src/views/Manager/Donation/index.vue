@@ -1,10 +1,10 @@
 <template>
   <div>
     <HeaderContent
-      label="List Donasi"
+      :label="$t('title.donation')"
       :list="crumbs"
       :items="items"
-      labelAction="Tambah Donasi"
+      :labelAction="$t('button.donationAdd')"
       @selection="getSelection"
       @click="handleClick"
     >
@@ -18,7 +18,7 @@
       <template v-slot:item.donationImage="{item}">
         <div class="image__container d-flex align-center">
           <div v-if="item.media.length > 0" class="image__box">
-            <v-img :src="item.media[0].thumbnail" height="100%" />
+            <v-img :src="item.media[0].url" height="100%" />
           </div>
           <div v-else class="image__box"></div>
         </div>
@@ -197,7 +197,7 @@ export default {
       this.$router.push("/donation/create");
     },
     async handleResponse() {
-      const response = await this.getListDonation();
+			const response = await this.getListDonation();
       if (response.status === 200) {
         const data = response.data.data.content;
         const formatData = data.map(d => {
@@ -210,7 +210,7 @@ export default {
             donationTarget: d.targetAmount,
             startDate: newS,
             endDate: newD,
-            media: d.media,
+            media: d.medias,
             id: d.id
           };
         });

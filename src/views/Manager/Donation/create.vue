@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="Buat Donation" :list="crumbs" />
+    <HeaderContent :label="$t('title.donationAdd')" :list="crumbs" />
 		<FormDonation
 			:donation="donation"
 			:listVerifier="listVerifier"
@@ -9,6 +9,7 @@
 			:organizers="organizers"
 			:donationPhoto="donationPhoto"
 			:loading="loading"
+			:labelButton="$t('button.donationCreate')"
 			@getParamOrganizer="getParamOrganizer"
 			@getParamsVerifier="getParamsVerifier"
 			@handleSubmit="handleSubmit"

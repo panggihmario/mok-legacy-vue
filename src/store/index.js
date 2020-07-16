@@ -17,5 +17,19 @@ export default new Vuex.Store({
 		post : post,
 		donation : donation,
 		account
+	},
+	actions : {
+		getWithToken (ctx, params) {
+			return this._vm.$httpWithToken().get(params)
+		},
+		postWithToken (ctx, params) {
+			return this._vm.$httpWithToken().post(params.url, params.data)
+		},
+		putWithToken (ctx, params) {
+			return this._vm.$httpWithToken().put(params.url, params.data)
+		},
+		deleteWithToken (ctx, params) {
+			return this._vm.$httpWithToken().delete(params)
+		}
 	}
 })

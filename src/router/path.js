@@ -37,7 +37,6 @@ import CreateFeed from '../views/Post/createFeed.vue';
 const routes = [
 	{
 		path: '/',
-		name: 'Home',
 		component: Home,
 		meta: {
 			requireAuth: false

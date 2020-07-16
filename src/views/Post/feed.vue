@@ -8,8 +8,7 @@
       >Post Product</custom-button>
       <custom-button color="carmine" class="white--text" @click="moveToCreate">Post Feed</custom-button>
     </HeaderContent>
-
-    <v-data-table :headers="headers" hide-default-footer :items="itemsDummy" class="grey--text">
+    <v-data-table :headers="headers" hide-default-footer :items="items" class="grey--text">
       <template v-slot:item.image="{ item }">
         <custom-button
           color="carmine"
@@ -187,7 +186,6 @@ export default {
         this.idUser = "";
         this.loading = false;
       } else {
-        console.log(response);
         this.dialogDelete = false;
         this.idUser = "";
         this.loading = false;
@@ -202,41 +200,27 @@ export default {
       };
       this.getResponseFeed(payload);
     },
-    async getResponseFeed(payload) {
-      const response = await this.getListFeed(payload);
-      if (response.status === 200) {
-        const content = response.data.data.content;
-        this.totalPage = response.data.data.totalPages;
-        const formatingContent = content.map(c => {
-          const newDte = this.formatingDate(c.createAt);
-          if (c.typePost === "seleb") {
-            return {
-              date: newDte,
-              description: c.post.description,
-              media: c.post.media,
-              id: c.id,
-              type: c.typePost
-            };
-          } else if (c.typePost === "product") {
-            return {
-              date: newDte,
-              description: c.postProduct.name || "",
-              media: c.postProduct.media,
-              id: c.id,
-              type: c.typePost
-            };
-          } else {
-            return {
-              date: newDte,
-              id: c.id,
-              type: c.typePost
-            };
-          }
+    getResponseFeed(payload) {
+      return this.getListFeed(payload)
+        .then(response => {
+					console.log(response)
+          const content = response.data.data.content;
+          this.totalPage = response.data.data.totalPages;
+          const formatingContent = content.map(c => {
+            const newDte = this.formatingDate(c.createAt);
+						return {
+							date : newDte,
+							description : c.post.description,
+							id : c.id,
+							type : c.typePost,
+							media : c.post.medias
+						}
+          });
+          this.items = formatingContent;
+        })
+        .catch(error => {
+          console.log(error);
         });
-        this.items = formatingContent;
-      } else {
-        console.log(response);
-      }
     },
     handleListFeed() {
       const id = localStorage.getItem("persada_id");

@@ -21,7 +21,7 @@
       <v-row>
         <v-col cols="6">
           <custom-input
-            label="Name"
+            :label="$t('input.name')"
             background-color="whitesnow"
             v-model="data.name"
             :value="data.name"
@@ -29,7 +29,7 @@
             name="Name"
           />
           <custom-select
-            label="Gender"
+            :label="$t('input.gender')"
             name="Gender"
             :items="genderType"
             v-model="data.gender"
@@ -37,14 +37,14 @@
             rules="required"
           />
           <custom-input
-            label="Username"
+            :label="$t('input.username')"
             name="Username"
             :value="data.username"
             v-model="data.username"
             rules="required"
           />
           <custom-input
-            label="Password"
+            :label="$t('input.password')"
             name="Password"
             :value="data.password"
             v-model="data.password"
@@ -65,14 +65,14 @@
 						:error-messages="errorPassword"
           />
           <custom-input
-            label="Email"
+            :label="$t('input.email')"
             name="Email"
             :value="data.email"
             v-model="data.email"
             rules="required|email"
           />
           <custom-input
-            label="Phone"
+            :label="$t('input.phone')"
             name="Phone"
             :value="data.mobile"
             v-model="data.mobile"
@@ -99,13 +99,14 @@
               ></v-checkbox>
             </div>
           </div>
-
           <custom-button
-            :loading="loading"
-            color="carmine"
-            class="white--text"
-            type="submit"
-            >Save</custom-button
+						:loading="loading"
+						color="carmine"
+						class="white--text"
+						type="submit"
+          >	
+						{{ $t('button.save') }}
+					</custom-button
           >
         </v-col>
         <v-col cols="6"></v-col>

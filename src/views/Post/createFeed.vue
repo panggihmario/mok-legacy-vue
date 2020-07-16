@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import HeaderContent from "../../containers/HeaderContent";
 export default {
   components: {
@@ -75,11 +75,16 @@ export default {
 			snackbar: false,
 			status : ''
     };
-  },
+	},
+	computed : {
+		...mapState({
+			role : state => state.authentication.role
+		})
+	},
   methods: {
     ...mapActions({
       getChannel: "channel/getListChannel",
-			postFeed: "post/postFeed",
+			postFeed: "post/posting",
 			getAllChannel : "channel/getAllChannel"
     }),
     getResponse(payload) {
@@ -94,14 +99,33 @@ export default {
 					this.payload.media.push(payload.response)
         }
       }
-    },
+		},
+		getTypeUser (role) {
+			switch (role) {
+				case 'ROLE_USER' : return 'social'
+				break;
+				default : return 'seleb'
+			}
+		},
     async handleSubmit() {
-      const params = {
-        typePost: "seleb",
-        post: this.payload
-      };
+			const typeRole = this.getTypeUser(this.role)
+			const params = {
+				typePost : typeRole,
+				post : {
+					type : 'social',
+					medias : this.payload.media,
+					channel : {
+						id : this.payload.channelId
+					},
+					description : this.payload.description
+				}
+			}
+			const payload = {
+				typePost : 'social',
+				params
+			}
 			this.loading = true
-			const response = await this.postFeed(params);
+			const response = await this.postFeed(payload);
       if (response.status === 201) {
 				this.image = "";
 				this.video = ""
@@ -130,7 +154,6 @@ export default {
           };
         });
         this.items = formatResponse;
-        console.log(responseData);
       } else {
         return response;
       }

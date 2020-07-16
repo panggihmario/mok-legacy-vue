@@ -1,11 +1,13 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account">
+    <HeaderContent :list="items" :label="$t('title.account')">
       <custom-button
         color="carmine"
         class="white--text"
         @click="handleClick('create')"
-      >Create Account</custom-button>
+      >
+				{{ $t('button.accountCreate') }}
+			</custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">

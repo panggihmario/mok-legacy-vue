@@ -2,7 +2,7 @@
   <div>
     <HeaderContent
       :list="items"
-      label="Create Management Account"
+      :label="$t('title.accountCreate')"
       @click="handleClick"
     />
 		<FormAdmin

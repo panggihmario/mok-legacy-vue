@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Create User" />
+    <HeaderContent :list="items" :label="$t('title.userCreate')" />
 		<FormNews
 			:data="data"
 			:loading="loading"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account" />
+    <HeaderContent :list="items" :label="$t('title.accountEdit')" />
     <FormAdmin :data="data" :loading="loading" @onSubmit="onSubmit" />
     <v-snackbar top right v-model="alertError" color="error">
       {{ errorMessage }}

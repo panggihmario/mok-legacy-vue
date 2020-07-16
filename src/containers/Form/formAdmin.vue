@@ -21,7 +21,7 @@
         <v-col cols="6">
           <div class="d-flex justify-space-between">
             <custom-select
-              label="Pilih jenis akun"
+              :label="$t('input.chooseAccount')"
               placeholder="Pilih jenis akun"
               v-model="data.accountType"
               :items="listRole"
@@ -102,7 +102,9 @@
             color="carmine"
             class="white--text"
             type="submit"
-            >Save</custom-button
+        	>
+						{{ $t('button.save') }}
+					</custom-button
           >
         </v-col>
         <v-col cols="6"></v-col>

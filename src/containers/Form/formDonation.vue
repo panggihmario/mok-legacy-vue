@@ -88,7 +88,7 @@
           type="submit"
           class="white--text"
           :loading="loading"
-          >Buat Donasi</custom-button
+          >{{labelButton}}</custom-button
         >
       </v-col>
     </v-row>
@@ -171,7 +171,10 @@ export default {
     },
     loading: {
       type: Boolean
-    }
+		},
+		labelButton : {
+			type : String
+		}
   },
   computed: {
     responseOrganizer: {

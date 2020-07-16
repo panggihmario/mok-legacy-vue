@@ -4,6 +4,7 @@ export default {
 		user: localStorage.getItem('persada_username') || '',
 		token: localStorage.getItem('persada_token') || '',
 		accountId : "",
+		role : localStorage.getItem('persada_role') || {}
 	},
 	mutations : {
 		setUser(state, payload) {
@@ -20,6 +21,9 @@ export default {
 		},
 		setAccountId(state, payload){
 			state.accountId = payload
+		},
+		setRole(state, payload) {
+			state.role = payload
 		}
 	},
 	actions: {
@@ -30,11 +34,14 @@ export default {
 				const token =	response.data.token
 				const id = response.data.accountId
 				const username = response.data.userName
+				const role = response.data.role
 				context.commit('setUser', username)
 				context.commit('setAccountId', id)
 				localStorage.setItem("persada_token", token)
 				localStorage.setItem("persada_id" , id)
 				localStorage.setItem("persada_username", username)
+				localStorage.setItem("persada_role", role)
+				context.commit('setRole',role)
 				context.commit('setToken',token)
 				return response
 			} catch (error) {

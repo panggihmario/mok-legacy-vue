@@ -1,11 +1,13 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit User Account">
+    <HeaderContent :list="items" :label="$t('title.user')">
       <custom-button
         color="carmine"
         class="white--text"
         @click="handleClick('create')"
-      >Create Account</custom-button>
+      >
+				{{ $t('button.userCreate') }}
+			</custom-button>
     </HeaderContent>
 
     <v-row dense class="mt-8">

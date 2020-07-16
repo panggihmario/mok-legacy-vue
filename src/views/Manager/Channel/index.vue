@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="List Channel">
+    <HeaderContent :list="items" :label="$t('title.channel')">
       <custom-input
         placeholder="Search channel"
         class="mr-4"
@@ -8,7 +8,7 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick">Tambah Channel</custom-button>
+      <custom-button class="white--text" color="carmine" @click="handleClick">{{ $t('button.channelAdd') }}</custom-button>
     </HeaderContent>
 
     <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
