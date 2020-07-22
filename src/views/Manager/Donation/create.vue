@@ -93,7 +93,7 @@ export default {
 			this.verifier = payload
 		},
 		getDonationPhoto(payload) {
-			this.donationPhoto = payload.thumbnail
+			this.donationPhoto = payload.url
 			this.donation.media.splice(0,1,  payload)
 		},
     async handleSubmit(payload) {

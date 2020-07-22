@@ -106,5 +106,15 @@ export default [
 			// 	path : '/post/product'
 			// }
 		]
+	},
+	{
+		title : 'Order',
+		action : 'post_add',
+		items : [
+			{
+				title : 'Order',
+				path : '/order/cancel'
+			}
+		]
 	}
 ]

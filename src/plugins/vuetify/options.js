@@ -34,6 +34,9 @@ export default {
 			},
 			link : {
 				component : 'icon-link'
+			},
+			close : {
+				component : 'icon-close'
 			}
 		},
 		iconfont : 'mdi' || 'md'

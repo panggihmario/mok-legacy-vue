@@ -33,6 +33,7 @@ import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
 import PostProduct from '../views/Post/product.vue';
 import CreateFeed from '../views/Post/createFeed.vue';
+import CancelOrder from '../views/Order/cancelOrder.vue';
 
 const routes = [
 	{
@@ -216,6 +217,11 @@ const routes = [
 				path : '/post/product',
 				name : 'postProduct',
 				component : PostProduct
+			},
+			{
+				path : '/order/cancel',
+				name : 'orderCancel',
+				component : CancelOrder
 			}
 		]
 	},

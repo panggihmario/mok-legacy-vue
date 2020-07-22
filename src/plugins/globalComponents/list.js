@@ -8,6 +8,7 @@ import TextEditor from '@/components/material/TextEditor';
 import Upload from '../../components/material/Upload';
 import IconUpload from '../../components/icon/iconUpload.vue';
 import IconInput from '../../components/material/IconInput';
+import IconClose from '../../components/icon/iconClose.vue';
 import IconLink from '../../components/icon/iconLink.vue';
 import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
@@ -64,6 +65,10 @@ export default [
 	{
 		name : 'icon-link',
 		component : IconLink
+	},
+	{
+		name : 'icon-close',
+		component : IconClose
 	},
 	{
 		name : 'label-field',

@@ -203,7 +203,7 @@ export default {
     },
     getDonationImage(payload) {
       if (payload.status === "success") {
-        const urlProfile = payload.response.thumbnail;
+        const urlProfile = payload.response.url;
         const urlData = payload.response;
         this.$emit("getDonationPhoto", urlData);
         // this.donation.media.push(payload.response);

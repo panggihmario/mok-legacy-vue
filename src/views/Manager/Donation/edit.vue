@@ -122,10 +122,10 @@ export default {
         const x = moment.unix(z).format("YYYY-MM-DD");
         this.donation.title = data.title;
 				this.donation.description = data.description;
-				if(data.media.length > 0) {
-					this.donationPhoto = data.media[0].thumbnail;
+				if(data.medias.length > 0) {
+					this.donationPhoto = data.medias[0].url;
 				}
-        this.donation.media = data.media;
+        this.donation.media = data.medias;
         this.donation.organizer.id = data.organizer.id;
         this.donation.verifier.id = data.verifier.id;
         this.verifier = data.verifier.name;
@@ -147,7 +147,7 @@ export default {
       this.verifier = payload;
     },
     getDonationPhoto(payload) {
-			this.donationPhoto = payload.thumbnail;
+			this.donationPhoto = payload.url;
 			const newImage = this.donation.media.map(d => {
 				return {
 					id : d.id,
