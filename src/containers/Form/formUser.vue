@@ -11,7 +11,7 @@
             >Unggah foto profil</span
           >
           <custom-upload
-            typeUpload="account"
+            typeUpload="accounts"
             id="create"
             @response="getResponse"
           />

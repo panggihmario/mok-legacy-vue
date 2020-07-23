@@ -57,9 +57,9 @@ export default {
 			}
 			this.loadingUpload = true
 			this.$emit("response", result);
-			axios.post(`https://test.api.persada-entertainment.com/upload/v0/${this.typeUpload}`, form)
+			const uploadApi = process.env.VUE_APP_UPLOAD
+			axios.post(`${uploadApi}/${this.typeUpload}`, form)
         .then(response => {
-					console.log(response)
           result = {
             response: response.data,
             status: "success"

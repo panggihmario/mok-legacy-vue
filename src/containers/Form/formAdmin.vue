@@ -13,7 +13,7 @@
           <custom-upload
             id="create"
             @response="getResponse"
-            typeUpload="account"
+            typeUpload="accounts"
           />
         </div>
       </div>
