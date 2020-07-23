@@ -38,7 +38,7 @@ export default {
 		},
 		typeUpload : {
 			type : String,
-			default : 'media'
+			default : 'medias'
 		}
   },
   methods: {
@@ -57,10 +57,11 @@ export default {
 			}
 			this.loadingUpload = true
 			this.$emit("response", result);
-			this.$http().post(`upload?type=${this.typeUpload}`, form)
+			axios.post(`https://test.api.persada-entertainment.com/upload/v0/${this.typeUpload}`, form)
         .then(response => {
+					console.log(response)
           result = {
-            response: response.data.data,
+            response: response.data,
             status: "success"
 					};
 					this.loadingUpload = false

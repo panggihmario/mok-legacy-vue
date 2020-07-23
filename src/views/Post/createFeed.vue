@@ -88,15 +88,16 @@ export default {
 			getAllChannel : "channel/getAllChannel"
     }),
     getResponse(payload) {
+			console.log(payload)
 			this.status = payload.status
       if (payload.status === "success") {
 				this.status = payload.status
         if (payload.response.type === "image") {
           this.image = payload.response.url;
-          this.payload.media.push(payload.response);
+          this.payload.media.splice(0,1,payload.response);
         } else {
 					this.video = payload.response.url;
-					this.payload.media.push(payload.response)
+					this.payload.media.splice(0,1,payload.response)
         }
       }
 		},
@@ -114,6 +115,7 @@ export default {
 				post : {
 					type : 'social',
 					medias : this.payload.media,
+					product : {},
 					channel : {
 						id : this.payload.channelId
 					},

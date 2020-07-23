@@ -40,8 +40,8 @@
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
         <div v-if="dialogMedia">
-          <v-img :src="dialogMedia.url" v-if="dialogMedia.type === 'image'" />
-          <video width="100%" height="100%" v-else :src="dialogMedia.url" controls autoplay />
+          <video width="100%" height="100%" v-if="dialogMedia.type === 'video'" :src="dialogMedia.url" controls autoplay />
+          <v-img :src="dialogMedia.url" v-else/>
         </div>
         <div v-else>no media</div>
       </v-card>
@@ -152,6 +152,7 @@ export default {
       deletePost: "post/deletePost"
     }),
     showMedia(payload) {
+			console.log(payload)
       this.dialog = true;
       this.dialogMedia = payload.media[0];
     },

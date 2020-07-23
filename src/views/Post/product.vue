@@ -113,16 +113,18 @@ export default {
     }),
     async handleSubmit() {
 			const params = {
-				typePost : "product",
+				typePost : "seleb",
 				post: {
-          type: "product",
-          name: this.params.name,
-          price: this.params.price,
+          type: "social",
+					product : {
+						name : this.params.name,
+						price : this.params.price,
+						measurement : this.params.measurement
+					},
           description: this.params.description,
           color: this.params.color,
           size: this.params.size,
 					medias: this.params.media,
-					measurement : this.params.measurement
         }
 			}
 			const payload = {
