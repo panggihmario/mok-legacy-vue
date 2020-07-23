@@ -12,7 +12,7 @@
         </v-chip>
       </div>
 			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >0.2.5</div>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >0.2.6</div>
     </div>
     <v-list  nav dense>
       <v-list-group

@@ -27,6 +27,7 @@
     "register-service-worker": "^1.6.2",
     "vee-validate": "^3.2.5",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.18.2",
     "vue-router": "^3.1.5",
     "vue-wysiwyg": "^1.7.2",
     "vuetify": "^2.2.30",
