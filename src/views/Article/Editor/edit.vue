@@ -54,7 +54,7 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        media: []
+        medias: []
       },
       propsImage: ""
     };
@@ -72,7 +72,7 @@ export default {
       if (response.status === 200) {
         const responseData = response.data.data;
         this.payloadNews = responseData;
-        this.propsImage = responseData.media[0].thumbnail;
+        this.propsImage = responseData.medias[0].thumbnail.medium;
       }
     },
     async handleDraft() {
