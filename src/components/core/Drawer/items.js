@@ -16,11 +16,17 @@ export default [
 		items: [
 			{
 				title: "List Management",
-				path: "/admin"
+				path: "/admin",
+				role : [
+					'ROLE_ADMINISTRATOR'
+				]
 			},
 			{
 				title: "List User",
-				path: "/user"
+				path: "/user",
+				role : [
+					'ROLE_ADMINISTRATOR'
+				]
 			}
 		]
 	},
@@ -30,11 +36,19 @@ export default [
 		items: [
 			{
 				title: "List Channel",
-				path: '/'
+				path: '/',
+				role : [
+					'ROLE_ADMINISTRATOR',
+					'ROLE_ADMIN_SOCIAL'
+				]
 			},
 			{
 				title: 'List Donation',
-				path: '/donation'
+				path: '/donation',
+				role : [
+					'ROLE_ADMINISTRATOR',
+					'ROLE_ADMIN_SOCIAL'
+				]
 			},
 			// {
 			// 	title: 'Reported Account',
@@ -49,11 +63,19 @@ export default [
 		items: [
 			{
 				title: 'Publisher',
-				path: '/publisher'
+				path: '/publisher',
+				role : [
+					'ROLE_SUPERVISOR',
+					'ROLE_ADMINISTRATOR'
+				]
 			},
 			{
 				title: 'Editor',
-				path: '/editor'
+				path: '/editor',
+				role : [
+					'ROLE_EDITOR',
+					'ROLE_ADMINISTRATOR'
+				]
 			},
 		]
 	},
@@ -99,7 +121,11 @@ export default [
 		items : [
 			{
 				title : 'Feed',
-				path : '/post'
+				path : '/post',
+				role : [
+					'ROLE_SELEB',
+					'ROLE_ADMINISTRATOR'
+				]
 			},
 			// {
 			// 	title : 'Product',
@@ -113,7 +139,11 @@ export default [
 		items : [
 			{
 				title : 'Order',
-				path : '/order/cancel'
+				path : '/order/cancel',
+				role : [
+					'ROLE_ADMINISTRATOR',
+					
+				]
 			}
 		]
 	}
