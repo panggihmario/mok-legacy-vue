@@ -13,7 +13,7 @@
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">
         <div class="d-flex align-center mr-12">
-          <span>Total User&nbsp;:&nbsp;{{ data.length }}</span>
+          <span>Total User&nbsp;:&nbsp;{{ totalUser }}</span>
         </div>
         <!-- <div class="d-flex align-center font-weight-medium">
           <span class="mr-4">Filter</span>
@@ -72,6 +72,7 @@
         :dialog="dialog"
         :closeModalDelete="closeModalDelete"
         :handleDelete="handleDelete"
+				:loading="loading"
       ></Dialog-Delete>
       <div class="mt-8">
         <v-pagination
@@ -116,7 +117,8 @@ export default {
       sort: ["Oldest", "Newest"],
       filter: ["Today", "This Month"],
       page: 1,
-      pageCount: 0,
+			pageCount: 0,
+			totalUser : 0,
       itemsPerPage: 10,
       selected: [],
       headers: [
@@ -180,14 +182,14 @@ export default {
       this.loading = true;
       const response = await this.deleteUser(id);
       if (response.status === 200) {
-        this.dialogDelete = false;
         this.loading = false;
-        this.idUser = "";
+				this.idUser = "";
+				this.dialog = false
         this.getDataBaseOnPage();
       } else {
         this.loading = false;
-        this.idUser = "";
-        this.dialogDelete = false;
+				this.idUser = "";
+				this.dialog = false
       }
     },
     async onSearch() {
@@ -214,7 +216,10 @@ export default {
       this.$router.push(`/user/${params}`);
     },
     formattingResponse(response) {
-      const totalData = response.data.data.totalPages;
+			const totalDataUser = response.data.data.totalElements;
+			this.totalUser = totalDataUser
+			this.totalPages = totalDataUser
+			const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const responseData = response.data.data.content;
       const formatResponse = responseData.map(r => {
