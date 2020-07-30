@@ -18,14 +18,14 @@ export default [
 				title: "List Management",
 				path: "/admin",
 				role : [
-					'ROLE_ADMINISTRATOR'
+					'ROLE_ADMIN'
 				]
 			},
 			{
 				title: "List User",
 				path: "/user",
 				role : [
-					'ROLE_ADMINISTRATOR'
+					'ROLE_ADMIN'
 				]
 			}
 		]
@@ -38,7 +38,7 @@ export default [
 				title: "List Channel",
 				path: '/',
 				role : [
-					'ROLE_ADMINISTRATOR',
+					'ROLE_ADMIN',
 					'ROLE_ADMIN_SOCIAL'
 				]
 			},
@@ -46,7 +46,7 @@ export default [
 				title: 'List Donation',
 				path: '/donation',
 				role : [
-					'ROLE_ADMINISTRATOR',
+					'ROLE_ADMIN',
 					'ROLE_ADMIN_SOCIAL'
 				]
 			},
@@ -66,7 +66,7 @@ export default [
 				path: '/publisher',
 				role : [
 					'ROLE_SUPERVISOR',
-					'ROLE_ADMINISTRATOR'
+					'ROLE_ADMIN'
 				]
 			},
 			{
@@ -74,7 +74,7 @@ export default [
 				path: '/editor',
 				role : [
 					'ROLE_EDITOR',
-					'ROLE_ADMINISTRATOR'
+					'ROLE_ADMIN'
 				]
 			},
 		]
@@ -124,7 +124,7 @@ export default [
 				path : '/post',
 				role : [
 					'ROLE_SELEB',
-					'ROLE_ADMINISTRATOR'
+					'ROLE_ADMIN'
 				]
 			},
 			// {
@@ -141,7 +141,7 @@ export default [
 				title : 'Order',
 				path : '/order/cancel',
 				role : [
-					'ROLE_ADMINISTRATOR',
+					'ROLE_ADMIN',
 					
 				]
 			}
