@@ -16,6 +16,7 @@ import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import ReviewPublisher from '../views/Article/Publisher/review.vue'
+import EditPublisher from '../views/Article/Publisher/edit.vue'
 import Editor from '../views/Article/Editor';
 import EditorArticle from '../views/Article/Editor/Article';
 import Product from '../views/Shop/Product';
@@ -162,6 +163,11 @@ const routes = [
 				path :'/pubisher/review/:id',
 				name : 'reviewPublisher',
 				component : ReviewPublisher
+			},
+			{
+				path : '/publisher/:id',
+				name : 'editPublisher',
+				component : EditPublisher
 			},
 			{
 				path: '/editor',

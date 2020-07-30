@@ -84,7 +84,7 @@ export default {
 	},
 	computed :{
 		status () {
-			if(this.payloadNews.media.length > 1) {
+			if(this.payloadNews.medias.length > 1) {
 				return true
 			}else{
 				return false
@@ -100,8 +100,8 @@ export default {
 	methods : {
 		getImage(payload) {
       if (payload.status === "success") {
-        this.image = payload.response.thumbnail;
-        this.payloadNews.media.push(payload.response);
+        this.image = payload.response.thumbnail.medium;
+        this.payloadNews.medias.splice(0,1,payload.response);
       }
     }
 	},

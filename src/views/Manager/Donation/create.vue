@@ -75,7 +75,7 @@ export default {
           id: ""
         },
         recipientName: "",
-        media: [],
+        medias: [],
         expiredAt: ""
       }
     };
@@ -94,7 +94,7 @@ export default {
 		},
 		getDonationPhoto(payload) {
 			this.donationPhoto = payload.url
-			this.donation.media.splice(0,1,  payload)
+			this.donation.medias.splice(0,1,  payload)
 		},
     async handleSubmit(payload) {
 			const x = moment(payload.expiredAt, 'YYYY-MM-DD').unix();

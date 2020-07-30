@@ -12,7 +12,7 @@
         </v-chip>
       </div>
 			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >0.2.7</div>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >1.0.0-rc0</div>
     </div>
     <v-list  nav dense>
       <v-list-group
@@ -29,11 +29,19 @@
 						</div>
           </v-list-item-content>
         </template>
-        <v-list-item  :to="sub.path" v-for="(sub, i) in item.items" :key="i">
-          <v-list-item-content>
+				<div
+					v-for="(sub, i) in item.items" 
+					:key="i"
+				>
+        <v-list-item   
+					:to="sub.path" 
+					:disabled="checkRole(sub.role)"
+				>
+          <v-list-item-content disabled >
 						<div class="drawer__label drawer__sub ml-3"> {{ sub.title }} </div>
           </v-list-item-content>
         </v-list-item>
+				</div>
       </v-list-group>
     </v-list>
     <div class="drawer__button">
@@ -57,9 +65,14 @@ export default {
   data() {
     return {
       selected: 0,
-      items: listNavigation,
+			items: listNavigation,
+			roleUser : ''
     };
-  },
+	},
+	mounted () {
+		const role = localStorage.getItem('persada_role')
+		this.roleUser = role
+	},
   methods: {
     handleLogout() {
       this.$router.push("/auth");
@@ -70,6 +83,18 @@ export default {
 		}),
 		getToken(){
 			const token = localStorage.getItem('persada_token')
+		},
+		checkRole(roles) {
+			const status = roles.filter(r => {
+				if(r === this.roleUser) {
+					return r
+				}
+			})
+			if(status[0] === this.roleUser) {
+				return false
+			}else{
+				return true
+			}
 		}
 	},
 };

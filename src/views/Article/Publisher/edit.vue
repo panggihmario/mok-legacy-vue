@@ -3,34 +3,15 @@
     <HeaderContent :list="crumbs" label="News">
       <div>
         <custom-button 
-					@click="onReject" 
-					class="carmine--text mr-4"
-					:loading="loading"
-        >
-					Reject
-				</custom-button>
-        <custom-button 
 					@click="onPublish" 
 					color="primary"
 					:loading="loadingPublish"
-        >Publish</custom-button
         >
+					Publish
+				</custom-button>
       </div>
     </HeaderContent>
-    <!-- <FormNews :payloadNews="payloadNews" :propsImage="propsImage" /> -->
-		<div class="review__image">
-			<v-img
-				:src="imageNews"
-				:lazy-src="imageNews"
-			/>
-		</div>
-		<div class="review__content">
-			<p class="review__content__header black--text">
-				{{headline}}
-			</p>
-			<p  v-html="content" class="review__content__description black--text">
-			</p>
-		</div>
+    <FormNews :payloadNews="payloadNews" :propsImage="propsImage" />
 		<v-snackbar top v-model="alertSuccess" color="success">
 			{{successMessage}}
     </v-snackbar>
@@ -72,7 +53,7 @@ export default {
 					exact : true
 				},
 				{
-					text : 'Review News',
+					text : 'Edit News',
 					disabled : true
 				}
 			]
@@ -93,9 +74,8 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
-				if(responseData.medias.length > 0){
-					this.imageNews = responseData.medias && responseData.medias[0].url
-				}
+				this.propsImage = responseData.medias[0].url
+				this.imageNews = responseData.medias[0].url
 				this.headline = responseData.headline
 				this.content = responseData.content
         this.payloadNews = responseData;
@@ -127,25 +107,26 @@ export default {
 				},3000)
       }
     },
-    async onReject() {
-      const params = {
-        id: this.$route.params.id,
-        data: this.payloadNews
-      };
-			const response = await this.rejectNews(params);
-			this.loading = true
-      if (response.status === 200) {
-				this.loading = false
-					this.alertSuccess = true
-					this.successMessage = 'Reject Success'
-				setTimeout(() => {
-					this.$router.push("/publisher");
-					this.alertSuccess = false
-				},1500)
-      } else {
-				this.loading = false
-      }
-    }
+    // async onReject() {
+    //   const params = {
+    //     id: this.$route.params.id,
+    //     data: this.payloadNews
+    //   };
+		// 	const response = await this.rejectNews(params);
+		// 	this.loading = true
+    //   if (response.status === 200) {
+		// 		this.loading = false
+		// 			this.alertSuccess = true
+		// 			this.successMessage = 'Reject Success'
+		// 		setTimeout(() => {
+		// 			this.$router.push("/publisher");
+		// 			this.alertSuccess = false
+		// 		},1500)
+    //   } else {
+		// 		console.log("publish", response);
+		// 		this.loading = false
+    //   }
+    // }
   },
   mounted() {
     this.handleResponse();
