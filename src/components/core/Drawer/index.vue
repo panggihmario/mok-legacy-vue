@@ -12,7 +12,7 @@
         </v-chip>
       </div>
 			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >1.0.0-rc1</div>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >1.0.0-rc2</div>
     </div>
     <v-list  nav dense>
       <v-list-group
@@ -35,7 +35,7 @@
 				>
         <v-list-item   
 					:to="sub.path" 
-					:disabled="checkRole(sub.role)"
+				
 				>
           <v-list-item-content disabled >
 						<div class="drawer__label drawer__sub ml-3"> {{ sub.title }} </div>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+	// :disabled="checkRole(sub.role)"
 import { mapState, mapMutations, mapActions } from "vuex";
 import listNavigation from './items'
 export default {

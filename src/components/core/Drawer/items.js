@@ -124,7 +124,8 @@ export default [
 				path : '/post',
 				role : [
 					'ROLE_SELEB',
-					'ROLE_ADMIN'
+					'ROLE_ADMIN',
+					'ROLE_USER'
 				]
 			},
 			// {
