@@ -152,7 +152,6 @@ export default {
       deletePost: "post/deletePost"
     }),
     showMedia(payload) {
-			console.log(payload)
       this.dialog = true;
       this.dialogMedia = payload.media[0];
     },
@@ -204,7 +203,6 @@ export default {
     getResponseFeed(payload) {
       return this.getListFeed(payload)
         .then(response => {
-					console.log(response)
           const content = response.data.data.content;
           this.totalPage = response.data.data.totalPages;
           const formatingContent = content.map(c => {
