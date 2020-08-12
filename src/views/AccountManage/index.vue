@@ -2,7 +2,7 @@
   <div>
     <HeaderContent :list="items" :label="$t('title.account')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
       >
@@ -59,15 +59,15 @@
           </div>
         </template>
         <template v-slot:item.status="{ item }">
-          <span v-if="item.status" class="primary--text">Active</span>
+          <span v-if="item.status" class="kellygreen--text">Active</span>
           <span v-else class="silver--text">Inactive</span>
         </template>
         <template v-slot:item.manage="{ item }">
           <custom-button icon @click="moveEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon x-small>$edit</v-icon>
           </custom-button>
           <custom-button icon @click="openModalDelete(item.id)">
-            <v-icon small color="carmine">mdi-delete</v-icon>
+            <v-icon x-small>$delete</v-icon>
           </custom-button>
         </template>
       </v-data-table>
@@ -120,7 +120,8 @@ export default {
           href: "channel"
         },
         {
-          text: "List Management"
+					text: "List Management",
+					disabled : true
         }
       ],
       params: {},

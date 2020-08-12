@@ -4,6 +4,22 @@ export default {
 		pathNews: 'admin/news'
 	},
 	actions: {
+		createCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().post(`${state.pathNews}/category`, payload)
+		},
+		getCategoryNews ({state}) {
+			const	response = this._vm.$httpWithToken().get(`${state.pathNews}/category`)
+			return response
+		},
+		getCategoryNewsById({state}, payload) {
+			return this._vm.$httpWithToken().get(`${state.pathNews}/category/${payload}`)
+		},
+		editCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().put(`${state.pathNews}/category`, payload)
+		},
+		deleteCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().delete(`${state.pathNews}/category/${payload}`)
+		},
 		async getListNews({ state }, payload) {
 			let response;
 			try {

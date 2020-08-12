@@ -5,7 +5,7 @@
       <v-breadcrumbs class="header__breadcrumbs" :items="list">
         <template v-slot:item="{ item }">
           <v-breadcrumbs-item :href="item.href" :disabled="item.disabled">
-            <div :class="!item.disabled && 'carmine--text'">
+            <div :class="!item.disabled && 'primary--text'">
               {{ item.text }}
             </div>
           </v-breadcrumbs-item>

@@ -77,14 +77,14 @@
           name="Receiver Name"
         />
         <custom-button
-          color="carmine"
-          class="white--text mr-6"
+          class="mr-6 grey--text"
           @click="previewResult"
+					color="whitesnow"
         >
           Preview
         </custom-button>
         <custom-button
-          color="carmine"
+          color="primary"
           type="submit"
           class="white--text"
           :loading="loading"

@@ -12,17 +12,26 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-	const isAuthenticated = store.getters['authentication/isAuthentication']
+	let isAuthenticated = ''
+	const data = localStorage.getItem('adminKoanba')
+	const parseData = JSON.parse(data)
+	if(parseData){
+		isAuthenticated = parseData.token
+	}
 	if(to.name !== 'Authentication' && !isAuthenticated ){
 		next({name : 'Authentication'})
-	}else{
-		next()
-		// if(to.name === 'Authentication' && store.getters.isAuthentication ){
-		// 	next ({name : 'Dashboard'})
-		// }else{
-		// 	next()
-		// }
 	}
+	else{
+		if(to.name === 'Authentication' && isAuthenticated ){
+			next({
+				name : 'AccountManage'
+			})
+		}else{
+			next()
+		}
+	}
+
+
 })
 
 export default router

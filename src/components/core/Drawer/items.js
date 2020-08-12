@@ -77,6 +77,10 @@ export default [
 					'ROLE_ADMIN'
 				]
 			},
+			{
+				title : 'Category',
+				path : '/categorynews'
+			}
 		]
 	},
 	// {

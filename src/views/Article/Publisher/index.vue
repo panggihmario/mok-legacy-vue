@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
+    <v-tabs @change="changeTabs" v-model="tab" color="primary">
       <v-tab>
         <span class="text-capitalize">List News</span>
       </v-tab>

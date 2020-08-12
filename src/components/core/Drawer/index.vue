@@ -18,7 +18,7 @@
       <v-list-group
         v-for="(item, i) in items"
         :key="i"
-				color="carmine"
+				color="primary"
 				:to="item.path"
       >
         <template v-slot:activator>
@@ -60,7 +60,8 @@ import listNavigation from './items'
 export default {
   computed: {
     ...mapState({
-			user : state => state.authentication.user
+			user : state => state.authentication.user,
+			accountId : state => state.authentication.accountId
 		})
   },
   data() {

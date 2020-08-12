@@ -2,8 +2,8 @@ export default {
 	theme: {
 		themes: {
 			light: {
-				primary: '#52C41A',
-				secondary: '#4caf50',
+				primary: '#FF8717',
+				secondary: '#1890FF',
 				tertiary: '#495057',
 				accent: '#82B1FF',
 				error: '#FF5252',
@@ -23,7 +23,8 @@ export default {
 				carmine : '#A8071A',
 				whitesmoke : '#EEEEEE',
 				gainsboro : '#DDDDDD',
-				irisblue: '#00B9BD'
+				irisblue: '#00B9BD',
+				kellygreen : '#52C41A'
 			},
 		},
 	},
@@ -37,6 +38,12 @@ export default {
 			},
 			close : {
 				component : 'icon-close'
+			},
+			delete : {
+				component : 'icon-delete'
+			},
+			edit : {
+				component : 'icon-edit'
 			}
 		},
 		iconfont : 'mdi' || 'md'

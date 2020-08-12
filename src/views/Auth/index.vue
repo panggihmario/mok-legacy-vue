@@ -4,6 +4,7 @@
       <p class="d-flex justify-center black--text auth__form__title">
 				{{$t('auth.title')}}
       </p>
+			{{user}}
       <custom-form :onSubmit="onSubmit">
         <custom-input
           :label="$t('auth.username')"
@@ -57,7 +58,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState({
+			user : state => state.authentication.user
+		})
   },
   methods: {
     ...mapMutations({
@@ -73,7 +76,6 @@ export default {
         password: this.password
 			};
 			const response = await this.login(opts)
-			console.log(response)
 			if(response.status === 200){
 				this.alertSuccess = true
 				this.loading = false
