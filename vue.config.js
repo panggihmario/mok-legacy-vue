@@ -5,10 +5,7 @@
 
 // }
 const path = require('path');
-const fs = require('fs')
-const webpack = require('webpack')
-const packageJson = fs.readFileSync('./package.json')
-const version = JSON.parse(packageJson).version || ''
+process.env.VUE_APP_VERSION = require('./package.json').version
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
@@ -45,11 +42,6 @@ module.exports = {
 			new CKEditorWebpackPlugin({
 				language: 'en'
 			}),
-			new webpack.DefinePlugin({
-			'process.env': {
-				PACKAGE_VERSION: `${version}`
-			}
-		})
 	
 		]
 	},
