@@ -12,7 +12,7 @@
         </v-chip>
       </div>
 			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >1.0.0-rc2</div>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >  {{appVersion}}  </div>
     </div>
     <v-list  nav dense>
       <v-list-group
@@ -62,7 +62,10 @@ export default {
     ...mapState({
 			user : state => state.authentication.user,
 			accountId : state => state.authentication.accountId
-		})
+		}),
+		appVersion () {
+			return this.$store.getters.appVersion
+		}
   },
   data() {
     return {
@@ -77,15 +80,15 @@ export default {
 	},
   methods: {
     handleLogout() {
-      this.$router.push("/auth");
 			this.logout()
+			this.$router.push("/auth")
+			// .catch(err => {
+			// 	console.log(err)
+			// })
     },
 		...mapActions({
 			logout : 'authentication/logout'
 		}),
-		getToken(){
-			const token = localStorage.getItem('persada_token')
-		},
 		checkRole(roles) {
 			const status = roles.filter(r => {
 				if(r === this.roleUser) {

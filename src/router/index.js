@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
 		next({name : 'Authentication'})
 	}
 	else{
-		if(to.name === 'Authentication' && isAuthenticated ){
+		if(to.name === 'Authentication' && isAuthenticated.length > 0 ){
 			next({
 				name : 'AccountManage'
 			})

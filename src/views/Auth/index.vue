@@ -4,7 +4,6 @@
       <p class="d-flex justify-center black--text auth__form__title">
 				{{$t('auth.title')}}
       </p>
-			{{user}}
       <custom-form :onSubmit="onSubmit">
         <custom-input
           :label="$t('auth.username')"
