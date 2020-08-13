@@ -9,6 +9,8 @@ import Upload from '../../components/material/Upload';
 import IconUpload from '../../components/icon/iconUpload.vue';
 import IconInput from '../../components/material/IconInput';
 import IconClose from '../../components/icon/iconClose.vue';
+import IconDelete from '../../components/icon/iconDelete.vue';
+import IconEdit from '../../components/icon/iconEdit.vue';
 import IconLink from '../../components/icon/iconLink.vue';
 import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
@@ -69,6 +71,14 @@ export default [
 	{
 		name : 'icon-close',
 		component : IconClose
+	},
+	{
+		name : 'icon-delete',
+		component : IconDelete
+	},
+	{
+		name : 'icon-edit',
+		component : IconEdit
 	},
 	{
 		name : 'label-field',

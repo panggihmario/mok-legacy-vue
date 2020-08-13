@@ -6,22 +6,22 @@
       </template>
       <template v-slot:item.action="{item}">
         <custom-button
-          class="carmine--text"
+					color="primary"
+					size="small"
           v-if="item.status === 'Need Review'"
           @click="moveToReview(item.id)"
         >
 					Review
 				</custom-button>
 				<div v-if="item.status ===  'Approved' ">
-					<custom-button 
-						class="primary--text" 
-						size="small" 
+					<v-btn 
 						@click="moveToEdit(item.id)"
+						icon
 					>
-						Edit
-					</custom-button>
-					<v-btn @click="openModalDelete(item.id)" class="ml-2" tile icon>
-						<v-icon size="15"  color="carmine" >delete</v-icon>
+						<v-icon x-small>$edit</v-icon>
+					</v-btn>
+					<v-btn @click="openModalDelete(item.id)" class="ml-2"  icon>
+						<v-icon x-small>$delete</v-icon>
 					</v-btn>
 				</div>
       </template>
@@ -54,7 +54,7 @@ export default {
     getColor(status) {
       switch (status) {
         case "Approved":
-          return "primary--text";
+          return "kellygreen--text";
         case "Rejected":
           return "carmine--text";
         default:
@@ -136,7 +136,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "700"
+          width: "650"
         },
         {
           text: "",

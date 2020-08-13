@@ -99,11 +99,11 @@
           />
           <custom-button
             :loading="loading"
-            color="carmine"
+            color="primary"
             class="white--text"
             type="submit"
         	>
-						{{ $t('button.save') }}
+						Create
 					</custom-button
           >
         </v-col>
