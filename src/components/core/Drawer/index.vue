@@ -45,9 +45,9 @@
       </v-list-group>
     </v-list>
     <div class="drawer__button">
-      <v-btn elevation="0" @click="handleLogout" color="logout">
-        <v-icon size="15" class="orangered--text" left>mdi-logout</v-icon>
-        <span class="orangered--text text-capitalize" style="letterSpacing : 0"> {{ $t('auth.logout') }} </span>
+      <v-btn elevation="0" @click="handleLogout" color="white">
+        <v-icon size="15" class="grey--text" left>mdi-logout</v-icon>
+        <span class="grey--text text-capitalize" style="letterSpacing : 0"> {{ $t('auth.logout') }} </span>
       </v-btn>
     </div>
   </v-navigation-drawer>
