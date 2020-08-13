@@ -11,20 +11,25 @@
 				Buat Kategori News
 			</custom-button>
 		</HeaderContent>
-		<v-data-table
-			:headers="headers"
-			:items="items"
-			hide-default-footer
-		>
-			<template v-slot:item.actions="{item}" >
-				<v-btn  @click="moveToEdit(item.id)"  icon>
-					<v-icon  x-small>$edit</v-icon>
-				</v-btn>
-				<v-btn @click="openDialogDelete(item.id)" icon>
-					<v-icon x-small>$delete</v-icon>
-				</v-btn>
-			</template>
-		</v-data-table>
+		<v-row>
+			<v-col cols="6">
+				<v-data-table
+					:headers="headers"
+					:items="items"
+					hide-default-footer
+				>
+					<template v-slot:item.actions="{item}" >
+						<v-btn  @click="moveToEdit(item.id)"  icon>
+							<v-icon  x-small>$edit</v-icon>
+						</v-btn>
+						<v-btn @click="openDialogDelete(item.id)" icon>
+							<v-icon x-small>$delete</v-icon>
+						</v-btn>
+					</template>
+				</v-data-table>
+			</v-col>
+		</v-row>
+
 
 		<DialogDelete
 			title="Yakin mengahpus category ini?"
@@ -55,16 +60,13 @@ export default {
 			loading : false,
 			headers : [
 				{
-					text : 'Tanggal',
-					value : 'date',
-				},
-				{
 					text : 'Nama',
 					value : 'name',
 				},
 				{
 					text : '',
-					value : 'actions'
+					value : 'actions',
+					align : 'end'
 				}
 			]
 		}
