@@ -12,13 +12,13 @@
         </v-chip>
       </div>
 			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >1.0.0-rc2</div>
+			<div :style="{width : '100%'}" class="d-flex justify-center" >  {{appVersion}}  </div>
     </div>
     <v-list  nav dense>
       <v-list-group
         v-for="(item, i) in items"
         :key="i"
-				color="carmine"
+				color="primary"
 				:to="item.path"
       >
         <template v-slot:activator>
@@ -45,9 +45,9 @@
       </v-list-group>
     </v-list>
     <div class="drawer__button">
-      <v-btn elevation="0" @click="handleLogout" color="logout">
-        <v-icon size="15" class="orangered--text" left>mdi-logout</v-icon>
-        <span class="orangered--text text-capitalize" style="letterSpacing : 0"> {{ $t('auth.logout') }} </span>
+      <v-btn elevation="0" @click="handleLogout" color="white">
+        <v-icon size="15" class="grey--text" left>mdi-logout</v-icon>
+        <span class="grey--text text-capitalize" style="letterSpacing : 0"> {{ $t('auth.logout') }} </span>
       </v-btn>
     </div>
   </v-navigation-drawer>
@@ -60,8 +60,12 @@ import listNavigation from './items'
 export default {
   computed: {
     ...mapState({
-			user : state => state.authentication.user
-		})
+			user : state => state.authentication.user,
+			accountId : state => state.authentication.accountId
+		}),
+		appVersion () {
+			return this.$store.getters.appVersion
+		}
   },
   data() {
     return {
@@ -76,15 +80,15 @@ export default {
 	},
   methods: {
     handleLogout() {
-      this.$router.push("/auth");
 			this.logout()
+			this.$router.push("/auth")
+			// .catch(err => {
+			// 	console.log(err)
+			// })
     },
 		...mapActions({
 			logout : 'authentication/logout'
 		}),
-		getToken(){
-			const token = localStorage.getItem('persada_token')
-		},
 		checkRole(roles) {
 			const status = roles.filter(r => {
 				if(r === this.roleUser) {

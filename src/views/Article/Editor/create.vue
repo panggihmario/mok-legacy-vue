@@ -5,11 +5,11 @@
         type="submit"
         :loading="loadingDraft"
         @click="onDraft"
-        class="carmine--text mr-6"
+        class="primary--text mr-6"
         >Safe To Draft</custom-button
       >
       <custom-button
-        color="carmine"
+        color="primary"
         @click="onSubmit"
         type="submit"
         class="white--text"

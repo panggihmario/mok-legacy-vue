@@ -28,7 +28,7 @@
         name="Description"
       />
     </div>
-    <custom-button :loading="loading" color="carmine" class="white--text" type="submit"
+    <custom-button :loading="loading" color="primary" class="white--text" type="submit"
       >{{labelButton}}</custom-button
     >
   </custom-form>

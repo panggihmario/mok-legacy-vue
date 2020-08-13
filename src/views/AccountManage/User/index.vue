@@ -2,7 +2,7 @@
   <div>
     <HeaderContent :list="items" :label="$t('title.user')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
       >
@@ -58,10 +58,10 @@
 
         <template v-slot:item.manage="{ item }">
           <custom-button icon @click="moveToEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon x-small>$edit</v-icon>
           </custom-button>
           <custom-button @click="openModalDelete(item.id)" icon>
-            <v-icon small color="carmine">delete</v-icon>
+            <v-icon x-small>$delete</v-icon>
           </custom-button>
         </template>
       </v-data-table>
@@ -111,7 +111,8 @@ export default {
           href: "/user"
         },
         {
-          text: "List User"
+					text: "List User",
+					disabled : true
         }
       ],
       sort: ["Oldest", "Newest"],

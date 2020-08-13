@@ -7,13 +7,13 @@
       height="29px"
       outlined
       elevation="0"
-      color="carmine"
+      color="primary"
       class="upload__button"
       @click="handleUpload"
 			:loading="loadingUpload"
     >
-      <v-icon color="carmine" left>$upload</v-icon>
-      <span class="text-capitalize carmine--text upload__label"
+      <v-icon color="primary" left>$upload</v-icon>
+      <span class="text-capitalize primary--text upload__label"
         >Upload Foto</span
       >
     </v-btn>

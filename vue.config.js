@@ -5,6 +5,10 @@
 
 // }
 const path = require('path');
+const fs = require('fs')
+const webpack = require('webpack')
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || ''
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
@@ -38,11 +42,15 @@ module.exports = {
 
 	configureWebpack: {
 		plugins: [
-			// CKEditor needs its own plugin to be built using webpack.
 			new CKEditorWebpackPlugin({
-				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
 				language: 'en'
-			})
+			}),
+			new webpack.DefinePlugin({
+			'process.env': {
+				PACKAGE_VERSION: `${version}`
+			}
+		})
+	
 		]
 	},
 

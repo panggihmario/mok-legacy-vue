@@ -8,7 +8,7 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick">{{ $t('button.channelAdd') }}</custom-button>
+      <custom-button class="white--text" color="primary" @click="handleClick">{{ $t('button.channelAdd') }}</custom-button>
     </HeaderContent>
 
     <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
@@ -30,11 +30,11 @@
       <template v-slot:item.action="{ item }">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
-            <v-btn icon color="grey" x-small>
-              <v-icon @click="moveEdit(item.id)">edit</v-icon>
+            <v-btn icon color="grey" >
+              <v-icon x-small @click="moveEdit(item.id)">$edit</v-icon>
             </v-btn>
-            <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
-              <v-icon>mdi-delete</v-icon>
+            <v-btn @click="openModalDelete(item.id)" icon>
+              <v-icon x-small >$delete</v-icon>
             </v-btn>
           </div>
         </div>
@@ -178,14 +178,14 @@ export default {
       ],
       payloadSearch: "",
       headers: [
-        {
-          text: "No",
-          value: "no",
-          width: "70",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false
-        },
+        // {
+        //   text: "No",
+        //   value: "no",
+        //   width: "70",
+        //   class: "whitesnow",
+        //   sortable: false,
+        //   filterable: false
+        // },
         {
           text: "Gambar Channel",
           value: "channelImage",
