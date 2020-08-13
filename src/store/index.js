@@ -19,7 +19,7 @@ export default new Vuex.Store({
 		account
 	},
 	state : {
-		packageVersion : process.env.PACKAGE_VERSION || '0'
+		packageVersion : process.env.VUE_APP_VERSION || 0
 	},
 	getters : {
 		appVersion : (state) => {

@@ -65,6 +65,8 @@ export default {
 		}),
 		appVersion () {
 			return this.$store.getters.appVersion
+			// return process.env.PACKAGE_VERSION
+			// console.log(process.env)
 		}
   },
   data() {
