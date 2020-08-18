@@ -18,6 +18,14 @@ export default new Vuex.Store({
 		donation : donation,
 		account
 	},
+	state : {
+		packageVersion : process.env.VUE_APP_VERSION || 0
+	},
+	getters : {
+		appVersion : (state) => {
+			return state.packageVersion
+		}
+	},
 	actions : {
 		getWithToken (ctx, params) {
 			return this._vm.$httpWithToken().get(params)

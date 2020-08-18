@@ -11,7 +11,7 @@
       <div class="mr-4 left-action">
         <custom-select :items="items" :height="40" :dense="true" />
       </div>
-      <custom-button color="carmine" class="white--text" @click="handleClick">Tambah Donasi</custom-button>
+      <custom-button color="primary" class="white--text" @click="handleClick">Tambah Donasi</custom-button>
     </HeaderContent>
 
     <v-data-table :headers="headers" hide-default-footer :items="data" class="grey--text">
@@ -34,10 +34,10 @@
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
             <v-btn @click="moveToEdit(item.id)" icon color="grey" x-small>
-              <v-icon>edit</v-icon>
+              <v-icon x-small>$edit</v-icon>
             </v-btn>
-            <v-btn @click="openModalDelete(item.id)" icon color="carmine" x-small>
-              <v-icon>mdi-delete</v-icon>
+            <v-btn @click="openModalDelete(item.id)" icon  x-small>
+              <v-icon x-small>$delete</v-icon>
             </v-btn>
           </div>
         </div>

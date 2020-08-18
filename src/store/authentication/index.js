@@ -1,12 +1,28 @@
 export default {
 	namespaced: true,
 	state: {
-		user: localStorage.getItem('persada_username') || '',
-		token: localStorage.getItem('persada_token') || '',
+		user: '',
+		token:  '',
 		accountId : "",
-		role : localStorage.getItem('persada_role') || {}
+		role :  {},
 	},
 	mutations : {
+		setInitialiseData(state) {
+			const dataOnStorage = localStorage.getItem('adminKoanba')
+			if(dataOnStorage) {
+				const dataParse = JSON.parse(dataOnStorage)
+				state.user = dataParse.username
+				state.accountId = dataParse.accountId
+				state.token = dataParse.token,
+				state.role = dataParse.role
+			}
+		},
+		setInitialiseDataFromLogin (state, payload) {
+			state.user = payload.username
+			state.accountId = payload.accountId
+			state.token = payload.token,
+			state.role = payload.role
+		},
 		setUser(state, payload) {
 			state.user = payload
 		},
@@ -35,14 +51,22 @@ export default {
 				const id = response.data.accountId
 				const username = response.data.userName
 				const role = response.data.role
-				context.commit('setUser', username)
-				context.commit('setAccountId', id)
-				localStorage.setItem("persada_token", token)
-				localStorage.setItem("persada_id" , id)
-				localStorage.setItem("persada_username", username)
-				localStorage.setItem("persada_role", role)
-				context.commit('setRole',role)
-				context.commit('setToken',token)
+				// context.commit('setUser', username)
+				// context.commit('setAccountId', id)
+				// localStorage.setItem("persada_token", token)
+				// localStorage.setItem("persada_id" , id)
+				// localStorage.setItem("persada_username", username)
+				// localStorage.setItem("persada_role", role)
+				const initialiseData = {
+					token,
+					accountId : id,
+					username,
+					role
+				}
+				localStorage.setItem('adminKoanba', JSON.stringify(initialiseData))
+				context.commit('setInitialiseDataFromLogin', initialiseData)
+				// context.commit('setRole',role)
+				// context.commit('setToken',token)
 				return response
 			} catch (error) {
 				return error
@@ -50,17 +74,16 @@ export default {
 		},
 		logout(context){
 			context.commit('clearToken', '')
-			localStorage.removeItem('persada_token')
-			localStorage.removeItem('persada_id')
+			localStorage.removeItem('adminKoanba')
 		}
 	},
 	getters : {
 		isAuthentication(state){
-			if(state.token  ){
+			if(state.token){
 				return true
 			}else{
 				return false
 			}
-		}
+		},
 	},
 }

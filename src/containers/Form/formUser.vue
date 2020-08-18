@@ -101,7 +101,7 @@
           </div>
           <custom-button
 						:loading="loading"
-						color="carmine"
+						color="primary"
 						class="white--text"
 						type="submit"
           >	

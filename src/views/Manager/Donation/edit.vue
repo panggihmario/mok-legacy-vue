@@ -71,7 +71,7 @@ export default {
           id: ""
         },
         recipientName: "",
-        media: [],
+        medias: [],
         expiredAt: ""
       }
     };
@@ -117,6 +117,7 @@ export default {
       const id = this.$route.params.id;
       const response = await this.getDonationById(id);
       if (response.status === 200) {
+				console.log("response :" , response)
 				const data = response.data.data;
 				const z = data.expiredAt/1000
         const x = moment.unix(z).format("YYYY-MM-DD");
@@ -125,7 +126,7 @@ export default {
 				if(data.medias.length > 0) {
 					this.donationPhoto = data.medias[0].url;
 				}
-        this.donation.media = data.medias;
+        this.donation.medias = data.medias;
         this.donation.organizer.id = data.organizer.id;
         this.donation.verifier.id = data.verifier.id;
         this.verifier = data.verifier.name;
@@ -148,13 +149,16 @@ export default {
     },
     getDonationPhoto(payload) {
 			this.donationPhoto = payload.url;
-			const newImage = this.donation.media.map(d => {
+			const newImage = this.donation.medias.map(d => {
 				return {
 					id : d.id,
-					...payload
+					type : payload.type,
+					url : payload.url,
+					metadata : payload.metadata,
+					thumbnail : payload.thumbnail
 				}
 			})
-			this.donation.media = newImage
+			this.donation.medias = newImage
     },
     async handleResponseOrganizer(value) {
       const response = await this.getListOrganizer(value);

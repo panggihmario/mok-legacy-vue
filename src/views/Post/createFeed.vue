@@ -88,7 +88,6 @@ export default {
 			getAllChannel : "channel/getAllChannel"
     }),
     getResponse(payload) {
-			console.log(payload)
 			this.status = payload.status
       if (payload.status === "success") {
 				this.status = payload.status
@@ -115,7 +114,7 @@ export default {
 				post : {
 					type : 'social',
 					medias : this.payload.media,
-					product : {},
+					product : null,
 					channel : {
 						id : this.payload.channelId
 					},

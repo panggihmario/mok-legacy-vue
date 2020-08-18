@@ -57,7 +57,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState({
+			user : state => state.authentication.user
+		})
   },
   methods: {
     ...mapMutations({

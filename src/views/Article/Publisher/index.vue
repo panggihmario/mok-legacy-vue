@@ -1,20 +1,24 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
+    <v-tabs @change="changeTabs" v-model="tab" color="primary">
       <v-tab>
         <span class="text-capitalize">List News</span>
       </v-tab>
       <v-tab>
         <span class="text-capitalize">Draft</span>
       </v-tab>
-      <v-tab>
+      <!-- <v-tab>
         <span class="text-capitalize">History</span>
-      </v-tab>
+      </v-tab> -->
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <ListArticle :articles="articles" class="mt-4" />
+        <ListArticle 
+					:articles="articles" 
+					class="mt-4" 
+					@reloadDataNews="reloadDataNews"
+				/>
         <v-pagination
           class="d-flex justify-end"
           :length="totalPages"
@@ -70,7 +74,10 @@ export default {
   methods: {
     ...mapActions({
       getNews: "news/getListNews"
-    }),
+		}),
+		reloadDataNews() {
+			this.getResponseNews()
+		},
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
       const day = newDt.getDate();
@@ -110,6 +117,7 @@ export default {
       }
     },
     async getResponseNews() {
+			this.pageNews = 1
       const payload = {
         tab: "list",
         page: 0
@@ -118,7 +126,6 @@ export default {
       if (response.status === 200) {
         this.formatingResponse(response);
       } else {
-        console.log(response);
         return response;
       }
     },
@@ -131,7 +138,6 @@ export default {
       if (response.status === 200) {
         this.formatingResponse(response);
       } else {
-        console.log(response);
         return response;
       }
     },

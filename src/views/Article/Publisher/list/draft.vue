@@ -5,7 +5,7 @@
         <span :class="getColor(item.status)">{{ item.status }}</span>
       </template>
       <template v-slot:item.action="{ item }">
-        <custom-button class="carmine--text" @click="moveEdit(item.id)">Lihat</custom-button>
+        <custom-button color="whitesnot" class="grey--text" @click="moveEdit(item.id)">Lihat</custom-button>
       </template>
     </v-data-table>
   </div>

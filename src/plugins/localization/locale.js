@@ -54,7 +54,7 @@ export default {
 			donationEdit : 'Edit Donasi',
 			accountCreate : 'Create Account',
 			postProduct : 'Post Product',
-			channelAdd : 'Tambah Channel',
+			channelAdd : 'Buat Channel',
 			channelEdit : 'Edit Channel',
 			userCreate :'Create Account',
 			postFeed : 'Post Feed',

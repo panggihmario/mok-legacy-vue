@@ -5,11 +5,11 @@
         type="submit"
         :loading="loadingDraft"
         @click="onDraft"
-        class="carmine--text mr-6"
+        class="primary--text mr-6"
         >Safe To Draft</custom-button
       >
       <custom-button
-        color="carmine"
+        color="primary"
         @click="onSubmit"
         type="submit"
         class="white--text"
@@ -21,7 +21,7 @@
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
 		</v-snackbar>
-		<v-snackbar top v-model="alertFailed"  color="success" >
+		<v-snackbar top v-model="alertFailed"  color="error" >
 			Create News Failed
 		</v-snackbar>
   </custom-form>
@@ -84,6 +84,7 @@ export default {
           	this.$router.push("/editor");
 					}, 500)
         } else {
+					this.alertFailed = true
 					setTimeout(() => {
 						this.alertFailed = false
 					}, 1500)
@@ -112,7 +113,7 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        media: []
+        medias: []
       },
       dialog: false
     };
