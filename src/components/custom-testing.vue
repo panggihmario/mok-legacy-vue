@@ -7,9 +7,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn @click="$emit('action-btn:clicked')">
-        Action
-      </v-btn>
+    
     </v-card-title>
 
     <v-card-text>
