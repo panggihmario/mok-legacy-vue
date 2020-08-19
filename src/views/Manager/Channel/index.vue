@@ -12,14 +12,14 @@
     </HeaderContent>
 
     <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
-      <template v-slot:item.channelImage="{ item }">
+      <template v-slot:[`item.channelImage`]="{ item }">
         <div class="image__container">
           <div class="image__box">
             <v-img max-width="100%" height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
-      <template v-slot:item.channelType="{ item }">
+      <template v-slot:[`item.channelType`]="{ item }">
         <div>
           <span
             v-text="item.channelType"
@@ -27,7 +27,7 @@
           ></span>
         </div>
       </template>
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
             <v-btn icon color="grey" >

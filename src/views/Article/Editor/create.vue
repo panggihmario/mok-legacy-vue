@@ -17,7 +17,10 @@
         >Submit</custom-button
       >
     </HeaderContent>
-    <FormNews :payloadNews="payloadNews" />
+    <FormNews 
+      :payloadNews="payloadNews" 
+      :categoryNews="categoryNews"
+    />
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
 		</v-snackbar>
@@ -29,8 +32,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import HeaderContent from "../../../containers/HeaderContent";
-import FormNews from "../../../containers/Form/formNews";
+import HeaderContent from "@/containers/HeaderContent";
+import FormNews from "@/containers/Form/formNews";
 export default {
   components: {
     HeaderContent,
@@ -44,11 +47,29 @@ export default {
       });
     }
   },
+  mounted(){
+    this.handleCategoryNews()
+  },
   methods: {
     ...mapActions({
       createNews: "news/createNews",
-      createDraft: "news/createDraft"
+      createDraft: "news/createDraft",
+      getCategoryNews : 'news/getCategoryNews',
     }),
+    async handleCategoryNews () {
+      const response = await this.getCategoryNews()
+      if(response.status === 200) {
+        const responseData = response.data.data
+        console.log(responseData)
+        const formatData = responseData.map(r => {
+          return {
+            name : r.name,
+            id : r.id
+          }
+        })
+        this.categoryNews = formatData
+      }
+    },
     async onDraft() {
       const statusValid = this.isFormValid;
       if (statusValid) {
@@ -104,6 +125,7 @@ export default {
   data() {
     return {
       image: "",
+      categoryNews : [],
 			loadingDraft: false,
 			loadingSubmit : false,
 			alertSuccess : false,
@@ -113,7 +135,8 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        medias: []
+        medias: [],
+        newsCategory : {}
       },
       dialog: false
     };

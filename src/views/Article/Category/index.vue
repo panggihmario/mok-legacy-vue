@@ -18,7 +18,7 @@
 					:items="items"
 					hide-default-footer
 				>
-					<template v-slot:item.actions="{item}" >
+					<template v-slot:[`item.actions`]="{item}" >
 						<v-btn  @click="moveToEdit(item.id)"  icon>
 							<v-icon  x-small>$edit</v-icon>
 						</v-btn>

@@ -9,13 +9,13 @@
       @click="handleClick"
     >
       <div class="mr-4 left-action">
-        <custom-select :items="items" :height="40" :dense="true" />
+        <!-- <custom-select :items="items" :height="40" :dense="true" /> -->
       </div>
       <custom-button color="primary" class="white--text" @click="handleClick">Tambah Donasi</custom-button>
     </HeaderContent>
 
     <v-data-table :headers="headers" hide-default-footer :items="data" class="grey--text">
-      <template v-slot:item.donationImage="{item}">
+      <template v-slot:[`item.donationImage`]="{item}">
         <div class="image__container d-flex align-center">
           <div v-if="item.media.length > 0" class="image__box">
             <v-img :src="item.media[0].url" height="100%" />
@@ -24,13 +24,13 @@
         </div>
       </template>
 
-      <template v-slot:item.status="{item}">
+      <template v-slot:[`item.status`]="{item}">
         <div>
           <span v-text="item.status" :class="{'silver--text':item.status === 'Finish'}"></span>
         </div>
       </template>
 
-      <template v-slot:item.action="{item}">
+      <template v-slot:[`item.action`]="{item}">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
             <v-btn @click="moveToEdit(item.id)" icon color="grey" x-small>
@@ -43,11 +43,11 @@
         </div>
       </template>
 
-      <template v-slot:item.detail="{item}">
+      <!-- <template v-slot:[`item.detail`]="{item}">
         <div>
           <span v-if="item.status == 'Finish'" class="irisblue--text detail">Detail</span>
         </div>
-      </template>
+      </template> -->
     </v-data-table>
 
     <Dialog-Delete
@@ -57,6 +57,15 @@
       :closeModalDelete="closeModalDelete"
       :handleDelete="handleDelete"
     ></Dialog-Delete>
+
+    <v-pagination
+      class="d-flex justify-end"
+      prev-icon="mdi-menu-left"
+      next-icon="mdi-menu-right"
+      v-model="page"
+      :length="totalPages"
+      @input="getChannelByPage"
+    />
   </div>
 </template>
 
@@ -74,6 +83,8 @@ export default {
     return {
       idUser: "",
       dialog: false,
+      totalPages : 0,
+      page : 1,
       loading: false,
       crumbs: [
         {
@@ -197,24 +208,42 @@ export default {
       this.$router.push("/donation/create");
     },
     async handleResponse() {
-			const response = await this.getListDonation();
+      const payload = {
+        page : 0
+      }
+			const response = await this.getListDonation(payload);
       if (response.status === 200) {
-        const data = response.data.data.content;
-        const formatData = data.map(d => {
-          const second = d.expiredAt / 1000;
-          const newD = moment.unix(second).format("D/M/YYYY");
-          const newS = moment(d.createAt).format("D/M/YYYY");
-          return {
-            donationName: d.organizer.name,
-            status: d.status,
-            donationTarget: d.targetAmount,
-            startDate: newS,
-            endDate: newD,
-            media: d.medias,
-            id: d.id
-          };
-        });
-        this.data = formatData;
+        const responseData = response.data.data;
+        this.formatingResponseData(responseData)
+      }
+    },
+    formatingResponseData (response) {
+      const data = response.content;
+      this.totalPages = response.totalPages
+      const formatData = data.map(d => {
+        const second = d.expiredAt / 1000;
+        const newD = moment.unix(second).format("D/M/YYYY");
+        const newS = moment(d.createAt).format("D/M/YYYY");
+        return {
+          donationName: d.organizer.name,
+          status: d.status,
+          donationTarget: d.targetAmount,
+          startDate: newS,
+          endDate: newD,
+          media: d.medias,
+          id: d.id
+        };
+      });
+      this.data = formatData;
+    },
+    async getChannelByPage () {
+      const payload = {
+        page : this.page - 1
+      }
+      const response = await this.getListDonation(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.formatingResponseData(responseData)
       }
     }
   },
