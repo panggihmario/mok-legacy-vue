@@ -9,6 +9,7 @@
 			:data="data"
 			:loading="loading"
 			@onSubmit="onSubmit"
+      :status="'create'"
 		/>
 			<v-snackbar top right  v-model="alertSuccess" color="success">
 				Create Success

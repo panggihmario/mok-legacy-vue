@@ -11,7 +11,11 @@
 				</custom-button>
       </div>
     </HeaderContent>
-    <FormNews :payloadNews="payloadNews" :propsImage="propsImage" />
+    <FormNews 
+			:payloadNews="payloadNews" 
+			:propsImage="propsImage"
+			:categoryNews="categoryNews"
+		 />
 		<v-snackbar top v-model="alertSuccess" color="success">
 			{{successMessage}}
     </v-snackbar>
@@ -39,9 +43,11 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        media: []
+				media: [],
+				newsCategory : {}
       },
 			propsImage: "",
+			categoryNews : [],
 			imageNews : '',
 			headline : '',
 			content : '',
@@ -67,8 +73,22 @@ export default {
     ...mapActions({
       getNewsById: "news/getNewsById",
       publishNews: "news/publishNews",
-      rejectNews: "news/rejectNews"
-    }),
+			rejectNews: "news/rejectNews",
+			getCategoryNews : 'news/getCategoryNews',
+		}),
+		async handleCategoryNews () {
+      const response = await this.getCategoryNews()
+      if(response.status === 200) {
+        const responseData = response.data.data
+        const formatData = responseData.map(r => {
+          return {
+            name : r.name,
+            id : r.id
+          }
+        })
+        this.categoryNews = formatData
+      }
+    },
     async handleResponse() {
       const id = this.$route.params.id;
       const response = await this.getNewsById(id);
@@ -88,6 +108,7 @@ export default {
         id: this.$route.params.id,
         data: this.payloadNews
 			};
+			// console.log(this.payloadNews)
 			this.loadingPublish = true
       const response = await this.publishNews(params);
       if (response.status === 200) {
@@ -129,7 +150,8 @@ export default {
     // }
   },
   mounted() {
-    this.handleResponse();
+		this.handleResponse();
+		this.handleCategoryNews()
   }
 };
 </script>

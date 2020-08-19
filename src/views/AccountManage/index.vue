@@ -47,7 +47,7 @@
         item-key="user"
         hide-default-footer
       >
-        <template v-slot:item.user="{ item }">
+        <template v-slot:[`item.user`]="{ item }">
           <div class="d-flex align-center">
             <v-avatar size="35" class="mr-2">
               <img :src="item.photo" />
@@ -58,11 +58,11 @@
             </div>
           </div>
         </template>
-        <template v-slot:item.status="{ item }">
+        <template v-slot:[`item.status`]="{ item }">
           <span v-if="item.status" class="kellygreen--text">Active</span>
           <span v-else class="silver--text">Inactive</span>
         </template>
-        <template v-slot:item.manage="{ item }">
+        <template v-slot:[`item.manage`]="{ item }">
           <custom-button icon @click="moveEdit(item.id)">
             <v-icon x-small>$edit</v-icon>
           </custom-button>
@@ -248,6 +248,7 @@ export default {
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
+        console.log(response)
         this.formatResponse(response);
       } else {
         console.log(response);
@@ -293,6 +294,7 @@ export default {
         type: "management"
       };
       const response = await this.getListAdmin(params);
+      console.log(response)
       if (response.status === 200) {
         this.formatResponse(response);
       } else {
