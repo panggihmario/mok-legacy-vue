@@ -18,7 +18,9 @@
           v-model="password"
           name="Password"
           rules="required"
-					type="password"
+					 @click:append="show1 = !show1"
+					:type="show1 ? 'text' : 'password'"
+					:append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
         />
         <div class="d-flex justify-space-between align-center">
           <div class="grey--text auth__form__footer "> {{ $t('auth.forgotPassword') }} </div>
@@ -53,7 +55,8 @@ export default {
 			password: "",
 			loading : false,
 			alertError: false,
-			alertSuccess : false
+			alertSuccess : false,
+			show1 : false
     };
   },
   computed: {

@@ -49,10 +49,14 @@
       </v-col>
       <v-col cols="5">
         <div class="ml-4">
-          <custom-input
-            :disabled="true"
-            label="Kategori Artikel"
+          <custom-select
+            label="Kategori News"
             placeholder="Kategori"
+            :items="categoryNews"
+            v-model="payloadNews.newsCategory"
+            :value="payloadNews.newsCategory"
+            return-object
+            item-text="name"
           />
           <icon-input
             label="Sumber Artikel Utama"
@@ -80,7 +84,10 @@ export default {
 		},
 		loadingDraft : {
 			type : Boolean
-		}
+    },
+    categoryNews : {
+      type : Array
+    }
 	},
 	computed :{
 		status () {
