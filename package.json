@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^23.5.1",
     "@ckeditor/ckeditor5-editor-classic": "^22.0.0",
     "@ckeditor/ckeditor5-essentials": "^22.0.0",
+    "@ckeditor/ckeditor5-image": "^22.0.0",
     "@ckeditor/ckeditor5-link": "^22.0.0",
     "@ckeditor/ckeditor5-paragraph": "^22.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^22.0.0",
@@ -34,7 +35,6 @@
     "vuex": "^3.1.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-image": "^22.0.0",
     "@mdi/font": "^5.0.45",
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-pwa": "~4.3.0",
