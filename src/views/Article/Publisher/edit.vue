@@ -94,8 +94,8 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
-				this.propsImage = responseData.medias[0].url
-				this.imageNews = responseData.medias[0].url
+				this.propsImage = responseData.medias.length > 0 ? responseData.medias[0].thumbnail.medium : ''
+				this.imageNews = responseData.medias.length > 0 ? responseData.medias[0].thumbnail.medium : ''
 				this.headline = responseData.headline
 				this.content = responseData.content
         this.payloadNews = responseData;

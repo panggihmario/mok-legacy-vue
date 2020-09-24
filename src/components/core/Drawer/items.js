@@ -62,7 +62,7 @@ export default [
 		path: '/publisher',
 		items: [
 			{
-				title: 'Publisher',
+				title: 'Penyunting',
 				path: '/publisher',
 				role : [
 					'ROLE_SUPERVISOR',
@@ -70,7 +70,7 @@ export default [
 				]
 			},
 			{
-				title: 'Editor',
+				title: 'Penulis',
 				path: '/editor',
 				role : [
 					'ROLE_EDITOR',

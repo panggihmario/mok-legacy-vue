@@ -136,7 +136,7 @@ export default {
         content: "",
         linkReference: "",
         medias: [],
-        newsCategory : {}
+        newsCategory : ""
       },
       dialog: false
     };
