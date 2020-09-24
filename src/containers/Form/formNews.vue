@@ -10,20 +10,36 @@
           name="Headline"
         />
       </v-col>
-			
-      <v-dialog v-model="dialog" max-width="300">
-        <v-img :src="image" />
-      </v-dialog>
       <v-col md="5">
-        <custom-button @click.stop="dialog = true" v-if="image || propsImage "
-          >Lihat Gambar</custom-button
-        >
         <custom-upload
           class="mb-1 ml-4"
           id="upload-editor"
           @response="getImage"
-          v-else
+          style="display: none"
         />
+
+        <div @click="uploadImage('upload-editor')" class="form__container-image ml-4">
+          <v-img
+            contain
+            v-if="image || propsImage"
+            :src="image"
+            max-height="100%"
+            max-width="100%"
+            :aspect-ratio="1"
+          >
+          </v-img>
+          <div v-else>
+            <v-icon size="18px" color="secondary">$upload</v-icon>
+            <span class="ml-2 text-secondary">Foto / Video</span>
+            <v-progress-linear
+              color="secondary"
+              indeterminate
+              rounded
+              height="6"
+              v-if="visible"
+            />
+          </div>
+        </div>
       </v-col>
     </v-row>
     <v-row :style="{ marginTop: '-20px' }">
@@ -41,11 +57,7 @@
           rules="required"
           name="Content"
         />
-        <custom-textarea
-          label="Tag Artikel"
-          placeholder="Tag"
-          :disabled="true"
-        />
+        <custom-textarea label="Tag Artikel" placeholder="Tag" :disabled="true" />
       </v-col>
       <v-col cols="5">
         <div class="ml-4">
@@ -57,6 +69,8 @@
             :value="payloadNews.newsCategory"
             return-object
             item-text="name"
+            rules="required"
+            name="Kategori"
           />
           <icon-input
             label="Sumber Artikel Utama"
@@ -75,47 +89,77 @@
 
 <script>
 export default {
-	props : {
-		payloadNews : {
-			type : Object
-		},
-		propsImage : {
-			type : String
-		},
-		loadingDraft : {
-			type : Boolean
+  props: {
+    payloadNews: {
+      type: Object,
     },
-    categoryNews : {
-      type : Array
-    }
-	},
-	computed :{
-		status () {
-			if(this.payloadNews.medias.length > 1) {
-				return true
-			}else{
-				return false
-			}
-		}
-	},
-	data () {
-		return {
-			dialog : false,
-			image : this.propsImage
-		}
-	},
-	methods : {
-		getImage(payload) {
+    propsImage: {
+      type: String,
+    },
+    loadingDraft: {
+      type: Boolean,
+    },
+    categoryNews: {
+      type: Array,
+    },
+  },
+  computed: {
+    status() {
+      if (this.payloadNews.medias.length > 1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  data() {
+    return {
+      dialog: false,
+      image: this.propsImage,
+      visible: false,
+    };
+  },
+  methods: {
+    uploadImage(id) {
+      document.getElementById(id).click();
+    },
+    getImage(payload) {
+      this.image = ""
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;
-        this.payloadNews.medias.splice(0,1,payload.response);
+        this.payloadNews.medias.splice(0, 1, payload.response);
+        this.visible = false;
+      } else {
+        this.visible = true;
       }
-    }
-	},
-	watch : {
-		propsImage () {
-				this.image = this.propsImage
-		}
-	}
-}
+    },
+  },
+  watch: {
+    propsImage() {
+      this.image = this.propsImage;
+    },
+  },
+};
 </script>
+
+<style lang="sass" scoped>
+.form
+  &__container-image
+    width: 180px
+    height: 126px
+    background: #FFFFFF
+    border: 1px dashed #1890FF
+    box-sizing: border-box
+    border-radius: 4px
+    display: flex
+    justify-content: center
+    align-items: center
+    color: #1890FF
+    font-size: 12px
+    font-weight: 500
+    cursor: pointer
+  &__image
+    max-width: 100%
+    max-width: 100%
+    overflow: hidden
+</style>

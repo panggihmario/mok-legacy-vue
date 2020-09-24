@@ -13,7 +13,7 @@
         >
 					Review
 				</custom-button>
-				<div v-if="item.status ===  'Approved' ">
+				<div style="display : flex" v-if="item.status ===  'Approved' ">
 					<v-btn 
 						@click="moveToEdit(item.id)"
 						icon
@@ -136,7 +136,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "650"
+          width : "650"
         },
         {
           text: "",

@@ -94,7 +94,7 @@ export default {
         const responseData = response.data.data;
         this.payloadNews = responseData;
         console.log(responseData)
-        this.propsImage = responseData.medias[0].thumbnail.medium;
+        this.propsImage =  responseData.medias.length > 0 ?  responseData.medias[0].thumbnail.medium : '' ;
       }
     },
     async handleDraft() {
