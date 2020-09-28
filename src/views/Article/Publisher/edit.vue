@@ -15,6 +15,7 @@
 			:payloadNews="payloadNews" 
 			:propsImage="propsImage"
 			:categoryNews="categoryNews"
+			@getImageUpload="getImageUpload"
 		 />
 		<v-snackbar top v-model="alertSuccess" color="success">
 			{{successMessage}}
@@ -76,6 +77,18 @@ export default {
 			rejectNews: "news/rejectNews",
 			getCategoryNews : 'news/getCategoryNews',
 		}),
+		getImageUpload(payload){
+			const temp = this.payloadNews.medias.map(media => {
+				return {
+					...media,
+					metadata : payload.metadata,
+					thumbnail : payload.thumbnail,
+					type : payload.type,
+					url : payload.url
+				}
+			})
+			this.payloadNews.medias.splice(0, 1, temp[0]);
+		},
 		async handleCategoryNews () {
       const response = await this.getCategoryNews()
       if(response.status === 200) {
@@ -108,9 +121,8 @@ export default {
         id: this.$route.params.id,
         data: this.payloadNews
 			};
-			// console.log(this.payloadNews)
 			this.loadingPublish = true
-      const response = await this.publishNews(params);
+			const response = await this.publishNews(params);
       if (response.status === 200) {
 				this.loadingPublish = false
 				this.alertSuccess = true
@@ -144,7 +156,6 @@ export default {
 		// 			this.alertSuccess = false
 		// 		},1500)
     //   } else {
-		// 		console.log("publish", response);
 		// 		this.loading = false
     //   }
     // }

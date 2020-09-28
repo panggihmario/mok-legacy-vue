@@ -17,11 +17,10 @@
           @response="getImage"
           style="display: none"
         />
-
         <div @click="uploadImage('upload-editor')" class="form__container-image ml-4">
           <v-img
             contain
-            v-if="image || propsImage"
+            v-if="image"
             :src="image"
             max-height="100%"
             max-width="100%"
@@ -127,7 +126,17 @@ export default {
       this.image = ""
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;
-        this.payloadNews.medias.splice(0, 1, payload.response);
+        this.$emit('getImageUpload', payload.response)
+        // const temp = this.payloadNews.medias.map(media => {
+        //   return {
+        //     ...media,
+        //     metadata : payload.response.metadata,
+        //     thumbnail : payload.response.thumbnail,
+        //     type : payload.response.type,
+        //     url : payload.response.url
+        //   }
+        // })
+        // this.payloadNews.medias.splice(0, 1, temp[0]);
         this.visible = false;
       } else {
         this.visible = true;

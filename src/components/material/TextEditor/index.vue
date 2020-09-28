@@ -25,8 +25,8 @@ import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload";
 import SimpleUploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter";
 import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar";
 import UploadAdapter from "./uploadAdapter";
-import ImageResizeEditing from "@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting";
-import ImageResizeHandles from "@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles";
+// import ImageResizeEditing from "@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting";
+// import ImageResizeHandles from "@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles";
 import ImageStyle from "@ckeditor/ckeditor5-image/src/imagestyle"
 export default {
   computed: {
@@ -63,8 +63,8 @@ export default {
           ParagraphPlugin,
           Img,
           // ImageResize,
-          ImageResizeEditing,
-          ImageResizeHandles,
+          // ImageResizeEditing,
+          // ImageResizeHandles,
           Alignment,
           ImageUpload,
           SimpleUploadAdapter,
@@ -79,6 +79,7 @@ export default {
             "imageStyle:full",
             "imageStyle:side",
           ],
+          styles : [ 'full', 'side' ],
           resizeUnit: "%",
           resizeOptions: [
             {
