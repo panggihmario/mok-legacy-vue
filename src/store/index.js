@@ -23,6 +23,7 @@ export default new Vuex.Store({
 	},
 	getters : {
 		appVersion : (state) => {
+			console.log(state)
 			return state.packageVersion
 		}
 	},

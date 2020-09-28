@@ -20,6 +20,7 @@
     <FormNews 
       :payloadNews="payloadNews" 
       :categoryNews="categoryNews"
+      @getImageUpload="getImageUpload"
     />
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
@@ -56,6 +57,9 @@ export default {
       createDraft: "news/createDraft",
       getCategoryNews : 'news/getCategoryNews',
     }),
+    getImageUpload(payload) {
+      this.payloadNews.medias.splice(0, 1, payload);
+    },
     async handleCategoryNews () {
       const response = await this.getCategoryNews()
       if(response.status === 200) {
