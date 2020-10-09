@@ -17,8 +17,15 @@
         >
       </div>
     </HeaderContent>
-    <!-- <FormNews :payloadNews="payloadNews" :propsImage="propsImage" /> -->
-		<div class="review__image">
+    <FormNews 
+			:payloadNews="payloadNews" 
+			:propsImage="propsImage"
+			:propsThumbnail="propsThumbnail"
+			@getImageUpload="getImageUpload"
+			@getThumbnail="getThumbnail"
+		/>
+		
+		<!-- <div class="review__image">
 			<v-img
 				:src="imageNews"
 				:lazy-src="imageNews"
@@ -28,9 +35,9 @@
 			<p class="review__content__header black--text">
 				{{headline}}
 			</p>
-			<p  v-html="content" class="review__content__description black--text">
-			</p>
-		</div>
+			<div  v-html="content" class="review__content__description black--text">
+			</div>
+		</div> -->
 		<v-snackbar top v-model="alertSuccess" color="success">
 			{{successMessage}}
     </v-snackbar>
@@ -41,6 +48,8 @@
 </template>
 
 <script>
+   
+
 import { mapActions } from "vuex";
 import FormNews from "../../../containers/Form/formNews";
 import HeaderContent from "../../../containers/HeaderContent";
@@ -61,6 +70,7 @@ export default {
         media: []
       },
 			propsImage: "",
+			propsThumbnail : '',
 			imageNews : '',
 			headline : '',
 			content : '',
@@ -83,6 +93,21 @@ export default {
     HeaderContent
   },
   methods: {
+		getThumbnail(params) {
+			this.payloadNews.thumbnailUrl = params.url
+		},
+		getImageUpload(payload){
+			const temp = this.payloadNews.medias.map(media => {
+				return {
+					...media,
+					metadata : payload.metadata,
+					thumbnail : payload.thumbnail,
+					type : payload.type,
+					url : payload.url
+				}
+			})
+			this.payloadNews.medias.splice(0, 1, temp[0]);
+		},
     ...mapActions({
       getNewsById: "news/getNewsById",
       publishNews: "news/publishNews",
@@ -97,8 +122,10 @@ export default {
 					this.imageNews = responseData.medias && responseData.medias[0].url
 				}
 				this.headline = responseData.headline
+				this.propsImage = responseData.medias.length > 0 ? responseData.medias[0].thumbnail.medium : ''
 				this.content = responseData.content
-        this.payloadNews = responseData;
+				this.payloadNews = responseData;
+				this.propsThumbnail = responseData.thumbnailUrl
       } else {
 				return
       }
@@ -148,7 +175,18 @@ export default {
     }
   },
   mounted() {
-    this.handleResponse();
+		this.handleResponse();
+		 document.querySelectorAll( 'oembed[url]' ).forEach( element => {
+        // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
+				// to discover the media.
+				console.log(element)
+        const anchor = document.createElement( 'a' );
+
+        anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
+        anchor.className = 'embedly-card';
+
+        element.appendChild( anchor );
+    } );
   }
 };
 </script>

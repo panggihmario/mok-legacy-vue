@@ -24,7 +24,10 @@
     <FormNews 
       :payloadNews="payloadNews" 
       :propsImage="propsImage" 
+      :propsThumbnail="propsThumbnail"
       :categoryNews="categoryNews"
+      @getThumbnail="getThumbnail"
+      @getImageUpload="getImageUpload"
     />
     <v-snackbar top v-model="alertSuccess" color="success">
       Edit News Success
@@ -61,9 +64,11 @@ export default {
         content: "",
         linkReference: "",
         medias: [],
-        newsCategory : {}
+        newsCategory : {},
+        thumbnailUrl : ''
       },
-      propsImage: ""
+      propsImage: "",
+      propsThumbnail : ''
     };
   },
   methods: {
@@ -92,11 +97,27 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
         const responseData = response.data.data;
+        console.log("detail", responseData)
         this.payloadNews = responseData;
-        console.log(responseData)
         this.propsImage =  responseData.medias.length > 0 ?  responseData.medias[0].thumbnail.medium : '' ;
+        this.propsThumbnail = responseData.thumbnailUrl
       }
     },
+    getThumbnail(params) {
+			this.payloadNews.thumbnailUrl = params.url
+		},
+		getImageUpload(payload){
+			const temp = this.payloadNews.medias.map(media => {
+				return {
+					...media,
+					metadata : payload.metadata,
+					thumbnail : payload.thumbnail,
+					type : payload.type,
+					url : payload.url
+				}
+			})
+			this.payloadNews.medias.splice(0, 1, temp[0]);
+		},
     async handleDraft() {
       const id = this.$route.params.id;
       const data = {

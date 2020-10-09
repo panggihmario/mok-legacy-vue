@@ -21,12 +21,16 @@
       :payloadNews="payloadNews" 
       :categoryNews="categoryNews"
       @getImageUpload="getImageUpload"
+      @getThumbnail="getThumbnail"
     />
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
 		</v-snackbar>
 		<v-snackbar top v-model="alertFailed"  color="error" >
 			Create News Failed
+		</v-snackbar>
+    <v-snackbar top v-model="alertImage"  color="error" >
+      NO image / thumbnail
 		</v-snackbar>
   </custom-form>
 </template>
@@ -44,7 +48,11 @@ export default {
     ...mapState(["user"]),
     isFormValid() {
       return Object.keys(this.payloadNews).every(field => {
-        return this.payloadNews[field];
+        if(field === 'linkReference') {
+          return true
+        }else {
+          return this.payloadNews[field];
+        }
       });
     }
   },
@@ -58,7 +66,12 @@ export default {
       getCategoryNews : 'news/getCategoryNews',
     }),
     getImageUpload(payload) {
-      this.payloadNews.medias.splice(0, 1, payload);
+      const tempImage = []
+      tempImage.splice(0,1, payload)
+      this.payloadNews.medias = tempImage
+    },
+    getThumbnail(params) {
+      this.payloadNews.thumbnailUrl = params.url
     },
     async handleCategoryNews () {
       const response = await this.getCategoryNews()
@@ -76,47 +89,57 @@ export default {
     },
     async onDraft() {
       const statusValid = this.isFormValid;
-      if (statusValid) {
-      	this.loadingDraft = true;
-        const response = await this.createDraft(this.payloadNews);
+      console.log(this.payloadNews)
+      // if (statusValid) {
+      //   this.loadingDraft = true;
+      //   const payload = {
+      //     params : this.payloadNews,
+      //     type : 'draft'
+      //   }
+      //   return this.actionPostNews(payload)
+      // }else{
+      //   this.alertImage = true
+      //   if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
+      //     this.alertImage = false
+      //   }
+      //   return
+      // }
+    },
+    async actionPostNews (payloadNews) {
+      const response = await this.createNews(payloadNews);
         if (response.status === 201) {
-					this.alertSuccess = true
-					setTimeout(() => {
-						this.alertSuccess = false
-          	this.$router.push("/editor");
-					}, 500)
-          this.loadingDraft = false;
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.$router.push("/editor");
+          }, 500)
+          this.loadingDraft = false; 
+          this.loadingSubmit = false
         } else {
-					this.alertFailed = true
-					setTimeout(() => {
-						this.alertFailed = false
-					}, 1500)
+          this.alertFailed = true
+          setTimeout(() => {
+            this.alertFailed = false
+          }, 1500)
           this.loadingDraft = false;
+          this.loadingSubmit = false
           return response;
         }
-      }
     },
-    async onSubmit() {
-      const statusValid = this.isFormValid;
+    onSubmit() {
+      const statusValid = this.isFormValid; 
       if (statusValid) {
-				this.loadingSubmit = true
-        const response = await this.createNews(this.payloadNews);
-        if (response.status === 201) {
-					this.loadingSubmit = false
-					this.alertSuccess = true
-					setTimeout(() => {
-						this.alertSuccess = false
-          	this.$router.push("/editor");
-					}, 500)
-        } else {
-					this.alertFailed = true
-					setTimeout(() => {
-						this.alertFailed = false
-					}, 1500)
-					this.loadingSubmit = false
+        const payload = {
+          params : this.payloadNews,
+          type : 'submit'
         }
+				this.loadingSubmit = true
+        return this.actionPostNews(payload)
       } else {
-        return;
+        this.alertImage = true
+        if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
+          this.alertImage = false
+        }
+        return
       }
     },
     getImage(payload) {
@@ -130,6 +153,7 @@ export default {
     return {
       image: "",
       categoryNews : [],
+      alertImage : false,
 			loadingDraft: false,
 			loadingSubmit : false,
 			alertSuccess : false,
@@ -139,8 +163,9 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        medias: [],
-        newsCategory : ""
+        medias: null,
+        newsCategory : "",
+        thumbnailUrl : ''
       },
       dialog: false
     };
