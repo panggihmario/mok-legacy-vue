@@ -13,7 +13,7 @@
         >
 					Review
 				</custom-button>
-				<div style="display : flex" v-if="item.status ===  'Approved' ">
+				<div style="display : flex" v-else>
 					<v-btn 
 						@click="moveToEdit(item.id)"
 						icon

@@ -37,7 +37,7 @@ export default {
 		async createNews({ state }, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().post(`${state.pathNews}/submit`, payload)
+				response = await this._vm.$httpWithToken().post(`${state.pathNews}/${payload.type}`, payload.params)
 				return response
 			} catch (error) {
 				return error

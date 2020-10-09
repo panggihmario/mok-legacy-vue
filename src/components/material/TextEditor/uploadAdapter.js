@@ -12,9 +12,16 @@ export default class UploadAdapter {
         data.append('file', uploadedFile)
         axios.post(`${uploadApi}/medias`,data)
         .then(response => {
-          console.log(response)
+          let url
+          const responseData = response.data
+          const widthUrl = Number(responseData.metadata.width)
+          if(widthUrl > 638){
+            url = `${responseData.url}?x-oss-process=image/resize,m_lfit,w_638`
+          }else{
+            url = responseData.url
+          }
           resolve({
-            default : response.data.url
+            default : url
           })
         })
         .catch(error => {

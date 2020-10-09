@@ -25,9 +25,10 @@ import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload";
 import SimpleUploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter";
 import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar";
 import UploadAdapter from "./uploadAdapter";
-// import ImageResizeEditing from "@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting";
-// import ImageResizeHandles from "@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles";
+import ImageResizeEditing from "@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting";
+import ImageResizeHandles from "@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles";
 import ImageStyle from "@ckeditor/ckeditor5-image/src/imagestyle"
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 export default {
   computed: {
     inputListener() {
@@ -69,7 +70,8 @@ export default {
           ImageUpload,
           SimpleUploadAdapter,
           ImageToolbar,
-          ImageStyle
+          // ImageStyle,
+          MediaEmbed
           // Image
         ],
         image: {
@@ -104,6 +106,7 @@ export default {
           "redo",
           "imageUpload",
           "link",
+          'mediaEmbed'
         ],
       },
     };

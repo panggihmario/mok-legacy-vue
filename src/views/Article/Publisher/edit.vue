@@ -15,7 +15,9 @@
 			:payloadNews="payloadNews" 
 			:propsImage="propsImage"
 			:categoryNews="categoryNews"
+			:propsThumbnail="propsThumbnail"
 			@getImageUpload="getImageUpload"
+			@getThumbnail="getThumbnail"
 		 />
 		<v-snackbar top v-model="alertSuccess" color="success">
 			{{successMessage}}
@@ -45,9 +47,11 @@ export default {
         content: "",
         linkReference: "",
 				media: [],
-				newsCategory : {}
+				newsCategory : {},
+				thumbnailUrl : ''
       },
 			propsImage: "",
+			propsThumbnail : '',
 			categoryNews : [],
 			imageNews : '',
 			headline : '',
@@ -77,17 +81,28 @@ export default {
 			rejectNews: "news/rejectNews",
 			getCategoryNews : 'news/getCategoryNews',
 		}),
+		getThumbnail(params) {
+			this.payloadNews.thumbnailUrl = params.url
+		},
 		getImageUpload(payload){
-			const temp = this.payloadNews.medias.map(media => {
-				return {
-					...media,
-					metadata : payload.metadata,
-					thumbnail : payload.thumbnail,
-					type : payload.type,
-					url : payload.url
-				}
-			})
-			this.payloadNews.medias.splice(0, 1, temp[0]);
+			if(this.payloadNews.medias.length > 0 ){
+				const temp = this.payloadNews.medias.map(media => {
+					return {
+						...media,
+						metadata : payload.metadata,
+						thumbnail : payload.thumbnail,
+						type : payload.type,
+						url : payload.url
+					}
+				})
+				this.payloadNews.medias.splice(0, 1, temp[0]);
+				this.$nextTick(() => {
+					console.log(this.payloadNews.medias)
+				})
+			}else{
+				this.payloadNews.medias.push(payload)
+			}
+			
 		},
 		async handleCategoryNews () {
       const response = await this.getCategoryNews()
@@ -107,8 +122,10 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
+				console.log(responseData)
 				this.propsImage = responseData.medias.length > 0 ? responseData.medias[0].thumbnail.medium : ''
 				this.imageNews = responseData.medias.length > 0 ? responseData.medias[0].thumbnail.medium : ''
+				this.propsThumbnail = responseData.thumbnailUrl
 				this.headline = responseData.headline
 				this.content = responseData.content
         this.payloadNews = responseData;

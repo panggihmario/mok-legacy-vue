@@ -10,33 +10,53 @@
           name="Headline"
         />
       </v-col>
-      <v-col md="5">
-        <custom-upload
-          class="mb-1 ml-4"
-          id="upload-editor"
-          @response="getImage"
-          style="display: none"
-        />
-        <div @click="uploadImage('upload-editor')" class="form__container-image ml-4">
-          <v-img
-            contain
-            v-if="image"
-            :src="image"
-            max-height="100%"
-            max-width="100%"
-            :aspect-ratio="1"
-          >
-          </v-img>
-          <div v-else>
-            <v-icon size="18px" color="secondary">$upload</v-icon>
-            <span class="ml-2 text-secondary">Foto / Video</span>
-            <v-progress-linear
-              color="secondary"
-              indeterminate
-              rounded
-              height="6"
-              v-if="visible"
-            />
+      <v-col md="5" class="d-flex">
+        <div>
+          <custom-upload
+            class="mb-1 ml-4"
+            id="upload-editor"
+            @response="getImage"
+            style="display: none"
+          />
+          <div @click="uploadImage('upload-editor')" class="form__container-image ml-4">
+            <v-img
+              contain
+              v-if="image"
+              :src="image"
+              max-height="100%"
+              max-width="100%"
+              :aspect-ratio="1"
+            ></v-img>
+            <div v-else>
+              <v-icon size="18px" color="secondary">$upload</v-icon>
+              <span class="ml-2 text-secondary">Foto / Video</span>
+              <v-progress-linear color="secondary" indeterminate rounded height="6" v-if="visible" />
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <custom-upload
+            class="mb-1 ml-4"
+            id="upload-thumbnail"
+            @response="getImageThumbnail"
+            style="display: none"
+            typeUpload="thumbnails"
+          />
+          <div @click="uploadImage('upload-thumbnail')" class="form__container-image ml-4">
+            <v-img
+              contain
+              v-if="thumbnailImage"
+              :src="thumbnailImage"
+              max-height="100%"
+              max-width="100%"
+              :aspect-ratio="1"
+            ></v-img>
+            <div v-else>
+              <v-icon size="18px" color="secondary">$upload</v-icon>
+              <span class="ml-2 text-secondary">Thumbnail</span>
+              <v-progress-linear color="secondary" indeterminate rounded height="6" v-if="visibleThumbnail" />
+            </div>
           </div>
         </div>
       </v-col>
@@ -56,6 +76,8 @@
           rules="required"
           name="Content"
         />
+        <!-- <div v-html="payloadNews.content">
+        </div> -->
         <custom-textarea label="Tag Artikel" placeholder="Tag" :disabled="true" />
       </v-col>
       <v-col cols="5">
@@ -75,7 +97,6 @@
             label="Sumber Artikel Utama"
             v-model="payloadNews.linkReference"
             :value="payloadNews.linkReference"
-            rules="required"
             name="Link Refrence"
           />
           <icon-input :disabled="true" label="Artikel Terkait 1" />
@@ -101,6 +122,9 @@ export default {
     categoryNews: {
       type: Array,
     },
+    propsThumbnail : {
+      type : String
+    }
   },
   computed: {
     status() {
@@ -114,19 +138,30 @@ export default {
   data() {
     return {
       dialog: false,
-      image: this.propsImage,
+      image: '',
       visible: false,
+      thumbnailImage : '',
+      visibleThumbnail : false
     };
   },
   methods: {
     uploadImage(id) {
       document.getElementById(id).click();
     },
+    getImageThumbnail(payload) {
+      if(payload.status === 'success') {
+        this.thumbnailImage = payload.response.url
+        this.$emit("getThumbnail", payload.response)
+        this.visibleThumbnail = false
+      }else{
+        this.visibleThumbnail = true
+      }
+    },
     getImage(payload) {
-      this.image = ""
+      this.image = "";
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;
-        this.$emit('getImageUpload', payload.response)
+        this.$emit("getImageUpload", payload.response);
         // const temp = this.payloadNews.medias.map(media => {
         //   return {
         //     ...media,
@@ -147,6 +182,9 @@ export default {
     propsImage() {
       this.image = this.propsImage;
     },
+    propsThumbnail () {
+      this.thumbnailImage = this.propsThumbnail
+    }
   },
 };
 </script>
