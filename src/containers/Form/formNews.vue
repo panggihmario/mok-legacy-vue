@@ -90,6 +90,7 @@
             :value="payloadNews.newsCategory"
             return-object
             item-text="name"
+
             rules="required"
             name="Kategori"
           />
@@ -149,6 +150,7 @@ export default {
       document.getElementById(id).click();
     },
     getImageThumbnail(payload) {
+      console.log(payload)
       if(payload.status === 'success') {
         this.thumbnailImage = payload.response.url
         this.$emit("getThumbnail", payload.response)

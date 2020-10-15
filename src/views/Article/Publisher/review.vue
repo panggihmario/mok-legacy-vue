@@ -23,6 +23,7 @@
 			:propsThumbnail="propsThumbnail"
 			@getImageUpload="getImageUpload"
 			@getThumbnail="getThumbnail"
+			:categoryNews="categoryNews"
 		/>
 		
 		<!-- <div class="review__image">
@@ -61,6 +62,7 @@ export default {
 			alertSuccess : false,
 			alertFailed : false,
 			successMessage : "",
+			categoryNews : [],
 			failedMessage : "",
       payloadNews: {
         headline: "",
@@ -111,13 +113,28 @@ export default {
     ...mapActions({
       getNewsById: "news/getNewsById",
       publishNews: "news/publishNews",
-      rejectNews: "news/rejectNews"
-    }),
+			rejectNews: "news/rejectNews",
+			getCategoryNews : 'news/getCategoryNews',
+		}),
+		async handleCategoryNews () {
+      const response = await this.getCategoryNews()
+      if(response.status === 200) {
+        const responseData = response.data.data
+        const formatData = responseData.map(r => {
+          return {
+            name : r.name,
+            id : r.id
+          }
+        })
+        this.categoryNews = formatData
+      }
+    },
     async handleResponse() {
       const id = this.$route.params.id;
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
+				console.log(responseData)
 				if(responseData.medias.length > 0){
 					this.imageNews = responseData.medias && responseData.medias[0].url
 				}
@@ -176,17 +193,16 @@ export default {
   },
   mounted() {
 		this.handleResponse();
-		 document.querySelectorAll( 'oembed[url]' ).forEach( element => {
-        // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
-				// to discover the media.
-				console.log(element)
-        const anchor = document.createElement( 'a' );
+		this.handleCategoryNews()
+		//  document.querySelectorAll( 'oembed[url]' ).forEach( element => {
+		// 		console.log(element)
+    //     const anchor = document.createElement( 'a' );
 
-        anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
-        anchor.className = 'embedly-card';
+    //     anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
+    //     anchor.className = 'embedly-card';
 
-        element.appendChild( anchor );
-    } );
+    //     element.appendChild( anchor );
+    // } );
   }
 };
 </script>
