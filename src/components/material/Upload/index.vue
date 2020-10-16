@@ -68,6 +68,7 @@ export default {
 					this.$emit("response", result);
         })
         .catch(error => {
+          console.log(error.response)
           result = {
             status: "failed"
 					};
