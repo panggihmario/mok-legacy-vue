@@ -19,13 +19,14 @@
 					class="mt-4" 
 					@reloadDataNews="reloadDataNews"
 				/>
+          <!-- class="d-flex justify-end" -->
         <v-pagination
-          class="d-flex justify-end"
           :length="totalPages"
           prev-icon="mdi-menu-left"
           next-icon="mdi-menu-right"
           v-model="pageNews"
           @input="getNewsBaseOnPage"
+          :total-visible="6"
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>
