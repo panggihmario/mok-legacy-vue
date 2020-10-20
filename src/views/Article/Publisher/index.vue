@@ -76,6 +76,7 @@ export default {
       totalPages: 0,
       pageNews: 1,
       keyword: "",
+      isSearch : false
     };
   },
   mounted() {
@@ -87,6 +88,7 @@ export default {
       searchNews: "news/searchNews",
     }),
     async handleSearch() {
+      this.isSearch = true
       const payload = {
         title: this.keyword,
       };
@@ -96,7 +98,6 @@ export default {
       } else {
         return response;
       }
-      // console.log(response)
     },
     reloadDataNews() {
       this.getResponseNews();
@@ -153,20 +154,33 @@ export default {
       }
     },
     async getNewsBaseOnPage() {
-      const payload = {
-        tab: "list",
-        page: this.pageNews - 1,
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        this.formatingResponse(response);
-      } else {
-        return response;
+      if(this.isSearch) {
+        const data = {
+          page : this.pageNews - 1,
+          title : this.keyword
+        }
+        const response = await this.searchNews(data)
+        if(response.status === 200) {
+          this.formatingResponse(response)
+        }else{
+          return response
+        }
+      }else{
+        const payload = {
+          tab: "list",
+          page: this.pageNews - 1,
+        };
+        const response = await this.getNews(payload);
+        if (response.status === 200) {
+          this.formatingResponse(response);
+        } else {
+          return response;
+        }
       }
+      
     },
     formatingResponse(response) {
       const listNews = response.data.data.content;
-      console.log(listNews)
       this.totalPages = response.data.data.totalPages;
       const formatingList = listNews.map((news) => {
         const newFormatDate = this.formatingDate(news.createAt);
