@@ -105,6 +105,18 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async searchNews ({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathNews}/search`, {params :{
+					...payload }
+				})
+				return response
+			} catch (error) {
+				return error
+			}
+			
 		}
 	}
 }

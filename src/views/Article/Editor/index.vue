@@ -24,6 +24,7 @@
           next-icon="mdi-menu-right"
           v-model="pageNews"
           @input="getNewsBaseOnPage"
+          :total-visible="6"
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>

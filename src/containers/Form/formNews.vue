@@ -2,7 +2,7 @@
   <div>
     <v-row align="center">
       <v-col md="7">
-        <custom-input
+        <custom-textarea
           label="Headline"
           v-model="payloadNews.headline"
           :value="payloadNews.headline"

@@ -1,6 +1,14 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
+    <div class="d-flex justify-end">
+      <custom-input
+        placeholder="Search"
+        style="width: 200px"
+        v-model="keyword"
+        @keyup.enter="handleSearch"
+      />
+    </div>
     <v-tabs @change="changeTabs" v-model="tab" color="primary">
       <v-tab>
         <span class="text-capitalize">List News</span>
@@ -14,18 +22,19 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <ListArticle 
-					:articles="articles" 
-					class="mt-4" 
-					@reloadDataNews="reloadDataNews"
-				/>
+        <ListArticle
+          :articles="articles"
+          class="mt-4"
+          @reloadDataNews="reloadDataNews"
+        />
+        <!-- class="d-flex justify-end" -->
         <v-pagination
-          class="d-flex justify-end"
           :length="totalPages"
           prev-icon="mdi-menu-left"
           next-icon="mdi-menu-right"
           v-model="pageNews"
           @input="getNewsBaseOnPage"
+          :total-visible="6"
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>
@@ -50,7 +59,7 @@ export default {
     HeaderContent,
     ListArticle,
     Draft,
-    History
+    History,
   },
   data() {
     return {
@@ -59,13 +68,15 @@ export default {
         {
           text: "News",
           disabled: false,
-          href: "publisher"
-        }
+          href: "publisher",
+        },
       ],
       articles: [],
       drafts: [],
       totalPages: 0,
-      pageNews: 1
+      pageNews: 1,
+      keyword: "",
+      isSearch : false
     };
   },
   mounted() {
@@ -73,11 +84,24 @@ export default {
   },
   methods: {
     ...mapActions({
-      getNews: "news/getListNews"
-		}),
-		reloadDataNews() {
-			this.getResponseNews()
-		},
+      getNews: "news/getListNews",
+      searchNews: "news/searchNews",
+    }),
+    async handleSearch() {
+      this.isSearch = true
+      const payload = {
+        title: this.keyword,
+      };
+      const response = await this.searchNews(payload);
+      if (response.status === 200) {
+        this.formatingResponse(response);
+      } else {
+        return response;
+      }
+    },
+    reloadDataNews() {
+      this.getResponseNews();
+    },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
       const day = newDt.getDate();
@@ -97,18 +121,18 @@ export default {
     async getResponseDraft() {
       const payload = {
         tab: "draft",
-        page: 0
+        page: 0,
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const listNews = response.data.data.content;
         this.totalPages = response.data.data.totalPages;
-        const formatingList = listNews.map(news => {
+        const formatingList = listNews.map((news) => {
           const newFormatDate = this.formatingDate(news.createAt);
           return {
             date: newFormatDate,
             headline: news.headline,
-            id: news.id
+            id: news.id,
           };
         });
         this.drafts = formatingList;
@@ -117,10 +141,10 @@ export default {
       }
     },
     async getResponseNews() {
-			this.pageNews = 1
+      this.pageNews = 1;
       const payload = {
         tab: "list",
-        page: 0
+        page: 0,
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
@@ -130,32 +154,46 @@ export default {
       }
     },
     async getNewsBaseOnPage() {
-      const payload = {
-        tab: "list",
-        page: this.pageNews - 1
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        this.formatingResponse(response);
-      } else {
-        return response;
+      if(this.isSearch) {
+        const data = {
+          page : this.pageNews - 1,
+          title : this.keyword
+        }
+        const response = await this.searchNews(data)
+        if(response.status === 200) {
+          this.formatingResponse(response)
+        }else{
+          return response
+        }
+      }else{
+        const payload = {
+          tab: "list",
+          page: this.pageNews - 1,
+        };
+        const response = await this.getNews(payload);
+        if (response.status === 200) {
+          this.formatingResponse(response);
+        } else {
+          return response;
+        }
       }
+      
     },
     formatingResponse(response) {
       const listNews = response.data.data.content;
       this.totalPages = response.data.data.totalPages;
-      const formatingList = listNews.map(news => {
+      const formatingList = listNews.map((news) => {
         const newFormatDate = this.formatingDate(news.createAt);
         return {
           date: newFormatDate,
           status: news.status,
           headline: news.headline,
-          id: news.id
+          id: news.id,
         };
       });
       this.articles = formatingList;
-    }
-  }
+    },
+  },
 };
 </script>
 
