@@ -54,7 +54,7 @@ export default {
 				url : 'upload?type=media',
 				method : 'post',
 				data : form
-			}
+      }
 			this.loadingUpload = true
 			this.$emit("response", result);
 			const uploadApi = process.env.VUE_APP_UPLOAD
@@ -68,7 +68,7 @@ export default {
 					this.$emit("response", result);
         })
         .catch(error => {
-          console.log(error.response)
+          console.log(error)
           result = {
             status: "failed"
 					};

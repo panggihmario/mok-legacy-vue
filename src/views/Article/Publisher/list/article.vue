@@ -1,8 +1,11 @@
 <template>
   <div>
-    <v-data-table hide-default-footer :headers="headers" :items="articles">
+    <v-data-table hide-default-footer :headers="headers" :items="news">
       <template v-slot:item.status="{item}">
         <span :class="getColor(item.status)">{{item.status}}</span>
+      </template>
+      <template v-slot:item.date="{item}">
+        {{formatingDate(item.createAt)}}
       </template>
       <template v-slot:item.action="{item}">
         <custom-button
@@ -26,6 +29,14 @@
 				</div>
       </template>
     </v-data-table>
+    <v-pagination
+      :length="listNews.totalPages"
+      prev-icon="mdi-menu-left"
+      next-icon="mdi-menu-right"
+      v-model="pageNews"
+      @input="getNewsBaseOnPage"
+      :total-visible="6"
+    />
 		<DialogDelete
 			title="Yakin menghapus news ini"
 			:dialog="dialog"
@@ -48,8 +59,21 @@ import DialogDelete from '@/components/material/DialogDelete';
 export default {
 	components : {
 		DialogDelete
-	},
-  props: ["articles"],
+  },
+  props: ["listNews"],
+  computed : {
+    news () {
+      const list = this.listNews.content
+      if(list) {
+        const filterSchedule = list.filter(f => {
+          if(!f.isScheduled) {
+            return f
+          }
+        })
+        return filterSchedule
+      }
+    }
+  }, 
   methods: {
     getColor(status) {
       switch (status) {
@@ -60,10 +84,26 @@ export default {
         default:
           return "grey--text";
       }
-		},
+    },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
 		...mapActions({
-			deleteNews : 'news/deleteDraft'
-		}),
+      deleteNews : 'news/deleteDraft',
+      getNews: "news/getListNews",
+    }),
+    getNewsBaseOnPage(p) {
+      const params = {
+        page : p,
+        tab : 'list'
+      }
+      this.$emit('getNewsBaseOnPage',params)
+    },
     moveToReview(id) {
       this.$router.push({
         name: "reviewPublisher",
@@ -108,11 +148,11 @@ export default {
   },
   data() {
     return {
-			dialog : false,
+      dialog : false,
+      pageNews : 1,
 			alertSuccess : false,
 			alertFailed : false,
 			idNews : '',
-
       headers: [
         {
           text: "Tanggal",
@@ -128,7 +168,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "100"
+          width: "150"
         },
         {
           text: "Headline",
@@ -136,7 +176,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width : "650"
+          width : "600"
         },
         {
           text: "",

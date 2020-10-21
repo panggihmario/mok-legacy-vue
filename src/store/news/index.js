@@ -97,6 +97,15 @@ export default {
 				return error
 			}
 		},
+		async scheduleNews({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/scheduled`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
 		async rejectNews({state}, payload){
 			let response;
 			try {

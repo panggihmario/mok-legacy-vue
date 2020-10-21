@@ -24,6 +24,8 @@
 			@getImageUpload="getImageUpload"
 			@getThumbnail="getThumbnail"
 			:categoryNews="categoryNews"
+			:schedule="true"
+			@getEpochDate="getEpochDate"
 		/>
 		
 		<!-- <div class="review__image">
@@ -98,6 +100,13 @@ export default {
 		getThumbnail(params) {
 			this.payloadNews.thumbnailUrl = params.url
 		},
+		getEpochDate(e) {
+			this.payloadNews.scheduledTime = e
+			this.$nextTick(() => {
+				console.log(this.payloadNews)
+
+			})
+		},
 		getImageUpload(payload){
 			const temp = this.payloadNews.medias.map(media => {
 				return {
@@ -115,6 +124,7 @@ export default {
       publishNews: "news/publishNews",
 			rejectNews: "news/rejectNews",
 			getCategoryNews : 'news/getCategoryNews',
+			scheduleNews : 'news/scheduleNews'
 		}),
 		async handleCategoryNews () {
       const response = await this.getCategoryNews()
@@ -134,7 +144,7 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
-				console.log(responseData)
+				console.log("response",responseData)
 				if(responseData.medias.length > 0){
 					this.imageNews = responseData.medias && responseData.medias[0].url
 				}
@@ -146,15 +156,17 @@ export default {
       } else {
 				return
       }
-    },
-    async onPublish() {
-      const params = {
-        id: this.$route.params.id,
-        data: this.payloadNews
-			};
-			this.loadingPublish = true
-      const response = await this.publishNews(params);
-      if (response.status === 200) {
+		},
+		async publishWithSchedule(params) {
+			const response = await this.scheduleNews(params);
+      this.handleResponsePublish(response)
+		},
+		async publishWithoutSchedule(payload) {
+			const response = await this.publishNews(params);
+      this.handleResponsePublish(response)
+		},
+		handleResponsePublish(response) {
+			if (response.status === 200) {
 				this.loadingPublish = false
 				this.alertSuccess = true
 				this.successMessage = 'Publish Success'
@@ -170,6 +182,20 @@ export default {
 					this.alertFailed = false
 				},3000)
       }
+		},
+    onPublish() {
+      const params = {
+        id: this.$route.params.id,
+        data: this.payloadNews
+			};
+			const isSchedule = this.payloadNews.isScheduled
+			this.loadingPublish = true
+			if(isSchedule) {
+			console.log(params)
+				this.publishWithSchedule(params)
+			}else{
+				this.publishWithoutSchedule(params)
+			}
     },
     async onReject() {
       const params = {
