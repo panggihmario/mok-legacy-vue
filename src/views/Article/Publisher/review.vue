@@ -161,7 +161,7 @@ export default {
 			const response = await this.scheduleNews(params);
       this.handleResponsePublish(response)
 		},
-		async publishWithoutSchedule(payload) {
+		async publishWithoutSchedule(params) {
 			const response = await this.publishNews(params);
       this.handleResponsePublish(response)
 		},
@@ -191,9 +191,10 @@ export default {
 			const isSchedule = this.payloadNews.isScheduled
 			this.loadingPublish = true
 			if(isSchedule) {
-			console.log(params)
+
 				this.publishWithSchedule(params)
 			}else{
+				console.log("masuk else")
 				this.publishWithoutSchedule(params)
 			}
     },

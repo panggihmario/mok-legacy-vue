@@ -71,7 +71,6 @@ export default {
       this.payloadNews.medias = tempImage
     },
     getThumbnail(params) {
-      console.log(params)
       this.payloadNews.thumbnailUrl = params.url
     },
     async handleCategoryNews () {
