@@ -9,6 +9,7 @@ import Upload from '../../components/material/Upload';
 import IconUpload from '../../components/icon/iconUpload.vue';
 import IconInput from '../../components/material/IconInput';
 import IconLink from '../../components/icon/iconLink.vue';
+import IconClockSquare from	'../../components/icon/iconClockSquare.vue';
 import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
 import DatePicker from '../../components/material/DatePicker';
@@ -64,6 +65,10 @@ export default [
 	{
 		name : 'icon-link',
 		component : IconLink
+	},
+	{
+		name : 'icon-clock-square',
+		component : IconClockSquare
 	},
 	{
 		name : 'label-field',

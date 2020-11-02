@@ -1,6 +1,6 @@
 <template>
   <custom-form :onSubmit="handleSubmit">
-    <div class="d-flex align-center">
+    <div class="d-flex align-center mb-6">
       <div class="form__image-box mr-6">
         <v-img
           v-if="channel.photo"
@@ -28,8 +28,30 @@
         name="Description"
       />
     </div>
-    <custom-button :loading="loading" color="carmine" class="white--text" type="submit"
-      >{{labelButton}}</custom-button
+
+    <div class="sensitif__box pa-3 charcoal--text mb-6">
+      <div class="d-flex justify-space-between mb-4">
+        <span class="black--text">
+          <b>Sensitif Channel</b>
+        </span>
+        <v-checkbox
+          v-model="channel.isSensitive"
+          hide-details
+          class="pa-0 ma-0"
+        ></v-checkbox>
+      </div>
+      <span
+        >Postingan user yang menggunakan channel ini tidak akan di tampilkan di
+        feed <b>Following</b></span
+      >
+    </div>
+
+    <custom-button
+      :loading="loading"
+      color="carmine"
+      class="white--text"
+      type="submit"
+      >{{ labelButton }}</custom-button
     >
   </custom-form>
 </template>
@@ -38,14 +60,14 @@
 export default {
   props: {
     channel: {
-      type: Object
-		},
-		labelButton : {
-			type : String
-		},
-		loading : {
-			type : Boolean
-		}
+      type: Object,
+    },
+    labelButton: {
+      type: String,
+    },
+    loading: {
+      type: Boolean,
+    },
   },
   data() {
     return {};
@@ -57,8 +79,8 @@ export default {
     getResponse(payload) {
       this.status = payload.status;
       this.channel.photo = payload.response.url;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -67,11 +89,10 @@ export default {
 	&__image-box
 		width: 213px
 		height: 145px
-		border-radius: 5px
 	&__image
 		width: 100%
 		height: 100%
-		overflow: hidden
+		border-radius: 5px
 	&__image-no
 		width: 100%
 		height: 100%
@@ -79,4 +100,10 @@ export default {
 		border-radius: 5px
 	&__box
 		width: 400px
+.sensitif
+	&__box
+		background: rgba(168, 7, 26, .05)
+		width: 400px
+		border-radius: 5px
+		font-size: 14px
 </style>

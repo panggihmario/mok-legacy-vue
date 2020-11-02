@@ -22,10 +22,10 @@ export default {
 				"font-size" : "16px"
       },
       styleMedium: {
-        height: "40px",
-        "padding-left": "32px",
-				"padding-right": "32px",
-				"font-size" : "16px"
+        height: "38px",
+        "padding-left": "25px",
+				"padding-right": "25px",
+				"font-size" : "12px"
 			},
 			styleSmall : {
 				height : '24px',

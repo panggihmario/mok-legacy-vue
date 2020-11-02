@@ -5,15 +5,16 @@
     </div>
     <v-btn
       height="29px"
-      outlined
+      :outlined="!text"
+      :text="text"
       elevation="0"
-      color="carmine"
+      :color="color"
       class="upload__button"
       @click="handleUpload"
-			:loading="loadingUpload"
+      :loading="loadingUpload"
     >
-      <v-icon color="carmine" left>$upload</v-icon>
-      <span class="text-capitalize carmine--text upload__label"
+      <v-icon :color="color" left>$upload</v-icon>
+      <span class="text-capitalize upload__label" :class="`${color}--text`"
         >Upload Foto</span
       >
     </v-btn>
@@ -24,22 +25,30 @@
 <script>
 import axios from "axios";
 export default {
-	data () {
-		return {
-			loadingUpload : false
-		}
-	},
+  data() {
+    return {
+      loadingUpload: false,
+    };
+  },
   props: {
     id: {
-      type: [String, Number]
+      type: [String, Number],
     },
     label: {
-      type: String
-		},
-		typeUpload : {
-			type : String,
-			default : 'media'
-		}
+      type: String,
+    },
+    typeUpload: {
+      type: String,
+      default: "media",
+    },
+    color: {
+      type: String,
+      default: "carmine",
+    },
+    text: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     onLoad(e) {
@@ -47,37 +56,38 @@ export default {
       let form = new FormData();
       form.append("file", file);
       let result = {
-				status: "loading",
-				response : {}
-			};
-			const payload = {
-				url : 'upload?type=media',
-				method : 'post',
-				data : form
-			}
-			this.loadingUpload = true
-			this.$emit("response", result);
-			this.$http().post(`upload?type=${this.typeUpload}`, form)
-        .then(response => {
+        status: "loading",
+        response: {},
+      };
+      const payload = {
+        url: "upload?type=media",
+        method: "post",
+        data: form,
+      };
+      this.loadingUpload = true;
+      this.$emit("response", result);
+      this.$http()
+        .post(`upload?type=${this.typeUpload}`, form)
+        .then((response) => {
           result = {
             response: response.data.data,
-            status: "success"
-					};
-					this.loadingUpload = false
-					this.$emit("response", result);
+            status: "success",
+          };
+          this.loadingUpload = false;
+          this.$emit("response", result);
         })
-        .catch(error => {
+        .catch((error) => {
           result = {
-            status: "failed"
-					};
-					this.loadingUpload = false
-					this.$emit("response", result);
+            status: "failed",
+          };
+          this.loadingUpload = false;
+          this.$emit("response", result);
         });
     },
     handleUpload() {
       document.getElementById(this.id).click();
     },
-  }
+  },
 };
 </script>
 

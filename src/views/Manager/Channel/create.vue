@@ -2,18 +2,18 @@
   <div>
     <HeaderContent label="Buat Channel" :list="items" />
     <div class="mt-4" />
-    <FormChannel 
-			:channel="channel" 
-			@onSubmit="onSubmit" 
-			labelButton="Add Channel"
-			:loading="loading"
-		/>
-		<v-snackbar top right  v-model="alertSuccess" color="success">
-			Post Success
-		</v-snackbar>
-			<v-snackbar top right  v-model="alertError" color="error">
-			Post Failed
-		</v-snackbar>
+    <FormChannel
+      :channel="channel"
+      @onSubmit="onSubmit"
+      labelButton="Add Channel"
+      :loading="loading"
+    />
+    <v-snackbar top right v-model="alertSuccess" color="success">
+      Post Success
+    </v-snackbar>
+    <v-snackbar top right v-model="alertError" color="error">
+      Post Failed
+    </v-snackbar>
   </div>
 </template>
 
@@ -21,20 +21,22 @@
 import FormChannel from "../../../containers/Form/formChannel";
 import HeaderContent from "../../../containers/HeaderContent";
 import { mapActions } from "vuex";
+
 export default {
   components: {
     HeaderContent,
-    FormChannel
+    FormChannel,
   },
   data() {
     return {
-			loading : false,
-			alertSuccess : false,
-			alertError : false,
+      loading: false,
+      alertSuccess: false,
+      alertError: false,
       channel: {
         name: "",
         description: "",
-				photo: "",
+        photo: "",
+        isSensitive: "",
       },
       image: "",
       status: "",
@@ -42,40 +44,40 @@ export default {
         {
           text: "Manage Channel",
           disabled: false,
-          href: "/"
+          href: "/",
         },
         {
           text: "Buat Channel",
-          disabled: true
-        }
-      ]
+          disabled: true,
+        },
+      ],
     };
   },
   methods: {
     ...mapActions({
-      createChannel: "channel/createChannel"
+      createChannel: "channel/createChannel",
     }),
     async onSubmit(payload) {
-			this.loading = true
-			const response = await this.createChannel(this.channel);
+      this.loading = true;
+      const response = await this.createChannel(this.channel);
       if (response.status === 201) {
-				this.alertSuccess = true
-				setTimeout(() => {
-					this.$router.push("/");
-					this.alertSuccess = false
-				}, 500)
-				this.loading = false
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.$router.push("/");
+          this.alertSuccess = false;
+        }, 500);
+        this.loading = false;
       } else {
-				this.loading = false
-				setTimeout(() => {
-					this.alertError = false
-				}, 1000)
+        this.loading = false;
+        setTimeout(() => {
+          this.alertError = false;
+        }, 1000);
       }
     },
     getResponse(payload) {
       this.status = payload.status;
       this.channel.photo = payload.response.url;
-    }
-  }
+    },
+  },
 };
 </script>

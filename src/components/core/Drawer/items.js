@@ -71,28 +71,32 @@ export default [
 	// 		},
 	// 	]
 	// },
-	// {
-	// 	action: 'local_mall',
-	// 	title: 'Shop',
-	// 	items: [
-	// 		{
-	// 			title: 'Product',
-	// 			path: '/product'
-	// 		},
-	// 		{
-	// 			title: 'Category',
-	// 			path: '/category'
-	// 		},
-	// 		{
-	// 			title: 'Seller',
-	// 			path: '/seller'
-	// 		},
-	// 		{
-	// 			title: 'Report',
-	// 			path: '/reported-seller'
-	// 		}
-	// 	]
-	// },
+	{
+		action: 'local_mall',
+		title: 'Shop',
+		items: [
+			{
+				title: 'Product',
+				path: '/product'
+			},
+			{
+				title: 'Category',
+				path: '/category'
+			},
+			{
+				title: 'Seller',
+				path: '/seller'
+			},
+			{
+				title: 'Report',
+				path: '/reported-seller'
+			},
+			{
+				title: 'Komplain',
+				path: '/complaint'
+			},
+		]
+	},
 	{
 		title : 'Post',
 		action : 'post_add',
