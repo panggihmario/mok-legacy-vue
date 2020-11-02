@@ -18,6 +18,25 @@
 					:items="items"
 					hide-default-footer
 				>
+					<template v-slot:item.sequence="props" >
+						<v-edit-dialog
+							:return-value.sync="props.item.sequence"
+							@open="open"
+							@close="close"
+							@save="save(props.item)"
+							@cancel="cancel"
+						>
+						{{props.item.sequence}}
+							<template v-slot:input>
+								<v-text-field
+									v-model="props.item.sequence"
+									single-line
+									label="Edit"
+									type="number"
+								/>
+							</template>
+						</v-edit-dialog>
+					</template>
 					<template v-slot:[`item.actions`]="{item}" >
 						<v-btn  @click="moveToEdit(item.id)"  icon>
 							<v-icon  x-small>$edit</v-icon>
@@ -44,89 +63,119 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import moment from 'moment'
-import { mapActions } from "vuex"
+import moment from "moment";
+import { mapActions } from "vuex";
 import DialogDelete from "@/components/material/DialogDelete";
 export default {
-	components : {
-		HeaderContent,
-		DialogDelete
-	},
-	data () {
-		return {
-			items : [],
-			id : '',
-			dialog : false,
-			loading : false,
-			headers : [
-				{
-					text : 'Nama',
-					value : 'name',
-				},
-				{
-					text : '',
-					value : 'actions',
-					align : 'end'
-				}
-			]
-		}
-	},
-	methods : {
-		moveToEdit(id) {
-			this.$router.push({
-				name : 'categoryNewsEdit',
-				params : {
-					id
-				}
-			})
+  components: {
+    HeaderContent,
+    DialogDelete,
+  },
+  data() {
+    return {
+      items: [],
+      id: "",
+      dialog: false,
+      loading: false,
+      headers: [
+        {
+          text: "Nama",
+          value: "name",
+        },
+        {
+          text: "Position",
+          value: "sequence",
+        },
+        {
+          text: "",
+          value: "actions",
+          align: "end",
+        },
+      ],
+    };
+  },
+  methods: {
+    open() {
+      this.snack = true;
+      this.snackColor = "info";
+      this.snackText = "Dialog opened";
+    },
+    close() {
+      console.log("Dialog closed");
 		},
-		closeModalDelete () {
-			this.id = ''
-			this.dialog = false
-		},
-		openDialogDelete(id) {
-			this.id = id
-			this.dialog = true
-		},
-		handleDelete () {
-			this.loading = true
-			return this.deleteCategoryNews(this.id)
-				.then(r => {
-					this.dialog = false
-					this.loading = false
-					this.handleCategoryNews()
-				})
-				.catch(err => {
-					this.loading = false
-					return err
-				})
-		},
-		moveToCreateCategory () {
-			this.$router.push('/categorynews/create')
-		},
-		...mapActions({
-			getCategoryNews : 'news/getCategoryNews',
-			deleteCategoryNews : 'news/deleteCategoryNews'
-		}),
-		async handleCategoryNews() {
-			const response = await this.getCategoryNews()
-			if(response.status === 200) {
-				const responseData = response.data.data
-				const formatingList = responseData.map(r => {
-					const unixDate = r.createAt / 1000
-					const formatingDate = moment.unix(unixDate).format("D/M/YYYY")
-					return {
-						date : formatingDate,
-						name : r.name,
-						id : r.id
-					}
-				})
-			this.items = formatingList
+		async save (c) {
+			const payload = {
+				id : c.id,
+				sequence : Number(c.sequence)
 			}
-		}
-	},
-	mounted () {
-		this.handleCategoryNews()
-	}
-}
+			const response = await this.editSequence(payload)
+			if(response.status === 200) {
+				this.handleCategoryNews()
+			}else{
+				return
+			}
+		},
+		cancel() {
+
+		},
+    moveToEdit(id) {
+      this.$router.push({
+        name: "categoryNewsEdit",
+        params: {
+          id,
+        },
+      });
+    },
+    closeModalDelete() {
+      this.id = "";
+      this.dialog = false;
+    },
+    openDialogDelete(id) {
+      this.id = id;
+      this.dialog = true;
+    },
+    handleDelete() {
+      this.loading = true;
+      return this.deleteCategoryNews(this.id)
+        .then((r) => {
+          this.dialog = false;
+          this.loading = false;
+          this.handleCategoryNews();
+        })
+        .catch((err) => {
+          this.loading = false;
+          return err;
+        });
+    },
+    moveToCreateCategory() {
+      this.$router.push("/categorynews/create");
+    },
+    ...mapActions({
+      getCategoryNews: "news/getCategoryNews",
+			deleteCategoryNews: "news/deleteCategoryNews",
+			editSequence : "news/editSequence"
+    }),
+    async handleCategoryNews() {
+      const response = await this.getCategoryNews();
+      if (response.status === 200) {
+				console.log(response)
+        const responseData = response.data.data;
+        const formatingList = responseData.map((r) => {
+          const unixDate = r.createAt / 1000;
+          const formatingDate = moment.unix(unixDate).format("D/M/YYYY");
+          return {
+            date: formatingDate,
+            name: r.name,
+            id: r.id,
+            sequence: r.sequence,
+          };
+        });
+        this.items = formatingList;
+      }
+    },
+  },
+  mounted() {
+    this.handleCategoryNews();
+  },
+};
 </script>

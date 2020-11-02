@@ -17,6 +17,9 @@ export default {
 		editCategoryNews({state}, payload) {
 			return this._vm.$httpWithToken().put(`${state.pathNews}/category`, payload)
 		},
+		editSequence({state}, payload) {
+			return this._vm.$httpWithToken().put(`${state.pathNews}/category/sequence`, payload)
+		},
 		deleteCategoryNews({state}, payload) {
 			return this._vm.$httpWithToken().delete(`${state.pathNews}/category/${payload}`)
 		},
