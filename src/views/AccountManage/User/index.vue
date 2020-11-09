@@ -1,17 +1,19 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit User Account">
+    <HeaderContent :list="items" :label="$t('title.user')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
-      >Create Account</custom-button>
+      >
+				{{ $t('button.userCreate') }}
+			</custom-button>
     </HeaderContent>
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">
         <div class="d-flex align-center mr-12">
-          <span>Total User&nbsp;:&nbsp;{{ data.length }}</span>
+          <span>Total User&nbsp;:&nbsp;{{ totalUser }}</span>
         </div>
         <!-- <div class="d-flex align-center font-weight-medium">
           <span class="mr-4">Filter</span>
@@ -56,10 +58,10 @@
 
         <template v-slot:item.manage="{ item }">
           <custom-button icon @click="moveToEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon x-small>$edit</v-icon>
           </custom-button>
           <custom-button @click="openModalDelete(item.id)" icon>
-            <v-icon small color="carmine">delete</v-icon>
+            <v-icon x-small>$delete</v-icon>
           </custom-button>
         </template>
       </v-data-table>
@@ -68,8 +70,14 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
+<<<<<<< HEAD
         :closeDialog="closeDialog"
         :handleClick="handleDelete"
+=======
+        :closeModalDelete="closeModalDelete"
+        :handleDelete="handleDelete"
+				:loading="loading"
+>>>>>>> development
       ></Dialog-Delete>
       <div class="mt-8">
         <v-pagination
@@ -108,13 +116,15 @@ export default {
           href: "/user"
         },
         {
-          text: "List User"
+					text: "List User",
+					disabled : true
         }
       ],
       sort: ["Oldest", "Newest"],
       filter: ["Today", "This Month"],
       page: 1,
-      pageCount: 0,
+			pageCount: 0,
+			totalUser : 0,
       itemsPerPage: 10,
       selected: [],
       headers: [
@@ -178,14 +188,14 @@ export default {
       this.loading = true;
       const response = await this.deleteUser(id);
       if (response.status === 200) {
-        this.dialogDelete = false;
         this.loading = false;
-        this.idUser = "";
+				this.idUser = "";
+				this.dialog = false
         this.getDataBaseOnPage();
       } else {
         this.loading = false;
-        this.idUser = "";
-        this.dialogDelete = false;
+				this.idUser = "";
+				this.dialog = false
       }
     },
     async onSearch() {
@@ -212,7 +222,10 @@ export default {
       this.$router.push(`/user/${params}`);
     },
     formattingResponse(response) {
-      const totalData = response.data.data.totalPages;
+			const totalDataUser = response.data.data.totalElements;
+			this.totalUser = totalDataUser
+			this.totalPages = totalDataUser
+			const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const responseData = response.data.data.content;
       const formatResponse = responseData.map(r => {

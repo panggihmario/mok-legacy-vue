@@ -1,34 +1,38 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
-      <v-tab>
+    <!-- <div class="d-flex justify-end">
+      <custom-input
+        placeholder="Search"
+        style="width: 200px"
+        v-model="keyword"
+        @keyup.enter="handleSearch"
+      />
+    </div> -->
+    <v-tabs  v-model="tab" color="primary">
+      <v-tab @change="changeTabs('list')">
         <span class="text-capitalize">List News</span>
       </v-tab>
-      <v-tab>
+      <v-tab @change="changeTabs('draft')">
         <span class="text-capitalize">Draft</span>
       </v-tab>
-      <v-tab>
-        <span class="text-capitalize">History</span>
+      <v-tab @change="changeTabs('scheduled')">
+        <span class="text-capitalize">Terjadwal</span>
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="tab">
+    <v-tabs-items  v-model="tab">
       <v-tab-item>
-        <ListArticle :articles="articles" class="mt-4" />
-        <v-pagination
-          class="d-flex justify-end"
-          :length="totalPages"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-          v-model="pageNews"
-          @input="getNewsBaseOnPage"
-        ></v-pagination>
+        <ListArticle
+          class="mt-4"
+          :listNews="listNews"
+          @getNewsBaseOnPage="getNewsBaseOnPage"
+        />
       </v-tab-item>
       <v-tab-item>
-        <Draft :drafts="drafts" class="mt-4"></Draft>
+        <Draft :drafts="listNews" class="mt-4" />
       </v-tab-item>
       <v-tab-item>
-        <history :history="drafts" class="mt-4"></history>
+        <Scheduled :listNews="listNews" class="mt-4"/>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -39,14 +43,14 @@ import HeaderContent from "@/containers/HeaderContent";
 import { mapState, mapActions } from "vuex";
 import ListArticle from "./list/article";
 import Draft from "./list/draft";
-import History from "./list/history";
+import Scheduled from "./list/scheduled";
 
 export default {
   components: {
     HeaderContent,
     ListArticle,
     Draft,
-    History
+    Scheduled,
   },
   data() {
     return {
@@ -55,101 +59,80 @@ export default {
         {
           text: "News",
           disabled: false,
-          href: "publisher"
-        }
+          href: "publisher",
+        },
       ],
       articles: [],
       drafts: [],
       totalPages: 0,
-      pageNews: 1
+      pageNews: 1,
+      keyword: "",
+      isSearch : false,
+      listNews : []
     };
   },
-  mounted() {
+  created() {
     this.getResponseNews();
   },
   methods: {
     ...mapActions({
-      getNews: "news/getListNews"
+      getNews: "news/getListNews",
+      searchNews: "news/searchNews",
     }),
-    formatingDate(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const year = newDt.getFullYear();
-      const newFormat = `${day}/${month}/${year}`;
-      return newFormat;
-    },
-    changeTabs(e) {
-      const positionTabs = e;
-      if (e === 1) {
-        this.getResponseDraft();
-      } else {
-        this.getResponseNews();
-      }
-    },
-    async getResponseDraft() {
+    async handleSearch() {
+      this.isSearch = true
       const payload = {
-        tab: "draft",
-        page: 0
+        title: this.keyword,
       };
-      const response = await this.getNews(payload);
+      const response = await this.searchNews(payload);
       if (response.status === 200) {
-        const listNews = response.data.data.content;
-        this.totalPages = response.data.data.totalPages;
-        const formatingList = listNews.map(news => {
-          const newFormatDate = this.formatingDate(news.createAt);
-          return {
-            date: newFormatDate,
-            headline: news.headline,
-            id: news.id
-          };
-        });
-        this.drafts = formatingList;
       } else {
         return response;
+      }
+    },
+    async changeTabs(e) {
+      const payload = {
+        tab: e,
+        page: 0,
+      };
+      const response = await this.getNews(payload);
+      if(response.status === 200) {
+        const responseData = response.data.data;
+        this.listNews = responseData
+        this.totalPages = response.data.data.totalPages;
+      }else {
+        return response
       }
     },
     async getResponseNews() {
+      this.pageNews = 1;
       const payload = {
         tab: "list",
-        page: 0
+        page: 0,
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        this.formatingResponse(response);
+        const responseData = response.data.data
+        this.listNews = responseData
+        this.totalPages = response.data.data.totalPages;
       } else {
-        console.log(response);
         return response;
       }
     },
-    async getNewsBaseOnPage() {
+    async getNewsBaseOnPage(params) {
       const payload = {
-        tab: "list",
-        page: this.pageNews - 1
+        tab: params.tab,
+        page: params.page - 1,
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        this.formatingResponse(response);
+        const responseData = response.data.data
+        this.listNews = responseData
       } else {
-        console.log(response);
         return response;
       }
     },
-    formatingResponse(response) {
-      const listNews = response.data.data.content;
-      this.totalPages = response.data.data.totalPages;
-      const formatingList = listNews.map(news => {
-        const newFormatDate = this.formatingDate(news.createAt);
-        return {
-          date: newFormatDate,
-          status: news.status,
-          headline: news.headline,
-          id: news.id
-        };
-      });
-      this.articles = formatingList;
-    }
-  }
+  },
 };
 </script>
 

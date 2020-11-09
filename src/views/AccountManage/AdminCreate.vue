@@ -2,13 +2,14 @@
   <div>
     <HeaderContent
       :list="items"
-      label="Create Management Account"
+      :label="$t('title.accountCreate')"
       @click="handleClick"
     />
 		<FormAdmin
 			:data="data"
 			:loading="loading"
 			@onSubmit="onSubmit"
+      :status="'create'"
 		/>
 			<v-snackbar top right  v-model="alertSuccess" color="success">
 				Create Success

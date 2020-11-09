@@ -10,7 +10,7 @@
       <v-card-actions class="d-flex justify-center">
         <custom-button @click="closeDialog">Batal</custom-button>
         <custom-button
-          color="carmine"
+          color="primary"
           class="white--text ml-6"
           @click="handleClick"
           :loading="loading"

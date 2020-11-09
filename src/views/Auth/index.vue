@@ -2,26 +2,28 @@
   <div class="auth__container d-flex justify-center align-center">
     <div class="auth__form">
       <p class="d-flex justify-center black--text auth__form__title">
-        Login Admin
+				{{$t('auth.title')}}
       </p>
       <custom-form :onSubmit="onSubmit">
         <custom-input
-          label="Username"
+          :label="$t('auth.username')"
           placeholder="Input Username"
           v-model="username"
           name="Username"
           rules="required"
         />
         <custom-input
-          label="Password"
+          :label="$t('auth.password')"
           placeholder="Input Password"
           v-model="password"
           name="Password"
           rules="required"
-					type="password"
+					 @click:append="show1 = !show1"
+					:type="show1 ? 'text' : 'password'"
+					:append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
         />
         <div class="d-flex justify-space-between align-center">
-          <div class="grey--text auth__form__footer ">Lupa Password ?</div>
+          <div class="grey--text auth__form__footer "> {{ $t('auth.forgotPassword') }} </div>
           <custom-button 
 						rounded 
 						size="large" 
@@ -29,23 +31,21 @@
 						color="primary"
 						:loading="loading"
 					>
-            Login
+            {{$t('auth.login')}}
           </custom-button>
         </div>
       </custom-form>
     </div>
 		<v-alert class="auth__alert" :value="alertError"  type="error">
-			Authorization Failed
+			{{ $t('auth.failed') }}
     </v-alert>
 		<v-alert class="auth__alert" :value="alertSuccess"  type="success">
-			Authorization Success
+			{{ $t('auth.success') }}
     </v-alert>
   </div>
 </template>
 
 <script>
-// username: "administrator",
-// 			password: "admin@123",
 import { mapMutations, mapState, mapActions } from "vuex";
 import axios from "axios";
 export default {
@@ -55,11 +55,14 @@ export default {
 			password: "",
 			loading : false,
 			alertError: false,
-			alertSuccess : false
+			alertSuccess : false,
+			show1 : false
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState({
+			user : state => state.authentication.user
+		})
   },
   methods: {
     ...mapMutations({

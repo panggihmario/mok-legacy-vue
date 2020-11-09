@@ -8,6 +8,9 @@ import TextEditor from '@/components/material/TextEditor';
 import Upload from '../../components/material/Upload';
 import IconUpload from '../../components/icon/iconUpload.vue';
 import IconInput from '../../components/material/IconInput';
+import IconClose from '../../components/icon/iconClose.vue';
+import IconDelete from '../../components/icon/iconDelete.vue';
+import IconEdit from '../../components/icon/iconEdit.vue';
 import IconLink from '../../components/icon/iconLink.vue';
 import IconClockSquare from	'../../components/icon/iconClockSquare.vue';
 import LabelField from '../../components/material/Input/label.vue';
@@ -67,8 +70,16 @@ export default [
 		component : IconLink
 	},
 	{
-		name : 'icon-clock-square',
-		component : IconClockSquare
+		name : 'icon-close',
+		component : IconClose
+	},
+	{
+		name : 'icon-delete',
+		component : IconDelete
+	},
+	{
+		name : 'icon-edit',
+		component : IconEdit
 	},
 	{
 		name : 'label-field',

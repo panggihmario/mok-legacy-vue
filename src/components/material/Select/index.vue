@@ -21,7 +21,7 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => ["Foo", "Bar"],
+      // default: () => ["Foo", "Bar"]
     },
     rules: {
       type: String,

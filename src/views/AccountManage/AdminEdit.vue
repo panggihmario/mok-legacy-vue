@@ -1,7 +1,13 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account" />
-    <FormAdmin :data="data" :loading="loading" @onSubmit="onSubmit" />
+    <HeaderContent :list="items" :label="$t('title.accountEdit')" />
+    <FormAdmin 
+      :data="data" 
+      :loading="loading" 
+      @onSubmit="onSubmit" 
+      labelButton="Save"
+      :status="'edit'"
+    />
     <v-snackbar top right v-model="alertError" color="error">
       {{ errorMessage }}
     </v-snackbar>
@@ -79,7 +85,8 @@ export default {
       const payload = {
         id,
         data
-			};
+      };
+      // console.log(data)
       this.loading = true;
       const response = await this.updateAccount(payload);
       if (response.status === 200) {

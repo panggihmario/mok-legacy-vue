@@ -1,19 +1,20 @@
 <template>
   <div>
-    <HeaderContent label="Buat Donation" :list="crumbs" />
-    <FormDonation
-      :donation="donation"
-      :listVerifier="listVerifier"
-      :items="items"
-      :verifier="verifier"
-      :organizers="organizers"
-      :donationPhoto="donationPhoto"
-      :loading="loading"
-      @getParamOrganizer="getParamOrganizer"
-      @getParamsVerifier="getParamsVerifier"
-      @handleSubmit="handleSubmit"
-      @getDonationPhoto="getDonationPhoto"
-    />
+    <HeaderContent :label="$t('title.donationAdd')" :list="crumbs" />
+		<FormDonation
+			:donation="donation"
+			:listVerifier="listVerifier"
+			:items="items"
+			:verifier="verifier"
+			:organizers="organizers"
+			:donationPhoto="donationPhoto"
+			:loading="loading"
+			:labelButton="$t('button.donationCreate')"
+			@getParamOrganizer="getParamOrganizer"
+			@getParamsVerifier="getParamsVerifier"
+			@handleSubmit="handleSubmit"
+			@getDonationPhoto="getDonationPhoto"
+		/>
     <v-snackbar v-model="alertSuccess" right top color="success">
       Create Donation Success
     </v-snackbar>
@@ -75,27 +76,27 @@ export default {
           id: "",
         },
         recipientName: "",
-        media: [],
-        expiredAt: "",
-      },
+        medias: [],
+        expiredAt: ""
+      }
     };
   },
   methods: {
     ...mapActions({
       getListOrganizer: "donation/getListOrganizer",
       getListVerifier: "donation/getListVerifier",
-      createDonation: "donation/createDonation",
-    }),
-    getParamOrganizer(payload) {
-      this.organizers = payload;
-    },
-    getParamsVerifier(payload) {
-      this.verifier = payload;
-    },
-    getDonationPhoto(payload) {
-      this.donationPhoto = payload.thumbnail;
-      this.donation.media.splice(0, 1, payload);
-    },
+      createDonation: "donation/createDonation"
+		}),
+		getParamOrganizer(payload) {
+			this.organizers = payload
+		},
+		getParamsVerifier(payload) {
+			this.verifier = payload
+		},
+		getDonationPhoto(payload) {
+			this.donationPhoto = payload.url
+			this.donation.medias.splice(0,1,  payload)
+		},
     async handleSubmit(payload) {
       const x = moment(payload.expiredAt, "YYYY-MM-DD").unix();
       const mili = x * 1000;

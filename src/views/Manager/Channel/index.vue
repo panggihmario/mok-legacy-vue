@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="List Channel">
+    <HeaderContent :list="items" :label="$t('title.channel')">
       <custom-input
         placeholder="Search channel"
         class="mr-4"
@@ -8,25 +8,18 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="carmine" @click="handleClick"
-        >Tambah Channel</custom-button
-      >
+      <custom-button class="white--text" color="primary" @click="handleClick">{{ $t('button.channelAdd') }}</custom-button>
     </HeaderContent>
 
-    <v-data-table
-      :headers="headers"
-      hide-default-footer
-      :items="channels"
-      class="grey--text"
-    >
-      <template v-slot:item.channelImage="{ item }">
+    <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
+      <template v-slot:[`item.channelImage`]="{ item }">
         <div class="image__container">
           <div class="image__box">
             <v-img max-width="100%" height="100%" :src="item.channelImage" />
           </div>
         </div>
       </template>
-      <template v-slot:item.channelType="{ item }">
+      <template v-slot:[`item.channelType`]="{ item }">
         <div>
           <span
             v-text="item.channelType"
@@ -34,19 +27,14 @@
           ></span>
         </div>
       </template>
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
-            <v-btn icon color="grey" x-small>
-              <v-icon @click="moveEdit(item.id)">edit</v-icon>
+            <v-btn icon color="grey" >
+              <v-icon x-small @click="moveEdit(item.id)">$edit</v-icon>
             </v-btn>
-            <v-btn
-              @click="openModalDelete(item.id)"
-              icon
-              color="carmine"
-              x-small
-            >
-              <v-icon>mdi-delete</v-icon>
+            <v-btn @click="openModalDelete(item.id)" icon>
+              <v-icon x-small >$delete</v-icon>
             </v-btn>
           </div>
         </div>
@@ -190,14 +178,14 @@ export default {
       ],
       payloadSearch: "",
       headers: [
-        {
-          text: "No",
-          value: "no",
-          width: "70",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-        },
+        // {
+        //   text: "No",
+        //   value: "no",
+        //   width: "70",
+        //   class: "whitesnow",
+        //   sortable: false,
+        //   filterable: false
+        // },
         {
           text: "Gambar Channel",
           value: "channelImage",

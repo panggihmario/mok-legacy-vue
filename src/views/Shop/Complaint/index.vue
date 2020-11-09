@@ -29,20 +29,23 @@
     </div>
 
     <Table-New v-if="tab == 1" @goToDetail="goToDetail"></Table-New>
-    <Table-During v-if="tab == 2" @goToDetail="goToDetail"></Table-During>
+    <Table-Process v-if="tab == 2" @goToDetail="goToDetail"></Table-Process>
+    <Table-Finish v-if="tab == 3" @goToDetail="goToDetail"></Table-Finish>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import TableNew from "./new.vue";
-import TableDuring from "./during.vue";
+import TableProcess from "./process.vue";
+import TableFinish from "./finish.vue";
 
 export default {
   components: {
     HeaderContent,
     TableNew,
-    TableDuring,
+    TableProcess,
+    TableFinish,
   },
   data() {
     return {
@@ -62,11 +65,11 @@ export default {
     moveTab(i) {
       this.tab = i;
     },
-    goToDetail(inv) {
+    goToDetail(id) {
       this.$router.push({
         name: "complaintDetail",
         query: {
-          inv: inv,
+          id: id,
         },
       });
     },

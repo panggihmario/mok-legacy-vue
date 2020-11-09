@@ -1,7 +1,8 @@
 <template>
   <div>
-    <HeaderContent label="Buat Channel" :list="items" />
+    <HeaderContent :label="$t('title.channelAdd')" :list="items" />
     <div class="mt-4" />
+<<<<<<< HEAD
     <FormChannel
       :channel="channel"
       @onSubmit="onSubmit"
@@ -14,6 +15,20 @@
     <v-snackbar top right v-model="alertError" color="error">
       Post Failed
     </v-snackbar>
+=======
+    <FormChannel 
+			:channel="channel" 
+			@onSubmit="onSubmit" 
+			:labelButton="$t('button.channelAdd')"
+			:loading="loading"
+		/>
+		<v-snackbar top right  v-model="alertSuccess" color="success">
+			Post Success
+		</v-snackbar>
+			<v-snackbar top right  v-model="alertError" color="error">
+			Post Failed
+		</v-snackbar>
+>>>>>>> development
   </div>
 </template>
 

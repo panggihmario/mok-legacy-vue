@@ -6,7 +6,8 @@
       </template>
       <template v-slot:item.action="{item}">
         <custom-button
-          class="carmine--text"
+          class="secondary--text"
+					size="small"
           @click="moveToEdit(item.id)"
           v-if="item.status === 'Rejected'"
         >Edit</custom-button>
@@ -34,7 +35,7 @@ export default {
     getColor(status) {
       switch (status) {
         case "Approved":
-          return "primary--text";
+          return "kellygreen--text";
         case "Rejected":
           return "carmine--text";
         default:
@@ -59,7 +60,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "100"
+          width: "150"
         },
         {
           text: "Headline",
@@ -67,7 +68,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "750"
+          width: "600"
         },
         {
           text: "",

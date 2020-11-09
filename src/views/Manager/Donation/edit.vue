@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="Ubah Detail Donasi" :list="crumbs" />
+    <HeaderContent :label="$t('title.donationEdit')" :list="crumbs" />
     <FormDonation
       :donation="donation"
       :listVerifier="listVerifier"
@@ -9,6 +9,7 @@
       :organizers="organizers"
       :donationPhoto="donationPhoto"
       :loading="loading"
+			:labelButton="$t('button.donationEdit')"
       @getParamOrganizer="getParamOrganizer"
       @getParamsVerifier="getParamsVerifier"
       @handleSubmit="handleSubmit"
@@ -70,7 +71,7 @@ export default {
           id: ""
         },
         recipientName: "",
-        media: [],
+        medias: [],
         expiredAt: ""
       }
     };
@@ -116,15 +117,16 @@ export default {
       const id = this.$route.params.id;
       const response = await this.getDonationById(id);
       if (response.status === 200) {
+				console.log("response :" , response)
 				const data = response.data.data;
 				const z = data.expiredAt/1000
         const x = moment.unix(z).format("YYYY-MM-DD");
         this.donation.title = data.title;
 				this.donation.description = data.description;
-				if(data.media.length > 0) {
-					this.donationPhoto = data.media[0].thumbnail;
+				if(data.medias.length > 0) {
+					this.donationPhoto = data.medias[0].url;
 				}
-        this.donation.media = data.media;
+        this.donation.medias = data.medias;
         this.donation.organizer.id = data.organizer.id;
         this.donation.verifier.id = data.verifier.id;
         this.verifier = data.verifier.name;
@@ -146,14 +148,17 @@ export default {
       this.verifier = payload;
     },
     getDonationPhoto(payload) {
-			this.donationPhoto = payload.thumbnail;
-			const newImage = this.donation.media.map(d => {
+			this.donationPhoto = payload.url;
+			const newImage = this.donation.medias.map(d => {
 				return {
 					id : d.id,
-					...payload
+					type : payload.type,
+					url : payload.url,
+					metadata : payload.metadata,
+					thumbnail : payload.thumbnail
 				}
 			})
-			this.donation.media = newImage
+			this.donation.medias = newImage
     },
     async handleResponseOrganizer(value) {
       const response = await this.getListOrganizer(value);

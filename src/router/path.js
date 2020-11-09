@@ -16,8 +16,12 @@ import ReportedAccount from '../views/Manager/ReportedAccount';
 import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
 import Publisher from '../views/Article/Publisher';
 import ReviewPublisher from '../views/Article/Publisher/review.vue'
+import EditPublisher from '../views/Article/Publisher/edit.vue'
 import Editor from '../views/Article/Editor';
 import EditorArticle from '../views/Article/Editor/Article';
+import CategoryNews from '../views/Article/Category';
+import CategoryNewsCreate from '../views/Article/Category/create.vue';
+import CategoryNewsEdit from '../views/Article/Category/edit.vue';
 import Product from '../views/Shop/Product';
 import CreateProduct from '../views/Shop/Product/create/index.vue';
 import Category from '../views/Shop/Category';
@@ -35,14 +39,14 @@ import PostProduct from '../views/Post/product.vue';
 import CreateFeed from '../views/Post/createFeed.vue';
 import Complaint from '../views/Shop/Complaint';
 import ComplaintDetail from '../views/Shop/Complaint/detail';
+import CancelOrder from '../views/Order/cancelOrder.vue';
 
 const routes = [
 	{
 		path: '/',
-		name: 'Home',
 		component: Home,
 		meta: {
-			requireAuth: false
+			requireAuth: true
 		},
 		children: [
 			// {
@@ -176,6 +180,11 @@ const routes = [
 				component : ReviewPublisher
 			},
 			{
+				path : '/publisher/:id',
+				name : 'editPublisher',
+				component : EditPublisher
+			},
+			{
 				path: '/editor',
 				name: 'editor',
 				component: Editor
@@ -184,6 +193,21 @@ const routes = [
 				path: '/editor-article',
 				name: 'editorArticle',
 				component: EditorArticle
+			},
+			{
+				path : '/categorynews',
+				name : 'categoryNews',
+				component : CategoryNews
+			},
+			{
+				path : '/categorynews/create',
+				name : 'categoryNewsCreate',
+				component : CategoryNewsCreate
+			},
+			{
+				path : '/categorynews/:id',
+				name : 'categoryNewsEdit',
+				component : CategoryNewsEdit
 			},
 			{
 				path: '/product',
@@ -230,6 +254,11 @@ const routes = [
 				name : 'postProduct',
 				component : PostProduct
 			},
+			{
+				path : '/order/cancel',
+				name : 'orderCancel',
+				component : CancelOrder
+			}
 		]
 	},
 	{

@@ -8,9 +8,7 @@
           <td class="item__data tertiary--text">{{ item.inv }}</td>
           <td class="item__data">{{ item.reason }}</td>
           <td class="py-4">
-            <custom-button
-              class="grey--text"
-              @click="goToDetail(item.inv)"
+            <custom-button class="grey--text" @click="goToDetail(item.id)"
               >Lihat Detail</custom-button
             >
           </td>
@@ -21,6 +19,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -68,6 +68,7 @@ export default {
       ],
       data: [
         {
+          id: "ff8080817569087d0175690b22700000",
           name: "Fashion Pria",
           date: "02/02/2020",
           inv: "INV/KK/YYYYMMDDXXX",
@@ -76,10 +77,27 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.handleGetListComplaint();
+  },
   methods: {
-    goToDetail(inv) {
-      this.$emit("goToDetail", inv)
-    }
-  }
+    ...mapActions({
+      getListComplaint: "complaint/getListComplaint",
+    }),
+    async handleGetListComplaint() {
+      const payload = {
+        type: "new",
+      };
+      const response = await this.getListComplaint(payload);
+      if (response.status === 204) {
+        console.log("success new", response);
+      } else {
+        console.error(error);
+      }
+    },
+    goToDetail(id) {
+      this.$emit("goToDetail", id);
+    },
+  },
 };
 </script>

@@ -3,7 +3,7 @@
     <HeaderContent label="Detail Komplain" :list="crumbs">
       <custom-button v-if="!mediation">Komplain Tidak Valid</custom-button>
       <custom-button
-        color="orangeprimary"
+        color="primary"
         class="white--text ml-2"
         @click="mediation ? handleCancelMediation() : handleClickMediation()"
         >{{ mediation ? "Mediasi Selesai" : "Proses Mediasi" }}</custom-button
@@ -14,7 +14,7 @@
       <v-col lg="6">
         <Detail-Product :data="data"></Detail-Product>
       </v-col>
-      <v-col lg="6" v-if="!mediation">
+      <v-col lg="6" v-if="mediation">
         <Detail-Mediation :data="data"></Detail-Mediation>
       </v-col>
     </v-row>
@@ -25,6 +25,7 @@
 import HeaderContent from "@/containers/HeaderContent";
 import DetailProduct from "./product.vue";
 import DetailMediation from "./mediation.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -75,12 +76,40 @@ export default {
       },
     };
   },
+  mounted() {
+    this.handleGetListComplaint();
+  },
   methods: {
+    ...mapActions({
+      getComplaintById: "complaint/getComplaintById",
+      putComplaintProcess: "complaint/putComplaintProcess",
+      putComplaintFinish: "complaint/putComplaintFinish",
+    }),
+    async handleGetListComplaint() {
+      const payload = {
+        id: this.$route.params.id,
+      };
+      const response = await this.getComplaintById(payload);
+      if (response.status === 204) {
+        console.log("success id", response);
+      } else {
+        console.error(error);
+      }
+    },
     handleClickMediation() {
       this.mediation = true;
     },
-    handleCancelMediation() {
-      this.mediation = false;
+    async handleCancelMediation() {
+      const payload = {
+        id: this.$route.params.id,
+      };
+      const response = await this.putComplaintProcess(payload);
+      if (response.status === 204) {
+        console.log("process", response);
+        this.mediation = false;
+      } else {
+        console.error(error);
+      }
     },
   },
 };

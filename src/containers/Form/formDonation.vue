@@ -76,15 +76,19 @@
           :value="donation.recipientName"
           name="Receiver Name"
         />
-        <custom-button class="grey--text mr-6" @click="previewResult">
+        <custom-button
+          class="mr-6 grey--text"
+          @click="previewResult"
+					color="whitesnow"
+        >
           Preview
         </custom-button>
         <custom-button
-          color="carmine"
+          color="primary"
           type="submit"
           class="white--text"
           :loading="loading"
-          >Buat Donasi</custom-button
+          >{{labelButton}}</custom-button
         >
       </v-col>
     </v-row>
@@ -171,8 +175,11 @@ export default {
       type: String,
     },
     loading: {
-      type: Boolean,
-    },
+      type: Boolean
+		},
+		labelButton : {
+			type : String
+		}
   },
   computed: {
     responseOrganizer: {
@@ -201,7 +208,8 @@ export default {
     },
     getDonationImage(payload) {
       if (payload.status === "success") {
-        const urlProfile = payload.response.thumbnail;
+				// console.log(payload)
+        // const urlProfile = payload.response.url;
         const urlData = payload.response;
         this.$emit("getDonationPhoto", urlData);
         // this.donation.media.push(payload.response);

@@ -34,7 +34,11 @@ export default {
 		async getListDonation({state}, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathDonation}?page=0&size=10&sort=createAt,desc`)
+				response = await this._vm.$httpWithToken().get(`${state.pathDonation}`, {
+					params : {
+						page : payload.page
+					}
+				})
 				return response
 			} catch (error) {
 				return error

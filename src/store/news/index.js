@@ -4,6 +4,25 @@ export default {
 		pathNews: 'admin/news'
 	},
 	actions: {
+		createCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().post(`${state.pathNews}/category`, payload)
+		},
+		getCategoryNews ({state}) {
+			const	response = this._vm.$httpWithToken().get(`${state.pathNews}/category`)
+			return response
+		},
+		getCategoryNewsById({state}, payload) {
+			return this._vm.$httpWithToken().get(`${state.pathNews}/category/${payload}`)
+		},
+		editCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().put(`${state.pathNews}/category`, payload)
+		},
+		editSequence({state}, payload) {
+			return this._vm.$httpWithToken().put(`${state.pathNews}/category/sequence`, payload)
+		},
+		deleteCategoryNews({state}, payload) {
+			return this._vm.$httpWithToken().delete(`${state.pathNews}/category/${payload}`)
+		},
 		async getListNews({ state }, payload) {
 			let response;
 			try {
@@ -21,7 +40,7 @@ export default {
 		async createNews({ state }, payload) {
 			let response;
 			try {
-				response = await this._vm.$httpWithToken().post(`${state.pathNews}/submit`, payload)
+				response = await this._vm.$httpWithToken().post(`${state.pathNews}/${payload.type}`, payload.params)
 				return response
 			} catch (error) {
 				return error
@@ -81,6 +100,15 @@ export default {
 				return error
 			}
 		},
+		async scheduleNews({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/scheduled`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
 		async rejectNews({state}, payload){
 			let response;
 			try {
@@ -89,6 +117,18 @@ export default {
 			} catch (error) {
 				return error
 			}
+		},
+		async searchNews ({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().get(`${state.pathNews}/search`, {params :{
+					...payload }
+				})
+				return response
+			} catch (error) {
+				return error
+			}
+			
 		}
 	}
 }

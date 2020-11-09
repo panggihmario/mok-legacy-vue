@@ -1,12 +1,13 @@
 <template>
   <div>
-    <HeaderContent :list="items" label="Edit Management Account">
+    <HeaderContent :list="items" :label="$t('title.account')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
-        >Create Account</custom-button
       >
+				{{ $t('button.accountCreate') }}
+			</custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -50,7 +51,7 @@
         item-key="user"
         hide-default-footer
       >
-        <template v-slot:item.user="{ item }">
+        <template v-slot:[`item.user`]="{ item }">
           <div class="d-flex align-center">
             <v-avatar size="35" class="mr-2">
               <img :src="item.photo" />
@@ -65,16 +66,16 @@
             </div>
           </div>
         </template>
-        <template v-slot:item.status="{ item }">
-          <span v-if="item.status" class="primary--text">Active</span>
+        <template v-slot:[`item.status`]="{ item }">
+          <span v-if="item.status" class="kellygreen--text">Active</span>
           <span v-else class="silver--text">Inactive</span>
         </template>
-        <template v-slot:item.manage="{ item }">
+        <template v-slot:[`item.manage`]="{ item }">
           <custom-button icon @click="moveEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon x-small>$edit</v-icon>
           </custom-button>
           <custom-button icon @click="openModalDelete(item.id)">
-            <v-icon small color="carmine">mdi-delete</v-icon>
+            <v-icon x-small>$delete</v-icon>
           </custom-button>
         </template>
       </v-data-table>
@@ -128,8 +129,9 @@ export default {
           href: "channel",
         },
         {
-          text: "List Management",
-        },
+					text: "List Management",
+					disabled : true
+        }
       ],
       params: {},
       isActive: "",
@@ -255,6 +257,7 @@ export default {
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
+        console.log(response)
         this.formatResponse(response);
       } else {
         console.log(response);
@@ -300,6 +303,7 @@ export default {
         type: "management",
       };
       const response = await this.getListAdmin(params);
+      console.log(response)
       if (response.status === 200) {
         this.formatResponse(response);
       } else {

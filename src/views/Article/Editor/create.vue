@@ -5,11 +5,11 @@
         type="submit"
         :loading="loadingDraft"
         @click="onDraft"
-        class="carmine--text mr-6"
+        class="primary--text mr-6"
         >Safe To Draft</custom-button
       >
       <custom-button
-        color="carmine"
+        color="primary"
         @click="onSubmit"
         type="submit"
         class="white--text"
@@ -17,20 +17,28 @@
         >Submit</custom-button
       >
     </HeaderContent>
-    <FormNews :payloadNews="payloadNews" />
+    <FormNews 
+      :payloadNews="payloadNews" 
+      :categoryNews="categoryNews"
+      @getImageUpload="getImageUpload"
+      @getThumbnail="getThumbnail"
+    />
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
 		</v-snackbar>
-		<v-snackbar top v-model="alertFailed"  color="success" >
+		<v-snackbar top v-model="alertFailed"  color="error" >
 			Create News Failed
+		</v-snackbar>
+    <v-snackbar top v-model="alertImage"  color="error" >
+      NO image / thumbnail
 		</v-snackbar>
   </custom-form>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import HeaderContent from "../../../containers/HeaderContent";
-import FormNews from "../../../containers/Form/formNews";
+import HeaderContent from "@/containers/HeaderContent";
+import FormNews from "@/containers/Form/formNews";
 export default {
   components: {
     HeaderContent,
@@ -40,57 +48,99 @@ export default {
     ...mapState(["user"]),
     isFormValid() {
       return Object.keys(this.payloadNews).every(field => {
-        return this.payloadNews[field];
+        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime') {
+          return true
+        }else {
+          return this.payloadNews[field];
+        }
       });
     }
+  },
+  mounted(){
+    this.handleCategoryNews()
   },
   methods: {
     ...mapActions({
       createNews: "news/createNews",
-      createDraft: "news/createDraft"
+      createDraft: "news/createDraft",
+      getCategoryNews : 'news/getCategoryNews',
     }),
-    async onDraft() {
-      const statusValid = this.isFormValid;
-      if (statusValid) {
-      	this.loadingDraft = true;
-        const response = await this.createDraft(this.payloadNews);
-        if (response.status === 201) {
-					this.alertSuccess = true
-					setTimeout(() => {
-						this.alertSuccess = false
-          	this.$router.push("/editor");
-					}, 500)
-          this.loadingDraft = false;
-        } else {
-					this.alertFailed = true
-					setTimeout(() => {
-						this.alertFailed = false
-					}, 1500)
-          this.loadingDraft = false;
-          return response;
-        }
+    getImageUpload(payload) {
+      const tempImage = []
+      tempImage.splice(0,1, payload)
+      this.payloadNews.medias = tempImage
+    },
+    getThumbnail(params) {
+      this.payloadNews.thumbnailUrl = params.url
+    },
+    async handleCategoryNews () {
+      const response = await this.getCategoryNews()
+      if(response.status === 200) {
+        const responseData = response.data.data
+        console.log(responseData)
+        const formatData = responseData.map(r => {
+          return {
+            name : r.name,
+            id : r.id
+          }
+        })
+        this.categoryNews = formatData
       }
     },
-    async onSubmit() {
+    async onDraft() {
       const statusValid = this.isFormValid;
+      console.log(this.payloadNews)
       if (statusValid) {
-				this.loadingSubmit = true
-        const response = await this.createNews(this.payloadNews);
-        if (response.status === 201) {
-					this.loadingSubmit = false
-					this.alertSuccess = true
-					setTimeout(() => {
-						this.alertSuccess = false
-          	this.$router.push("/editor");
-					}, 500)
-        } else {
-					setTimeout(() => {
-						this.alertFailed = false
-					}, 1500)
-					this.loadingSubmit = false
+        this.loadingDraft = true;
+        const payload = {
+          params : this.payloadNews,
+          type : 'draft'
         }
+        return this.actionPostNews(payload)
+      }else{
+        this.alertImage = true
+        if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
+          this.alertImage = false
+        }
+        return
+      }
+    },
+    async actionPostNews (payloadNews) {
+      const response = await this.createNews(payloadNews);
+        if (response.status === 201) {
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.$router.push("/editor");
+          }, 500)
+          this.loadingDraft = false; 
+          this.loadingSubmit = false
+        } else {
+          this.alertFailed = true
+          setTimeout(() => {
+            this.alertFailed = false
+          }, 1500)
+          this.loadingDraft = false;
+          this.loadingSubmit = false
+          return response;
+        }
+    },
+    onSubmit() {
+      const statusValid = this.isFormValid; 
+      if (statusValid) {
+        const payload = {
+          params : this.payloadNews,
+          type : 'submit'
+        }
+				this.loadingSubmit = true
+        return this.actionPostNews(payload)
       } else {
-        return;
+        console.log("masuk else")
+        this.alertImage = true
+        if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
+          this.alertImage = false
+        }
+        return
       }
     },
     getImage(payload) {
@@ -103,6 +153,8 @@ export default {
   data() {
     return {
       image: "",
+      categoryNews : [],
+      alertImage : false,
 			loadingDraft: false,
 			loadingSubmit : false,
 			alertSuccess : false,
@@ -112,7 +164,11 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        media: []
+        medias: null,
+        newsCategory : "",
+        thumbnailUrl : '',
+        isScheduled : false,
+        scheduledTime : null
       },
       dialog: false
     };

@@ -109,13 +109,28 @@ export default {
   },
   methods: {
     ...mapActions({
-      postProduct: "post/postProduct"
+      postProduct: "post/posting"
     }),
     async handleSubmit() {
-      const payload = {
-        typePost: "product",
-        postProduct: this.params
-			};
+			const params = {
+				typePost : "seleb",
+				post: {
+          type: "social",
+					product : {
+						name : this.params.name,
+						price : this.params.price,
+						measurement : this.params.measurement
+					},
+          description: this.params.description,
+          color: this.params.color,
+          size: this.params.size,
+					medias: this.params.media,
+        }
+			}
+			const payload = {
+				typePost : 'product',
+				params
+			}
 			this.loading = true
 			const response = await this.postProduct(payload);
       if (response.status === 201) {

@@ -1,18 +1,18 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News">
-      <custom-button color="carmine" class="white--text" @click="goToCreateArticle">Buat News</custom-button>
+      <custom-button color="primary" class="white--text" @click="goToCreateArticle">Buat News</custom-button>
     </HeaderContent>
-    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
+    <v-tabs @change="changeTabs" v-model="tab" color="primary">
       <v-tab>
         <span class="text-capitalize">List News</span>
       </v-tab>
       <v-tab>
         <span class="text-capitalize">Draft</span>
       </v-tab>
-      <v-tab>
+      <!-- <v-tab>
         <span class="text-capitalize">History</span>
-      </v-tab>
+      </v-tab> -->
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
@@ -24,6 +24,7 @@
           next-icon="mdi-menu-right"
           v-model="pageNews"
           @input="getNewsBaseOnPage"
+          :total-visible="6"
         ></v-pagination>
       </v-tab-item>
       <v-tab-item>

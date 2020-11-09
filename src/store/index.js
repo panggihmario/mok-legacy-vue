@@ -6,6 +6,7 @@ import news from './news'
 import post from './Post'
 import donation from './donation'
 import account from './account'
+import complaint from './complaint'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,30 @@ export default new Vuex.Store({
 		news : news,
 		post : post,
 		donation : donation,
-		account
+		account,
+		complaint
+	},
+	state : {
+		packageVersion : process.env.VUE_APP_VERSION || 0
+	},
+	getters : {
+		appVersion : (state) => {
+			console.log(state)
+			return state.packageVersion
+		}
+	},
+	actions : {
+		getWithToken (ctx, params) {
+			return this._vm.$httpWithToken().get(params)
+		},
+		postWithToken (ctx, params) {
+			return this._vm.$httpWithToken().post(params.url, params.data)
+		},
+		putWithToken (ctx, params) {
+			return this._vm.$httpWithToken().put(params.url, params.data)
+		},
+		deleteWithToken (ctx, params) {
+			return this._vm.$httpWithToken().delete(params)
+		}
 	}
 })
