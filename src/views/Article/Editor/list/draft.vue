@@ -1,20 +1,13 @@
 <template>
   <div>
     <v-data-table :headers="headers" hide-default-footer :items="drafts">
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-space-between">
-<<<<<<< HEAD
-          <custom-button @click="moveToEdit(item.id)" class="primary--text"
-            >Edit</custom-button
-          >
-          <custom-button>
-=======
           <!-- <custom-button @click="moveToEdit(item.id)" class="primary--text">Edit</custom-button> -->
           <v-btn icon @click="moveToEdit(item.id)">
             <v-icon x-small>$edit</v-icon>
           </v-btn>
           <!-- <custom-button>
->>>>>>> development
             <v-icon @click="openModalDelete(item.id)">delete</v-icon>
           </custom-button> -->
           <v-btn @click="openModalDelete(item.id)" icon >
