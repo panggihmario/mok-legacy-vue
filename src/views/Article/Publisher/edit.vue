@@ -48,7 +48,9 @@ export default {
         linkReference: "",
 				media: [],
 				newsCategory : {},
-				thumbnailUrl : ''
+				thumbnailUrl : '',
+				metaKeyword : '',
+        newsTagString : ''
       },
 			propsImage: "",
 			propsThumbnail : '',

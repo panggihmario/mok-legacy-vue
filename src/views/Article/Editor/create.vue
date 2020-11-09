@@ -168,7 +168,9 @@ export default {
         newsCategory : "",
         thumbnailUrl : '',
         isScheduled : false,
-        scheduledTime : null
+        scheduledTime : null,
+        metaKeyword : '',
+        newsTagString : ''
       },
       dialog: false
     };

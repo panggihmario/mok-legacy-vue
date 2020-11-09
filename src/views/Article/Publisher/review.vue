@@ -71,7 +71,9 @@ export default {
         title: "",
         content: "",
         linkReference: "",
-        media: []
+				media: [],
+				metaKeyword : '',
+        newsTagString : ''
       },
 			propsImage: "",
 			propsThumbnail : '',
