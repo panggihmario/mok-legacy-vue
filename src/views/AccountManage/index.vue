@@ -34,7 +34,11 @@
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input placeholder="Search" @keyup.enter="onSearch" v-model="payloadSearch" />
+          <custom-input
+            placeholder="Search"
+            @keyup.enter="onSearch"
+            v-model="payloadSearch"
+          />
         </div>
       </v-col>
     </v-row>
@@ -53,8 +57,12 @@
               <img :src="item.photo" />
             </v-avatar>
             <div class="d-flex flex-column">
-              <span class="account-manage__user__title font-weight-medium">{{item.user}}</span>
-              <span class="account-manage__user__subtitle font-weight-light">{{item.role}}</span>
+              <span class="account-manage__user__title font-weight-medium">{{
+                item.user
+              }}</span>
+              <span class="account-manage__user__subtitle font-weight-light">{{
+                item.role
+              }}</span>
             </div>
           </div>
         </template>
@@ -91,8 +99,8 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
-        :closeModalDelete="closeModalDelete"
-        :handleDelete="handleDelete"
+        :closeDialog="closeDialog"
+        :handleclick="handleDelete"
       ></Dialog-Delete>
     </div>
   </div>
@@ -100,12 +108,13 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapActions } from "vuex";
+
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
   },
   data() {
     return {
@@ -117,7 +126,7 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "channel"
+          href: "channel",
         },
         {
 					text: "List Management",
@@ -134,7 +143,7 @@ export default {
         "ADMIN",
         "ADMIN_SOCIAL",
         "SUPERVISOR",
-        "EDITOR"
+        "EDITOR",
       ],
       filter: ["Active", "Inactive"],
       page: 1,
@@ -148,21 +157,21 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: 400
+          width: 400,
         },
         {
           text: "Role",
           value: "role",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Status",
           value: "status",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Manage",
@@ -171,10 +180,10 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 200
-        }
+          width: 200,
+        },
       ],
-      data: []
+      data: [],
     };
   },
   methods: {
@@ -183,12 +192,12 @@ export default {
       if (this.role) {
         payload = {
           ...this.params,
-          sortBy: this.role
+          sortBy: this.role,
         };
       } else {
         payload = {
           ...this.params,
-          sortBy: ""
+          sortBy: "",
         };
       }
       this.params = payload;
@@ -196,15 +205,15 @@ export default {
         type: "management",
         param: {
           page: this.page - 1,
-          ...this.params
-        }
+          ...this.params,
+        },
       };
       const response = await this.getListAdmin(data);
     },
     filterByStatus() {
       const payload = {
         ...this.params,
-        filterBy: this.isActive
+        filterBy: this.isActive,
       };
       this.params = payload;
       console.log(this.params);
@@ -216,15 +225,15 @@ export default {
       this.$router.push({
         name: "adminEdit",
         params: {
-          id: id
-        }
+          id: id,
+        },
       });
     },
     openModalDelete(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },
@@ -244,7 +253,7 @@ export default {
     async onSearch() {
       const payload = {
         params: this.payloadSearch,
-        type: "management"
+        type: "management",
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
@@ -257,19 +266,19 @@ export default {
     ...mapActions({
       getListAdmin: "account/getListRespone",
       searchAccount: "account/searchAccount",
-      deleteAccount: "account/deleteAccount"
+      deleteAccount: "account/deleteAccount",
     }),
     formatResponse(response) {
       const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const dataResponse = response.data.data.content;
-      const formatResponse = dataResponse.map(d => {
+      const formatResponse = dataResponse.map((d) => {
         return {
           id: d.id,
           photo: d.photo,
           role: d.accountType,
           status: d.enabled,
-          user: d.username
+          user: d.username,
         };
       });
       this.data = formatResponse;
@@ -279,8 +288,8 @@ export default {
         type: "management",
         param: {
           page: this.page - 1,
-          ...this.params
-        }
+          ...this.params,
+        },
       };
       const response = await this.getListAdmin(payload);
       if (response.status === 200) {
@@ -291,7 +300,7 @@ export default {
     },
     async handleResponseListAdmin() {
       const params = {
-        type: "management"
+        type: "management",
       };
       const response = await this.getListAdmin(params);
       console.log(response)
@@ -300,11 +309,11 @@ export default {
       } else {
         console.log(response);
       }
-    }
+    },
   },
   mounted() {
     this.handleResponseListAdmin();
-  }
+  },
 };
 </script>
 

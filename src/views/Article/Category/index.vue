@@ -18,7 +18,7 @@
 					:items="items"
 					hide-default-footer
 				>
-					<template v-slot:item.sequence="props" >
+					<template v-slot:[`item.sequence`]="props" >
 						<v-edit-dialog
 							:return-value.sync="props.item.sequence"
 							@open="open"
@@ -65,7 +65,7 @@
 import HeaderContent from "@/containers/HeaderContent";
 import moment from "moment";
 import { mapActions } from "vuex";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
   components: {
     HeaderContent,

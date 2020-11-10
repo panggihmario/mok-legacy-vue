@@ -1,13 +1,13 @@
 <template>
   <div>
     <v-data-table hide-default-footer :headers="headers" :items="news">
-      <template v-slot:item.status="{item}">
+      <template v-slot:[`item.status`]="{item}">
         <span :class="getColor(item.status)">{{item.status}}</span>
       </template>
-      <template v-slot:item.date="{item}">
+      <template v-slot:[`item.date`]="{item}">
         {{formatingDate(item.createAt)}}
       </template>
-      <template v-slot:item.action="{item}">
+      <template v-slot:[`item.action`]="{item}">
         <custom-button
 					color="primary"
 					size="small"
@@ -55,7 +55,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import DialogDelete from '@/components/material/DialogDelete';
+import DialogDelete from '@/components/material/Dialog/DialogDelete';
 export default {
 	components : {
 		DialogDelete

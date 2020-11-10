@@ -6,6 +6,7 @@ import news from './news'
 import post from './Post'
 import donation from './donation'
 import account from './account'
+import complaint from './complaint'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ export default new Vuex.Store({
 		news : news,
 		post : post,
 		donation : donation,
-		account
+		account,
+		complaint
 	},
 	state : {
 		packageVersion : process.env.VUE_APP_VERSION || 0

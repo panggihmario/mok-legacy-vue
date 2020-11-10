@@ -37,6 +37,8 @@ import UserEdit from '../views/AccountManage/User/UserEdit';
 import PostFeed from '../views/Post/feed.vue';
 import PostProduct from '../views/Post/product.vue';
 import CreateFeed from '../views/Post/createFeed.vue';
+import Complaint from '../views/Shop/Complaint';
+import ComplaintDetail from '../views/Shop/Complaint/detail';
 import CancelOrder from '../views/Order/cancelOrder.vue';
 
 const routes = [
@@ -156,6 +158,16 @@ const routes = [
 				path: '/report/detail',
 				name: 'reportDetail',
 				component: DetailReport
+			},
+			{
+				path: '/complaint',
+				name: 'complain',
+				component: Complaint
+			},
+			{
+				path: '/complaint/detail',
+				name: 'complaintDetail',
+				component: ComplaintDetail
 			},
 			{
 				path: '/publisher',

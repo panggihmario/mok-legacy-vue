@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table :headers="headers" hide-default-footer :items="drafts">
-      <template v-slot:item.action="{item}">
+      <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-space-between">
           <!-- <custom-button @click="moveToEdit(item.id)" class="primary--text">Edit</custom-button> -->
           <v-btn icon @click="moveToEdit(item.id)">
@@ -21,37 +21,37 @@
       title="Yakin menghapus draft ini?"
       description="Draft yang kamu hapus tidak akan bisa dikembalikan lagi"
       :dialog="dialog"
-      :closeModalDelete="closeModalDelete"
-      :handleDelete="handleDelete"
+      :closeDialog="closeDialog"
+      :handleClick="handleDelete"
     ></Dialog-Delete>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
   components: {
-    DialogDelete
+    DialogDelete,
   },
   props: ["drafts"],
   methods: {
     ...mapActions({
-      deleteDraft: "news/deleteDraft"
+      deleteDraft: "news/deleteDraft",
     }),
     moveToEdit(id) {
       this.$router.push({
         name: "editArticle",
         params: {
-          id: id
-        }
+          id: id,
+        },
       });
     },
     openModalDelete(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },
@@ -63,7 +63,7 @@ export default {
       } else {
         console.log(id);
       }
-    }
+    },
   },
   data() {
     return {
@@ -77,7 +77,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "100"
+          width: "100",
         },
         {
           text: "Headline",
@@ -85,17 +85,17 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "750"
+          width: "750",
         },
         {
           text: "",
           value: "action",
           class: "whitesnow",
           sortable: false,
-          filterable: false
-        }
-      ]
+          filterable: false,
+        },
+      ],
     };
-  }
+  },
 };
 </script>

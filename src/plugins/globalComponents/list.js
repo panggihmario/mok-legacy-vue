@@ -12,6 +12,7 @@ import IconClose from '../../components/icon/iconClose.vue';
 import IconDelete from '../../components/icon/iconDelete.vue';
 import IconEdit from '../../components/icon/iconEdit.vue';
 import IconLink from '../../components/icon/iconLink.vue';
+import IconClockSquare from	'../../components/icon/iconClockSquare.vue';
 import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
 import DatePicker from '../../components/material/DatePicker';

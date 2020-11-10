@@ -23,7 +23,7 @@
         <div>
           <span
             v-text="item.channelType"
-            :class="{'carmine--text':item.channelType === 'Sensitive'}"
+            :class="{ 'carmine--text': item.channelType === 'Sensitive' }"
           ></span>
         </div>
       </template>
@@ -45,8 +45,8 @@
       title="Yakin menghapus channel ini?"
       description="Channel yang kamu hapus tidak akan tampil di halaman channel lagi"
       :dialog="dialog"
-      :closeModalDelete="closeModalDelete"
-      :handleDelete="handleDelete"
+      :closeDialog="closeDialog"
+      :handleClick="handleDelete"
     ></Dialog-Delete>
 
     <v-pagination
@@ -62,19 +62,19 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapActions } from "vuex";
 import axios from "axios";
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
   },
   methods: {
     ...mapActions({
       listChannel: "channel/getListChannel",
       deleteChannel: "channel/deleteChannel",
-      searchChannel: "channel/searchChannel"
+      searchChannel: "channel/searchChannel",
     }),
     async handleSearch() {
       const response = await this.searchChannel(this.payloadSearch);
@@ -94,7 +94,7 @@ export default {
           channelName: res.name,
           description: res.description,
           id: res.id,
-          no: index + 1
+          no: index + 1,
         };
       });
       this.channels = newFormatResponse;
@@ -106,15 +106,15 @@ export default {
       this.$router.push({
         name: "channelEdit",
         params: {
-          id: payload
-        }
+          id: payload,
+        },
       });
     },
     openModalDelete(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete(id) {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },
@@ -136,7 +136,7 @@ export default {
     },
     async getResponseChannel() {
       const payload = {
-        page: 0
+        page: 0,
       };
       const response = await this.listChannel(payload);
       if (response.status === 200) {
@@ -148,7 +148,7 @@ export default {
     },
     async getChannelByPage() {
       const payload = {
-        page: this.page - 1
+        page: this.page - 1,
       };
       const response = await this.listChannel(payload);
       if (response.status === 200) {
@@ -157,7 +157,7 @@ export default {
       } else {
         return response;
       }
-    }
+    },
   },
   created() {
     this.getResponseChannel();
@@ -173,8 +173,8 @@ export default {
         {
           text: "Manage Channel",
           disabled: false,
-          href: "channel"
-        }
+          href: "channel",
+        },
       ],
       payloadSearch: "",
       headers: [
@@ -192,7 +192,7 @@ export default {
           width: "150",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Nama Channel",
@@ -200,7 +200,7 @@ export default {
           width: "150",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Jenis",
@@ -209,7 +209,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          align: "center"
+          align: "center",
         },
         {
           text: "Deskripsi",
@@ -217,7 +217,7 @@ export default {
           width: "400",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Manage",
@@ -225,12 +225,12 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          align: "center"
-        }
+          align: "center",
+        },
       ],
-      channels: []
+      channels: [],
     };
-  }
+  },
 };
 </script>
 
@@ -248,5 +248,5 @@ export default {
     padding: 10px
 .manage
   &__box
-    width: 100px
+    width: 80px
 </style>
