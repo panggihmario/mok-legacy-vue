@@ -60,7 +60,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "100"
+          width: "150"
         },
         {
           text: "Headline",
@@ -68,7 +68,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "720"
+          width: "600"
         },
         {
           text: "",

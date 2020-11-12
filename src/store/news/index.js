@@ -17,6 +17,9 @@ export default {
 		editCategoryNews({state}, payload) {
 			return this._vm.$httpWithToken().put(`${state.pathNews}/category`, payload)
 		},
+		editSequence({state}, payload) {
+			return this._vm.$httpWithToken().put(`${state.pathNews}/category/sequence`, payload)
+		},
 		deleteCategoryNews({state}, payload) {
 			return this._vm.$httpWithToken().delete(`${state.pathNews}/category/${payload}`)
 		},
@@ -92,6 +95,15 @@ export default {
 			let response;
 			try {
 				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/publish`, payload.data)
+				return response
+			} catch (error) {
+				return error
+			}
+		},
+		async scheduleNews({state}, payload) {
+			let response;
+			try {
+				response = await this._vm.$httpWithToken().put(`${state.pathNews}/${payload.id}/publisher/scheduled`, payload.data)
 				return response
 			} catch (error) {
 				return error

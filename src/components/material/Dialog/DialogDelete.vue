@@ -8,11 +8,11 @@
         <span v-text="description"></span>
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <custom-button @click="closeModalDelete">Batal</custom-button>
+        <custom-button @click="closeDialog">Batal</custom-button>
         <custom-button
           color="primary"
           class="white--text ml-6"
-          @click="handleDelete"
+          @click="handleClick"
           :loading="loading"
         >Hapus</custom-button>
       </v-card-actions>
@@ -35,10 +35,10 @@ export default {
     loading: {
       type: Boolean
     },
-    closeModalDelete: {
+    closeDialog: {
       type: Function
     },
-    handleDelete: {
+    handleClick: {
       type: Function
     }
   }

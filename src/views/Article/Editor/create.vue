@@ -48,7 +48,7 @@ export default {
     ...mapState(["user"]),
     isFormValid() {
       return Object.keys(this.payloadNews).every(field => {
-        if(field === 'linkReference') {
+        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime') {
           return true
         }else {
           return this.payloadNews[field];
@@ -71,7 +71,6 @@ export default {
       this.payloadNews.medias = tempImage
     },
     getThumbnail(params) {
-      console.log(params)
       this.payloadNews.thumbnailUrl = params.url
     },
     async handleCategoryNews () {
@@ -91,20 +90,20 @@ export default {
     async onDraft() {
       const statusValid = this.isFormValid;
       console.log(this.payloadNews)
-      // if (statusValid) {
-      //   this.loadingDraft = true;
-      //   const payload = {
-      //     params : this.payloadNews,
-      //     type : 'draft'
-      //   }
-      //   return this.actionPostNews(payload)
-      // }else{
-      //   this.alertImage = true
-      //   if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
-      //     this.alertImage = false
-      //   }
-      //   return
-      // }
+      if (statusValid) {
+        this.loadingDraft = true;
+        const payload = {
+          params : this.payloadNews,
+          type : 'draft'
+        }
+        return this.actionPostNews(payload)
+      }else{
+        this.alertImage = true
+        if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
+          this.alertImage = false
+        }
+        return
+      }
     },
     async actionPostNews (payloadNews) {
       const response = await this.createNews(payloadNews);
@@ -136,6 +135,7 @@ export default {
 				this.loadingSubmit = true
         return this.actionPostNews(payload)
       } else {
+        console.log("masuk else")
         this.alertImage = true
         if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
           this.alertImage = false
@@ -166,7 +166,11 @@ export default {
         linkReference: "",
         medias: null,
         newsCategory : "",
-        thumbnailUrl : ''
+        thumbnailUrl : '',
+        isScheduled : false,
+        scheduledTime : null,
+        metaKeyword : '',
+        newsTagString : ''
       },
       dialog: false
     };

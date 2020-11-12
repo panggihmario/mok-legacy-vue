@@ -26,7 +26,10 @@
 
       <template v-slot:[`item.status`]="{item}">
         <div>
-          <span v-text="item.status" :class="{'silver--text':item.status === 'Finish'}"></span>
+          <span
+            v-text="item.status"
+            :class="{ 'silver--text': item.status === 'Finish' }"
+          ></span>
         </div>
       </template>
 
@@ -45,7 +48,12 @@
 
       <!-- <template v-slot:[`item.detail`]="{item}">
         <div>
-          <span v-if="item.status == 'Finish'" class="irisblue--text detail">Detail</span>
+          <span
+            v-if="item.status == 'Finish'"
+            class="irisblue--text detail"
+            @click="openDialogDetail(item.id)"
+            >Detail</span
+          >
         </div>
       </template> -->
     </v-data-table>
@@ -54,8 +62,9 @@
       title="Yakin menghapus donasi ini?"
       description="Donasi yang kamu hapus tidak akan tampil di halaman donasi lagi"
       :dialog="dialog"
-      :closeModalDelete="closeModalDelete"
-      :handleDelete="handleDelete"
+      :closeDialog="closeDialog"
+      :loading="loading"
+      :handleClick="handleDelete"
     ></Dialog-Delete>
 
     <v-pagination
@@ -71,31 +80,37 @@
 
 <script>
 import moment from "moment";
-import HeaderContent from "../../../containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
 import { mapActions } from "vuex";
+import HeaderContent from "../../../containers/HeaderContent";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
+import DialogDetailDonation from "@/components/material/Dialog/DetailDonation";
+
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
+    DialogDetailDonation,
   },
   data() {
     return {
       idUser: "",
+      dialogDetail: false,
       dialog: false,
       totalPages : 0,
       page : 1,
       loading: false,
+      page: 1,
+      totalPages: 0,
       crumbs: [
         {
           text: "List Channel",
           href: "/channel",
-          disabled: false
+          disabled: false,
         },
         {
           text: "List Donasi",
-          disabled: true
-        }
+          disabled: true,
+        },
       ],
       items: ["Finish", "On Progress"],
       data: [],
@@ -106,7 +121,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "120"
+          width: "120",
         },
         {
           text: "Nama Akun Donasi",
@@ -114,7 +129,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "160"
+          width: "160",
         },
         {
           text: "Tanggal Mulai",
@@ -122,7 +137,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "150"
+          width: "150",
         },
         {
           text: "Tanggal Selesai",
@@ -130,7 +145,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "150"
+          width: "150",
         },
         {
           text: "Target Donasi",
@@ -138,7 +153,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "150"
+          width: "150",
         },
         {
           text: "Status Donasi",
@@ -146,7 +161,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "150"
+          width: "150",
         },
         {
           text: "Manage",
@@ -155,36 +170,41 @@ export default {
           sortable: false,
           filterable: false,
           align: "center",
-          sortable: false
+          sortable: false,
         },
         {
           value: "detail",
           class: "whitesnow",
           sortable: false,
-          filterable: false
-        }
-      ]
+          filterable: false,
+        },
+      ],
     };
   },
   methods: {
     ...mapActions({
       getListDonation: "donation/getListDonation",
-      deleteDonation: "donation/deleteDonation"
+      deleteDonation: "donation/deleteDonation",
     }),
     moveToEdit(id) {
       this.$router.push({
         name: "donationEdit",
         params: {
-          id
-        }
+          id,
+        },
       });
     },
-    openModalDelete(id) {
+    openDialogDelete(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    openDialogDetail(id) {
+      this.dialogDetail = true;
+      this.idUser = id;
+    },
+    closeDialog() {
       this.dialog = false;
+      this.dialogDetail = false;
       this.idUser = "";
     },
     async handleDelete() {
@@ -245,11 +265,11 @@ export default {
         const responseData = response.data.data;
         this.formatingResponseData(responseData)
       }
-    }
+    },
   },
   mounted() {
     this.handleResponse();
-  }
+  },
 };
 </script>
 
@@ -267,7 +287,7 @@ export default {
   width: 200px
 .manage
   &__box
-    width: 100px
+    width: 80px
 .detail
   text-decoration: underline
   cursor: pointer

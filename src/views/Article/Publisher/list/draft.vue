@@ -1,8 +1,11 @@
 <template>
   <div>
-    <v-data-table hide-default-footer :headers="headers" :items="drafts">
+    <v-data-table hide-default-footer :headers="headers" :items="drafts.content">
       <template v-slot:item.status="{ item }">
         <span :class="getColor(item.status)">{{ item.status }}</span>
+      </template>
+      <template v-slot:item.date="{item}">
+        {{formatingDate(item.createAt)}}
       </template>
       <template v-slot:item.action="{ item }">
         <custom-button color="whitesnot" class="grey--text" @click="moveEdit(item.id)">Lihat</custom-button>
@@ -22,6 +25,14 @@ export default {
           id: id
         }
       });
+    },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
     },
     getColor(status) {
       switch (status) {

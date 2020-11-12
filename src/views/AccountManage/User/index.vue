@@ -70,9 +70,14 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
+<<<<<<< HEAD
+        :closeDialog="closeDialog"
+        :handleClick="handleDelete"
+=======
         :closeModalDelete="closeModalDelete"
         :handleDelete="handleDelete"
 				:loading="loading"
+>>>>>>> development
       ></Dialog-Delete>
       <div class="mt-8">
         <v-pagination
@@ -91,7 +96,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapACtions, mapActions } from "vuex";
 export default {
   components: {
@@ -174,7 +179,7 @@ export default {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },

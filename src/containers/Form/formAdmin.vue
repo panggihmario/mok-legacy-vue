@@ -133,7 +133,7 @@ export default {
         "MGR_SELEB",
         "ADMIN",
         "ADMIN_SOCIAL",
-        "SUPERVISOR",
+        "AUTHOR",
 				"EDITOR",
 				"MODERATOR"
       ],

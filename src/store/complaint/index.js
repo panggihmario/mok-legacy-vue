@@ -1,0 +1,53 @@
+export default {
+  namespaced: true,
+  state: {
+    pathComplaint: "admin/complaints",
+    pathComplaintList: "admin/complaints/list",
+  },
+  actions: {
+    async getListComplaint({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .get(`${state.pathComplaintList}/${payload.type}`);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async getComplaintById({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .get(`${state.pathComplaint}/${payload.id}`);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async putComplaintProcess({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .put(`${state.pathComplaint}/${payload.id}/process`);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async putComplaintFinish({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .put(`${state.pathComplaint}/${payload.id}/finish`);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+  },
+};
