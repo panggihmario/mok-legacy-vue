@@ -1,6 +1,6 @@
 {
   "name": "cms-news",
-  "version": "1.0.0-rc11",
+  "version": "1.0.0-rc12",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
