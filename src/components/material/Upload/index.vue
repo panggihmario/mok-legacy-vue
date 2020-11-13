@@ -39,7 +39,7 @@ export default {
     },
     typeUpload: {
       type: String,
-      default: "media",
+      default: "medias",
     },
     color: {
       type: String,
@@ -66,11 +66,11 @@ export default {
       };
       this.loadingUpload = true;
       this.$emit("response", result);
-      this.$http()
-        .post(`upload?type=${this.typeUpload}`, form)
+      this.$httpUpload()
+        .post(`${this.typeUpload}`, form)
         .then((response) => {
           result = {
-            response: response.data.data,
+            response: response.data,
             status: "success",
           };
           this.loadingUpload = false;

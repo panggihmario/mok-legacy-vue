@@ -3,6 +3,7 @@ import Vue from 'vue'
 import store from '../../store'
 
 const BASE_URL = process.env.VUE_APP_BASE_URL
+const BASE_UPLOAD_URL = process.env.VUE_APP_UPLOAD
 const getToken = () => {
 	const token = store.state.authentication.token
 	return token
@@ -26,5 +27,14 @@ const serviceWithToken = (token = getToken()) => axios.create({
 	},
 });
 
+const serviceUpload = () => axios.create({
+  baseURL : BASE_UPLOAD_URL,
+  timeout: 60 * 4 * 1000,
+  headers: {
+    "Content-Type": `application/json`,
+  }
+})
+
 Vue.prototype.$http = serviceWithoutToken
 Vue.prototype.$httpWithToken = serviceWithToken
+Vue.prototype.$httpUpload = serviceUpload
