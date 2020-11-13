@@ -20,7 +20,7 @@ export default {
   methods: {
     moveEdit(id) {
       this.$router.push({
-        name: "editArticle",
+        name: "editPublisher",
         params: {
           id: id
         }

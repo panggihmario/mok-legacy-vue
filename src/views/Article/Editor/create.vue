@@ -48,7 +48,7 @@ export default {
     ...mapState(["user"]),
     isFormValid() {
       return Object.keys(this.payloadNews).every(field => {
-        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime') {
+        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime' || field === 'metaKeyword' || field === 'newsTagString') {
           return true
         }else {
           return this.payloadNews[field];
