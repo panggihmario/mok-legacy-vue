@@ -140,7 +140,6 @@ export default {
         id: this.$route.params.id,
         data: this.payloadNews
 			};
-			console.log(this.payloadNews)
 			this.loadingPublish = true
 			const response = await this.publishNews(params);
       if (response.status === 200) {
