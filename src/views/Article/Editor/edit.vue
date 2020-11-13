@@ -99,7 +99,6 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
         const responseData = response.data.data;
-        console.log("detail", responseData)
         this.payloadNews = responseData;
         this.propsImage =  responseData.medias.length > 0 ?  responseData.medias[0].thumbnail.medium : '' ;
         this.propsThumbnail = responseData.thumbnailUrl
@@ -127,7 +126,6 @@ export default {
         params: this.payloadNews,
         type: "draft"
       };
-      console.log(this.payloadNews)
 			this.loadingDraft = true
       const response = await this.updateNews(data);
       if (response.status === 200) {

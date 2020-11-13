@@ -251,6 +251,7 @@ export default {
       }
     },
     getImageThumbnail(payload) {
+      console.log(payload)
       if (payload.status === "success") {
         this.thumbnailImage = payload.response.url;
         this.$emit("getThumbnail", payload.response);
@@ -260,6 +261,7 @@ export default {
       }
     },
     getImage(payload) {
+      console.log(payload)
       this.image = "";
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;
