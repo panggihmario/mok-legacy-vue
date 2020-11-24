@@ -5,10 +5,10 @@
         <tr>
           <td class="item__data">{{ item.date }}</td>
           <td class="item__data">{{ item.name }}</td>
-          <td class="item__data tertiary--text">{{ item.inv }}</td>
+          <td class="item__data secondary--text">{{ item.inv }}</td>
           <td class="item__data">{{ item.admin }}</td>
           <td class="py-4">
-            <custom-button class="grey--text" @click="goToDetail(item.id)"
+            <custom-button class="grey--text" @click="goToDetail(item)"
               >Lihat Detail</custom-button
             >
           </td>
@@ -95,8 +95,12 @@ export default {
         console.error(error);
       }
     },
-    goToDetail(id) {
-      this.$emit("goToDetail", id);
+    goToDetail(item) {
+      const data = {
+        id: item.id,
+        inv: item.inv,
+      };
+      this.$emit("goToDetail", data);
     },
   },
 };

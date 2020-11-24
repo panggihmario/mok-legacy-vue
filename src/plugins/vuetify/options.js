@@ -24,7 +24,9 @@ export default {
 				whitesmoke : '#EEEEEE',
 				gainsboro : '#DDDDDD',
 				irisblue: '#00B9BD',
-				kellygreen : '#52C41A'
+				kellygreen : '#52C41A',
+				primarylowtint : '#FFF3E7',
+				secondarylowtint : '#E7F3FF',
 			},
 		},
 	},
