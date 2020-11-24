@@ -97,10 +97,14 @@
         />
         <!-- <div v-html="payloadNews.content">
         </div> -->
-        <custom-textarea
+        <custom-input
           label="Tag Artikel"
           placeholder="Tag"
-          :disabled="true"
+          v-model="payloadNews.newsTagString"
+        />
+        <custom-input
+          label="Keyword Meta"
+          v-model="payloadNews.metaKeyword"
         />
       </v-col>
       <v-col cols="5">
@@ -133,7 +137,9 @@
             @focus="openDate"
             :disabled="!schedule"
             :value="humanDate"
+            readonly
           />
+          
           <v-dialog persistent v-model="dialogDate" max-width="650">
             <v-card>
               <v-card-text>
@@ -240,9 +246,12 @@ export default {
       this.dialogDate = false;
     },
     openDate() {
-      this.dialogDate = true;
+      if(this.payloadNews.isScheduled) {
+        this.dialogDate = true;
+      }
     },
     getImageThumbnail(payload) {
+      console.log(payload)
       if (payload.status === "success") {
         this.thumbnailImage = payload.response.url;
         this.$emit("getThumbnail", payload.response);
@@ -252,6 +261,7 @@ export default {
       }
     },
     getImage(payload) {
+      console.log(payload)
       this.image = "";
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;

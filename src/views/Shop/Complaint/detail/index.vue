@@ -1,21 +1,21 @@
 <template>
   <div>
     <HeaderContent label="Detail Komplain" :list="crumbs">
-      <custom-button v-if="!mediation">Komplain Tidak Valid</custom-button>
+      <custom-button v-if="!isForm">Komplain Tidak Valid</custom-button>
       <custom-button
         color="primary"
         class="white--text ml-2"
-        @click="mediation ? handleCancelMediation() : handleClickMediation()"
-        >{{ mediation ? "Mediasi Selesai" : "Proses Mediasi" }}</custom-button
+        @click="isForm ? handleNextProcess() : handleOpenForm()"
+        >{{ isForm ? "Mediasi Selesai" : "Proses Mediasi" }}</custom-button
       >
     </HeaderContent>
 
     <v-row no-gutters>
       <v-col lg="6">
-        <Detail-Product :data="data"></Detail-Product>
+        <Detail-Product :item="item"></Detail-Product>
       </v-col>
-      <v-col lg="6" v-if="mediation">
-        <Detail-Mediation :data="data"></Detail-Mediation>
+      <v-col lg="6" v-if="isForm">
+        <Detail-Mediation :item="item"></Detail-Mediation>
       </v-col>
     </v-row>
   </div>
@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      mediation: false,
+      isForm: false,
       crumbs: [
         {
           text: "Komplain",
@@ -44,11 +44,11 @@ export default {
           text: "List Komplain",
         },
         {
-          text: this.$route.query.inv,
+          text: this.$route.params.inv,
           disabled: true,
         },
       ],
-      data: {
+      item: {
         admin: "Agus Santoso",
         name: "Fashion Pria",
         date: "02/02/2020",
@@ -91,22 +91,22 @@ export default {
       };
       const response = await this.getComplaintById(payload);
       if (response.status === 204) {
-        console.log("success id", response);
+        // console.log("success id", response);
       } else {
         console.error(error);
       }
     },
-    handleClickMediation() {
-      this.mediation = true;
+    handleOpenForm() {
+      this.isForm = true;
     },
-    async handleCancelMediation() {
+    async handleNextProcess() {
       const payload = {
         id: this.$route.params.id,
       };
       const response = await this.putComplaintProcess(payload);
       if (response.status === 204) {
-        console.log("process", response);
-        this.mediation = false;
+        // console.log("process", response);
+        this.isForm = false;
       } else {
         console.error(error);
       }

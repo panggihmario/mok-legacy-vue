@@ -48,7 +48,7 @@ export default {
     ...mapState(["user"]),
     isFormValid() {
       return Object.keys(this.payloadNews).every(field => {
-        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime') {
+        if(field === 'linkReference' || field === 'isScheduled' || field === 'scheduledTime' || field === 'metaKeyword' || field === 'newsTagString') {
           return true
         }else {
           return this.payloadNews[field];
@@ -77,7 +77,6 @@ export default {
       const response = await this.getCategoryNews()
       if(response.status === 200) {
         const responseData = response.data.data
-        console.log(responseData)
         const formatData = responseData.map(r => {
           return {
             name : r.name,
@@ -168,7 +167,9 @@ export default {
         newsCategory : "",
         thumbnailUrl : '',
         isScheduled : false,
-        scheduledTime : null
+        scheduledTime : null,
+        metaKeyword : '',
+        newsTagString : ''
       },
       dialog: false
     };
