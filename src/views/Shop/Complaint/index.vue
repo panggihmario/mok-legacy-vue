@@ -6,7 +6,7 @@
         rounded
         depressed
         class="mr-2"
-        :class="{ 'lowtintorange orangeprimary--text': tab == 1 }"
+        :class="{ 'primarylowtint primary--text': tab == 1 }"
         @click="moveTab(1)"
         >Komplain Baru</custom-button
       >
@@ -14,7 +14,7 @@
         rounded
         depressed
         class="mr-2"
-        :class="{ 'lowtintorange orangeprimary--text': tab == 2 }"
+        :class="{ 'primarylowtint primary--text': tab == 2 }"
         @click="moveTab(2)"
         >Sedang Mediasi</custom-button
       >
@@ -22,7 +22,7 @@
         rounded
         depressed
         class="mr-2"
-        :class="{ 'lowtintorange orangeprimary--text': tab == 3 }"
+        :class="{ 'primarylowtint primary--text': tab == 3 }"
         @click="moveTab(3)"
         >Selesai Mediasi</custom-button
       >
@@ -65,11 +65,12 @@ export default {
     moveTab(i) {
       this.tab = i;
     },
-    goToDetail(id) {
+    goToDetail(item) {
       this.$router.push({
         name: "complaintDetail",
-        query: {
-          id: id,
+        params: {
+          id: item.id,
+          inv: item.inv,
         },
       });
     },
