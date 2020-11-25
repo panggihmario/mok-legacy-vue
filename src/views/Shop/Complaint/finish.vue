@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table :headers="headers" hide-default-footer :items="data">
+    <v-data-table :headers="headers" hide-default-footer :items="item">
       <template v-slot:item="{ item }">
         <tr>
           <td class="item__data">{{ item.date }}</td>
@@ -8,7 +8,7 @@
           <td class="item__data tertiary--text">{{ item.sellerName }}</td>
           <td class="item__data">{{ item.mediation }}</td>
           <td class="py-4">
-            <custom-button class="grey--text" @click="goToDetail(item.id)"
+            <custom-button class="grey--text" @click="goToDetail(item)"
               >Lihat Detail</custom-button
             >
           </td>
@@ -66,14 +66,14 @@ export default {
           width: "100",
         },
       ],
-      data: [
+      item: [
         {
           id: "ff8080817569087d0175690b22700000",
           name: "Budi",
           date: "02/02/2020",
           sellerName: "Agus Santoso",
           inv: "INV/KK/YYYYMMDDXXX",
-          mediation: "Kembalikan dana ke pembelu",
+          mediation: "Kembalikan dana ke pembeli",
         },
       ],
     };
@@ -96,8 +96,12 @@ export default {
         console.error(error);
       }
     },
-    goToDetail(id) {
-      this.$emit("goToDetail", id);
+    goToDetail(item) {
+      const data = {
+        id: item.id,
+        inv: item.inv,
+      };
+      this.$emit("goToDetail", data);
     },
   },
 };

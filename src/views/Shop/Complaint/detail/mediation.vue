@@ -51,7 +51,7 @@
     <div class="d-flex flex-column mt-8">
       <span class="detail__title silver--text">Admin Terkait</span>
       <span class="detail__content">
-        {{ data.admin }}
+        {{ item.admin }}
       </span>
     </div>
 
@@ -91,7 +91,7 @@
 
 <script>
 export default {
-  props: ["data"],
+  props: ["item"],
   data() {
     return {
       photoBuyer: "",
