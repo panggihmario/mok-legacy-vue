@@ -34,7 +34,7 @@ export default {
 				})
 				return response
 			} catch (error) {
-				return error
+				throw error
 			}
 		},
 		async createNews({ state }, payload) {

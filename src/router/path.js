@@ -40,6 +40,7 @@ import CreateFeed from '../views/Post/createFeed.vue';
 import Complaint from '../views/Shop/Complaint';
 import ComplaintDetail from '../views/Shop/Complaint/detail';
 import CancelOrder from '../views/Order/cancelOrder.vue';
+import Ads from '../views/Article/Advertisement';
 
 const routes = [
 	{
@@ -49,11 +50,6 @@ const routes = [
 			requireAuth: true
 		},
 		children: [
-			// {
-			// 	path: '/',
-			// 	name: 'Dashboard',
-			// 	component: Dashboard
-			// },
 			{
 				path: '/article',
 				name: 'Article',
@@ -258,6 +254,11 @@ const routes = [
 				path : '/order/cancel',
 				name : 'orderCancel',
 				component : CancelOrder
+			},
+			{
+				path : '/ads',
+				name : 'ads',
+				component : Ads
 			}
 		]
 	},

@@ -7,6 +7,7 @@ import post from './Post'
 import donation from './donation'
 import account from './account'
 import complaint from './complaint'
+import ads from './ads'
 
 Vue.use(Vuex)
 
@@ -18,14 +19,14 @@ export default new Vuex.Store({
 		post : post,
 		donation : donation,
 		account,
-		complaint
+		complaint,
+		ads : ads
 	},
 	state : {
 		packageVersion : process.env.VUE_APP_VERSION || 0
 	},
 	getters : {
 		appVersion : (state) => {
-			console.log(state)
 			return state.packageVersion
 		}
 	},

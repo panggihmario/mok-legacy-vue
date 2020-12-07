@@ -80,6 +80,10 @@ export default [
 			{
 				title : 'Category',
 				path : '/categorynews'
+			},
+			{
+				title : 'Iklan',
+				path : '/ads'
 			}
 		]
 	},

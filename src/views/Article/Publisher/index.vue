@@ -1,14 +1,6 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <!-- <div class="d-flex justify-end">
-      <custom-input
-        placeholder="Search"
-        style="width: 200px"
-        v-model="keyword"
-        @keyup.enter="handleSearch"
-      />
-    </div> -->
     <v-tabs  v-model="tab" color="primary">
       <v-tab @change="changeTabs('list')">
         <span class="text-capitalize">List News</span>
