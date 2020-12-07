@@ -46,6 +46,9 @@ export default {
 			},
 			edit : {
 				component : 'icon-edit'
+			},
+			heart : {
+				component : 'icon-heart'
 			}
 		},
 		iconfont : 'mdi' || 'md'

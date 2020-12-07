@@ -2,9 +2,16 @@
   <div>
     <HeaderContent :list="crumbs" label="News">
       <div>
+				<custom-button
+					@click="openPreview" 
+					class="grey--text mr-4"
+					:loading="loading"
+        >
+					Live Preview
+				</custom-button>
         <custom-button 
 					@click="onReject" 
-					class="carmine--text mr-4"
+					class="primary--text mr-4"
 					:loading="loading"
         >
 					Reject
@@ -27,7 +34,11 @@
 			:schedule="true"
 			@getEpochDate="getEpochDate"
 		/>
-		
+		<PreviewDialog
+			:dialogPreview="dialogPreview"
+			@closeDialogPreview="closeDialogPreview"
+			:payloadNews="payloadNews" 
+		/>
 		<!-- <div class="review__image">
 			<v-img
 				:src="imageNews"
@@ -56,6 +67,7 @@
 import { mapActions } from "vuex";
 import FormNews from "../../../containers/Form/formNews";
 import HeaderContent from "../../../containers/HeaderContent";
+import PreviewDialog from "./dialogPreview";
 export default {
   data() {
     return {
@@ -63,6 +75,7 @@ export default {
 			loadingPublish : false,
 			alertSuccess : false,
 			alertFailed : false,
+			dialogPreview : false,
 			successMessage : "",
 			categoryNews : [],
 			failedMessage : "",
@@ -96,9 +109,17 @@ export default {
   },
   components: {
     FormNews,
-    HeaderContent
+		HeaderContent,
+		PreviewDialog
   },
   methods: {
+		openPreview() {
+			this.dialogPreview = true
+			console.log(this.payloadNews)
+		},
+		closeDialogPreview(params) {
+			this.dialogPreview = params
+		},
 		getThumbnail(params) {
 			this.payloadNews.thumbnailUrl = params.url
 		},
@@ -146,7 +167,6 @@ export default {
       const response = await this.getNewsById(id);
       if (response.status === 200) {
 				const responseData = response.data.data;
-				console.log("response",responseData)
 				if(responseData.medias.length > 0){
 					this.imageNews = responseData.medias && responseData.medias[0].url
 				}
@@ -196,7 +216,6 @@ export default {
 
 				this.publishWithSchedule(params)
 			}else{
-				console.log("masuk else")
 				this.publishWithoutSchedule(params)
 			}
     },
