@@ -49,6 +49,12 @@ export default {
 			},
 			heart : {
 				component : 'icon-heart'
+			},
+			comment : {
+				component : 'icon-comment'
+			},
+			share : {
+				component : 'icon-share'
 			}
 		},
 		iconfont : 'mdi' || 'md'

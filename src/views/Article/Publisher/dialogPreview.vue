@@ -10,6 +10,8 @@
       </div>
       <div>
         <v-icon>$heart</v-icon>
+        <v-icon>$comment</v-icon>
+        <v-icon>$share</v-icon>
       </div>
       <div class="preview__media-container">
         <v-img
