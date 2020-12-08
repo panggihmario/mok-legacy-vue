@@ -261,7 +261,6 @@ export default {
       }
     },
     getImage(payload) {
-      console.log(payload)
       this.image = "";
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;

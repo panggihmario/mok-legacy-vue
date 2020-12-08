@@ -12,6 +12,9 @@ import IconClose from '../../components/icon/iconClose.vue';
 import IconDelete from '../../components/icon/iconDelete.vue';
 import IconEdit from '../../components/icon/iconEdit.vue';
 import IconLink from '../../components/icon/iconLink.vue';
+import IconHeart from "../../components/icon/iconHeart.vue";
+import IconComment from "../../components/icon/iconComment.vue";
+import IconShare from "../../components/icon/iconShare.vue";
 import IconClockSquare from	'../../components/icon/iconClockSquare.vue';
 import LabelField from '../../components/material/Input/label.vue';
 import InputArea from '../../components/material/InputArea';
@@ -78,8 +81,20 @@ export default [
 		component : IconDelete
 	},
 	{
+		name : 'icon-heart',
+		component : IconHeart
+	},
+	{
 		name : 'icon-edit',
 		component : IconEdit
+	},
+	{
+		name : 'icon-comment',
+		component : IconComment
+	},
+	{
+		name : 'icon-share',
+		component : IconShare
 	},
 	{
 		name : 'label-field',

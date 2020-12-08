@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   props: ["drafts"],
   methods: {
@@ -27,12 +28,13 @@ export default {
       });
     },
     formatingDate(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const year = newDt.getFullYear();
-      const newFormat = `${day}/${month}/${year}`;
-      return newFormat;
+      const newDt = rawDate / 1000;
+      const newD = moment.unix(newDt).format("D/M/YYYY");
+      // const day = newDt.getDate();
+      // const month = newDt.getMonth() + 1;
+      // const year = newDt.getFullYear();
+      // const newFormat = `${day}/${month}/${year}`;
+      return newD;
     },
     getColor(status) {
       switch (status) {

@@ -69,7 +69,7 @@ export default {
       data: [
         {
           id: "ff8080817569087d0175690b22700000",
-          name: "Fashion Pria",
+          name: "Budi",
           date: "02/02/2020",
           inv: "INV/KK/YYYYMMDDXXX",
           admin: "Agus Santoso",
