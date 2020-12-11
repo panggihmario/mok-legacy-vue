@@ -28,7 +28,6 @@
         name="Description"
       />
     </div>
-<<<<<<< HEAD
 
     <div class="sensitif__box pa-3 charcoal--text mb-6">
       <div class="d-flex justify-space-between mb-4">
@@ -53,10 +52,6 @@
       class="white--text"
       type="submit"
       >{{ labelButton }}</custom-button
-=======
-    <custom-button :loading="loading" color="primary" class="white--text" type="submit"
-      >{{labelButton}}</custom-button
->>>>>>> development
     >
   </custom-form>
 </template>
