@@ -39,19 +39,6 @@
       @closeDialogPreview="closeDialogPreview"
       :payloadNews="payloadNews"
     />
-    <!-- <div class="review__image">
-			<v-img
-				:src="imageNews"
-				:lazy-src="imageNews"
-			/>
-		</div>
-		<div class="review__content">
-			<p class="review__content__header black--text">
-				{{headline}}
-			</p>
-			<div  v-html="content" class="review__content__description black--text">
-			</div>
-		</div> -->
     <v-snackbar top v-model="alertSuccess" color="success">
       {{ successMessage }}
     </v-snackbar>
@@ -111,7 +98,18 @@ export default {
     HeaderContent,
     PreviewDialog,
   },
+  mounted() {
+    this.handleResponse();
+    this.handleCategoryNews();
+  },
   methods: {
+    ...mapActions({
+      getNewsById: "news/getNewsById",
+      publishNews: "news/publishNews",
+      rejectNews: "news/rejectNews",
+      getCategoryNews: "news/getCategoryNews",
+      scheduleNews: "news/scheduleNews",
+    }),
     openPreview() {
       this.dialogPreview = true;
       console.log(this.payloadNews);
@@ -140,13 +138,6 @@ export default {
       });
       this.payloadNews.medias.splice(0, 1, temp[0]);
     },
-    ...mapActions({
-      getNewsById: "news/getNewsById",
-      publishNews: "news/publishNews",
-      rejectNews: "news/rejectNews",
-      getCategoryNews: "news/getCategoryNews",
-      scheduleNews: "news/scheduleNews",
-    }),
     async handleCategoryNews() {
       const response = await this.getCategoryNews();
       if (response.status === 200) {
@@ -238,19 +229,6 @@ export default {
         this.loading = false;
       }
     },
-  },
-  mounted() {
-    this.handleResponse();
-    this.handleCategoryNews();
-    //  document.querySelectorAll( 'oembed[url]' ).forEach( element => {
-    // 		console.log(element)
-    //     const anchor = document.createElement( 'a' );
-
-    //     anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
-    //     anchor.className = 'embedly-card';
-
-    //     element.appendChild( anchor );
-    // } );
   },
 };
 </script>

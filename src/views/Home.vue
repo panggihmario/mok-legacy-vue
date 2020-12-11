@@ -2,7 +2,7 @@
   <div>
     <CoreDrawer />
     <v-main>
-      <v-container :style="{padding : '40px'}">
+      <v-container :style="{paddingLeft : '140px'}">
         <CoreView />
       </v-container>
     </v-main>

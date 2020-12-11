@@ -7,14 +7,14 @@
       <div class="my-3">
         <v-icon class="mr-5" size="14">$heart</v-icon>
         <v-icon class="mr-5" size="14">$comment</v-icon>
-        <v-icon class="mr-5" size="14">$share</v-icon>
+        <v-icon size="14">$share</v-icon>
       </div>
       <div class="preview__media-container">
         <v-img
           contain
           max-width="100%"
           max-height="100%"
-          style="background-color : #EEEEEE"
+          class="whitesmoke"
           :src="payloadNews.medias && payloadNews.medias[0].thumbnail.large"
         />
       </div>
