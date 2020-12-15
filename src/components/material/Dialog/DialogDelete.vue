@@ -12,9 +12,10 @@
         <custom-button
           color="primary"
           class="white--text ml-6"
-          @click="handleClick"
+          @click="handleDelete"
           :loading="loading"
-        >Hapus</custom-button>
+          >Hapus</custom-button
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,23 +25,25 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
     },
     description: {
-      type: String
+      type: String,
     },
     dialog: {
-      type: Boolean
+      type: Boolean,
     },
     loading: {
-      type: Boolean
+      type: Boolean,
     },
-    closeDialog: {
-      type: Function
+  },
+  methods: {
+    handleDelete() {
+      this.$emit("handleDelete");
     },
-    handleClick: {
-      type: Function
-    }
-  }
+    closeDialog() {
+      this.$emit("closeDialog");
+    },
+  },
 };
 </script>

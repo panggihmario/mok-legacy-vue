@@ -36,10 +36,10 @@
       <template v-slot:[`item.action`]="{item}">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
-            <v-btn @click="moveToEdit(item.id)" icon color="grey" x-small>
+            <v-btn @click="moveToEdit(item.id)" icon color="grey">
               <v-icon x-small>$edit</v-icon>
             </v-btn>
-            <v-btn @click="openModalDelete(item.id)" icon  x-small>
+            <v-btn @click="openDialog(item.id)" icon>
               <v-icon x-small>$delete</v-icon>
             </v-btn>
           </div>
@@ -62,9 +62,9 @@
       title="Yakin menghapus donasi ini?"
       description="Donasi yang kamu hapus tidak akan tampil di halaman donasi lagi"
       :dialog="dialog"
-      :closeDialog="closeDialog"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
       :loading="loading"
-      :handleClick="handleDelete"
     ></Dialog-Delete>
 
     <v-pagination
@@ -194,7 +194,7 @@ export default {
         },
       });
     },
-    openDialogDelete(id) {
+    openDialog(id) {
       this.dialog = true;
       this.idUser = id;
     },
