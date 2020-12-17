@@ -175,14 +175,17 @@ export default {
           const responseData = response.data.data;
           const formatingList = responseData.map((ads) => {
             for(let i =0; i<responsePositionData.length ;i++) {
-              if(responsePositionData[i].banner.id === ads.id) {
-                return {
-                  bannerName: ads.name,
-                  id: ads.id,
-                  media: ads.media,
-                  position : responsePositionData[i]
+              if(responsePositionData[i].banner){
+                if(responsePositionData[i].banner.id === ads.id) {
+                  return {
+                    bannerName: ads.name,
+                    id: ads.id,
+                    media: ads.media,
+                    position : responsePositionData[i]
+                  }
                 }
               }
+              
             }
             return {
               bannerName: ads.name,

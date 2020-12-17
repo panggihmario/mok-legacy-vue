@@ -125,6 +125,7 @@ export default {
 			this.dialog = true
 		},
 		closeModalDelete() {
+      console.log("dialog")
 			this.dialog = false
 			this.idNews = ''
 		},
