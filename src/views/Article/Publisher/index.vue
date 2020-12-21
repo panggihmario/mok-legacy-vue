@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs  v-model="tab" color="primary">
+    <v-tabs v-model="tab" color="primary">
       <v-tab @change="changeTabs('list')">
         <span class="text-capitalize">List News</span>
       </v-tab>
@@ -12,7 +12,7 @@
         <span class="text-capitalize">Terjadwal</span>
       </v-tab>
     </v-tabs>
-    <v-tabs-items  v-model="tab">
+    <v-tabs-items v-model="tab">
       <v-tab-item>
         <ListArticle
           class="mt-4"
@@ -24,7 +24,7 @@
         <Draft :drafts="listNews" class="mt-4" />
       </v-tab-item>
       <v-tab-item>
-        <Scheduled :listNews="listNews" class="mt-4"/>
+        <Scheduled :listNews="listNews" class="mt-4" />
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -59,8 +59,8 @@ export default {
       totalPages: 0,
       pageNews: 1,
       keyword: "",
-      isSearch : false,
-      listNews : []
+      isSearch: false,
+      listNews: [],
     };
   },
   created() {
@@ -72,7 +72,7 @@ export default {
       searchNews: "news/searchNews",
     }),
     async handleSearch() {
-      this.isSearch = true
+      this.isSearch = true;
       const payload = {
         title: this.keyword,
       };
@@ -88,14 +88,14 @@ export default {
         page: 0,
       };
       const response = await this.getNews(payload);
-      console.log(response)
-      if(response.status === 200) {
+      console.log(response);
+      if (response.status === 200) {
         const responseData = response.data.data;
-        this.listNews = responseData
+        this.listNews = responseData;
         this.totalPages = response.data.data.totalPages;
-      }else {
-        this.listNews = []
-        return response
+      } else {
+        this.listNews = [];
+        return response;
       }
     },
     async getResponseNews() {
@@ -106,8 +106,8 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        const responseData = response.data.data
-        this.listNews = responseData
+        const responseData = response.data.data;
+        this.listNews = responseData;
         this.totalPages = response.data.data.totalPages;
       } else {
         return response;
@@ -120,8 +120,8 @@ export default {
       };
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        const responseData = response.data.data
-        this.listNews = responseData
+        const responseData = response.data.data;
+        this.listNews = responseData;
       } else {
         return response;
       }

@@ -71,7 +71,6 @@
 import HeaderContent from "@/containers/HeaderContent";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapActions } from "vuex";
-import axios from "axios";
 
 export default {
   components: {

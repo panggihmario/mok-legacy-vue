@@ -9,20 +9,33 @@
       </template>
       <template v-slot:[`item.action`]="{ item }">
         <custom-button
-          color="primary"
-          size="small"
           v-if="item.status === 'Need Review'"
+          color="primary"
+          size="medium"
+          class="my-3"
+          width="101"
           @click="moveToReview(item.id)"
         >
           Review
         </custom-button>
-        <div v-else style="display : flex">
-          <v-btn @click="moveToEdit(item.id)" icon>
-            <v-icon x-small>$edit</v-icon>
+        <div v-else class="d-flex justify-space-between my-3">
+          <v-btn icon @click="openDialog(item.id)">
+            <v-icon x-small color="grey">$delete</v-icon>
           </v-btn>
-          <v-btn @click="openDialog(item.id)" class="ml-2" icon>
-            <v-icon x-small>$delete</v-icon>
-          </v-btn>
+          <custom-button
+            color="whitesnow"
+            class="grey--text"
+            width="54"
+            @click="moveToEdit(item.id)"
+            >Lihat
+          </custom-button>
+          <custom-button
+            color="whitesnow"
+            class="primary--text"
+            width="101"
+            @click="handlePushNotificationById(item.id)"
+            >PUSH
+          </custom-button>
         </div>
       </template>
     </v-data-table>
@@ -53,11 +66,56 @@
 <script>
 import { mapActions } from "vuex";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
+
 export default {
   components: {
     DialogDelete,
   },
   props: ["listNews"],
+  data() {
+    return {
+      dialog: false,
+      pageNews: 1,
+      alertSuccess: false,
+      alertFailed: false,
+      idNews: "",
+      headers: [
+        {
+          text: "Tanggal",
+          value: "date",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width: "100",
+        },
+        {
+          text: "Status",
+          value: "status",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width: "150",
+        },
+        {
+          text: "Headline",
+          value: "headline",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          // width: "200",
+        },
+        {
+          text: "",
+          value: "action",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width: "250",
+          align: "end",
+        },
+      ],
+    };
+  },
   computed: {
     news() {
       const list = this.listNews.content;
@@ -72,6 +130,10 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      deleteNews: "news/deleteDraft",
+      pushNotificationById: "news/pushNotificationById",
+    }),
     getColor(status) {
       switch (status) {
         case "Approved":
@@ -90,10 +152,6 @@ export default {
       const newFormat = `${day}/${month}/${year}`;
       return newFormat;
     },
-    ...mapActions({
-      deleteNews: "news/deleteDraft",
-      getNews: "news/getListNews",
-    }),
     getNewsBaseOnPage(p) {
       const params = {
         page: p,
@@ -126,7 +184,7 @@ export default {
       this.idNews = "";
     },
     async handleDelete() {
-      let response = await this.deleteNews(this.idNews);
+      const response = await this.deleteNews(this.idNews);
       if (response.status === 200) {
         this.dialog = false;
         this.alertSuccess = true;
@@ -142,48 +200,10 @@ export default {
         }, 2000);
       }
     },
-  },
-  data() {
-    return {
-      dialog: false,
-      pageNews: 1,
-      alertSuccess: false,
-      alertFailed: false,
-      idNews: "",
-      headers: [
-        {
-          text: "Tanggal",
-          value: "date",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "100",
-        },
-        {
-          text: "Status",
-          value: "status",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "150",
-        },
-        {
-          text: "Headline",
-          value: "headline",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "600",
-        },
-        {
-          text: "",
-          value: "action",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-        },
-      ],
-    };
+    async handlePushNotificationById(id) {
+      const response = await this.pushNotificationById(id)
+      console.log(response);
+    },
   },
 };
 </script>

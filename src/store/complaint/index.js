@@ -43,7 +43,7 @@ export default {
       try {
         response = await this._vm
           .$httpWithToken()
-          .put(`${state.pathComplaint}/${payload.id}/finish`);
+          .put(`${state.pathComplaint}/finish`, payload);
         return response;
       } catch (error) {
         return error;
