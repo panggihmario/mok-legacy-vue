@@ -8,7 +8,7 @@
         class="mr-2"
         :class="{ 'primarylowtint primary--text': tab == 1 }"
         @click="moveTab(1)"
-        >Komplain Baru</custom-button
+        >Komplain Baru {{ listNewLength }}</custom-button
       >
       <custom-button
         rounded
@@ -16,7 +16,7 @@
         class="mr-2"
         :class="{ 'primarylowtint primary--text': tab == 2 }"
         @click="moveTab(2)"
-        >Sedang Mediasi</custom-button
+        >Sedang Mediasi {{ listProcessLength }}</custom-button
       >
       <custom-button
         rounded
@@ -24,13 +24,25 @@
         class="mr-2"
         :class="{ 'primarylowtint primary--text': tab == 3 }"
         @click="moveTab(3)"
-        >Selesai Mediasi</custom-button
+        >Selesai Mediasi {{ listFinishLength }}</custom-button
       >
     </div>
 
-    <Table-New v-if="tab == 1" @goToDetail="goToDetail"></Table-New>
-    <Table-Process v-if="tab == 2" @goToDetail="goToDetail"></Table-Process>
-    <Table-Finish v-if="tab == 3" @goToDetail="goToDetail"></Table-Finish>
+    <Table-New
+      v-if="tab == 1"
+      @getTotalList="getTotalListNew"
+      @goToDetail="goToDetail"
+    ></Table-New>
+    <Table-Process
+      v-if="tab == 2"
+      @getTotalList="getTotalListProcess"
+      @goToDetail="goToDetail"
+    ></Table-Process>
+    <Table-Finish
+      v-if="tab == 3"
+      @getTotalList="getTotalListFinish"
+      @goToDetail="goToDetail"
+    ></Table-Finish>
   </div>
 </template>
 
@@ -59,18 +71,30 @@ export default {
         },
       ],
       tab: 1,
+      listNewLength: 0,
+      listProcessLength: 0,
+      listFinishLength: 0,
     };
   },
   methods: {
     moveTab(i) {
       this.tab = i;
     },
-    goToDetail(item) {
+    getTotalListNew(i) {
+      this.listNewLength = i;
+    },
+    getTotalListProcess(i) {
+      this.listProcessLength = i;
+    },
+    getTotalListFinish(i) {
+      this.listFinishLength = i;
+    },
+    goToDetail(params) {
       this.$router.push({
         name: "complaintDetail",
         params: {
-          id: item.id,
-          inv: item.inv,
+          id: params.id,
+          inv: params.inv,
         },
       });
     },

@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer color="whitesnow" app floating permanent  width="230" >
+  <v-navigation-drawer color="white" app floating permanent width="230">
     <div class="drawer__header">
       <div class="d-flex justify-center">
         <v-avatar size="62" color="grey">
@@ -11,99 +11,128 @@
           <span class="primary--text">{{ user }}</span>
         </v-chip>
       </div>
-			<br/>
-			<div :style="{width : '100%'}" class="d-flex justify-center" >  {{appVersion}}  </div>
+      <br />
+      <div :style="{ width: '100%' }" class="d-flex justify-center">
+        {{ appVersion }}
+      </div>
     </div>
-    <v-list  nav dense>
+
+    <v-list nav dense>
       <v-list-group
         v-for="(item, i) in items"
         :key="i"
-				color="primary"
-				:to="item.path"
+        color="primary"
+        :to="item.path"
       >
         <template v-slot:activator>
-          <v-list-item-content  >
-						<div class="d-flex align-center">
-						<v-icon size="20">{{item.action }}</v-icon>
-            <div class="drawer__label ml-3"> {{ item.title }} </div>
-						</div>
+          <v-list-item-content>
+            <div class="d-flex align-center">
+              <v-icon size="20">{{ item.action }}</v-icon>
+              <div class="drawer__label ml-3">{{ item.title }}</div>
+            </div>
           </v-list-item-content>
         </template>
-				<div
-					v-for="(sub, i) in item.items" 
-					:key="i"
-				>
-        <v-list-item   
-					:to="sub.path" 
-				
-				>
-          <v-list-item-content disabled >
-						<div class="drawer__label drawer__sub ml-3"> {{ sub.title }} </div>
-          </v-list-item-content>
-        </v-list-item>
-				</div>
+
+        <div v-for="(sub, i) in item.items" :key="i">
+          <v-list-item v-if="!sub.items" :to="sub.path">
+            <v-list-item-content disabled>
+              <div class="drawer__label drawer__sub ml-3">
+                {{ sub.title }}
+              </div>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-group
+            v-else
+            color="primary"
+            class="ml-3"
+            sub-group
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <div class="d-flex align-center">
+                  <div class="drawer__label">{{ sub.title }}</div>
+                </div>
+              </v-list-item-content>
+            </template>
+
+            <div v-for="(subItem, i) in sub.items" :key="i">
+              <v-list-item :to="subItem.path">
+                <v-list-item-content disabled>
+                  <div class="drawer__label drawer__sub ml-1">
+                    {{ subItem.title }}
+                  </div>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+          </v-list-group>
+        </div>
       </v-list-group>
     </v-list>
+
     <div class="drawer__button">
       <v-btn elevation="0" @click="handleLogout" color="white">
         <v-icon size="15" class="grey--text" left>mdi-logout</v-icon>
-        <span class="grey--text text-capitalize" style="letterSpacing : 0"> {{ $t('auth.logout') }} </span>
+        <span class="grey--text text-capitalize" style="letterSpacing : 0">
+          {{ $t("auth.logout") }}
+        </span>
       </v-btn>
     </div>
   </v-navigation-drawer>
 </template>
 
 <script>
-	// :disabled="checkRole(sub.role)"
+// :disabled="checkRole(sub.role)"
 import { mapState, mapMutations, mapActions } from "vuex";
-import listNavigation from './items'
+import listNavigation from "./items";
+
 export default {
   computed: {
     ...mapState({
-			user : state => state.authentication.user,
-			accountId : state => state.authentication.accountId
-		}),
-		appVersion () {
-			return this.$store.getters.appVersion
-			// return process.env.PACKAGE_VERSION
-			// console.log(process.env)
-		}
+      user: (state) => state.authentication.user,
+      accountId: (state) => state.authentication.accountId,
+    }),
+    appVersion() {
+      return this.$store.getters.appVersion;
+      // return process.env.PACKAGE_VERSION
+      // console.log(process.env)
+    },
   },
   data() {
     return {
       selected: 0,
-			items: listNavigation,
-			roleUser : ''
+      items: listNavigation,
+      roleUser: "",
     };
-	},
-	mounted () {
-		const role = localStorage.getItem('persada_role')
-		this.roleUser = role
-	},
+  },
+  mounted() {
+    const role = localStorage.getItem("persada_role");
+    this.roleUser = role;
+  },
   methods: {
     handleLogout() {
-			this.logout()
-			this.$router.push("/auth")
-			// .catch(err => {
-			// 	console.log(err)
-			// })
+      this.logout();
+      this.$router.push("/auth");
+      // .catch(err => {
+      // 	console.log(err)
+      // })
     },
-		...mapActions({
-			logout : 'authentication/logout'
-		}),
-		checkRole(roles) {
-			const status = roles.filter(r => {
-				if(r === this.roleUser) {
-					return r
-				}
-			})
-			if(status[0] === this.roleUser) {
-				return false
-			}else{
-				return true
-			}
-		}
-	},
+    ...mapActions({
+      logout: "authentication/logout",
+    }),
+    checkRole(roles) {
+      const status = roles.filter((r) => {
+        if (r === this.roleUser) {
+          return r;
+        }
+      });
+      if (status[0] === this.roleUser) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
 };
 </script>
 

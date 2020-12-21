@@ -8,10 +8,17 @@
         v-model="payloadSearch"
         @keyup.enter="handleSearch"
       />
-      <custom-button class="white--text" color="primary" @click="handleClick">{{ $t('button.channelAdd') }}</custom-button>
+      <custom-button class="white--text" color="primary" @click="handleClick">{{
+        $t("button.channelAdd")
+      }}</custom-button>
     </HeaderContent>
 
-    <v-data-table :headers="headers" hide-default-footer :items="channels" class="grey--text">
+    <v-data-table
+      :headers="headers"
+      hide-default-footer
+      :items="channels"
+      class="grey--text"
+    >
       <template v-slot:[`item.channelImage`]="{ item }">
         <div class="image__container">
           <div class="image__box">
@@ -30,11 +37,11 @@
       <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-center">
           <div class="d-flex justify-space-between manage__box">
-            <v-btn icon color="grey" >
+            <v-btn icon color="grey">
               <v-icon x-small @click="moveEdit(item.id)">$edit</v-icon>
             </v-btn>
             <v-btn @click="openModalDelete(item.id)" icon>
-              <v-icon x-small >$delete</v-icon>
+              <v-icon x-small>$delete</v-icon>
             </v-btn>
           </div>
         </div>
@@ -45,8 +52,8 @@
       title="Yakin menghapus channel ini?"
       description="Channel yang kamu hapus tidak akan tampil di halaman channel lagi"
       :dialog="dialog"
-      :closeDialog="closeDialog"
-      :handleClick="handleDelete"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
     ></Dialog-Delete>
 
     <v-pagination
@@ -64,11 +71,75 @@
 import HeaderContent from "@/containers/HeaderContent";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapActions } from "vuex";
-import axios from "axios";
+
 export default {
   components: {
     HeaderContent,
     DialogDelete,
+  },
+  data() {
+    return {
+      idUser: "",
+      dialog: false,
+      loading: false,
+      page: 1,
+      totalPages: 0,
+      items: [
+        {
+          text: "Manage Channel",
+          disabled: false,
+          href: "channel",
+        },
+      ],
+      payloadSearch: "",
+      headers: [
+        {
+          text: "Gambar Channel",
+          value: "channelImage",
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+        },
+        {
+          text: "Nama Channel",
+          value: "channelName",
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+        },
+        {
+          text: "Jenis",
+          value: "channelType",
+          width: "150",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          align: "center",
+        },
+        {
+          text: "Deskripsi",
+          value: "description",
+          width: "400",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+        },
+        {
+          text: "Manage",
+          value: "action",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          align: "center",
+        },
+      ],
+      channels: [],
+    };
+  },
+  created() {
+    this.getResponseChannel();
   },
   methods: {
     ...mapActions({
@@ -76,6 +147,31 @@ export default {
       deleteChannel: "channel/deleteChannel",
       searchChannel: "channel/searchChannel",
     }),
+    async getResponseChannel() {
+      const payload = {
+        page: 0,
+      };
+      const response = await this.listChannel(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        console.log(responseData);
+        this.formatingResponse(responseData);
+      } else {
+        return response;
+      }
+    },
+    async getChannelByPage() {
+      const payload = {
+        page: this.page - 1,
+      };
+      const response = await this.listChannel(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.formatingResponse(responseData);
+      } else {
+        return response;
+      }
+    },
     async handleSearch() {
       const response = await this.searchChannel(this.payloadSearch);
       if (response.status === 200) {
@@ -134,102 +230,6 @@ export default {
         this.loading = false;
       }
     },
-    async getResponseChannel() {
-      const payload = {
-        page: 0,
-      };
-      const response = await this.listChannel(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        this.formatingResponse(responseData);
-      } else {
-        return response;
-      }
-    },
-    async getChannelByPage() {
-      const payload = {
-        page: this.page - 1,
-      };
-      const response = await this.listChannel(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        this.formatingResponse(responseData);
-      } else {
-        return response;
-      }
-    },
-  },
-  created() {
-    this.getResponseChannel();
-  },
-  data() {
-    return {
-      idUser: "",
-      dialog: false,
-      loading: false,
-      page: 1,
-      totalPages: 0,
-      items: [
-        {
-          text: "Manage Channel",
-          disabled: false,
-          href: "channel",
-        },
-      ],
-      payloadSearch: "",
-      headers: [
-        // {
-        //   text: "No",
-        //   value: "no",
-        //   width: "70",
-        //   class: "whitesnow",
-        //   sortable: false,
-        //   filterable: false
-        // },
-        {
-          text: "Gambar Channel",
-          value: "channelImage",
-          width: "150",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-        },
-        {
-          text: "Nama Channel",
-          value: "channelName",
-          width: "150",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-        },
-        {
-          text: "Jenis",
-          value: "channelType",
-          width: "150",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          align: "center",
-        },
-        {
-          text: "Deskripsi",
-          value: "description",
-          width: "400",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-        },
-        {
-          text: "Manage",
-          value: "action",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          align: "center",
-        },
-      ],
-      channels: [],
-    };
   },
 };
 </script>

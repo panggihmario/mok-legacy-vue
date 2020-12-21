@@ -12,8 +12,8 @@ import ChannelEdit from '../views/Manager/Channel/edit.vue';
 import Donation from '../views/Manager/Donation';
 import DonationCreate from '../views/Manager/Donation/create.vue';
 import DonationEdit from '../views/Manager/Donation/edit.vue';
-import ReportedAccount from '../views/Manager/ReportedAccount';
-import DetailReport from '../views/Manager/ReportedAccount/detail.vue';
+import ReportedPost from '../views/Manager/Reported/Post';
+import ReportedComment from '../views/Manager/Reported/Comment';
 import Publisher from '../views/Article/Publisher';
 import ReviewPublisher from '../views/Article/Publisher/review.vue'
 import EditPublisher from '../views/Article/Publisher/edit.vue'
@@ -146,14 +146,14 @@ const routes = [
 				component : DonationEdit
 			},
 			{
-				path: '/report',
-				name: 'report',
-				component: ReportedAccount
+				path: '/report/post',
+				name: 'reportPost',
+				component: ReportedPost
 			},
 			{
-				path: '/report/detail',
-				name: 'reportDetail',
-				component: DetailReport
+				path: '/report/comment',
+				name: 'reportComment',
+				component: ReportedComment
 			},
 			{
 				path: '/complaint',
@@ -161,7 +161,7 @@ const routes = [
 				component: Complaint
 			},
 			{
-				path: '/complaint/detail',
+				path: '/complaint/detail/:id',
 				name: 'complaintDetail',
 				component: ComplaintDetail
 			},

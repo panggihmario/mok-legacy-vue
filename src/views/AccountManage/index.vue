@@ -6,8 +6,8 @@
         class="white--text"
         @click="handleClick('create')"
       >
-				{{ $t('button.accountCreate') }}
-			</custom-button>
+        {{ $t("button.accountCreate") }}
+      </custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -66,17 +66,19 @@
             </div>
           </div>
         </template>
+        
         <template v-slot:[`item.status`]="{ item }">
           <span v-if="item.status" class="kellygreen--text">Active</span>
           <span v-else class="silver--text">Inactive</span>
         </template>
+
         <template v-slot:[`item.manage`]="{ item }">
-          <custom-button icon @click="moveEdit(item.id)">
+          <v-btn icon @click="moveEdit(item.id)">
             <v-icon x-small>$edit</v-icon>
-          </custom-button>
-          <custom-button icon @click="openModalDelete(item.id)">
+          </v-btn>
+          <v-btn icon @click="openDialog(item.id)">
             <v-icon x-small>$delete</v-icon>
-          </custom-button>
+          </v-btn>
         </template>
       </v-data-table>
       <v-row dense class="mt-8">
@@ -99,8 +101,8 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
-        :closeDialog="closeDialog"
-        :handleclick="handleDelete"
+        @closeDialog="closeDialog"
+        @handleDelete="handleDelete"
       ></Dialog-Delete>
     </div>
   </div>
@@ -129,9 +131,9 @@ export default {
           href: "channel",
         },
         {
-					text: "List Management",
-					disabled : true
-        }
+          text: "List Management",
+          disabled: true,
+        },
       ],
       params: {},
       isActive: "",
@@ -229,7 +231,7 @@ export default {
         },
       });
     },
-    openModalDelete(id) {
+    openDialog(id) {
       this.dialog = true;
       this.idUser = id;
     },
@@ -257,7 +259,7 @@ export default {
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
-        console.log(response)
+        console.log(response);
         this.formatResponse(response);
       } else {
         console.log(response);
@@ -303,7 +305,7 @@ export default {
         type: "management",
       };
       const response = await this.getListAdmin(params);
-      console.log(response)
+      console.log(response);
       if (response.status === 200) {
         this.formatResponse(response);
       } else {

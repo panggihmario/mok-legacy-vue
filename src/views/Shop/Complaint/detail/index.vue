@@ -1,21 +1,35 @@
 <template>
   <div>
     <HeaderContent label="Detail Komplain" :list="crumbs">
-      <custom-button v-if="!isForm">Komplain Tidak Valid</custom-button>
-      <custom-button
-        color="primary"
-        class="white--text ml-2"
-        @click="isForm ? handleNextProcess() : handleOpenForm()"
-        >{{ isForm ? "Mediasi Selesai" : "Proses Mediasi" }}</custom-button
-      >
+      <div v-if="item.status == 'NEW'">
+        <custom-button v-text="'Komplain Tidak Valid'"></custom-button>
+        <custom-button
+          :loading="loading"
+          color="primary"
+          @click="handleProcessComplaint"
+          v-text="'Proses Komplain'"
+        ></custom-button>
+      </div>
+      <div v-if="item.status == 'PROCESS'">
+        <custom-button
+          color="primary"
+          class="white--text ml-2"
+          @click="handleFinishComplaint"
+          v-text="'Mediasi Selesai'"
+        ></custom-button>
+      </div>
     </HeaderContent>
 
     <v-row no-gutters>
       <v-col lg="6">
-        <Detail-Product :item="item"></Detail-Product>
+        <Detail-Product
+          v-if="item.order"
+          :item="item"
+          :inv="inv"
+        ></Detail-Product>
       </v-col>
-      <v-col lg="6" v-if="isForm">
-        <Detail-Mediation :item="item"></Detail-Mediation>
+      <v-col lg="6" v-if="item.status != 'NEW'">
+        <Detail-Mediation :item="item" :payload="payload"></Detail-Mediation>
       </v-col>
     </v-row>
   </div>
@@ -35,44 +49,23 @@ export default {
   },
   data() {
     return {
-      isForm: false,
+      loading: false,
+      inv: this.$route.params.inv,
       crumbs: [
         {
           text: "Komplain",
         },
         {
           text: "List Komplain",
-        },
-        {
-          text: this.$route.params.inv,
           disabled: true,
         },
       ],
-      item: {
-        admin: "Agus Santoso",
-        name: "Fashion Pria",
-        date: "02/02/2020",
-        inv: "INV/KK/YYYYMMDDXXX",
-        reason: "Barang cacat",
-        note: "Harus sesuai ya kk",
-        deliveryFee: 20000,
-        courir: "JNE",
-        payment: "Bank Central Asia (BCA)",
-        product: {
-          photo:
-            "https://images.solecollector.com/complex/images/c_crop,h_1067,w_1896,x_50,y_554/pq2w4nx5abzikg5icj7q/nike-react-presto-trouble-at-home-av2605-006-pair",
-          name: "Nike Running Shoes Black Lightning",
-          price: "2000000",
-          quantity: 3,
-        },
-        reporter: {
-          name: "Agus",
-          phone: "081122223333",
-        },
-        seller: {
-          name: "Agus Sport Center",
-          phone: "083322221111",
-        },
+      item: {},
+      payload: {
+        evidenceBuyerReceipt: {},
+        evidenceSellerReceipt: {},
+        adminReport: "",
+        finalDecision: true,
       },
     };
   },
@@ -90,25 +83,53 @@ export default {
         id: this.$route.params.id,
       };
       const response = await this.getComplaintById(payload);
-      if (response.status === 204) {
-        // console.log("success id", response);
+      if (response.status === 200) {
+        console.log("success id", response);
+        this.item = response.data.data;
+      } else if (response.status === 204) {
+        console.log("success id", response);
       } else {
-        console.error(error);
+        console.error(response);
       }
     },
-    handleOpenForm() {
-      this.isForm = true;
-    },
-    async handleNextProcess() {
-      const payload = {
+    handleOpenForm() {},
+    async handleProcessComplaint() {
+      const params = {
         id: this.$route.params.id,
       };
-      const response = await this.putComplaintProcess(payload);
-      if (response.status === 204) {
-        // console.log("process", response);
-        this.isForm = false;
+      console.log(params);
+      this.loading = true;
+      const response = await this.putComplaintProcess(params);
+      if (response.status === 200) {
+        console.log("200", response);
+        this.$router.push("/complaint");
+        this.loading = false;
+      } else if (response.status === 204) {
+        console.log("process", response);
+        this.$router.push("/complaint");
+        this.loading = false;
       } else {
-        console.error(error);
+        console.error(response);
+      }
+    },
+    async handleFinishComplaint() {
+      const params = {
+        ...this.payload,
+        id: this.$route.params.id,
+      };
+      console.log(params);
+      this.loading = true;
+      const response = await this.putComplaintFinish(params);
+      if (response.status === 200) {
+        console.log("200", response);
+        this.$router.push("/complaint");
+        this.loading = false;
+      } else if (response.status === 204) {
+        console.log("process", response);
+        this.$router.push("/complaint");
+        this.loading = false;
+      } else {
+        console.error(response);
       }
     },
   },
