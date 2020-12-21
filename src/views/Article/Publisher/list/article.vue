@@ -72,6 +72,92 @@ export default {
     DialogDelete,
   },
   props: ["listNews"],
+  computed : {
+    news () {
+      const list = this.listNews.content
+      if(list) {
+        const filterSchedule = list.filter(f => {
+          if(!f.isScheduled) {
+            return f
+          }
+        })
+        return filterSchedule
+      }
+    }
+  }, 
+  methods: {
+    getColor(status) {
+      switch (status) {
+        case "Approved":
+          return "kellygreen--text";
+        case "Rejected":
+          return "carmine--text";
+        default:
+          return "grey--text";
+      }
+    },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
+		...mapActions({
+      deleteNews : 'news/deleteDraft',
+      getNews: "news/getListNews",
+    }),
+    getNewsBaseOnPage(p) {
+      const params = {
+        page : p,
+        tab : 'list'
+      }
+      this.$emit('getNewsBaseOnPage',params)
+    },
+    moveToReview(id) {
+      this.$router.push({
+        name: "reviewPublisher",
+        params: {
+          id
+        }
+      });
+		},
+		moveToEdit (id) {
+			this.$router.push({
+				name : 'editPublisher',
+				params : {
+					id
+				}
+			})
+		},
+		openModalDelete(id) {
+			this.idNews = id
+			this.dialog = true
+		},
+		closeModalDelete() {
+      console.log("dialog")
+			this.dialog = false
+			this.idNews = ''
+		},
+		async handleDelete() {
+			let response = await this.deleteNews(this.idNews)
+			if(response.status === 200){
+				this.dialog = false
+				this.alertSuccess = true
+				setTimeout(() => {
+					this.alertSuccess = false
+				}, 2000)
+				this.$emit('reloadDataNews')
+			}else{
+				this.dialog = false
+				this.alertFailed = true
+				setTimeout(() => {
+					this.alertFailed = false
+				},2000)
+			}
+		}
+  },
   data() {
     return {
       dialog: false,
