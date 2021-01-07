@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import authentication from "./authentication";
 import channel from "./channel";
 import news from "./news";
-import post from "./Post";
+import post from "./post";
 import donation from "./donation";
 import account from "./account";
 import complaint from "./complaint";
