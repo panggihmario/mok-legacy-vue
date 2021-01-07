@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    pathReport: "/reports/reason",
+    pathReport: "admin/reports/reason",
   },
   actions: {
     async getListReportByType({ state }, payload) {
