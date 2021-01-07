@@ -119,14 +119,12 @@ export default {
     },
     getPhotoBuyer(response) {
       if (response.status === "success") {
-        console.log(response);
         this.photoBuyer = response.response.url;
         this.payload.evidenceBuyerReceipt = response.response.url;
       }
     },
     getPhotoSeller(response) {
       if (response.status === "success") {
-        console.log(response);
         this.photoSeller = response.response.url;
         this.payload.evidenceSellerReceipt = response.response.url;
       }

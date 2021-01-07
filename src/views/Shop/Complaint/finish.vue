@@ -102,12 +102,9 @@ export default {
         type: "finish",
       };
       const response = await this.getListComplaint(payload);
-      if (response.status === 200) {
-        console.log("success finish", response);
+      if (response.status === 200 || 204) {
         this.items = response.data.data.content;
         this.$emit("getTotalList", this.items.length);
-      } else if (response.status === 204) {
-        console.log("success finish", response);
       } else {
         console.error(error);
       }
@@ -115,7 +112,6 @@ export default {
     goToDetail(item) {
       const params = {
         id: item.id,
-        inv: item.order.noInvoice,
       };
       this.$emit("goToDetail", params);
     },

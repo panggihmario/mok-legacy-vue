@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import authentication from "./authentication";
 import channel from "./channel";
 import news from "./news";
-import post from "./Post";
+import post from "./post";
 import donation from "./donation";
 import account from "./account";
 import complaint from "./complaint";
@@ -14,15 +14,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    authentication: authentication,
-    channel: channel,
-    news: news,
-    post: post,
-    donation: donation,
+    authentication,
+    channel,
+    news,
+    post,
+    donation,
     account,
     complaint,
     report,
-    ads: ads,
+    ads,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
