@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs v-model="tab" color="primary">
+    <v-tabs v-model="tab" fixed-tabs class="tab__box" color="primary">
       <v-tab @change="changeTabs('list')">
         <span class="text-capitalize">List News</span>
       </v-tab>
@@ -88,7 +88,6 @@ export default {
         page: 0,
       };
       const response = await this.getNews(payload);
-      console.log(response);
       if (response.status === 200) {
         const responseData = response.data.data;
         this.listNews = responseData;
@@ -135,4 +134,7 @@ export default {
   &__label
     font-size: 24px
     font-weight: 500
+.tab
+  &__box
+    width: 500px
 </style>
