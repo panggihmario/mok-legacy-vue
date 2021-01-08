@@ -115,6 +115,7 @@ import DialogForm from "./dialogForm";
 import DialogMedia from "./dialogMedia";
 import DialogPosition from "./dialogPosition";
 import { mapActions } from "vuex";
+
 export default {
   components: {
     HeaderContent,
