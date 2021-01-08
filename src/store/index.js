@@ -14,15 +14,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    authentication: authentication,
-    channel: channel,
-    news: news,
-    post: post,
-    donation: donation,
+    authentication,
+    channel,
+    news,
+    post,
+    donation,
     account,
     complaint,
     report,
-    ads: ads,
+    ads,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,

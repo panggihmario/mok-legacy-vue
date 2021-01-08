@@ -16,35 +16,46 @@
     <v-data-table
       :headers="headers"
       hide-default-footer
+      disable-filtering
+      disable-sort
       :items="channels"
       class="grey--text"
     >
-      <template v-slot:[`item.channelImage`]="{ item }">
-        <div class="image__container">
-          <div class="image__box">
-            <v-img max-width="100%" height="100%" :src="item.channelImage" />
-          </div>
-        </div>
-      </template>
-      <template v-slot:[`item.channelType`]="{ item }">
-        <div>
-          <span
-            v-text="item.channelType"
-            :class="{ 'carmine--text': item.channelType === 'Sensitive' }"
-          ></span>
-        </div>
-      </template>
-      <template v-slot:[`item.action`]="{ item }">
-        <div class="d-flex justify-center">
-          <div class="d-flex justify-space-between manage__box">
-            <v-btn icon color="grey">
-              <v-icon x-small @click="moveEdit(item.id)">$edit</v-icon>
-            </v-btn>
-            <v-btn @click="openModalDelete(item.id)" icon>
-              <v-icon x-small>$delete</v-icon>
-            </v-btn>
-          </div>
-        </div>
+      <template v-slot:item="{ item }">
+        <tr>
+          <td>{{ item.no }}</td>
+          <td>
+            <div class="image__container">
+              <div class="image__box">
+                <v-img
+                  max-width="100%"
+                  height="100%"
+                  :src="item.channelImage"
+                />
+              </div>
+            </div>
+          </td>
+          <td>{{ item.channelName }}</td>
+          <td>
+            <div>
+              <span
+                v-text="item.channelType"
+                :class="{ 'carmine--text': item.channelType === 'Sensitive' }"
+              ></span>
+            </div>
+          </td>
+          <td>{{ item.description }}</td>
+          <td>
+            <div class="d-flex justify-space-between align-center">
+              <v-btn icon @click="moveEdit(item.id)">
+                <v-icon x-small>$edit</v-icon>
+              </v-btn>
+              <v-btn @click="openModalDelete(item.id)" icon>
+                <v-icon x-small>$delete</v-icon>
+              </v-btn>
+            </div>
+          </td>
+        </tr>
       </template>
     </v-data-table>
 
@@ -94,28 +105,28 @@ export default {
       payloadSearch: "",
       headers: [
         {
+          text: "No",
+          value: "no",
+          width: "70",
+          class: "whitesnow",
+        },
+        {
           text: "Gambar Channel",
           value: "channelImage",
-          width: "150",
+          width: "130",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
         },
         {
           text: "Nama Channel",
           value: "channelName",
           width: "150",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
         },
         {
           text: "Jenis",
           value: "channelType",
-          width: "150",
+          width: "120",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
           align: "center",
         },
         {
@@ -123,16 +134,13 @@ export default {
           value: "description",
           width: "400",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
         },
         {
           text: "Manage",
           value: "action",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
           align: "center",
+          width: "140",
         },
       ],
       channels: [],
@@ -154,7 +162,6 @@ export default {
       const response = await this.listChannel(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
-        console.log(responseData);
         this.formatingResponse(responseData);
       } else {
         return response;
@@ -245,7 +252,7 @@ export default {
   &__failed
     background: grey
   &__container
-    padding: 10px
+    padding: 10px 0
 .manage
   &__box
     width: 80px

@@ -11,7 +11,13 @@
     </HeaderContent>
     <v-row>
       <v-col cols="6">
-        <v-data-table :headers="headers" :items="items" hide-default-footer>
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          disable-filtering
+          disable-sort
+          hide-default-footer
+        >
           <template v-slot:[`item.sequence`]="props">
             <v-edit-dialog
               :return-value.sync="props.item.sequence"
@@ -74,14 +80,17 @@ export default {
         {
           text: "Nama",
           value: "name",
+          class: "whitesnow",
         },
         {
           text: "Position",
           value: "sequence",
+          class: "whitesnow",
         },
         {
           text: "",
           value: "actions",
+          class: "whitesnow",
           align: "end",
         },
       ],

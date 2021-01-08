@@ -218,7 +218,6 @@ export default {
     openDialogReason(id) {
       this.dialogReason = true;
       this.idPost = id;
-      console.log(id);
     },
     openDialogDelete(id) {
       this.dialogDelete = true;

@@ -2,13 +2,11 @@
   <div>
     <div class="d-flex flex-column">
       <span class="detail__title silver--text">Invoice</span>
-      <span class="detail__content tertiary--text">{{
-        inv || item.order.noInvoice
+      <span class="detail__content secondary--text">{{
+        item.order.noInvoice
       }}</span>
       <span class="detail__title silver--text mt-6">Total Pembayaran</span>
-      <span class="detail__content tertiary--text">{{
-        item.order.payment.amount
-      }}</span>
+      <span class="detail__content">{{ item.order.payment.amount }}</span>
     </div>
 
     <div class="d-flex flex-column mt-6">
@@ -111,7 +109,7 @@
 
 <script>
 export default {
-  props: ["item", "inv"],
+  props: ["item"],
   methods: {
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);

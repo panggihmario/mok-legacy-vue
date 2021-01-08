@@ -27,12 +27,12 @@ export default {
         return error;
       }
     },
-    async putComplaintProcess({ state }, payload) {
+    async postComplaintProcess({ state }, payload) {
       let response;
       try {
         response = await this._vm
           .$httpWithToken()
-          .put(`${state.pathComplaint}/${payload.id}/process`);
+          .post(`${state.pathComplaint}/process`, payload);
         return response;
       } catch (error) {
         return error;
