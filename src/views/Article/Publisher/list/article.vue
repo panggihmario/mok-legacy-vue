@@ -24,7 +24,10 @@
         >
           Review
         </custom-button>
-        <div v-else class="d-flex justify-space-between align-center my-3">
+        <div
+          v-if="item.status === 'Approved'"
+          class="d-flex justify-space-between align-center my-3"
+        >
           <v-btn icon @click="openDialog(item.id)">
             <v-icon x-small color="grey">$delete</v-icon>
           </v-btn>
@@ -243,13 +246,20 @@ export default {
     },
     async handlePushNotificationById() {
       const response = await this.pushNotificationById(this.idNews);
-      if (response.status === 200 || 204) {
+      console.log(response);
+      if (response.status === 200) {
         this.dialogPush = false;
         this.alertSuccessPush = true;
         setTimeout(() => {
           this.alertSuccessPush = false;
         }, 2000);
         this.$emit("reloadDataNews");
+      } else if (response.status === 204) {
+        this.dialogPush = false;
+        this.alertFailedPush = true;
+        setTimeout(() => {
+          this.alertFailedPush = false;
+        }, 2000);
       } else {
         this.dialogPush = false;
         this.alertFailedPush = true;

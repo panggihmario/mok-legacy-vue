@@ -64,7 +64,7 @@ export default {
     };
   },
   created() {
-    this.getResponseNews();
+    this.changeTabs("list");
   },
   methods: {
     ...mapActions({
@@ -88,27 +88,13 @@ export default {
         page: 0,
       };
       const response = await this.getNews(payload);
+      console.log(response);
       if (response.status === 200) {
         const responseData = response.data.data;
         this.listNews = responseData;
         this.totalPages = response.data.data.totalPages;
       } else {
         this.listNews = [];
-        return response;
-      }
-    },
-    async getResponseNews() {
-      this.pageNews = 1;
-      const payload = {
-        tab: "list",
-        page: 0,
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        this.listNews = responseData;
-        this.totalPages = response.data.data.totalPages;
-      } else {
         return response;
       }
     },
