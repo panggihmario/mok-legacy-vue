@@ -78,8 +78,8 @@ export default {
           toolbar: [
             "imageTextAlternative",
             "|",
-            "imageStyle:full",
-            "imageStyle:side",
+            // "imageStyle:full",
+            // "imageStyle:side",
           ],
           styles : [ 'full', 'side' ],
           resizeUnit: "%",

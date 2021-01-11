@@ -2,9 +2,9 @@
   <v-btn
     v-on="$listeners"
     v-bind="$attrs"
-    elevation="0"
     class="custom-button"
     size="default"
+    depressed
     :style="classSize"
   >
     <slot />

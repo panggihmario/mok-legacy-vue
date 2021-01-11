@@ -1,12 +1,25 @@
 <template>
   <div>
-    <v-data-table :headers="headers" hide-default-footer :items="item">
+    <v-data-table
+      :headers="headers"
+      hide-default-footer
+      :items="items"
+      no-data-text="Tidak Ada Komplain"
+    >
       <template v-slot:item="{ item }">
         <tr>
-          <td class="item__data">{{ item.date }}</td>
-          <td class="item__data">{{ item.name }}</td>
-          <td class="item__data tertiary--text">{{ item.sellerName }}</td>
-          <td class="item__data">{{ item.mediation }}</td>
+          <td class="item__data">{{ formatingDate(item.createAt) }}</td>
+          <td class="item__data">{{ item.accountBuyer.username }}</td>
+          <td class="item__data tertiary--text">
+            {{ item.accountAdmin.username }}
+          </td>
+          <td class="item__data">
+            {{
+              item.finalDecision
+                ? "Kembalikan dana ke pembeli"
+                : "Teruskan dana ke penjual"
+            }}
+          </td>
           <td class="py-4">
             <custom-button class="grey--text" @click="goToDetail(item)"
               >Lihat Detail</custom-button
@@ -66,16 +79,7 @@ export default {
           width: "100",
         },
       ],
-      item: [
-        {
-          id: "ff8080817569087d0175690b22700000",
-          name: "Budi",
-          date: "02/02/2020",
-          sellerName: "Agus Santoso",
-          inv: "INV/KK/YYYYMMDDXXX",
-          mediation: "Kembalikan dana ke pembeli",
-        },
-      ],
+      items: [],
     };
   },
   mounted() {
@@ -85,23 +89,31 @@ export default {
     ...mapActions({
       getListComplaint: "complaint/getListComplaint",
     }),
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
     async handleGetListComplaint() {
       const payload = {
         type: "finish",
       };
       const response = await this.getListComplaint(payload);
-      if (response.status === 204) {
-        console.log("success finish", response);
+      if (response.status === 200 || 204) {
+        this.items = response.data.data.content;
+        this.$emit("getTotalList", this.items.length);
       } else {
         console.error(error);
       }
     },
     goToDetail(item) {
-      const data = {
+      const params = {
         id: item.id,
-        inv: item.inv,
       };
-      this.$emit("goToDetail", data);
+      this.$emit("goToDetail", params);
     },
   },
 };

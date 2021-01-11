@@ -10,7 +10,7 @@
           <!-- <custom-button>
             <v-icon @click="openModalDelete(item.id)">delete</v-icon>
           </custom-button> -->
-          <v-btn @click="openModalDelete(item.id)" icon >
+          <v-btn @click="openModalDelete(item.id)" icon>
             <v-icon x-small>$delete</v-icon>
           </v-btn>
         </div>
@@ -21,8 +21,8 @@
       title="Yakin menghapus draft ini?"
       description="Draft yang kamu hapus tidak akan bisa dikembalikan lagi"
       :dialog="dialog"
-      :closeDialog="closeDialog"
-      :handleClick="handleDelete"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
     ></Dialog-Delete>
   </div>
 </template>

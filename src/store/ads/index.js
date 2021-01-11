@@ -1,49 +1,59 @@
 export default {
   namespaced: true,
   state: {
-    pathComplaint: "admin/complaints",
-    pathComplaintList: "admin/complaints/list",
+    pathAds: "admin/news/banner",
   },
   actions: {
-    async getListComplaint({ state }, payload) {
+    async getNewsBanner({ state }, payload) {
       let response;
       try {
-        response = await this._vm
-          .$httpWithToken()
-          .get(`${state.pathComplaintList}/${payload.type}`);
+        response = await this._vm.$httpWithToken().get(state.pathAds, {
+          params: { ...payload },
+        });
         return response;
       } catch (error) {
         return error;
       }
     },
-    async getComplaintById({ state }, payload) {
+    async addBannerAds({ state }, payload) {
       let response;
       try {
         response = await this._vm
           .$httpWithToken()
-          .get(`${state.pathComplaint}/${payload.id}`);
+          .post(`${state.pathAds}`, payload);
         return response;
       } catch (error) {
         return error;
       }
     },
-    async postComplaintProcess({ state }, payload) {
+    async addBannerPosition({ state }, payload) {
       let response;
       try {
         response = await this._vm
           .$httpWithToken()
-          .post(`${state.pathComplaint}/process`, payload);
+          .post(`${state.pathAds}/position`, payload);
         return response;
       } catch (error) {
         return error;
       }
     },
-    async putComplaintFinish({ state }, payload) {
+    async editBannerPosition({ state }, payload) {
       let response;
       try {
         response = await this._vm
           .$httpWithToken()
-          .put(`${state.pathComplaint}/finish`, payload);
+          .put(`${state.pathAds}/position/${payload.id}`, payload.params);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async getBannerPosition({ state }) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .get(`${state.pathAds}/position`);
         return response;
       } catch (error) {
         return error;

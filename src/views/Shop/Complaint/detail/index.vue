@@ -1,28 +1,73 @@
 <template>
   <div>
-    <HeaderContent label="Detail Komplain" :list="crumbs">
-      <custom-button v-if="!isForm">Komplain Tidak Valid</custom-button>
-      <custom-button
-        color="primary"
-        class="white--text ml-2"
-        @click="isForm ? handleNextProcess() : handleOpenForm()"
-        >{{ isForm ? "Mediasi Selesai" : "Proses Mediasi" }}</custom-button
-      >
+    <HeaderContent
+      label="Detail Komplain"
+      v-if="item.order"
+      :list="[
+        {
+          text: 'Komplain',
+        },
+        {
+          text: 'List Komplain',
+          disabled: true,
+        },
+        {
+          text: item.order.noInvoice,
+          disabled: true,
+        },
+      ]"
+    >
+      <div v-if="item.status == 'NEW'">
+        <custom-button @click="openDialog">Komplain Tidak Valid</custom-button>
+        <custom-button
+          :loading="loading"
+          color="primary"
+          class="ml-4"
+          @click="handleProcessComplaint"
+          >Proses Komplain</custom-button
+        >
+      </div>
+      <div v-if="item.status == 'PROCESS'">
+        <custom-button
+          color="primary"
+          class="white--text"
+          @click="handleFinishComplaint"
+          >Mediasi Selesai</custom-button
+        >
+      </div>
     </HeaderContent>
 
     <v-row no-gutters>
       <v-col lg="6">
-        <Detail-Product :item="item"></Detail-Product>
+        <Detail-Product v-if="item.order" :item="item"></Detail-Product>
       </v-col>
-      <v-col lg="6" v-if="isForm">
-        <Detail-Mediation :item="item"></Detail-Mediation>
+      <v-col lg="6" v-if="item.status != 'NEW'">
+        <Detail-Mediation :item="item" :payload="payload"></Detail-Mediation>
       </v-col>
     </v-row>
+    <Dialog-Text-Area
+      :value="adminReport"
+      :dialog="dialog"
+      :loading="loadingReject"
+      rules="required"
+      title="Komplain tidak valid"
+      name="Admin Report"
+      @input="input"
+      @handleClick="handleRejectComplaint"
+      @closeDialog="closeDialog"
+    ></Dialog-Text-Area>
+    <v-snackbar top right v-model="alertSuccess" color="success">
+      Proses Mediasi Berhasil
+    </v-snackbar>
+    <v-snackbar top right v-model="alertFailed" color="error">
+      Proses Mediasi Gagal
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import DialogTextArea from "@/components/material/Dialog/DialogTextArea.vue";
 import DetailProduct from "./product.vue";
 import DetailMediation from "./mediation.vue";
 import { mapActions } from "vuex";
@@ -30,49 +75,24 @@ import { mapActions } from "vuex";
 export default {
   components: {
     HeaderContent,
+    DialogTextArea,
     DetailProduct,
     DetailMediation,
   },
   data() {
     return {
-      isForm: false,
-      crumbs: [
-        {
-          text: "Komplain",
-        },
-        {
-          text: "List Komplain",
-        },
-        {
-          text: this.$route.params.inv,
-          disabled: true,
-        },
-      ],
-      item: {
-        admin: "Agus Santoso",
-        name: "Fashion Pria",
-        date: "02/02/2020",
-        inv: "INV/KK/YYYYMMDDXXX",
-        reason: "Barang cacat",
-        note: "Harus sesuai ya kk",
-        deliveryFee: 20000,
-        courir: "JNE",
-        payment: "Bank Central Asia (BCA)",
-        product: {
-          photo:
-            "https://images.solecollector.com/complex/images/c_crop,h_1067,w_1896,x_50,y_554/pq2w4nx5abzikg5icj7q/nike-react-presto-trouble-at-home-av2605-006-pair",
-          name: "Nike Running Shoes Black Lightning",
-          price: "2000000",
-          quantity: 3,
-        },
-        reporter: {
-          name: "Agus",
-          phone: "081122223333",
-        },
-        seller: {
-          name: "Agus Sport Center",
-          phone: "083322221111",
-        },
+      loading: false,
+      loadingReject: false,
+      dialog: false,
+      alertSuccess: false,
+      alertFailed: false,
+      item: {},
+      adminReport: "",
+      payload: {
+        evidenceBuyerReceipt: "",
+        evidenceSellerReceipt: "",
+        adminReport: "",
+        finalDecision: true,
       },
     };
   },
@@ -82,7 +102,7 @@ export default {
   methods: {
     ...mapActions({
       getComplaintById: "complaint/getComplaintById",
-      putComplaintProcess: "complaint/putComplaintProcess",
+      postComplaintProcess: "complaint/postComplaintProcess",
       putComplaintFinish: "complaint/putComplaintFinish",
     }),
     async handleGetListComplaint() {
@@ -90,26 +110,76 @@ export default {
         id: this.$route.params.id,
       };
       const response = await this.getComplaintById(payload);
-      if (response.status === 204) {
-        // console.log("success id", response);
+      if (response.status === 200 || 204) {
+        this.item = response.data.data;
       } else {
-        console.error(error);
+        console.error(response);
       }
     },
-    handleOpenForm() {
-      this.isForm = true;
+    async handleProcessComplaint() {
+      const params = {
+        id: this.$route.params.id,
+        status: "process",
+      };
+      this.loading = true;
+      const response = await this.postComplaintProcess(params);
+      if (response.status === 200 || 204) {
+        this.$router.push("/complaint");
+        this.loading = false;
+      } else {
+        console.error(response);
+        this.loading = false;
+      }
     },
-    async handleNextProcess() {
-      const payload = {
+    async handleRejectComplaint() {
+      const params = {
+        id: this.$route.params.id,
+        status: "reject",
+        adminReport: this.adminReport,
+      };
+      this.loadingReject = true;
+      const response = await this.postComplaintProcess(params);
+      if (response.status === 200 || 204) {
+        this.$router.push("/complaint");
+        this.loadingReject = false;
+      } else {
+        console.error(response);
+        this.loadingReject = false;
+      }
+    },
+    async handleFinishComplaint() {
+      const params = {
+        ...this.payload,
         id: this.$route.params.id,
       };
-      const response = await this.putComplaintProcess(payload);
-      if (response.status === 204) {
-        // console.log("process", response);
-        this.isForm = false;
+      this.loading = true;
+      const response = await this.putComplaintFinish(params);
+      if (response.status === 200 || 204) {
+        this.$router.push("/complaint");
+        this.loading = false;
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.alertSuccess = false;
+        }, 2000);
       } else {
-        console.error(error);
+        console.error(response);
+        this.loading = false;
+        this.alertFailed = true;
+        setTimeout(() => {
+          this.alertFailed = false;
+        }, 2000);
       }
+    },
+    input(text) {
+      this.adminReport = text;
+    },
+    openDialog() {
+      this.dialog = true;
+      this.loadingReject = false;
+    },
+    closeDialog() {
+      this.dialog = false;
+      this.loadingReject = false;
     },
   },
 };

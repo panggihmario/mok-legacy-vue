@@ -9,7 +9,7 @@ export default {
 				error: '#FF5252',
 				info: '#00d3ee',
 				success: '#5cb860',
-				warning: '#ffa21a',
+				warning: '#e70000',
 				black: '#000000',
 				charcoal: '#4A4A4A',
 				truewhite: '#FFFFFF',
@@ -46,6 +46,18 @@ export default {
 			},
 			edit : {
 				component : 'icon-edit'
+			},
+			heart : {
+				component : 'icon-heart'
+			},
+			comment : {
+				component : 'icon-comment'
+			},
+			share : {
+				component : 'icon-share'
+			},
+			thumbup : {
+				component : 'icon-thumb-up'
 			}
 		},
 		iconfont : 'mdi' || 'md'

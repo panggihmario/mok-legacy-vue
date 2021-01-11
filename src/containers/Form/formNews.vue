@@ -95,17 +95,12 @@
           rules="required"
           name="Content"
         />
-        <!-- <div v-html="payloadNews.content">
-        </div> -->
         <custom-input
           label="Tag Artikel"
           placeholder="Tag"
           v-model="payloadNews.newsTagString"
         />
-        <custom-input
-          label="Keyword Meta"
-          v-model="payloadNews.metaKeyword"
-        />
+        <custom-input label="Keyword Meta" v-model="payloadNews.metaKeyword" />
       </v-col>
       <v-col cols="5">
         <div class="ml-4">
@@ -139,7 +134,7 @@
             :value="humanDate"
             readonly
           />
-          
+
           <v-dialog persistent v-model="dialogDate" max-width="650">
             <v-card>
               <v-card-text>
@@ -152,13 +147,21 @@
                   </div>
                 </div>
                 <div class="d-flex justify-space-between form__dialog-date">
-                  <div class="form__date-box">{{ newFormatDate }} {{ scheduleTime }}</div>
+                  <div class="form__date-box">
+                    {{ newFormatDate }} {{ scheduleTime }}
+                  </div>
                   <div>
                     <custom-button @click="cancelSchedule">
                       <span class="form__dialog-button">Batalkan</span>
                     </custom-button>
-                    <custom-button color="primary" @click="setSchedule" class="ml-4">
-                      <span class="form__dialog-button">Jadwalkan Publikasi</span>
+                    <custom-button
+                      color="primary"
+                      @click="setSchedule"
+                      class="ml-4"
+                    >
+                      <span class="form__dialog-button"
+                        >Jadwalkan Publikasi</span
+                      >
                     </custom-button>
                   </div>
                 </div>
@@ -246,12 +249,12 @@ export default {
       this.dialogDate = false;
     },
     openDate() {
-      if(this.payloadNews.isScheduled) {
+      if (this.payloadNews.isScheduled) {
         this.dialogDate = true;
       }
     },
     getImageThumbnail(payload) {
-      console.log(payload)
+      console.log(payload);
       if (payload.status === "success") {
         this.thumbnailImage = payload.response.url;
         this.$emit("getThumbnail", payload.response);
@@ -261,21 +264,10 @@ export default {
       }
     },
     getImage(payload) {
-      console.log(payload)
       this.image = "";
       if (payload.status === "success") {
         this.image = payload.response.thumbnail.medium;
         this.$emit("getImageUpload", payload.response);
-        // const temp = this.payloadNews.medias.map(media => {
-        //   return {
-        //     ...media,
-        //     metadata : payload.response.metadata,
-        //     thumbnail : payload.response.thumbnail,
-        //     type : payload.response.type,
-        //     url : payload.response.url
-        //   }
-        // })
-        // this.payloadNews.medias.splice(0, 1, temp[0]);
         this.visible = false;
       } else {
         this.visible = true;

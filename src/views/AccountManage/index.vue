@@ -6,8 +6,8 @@
         class="white--text"
         @click="handleClick('create')"
       >
-				{{ $t('button.accountCreate') }}
-			</custom-button>
+        {{ $t("button.accountCreate") }}
+      </custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -51,34 +51,44 @@
         item-key="user"
         hide-default-footer
       >
-        <template v-slot:[`item.user`]="{ item }">
-          <div class="d-flex align-center">
-            <v-avatar size="35" class="mr-2">
-              <img :src="item.photo" />
-            </v-avatar>
-            <div class="d-flex flex-column">
-              <span class="account-manage__user__title font-weight-medium">{{
-                item.user
-              }}</span>
-              <span class="account-manage__user__subtitle font-weight-light">{{
-                item.role
-              }}</span>
-            </div>
-          </div>
-        </template>
-        <template v-slot:[`item.status`]="{ item }">
-          <span v-if="item.status" class="kellygreen--text">Active</span>
-          <span v-else class="silver--text">Inactive</span>
-        </template>
-        <template v-slot:[`item.manage`]="{ item }">
-          <custom-button icon @click="moveEdit(item.id)">
-            <v-icon x-small>$edit</v-icon>
-          </custom-button>
-          <custom-button icon @click="openModalDelete(item.id)">
-            <v-icon x-small>$delete</v-icon>
-          </custom-button>
+        <template v-slot:item="{ item }">
+          <tr>
+            <td class="item__data">
+              <div class="d-flex align-center">
+                <v-avatar size="35" class="mr-2">
+                  <img :src="item.photo" />
+                </v-avatar>
+                <div class="d-flex flex-column">
+                  <span
+                    class="account-manage__user__title font-weight-medium"
+                    >{{ item.user }}</span
+                  >
+                  <span
+                    class="account-manage__user__subtitle font-weight-light"
+                    >{{ item.role }}</span
+                  >
+                </div>
+              </div>
+            </td>
+            <td class="item__data">{{ item.role }}</td>
+            <td class="item__data secondary--text">
+              <span v-if="item.status" class="kellygreen--text">Active</span>
+              <span v-else class="silver--text">Inactive</span>
+            </td>
+            <td class="item__data">
+              <div class="d-flex justify-space-between align-center">
+                <v-btn icon @click="moveEdit(item.id)">
+                  <v-icon x-small>$edit</v-icon>
+                </v-btn>
+                <v-btn icon @click="openDialog(item.id)">
+                  <v-icon x-small>$delete</v-icon>
+                </v-btn>
+              </div>
+            </td>
+          </tr>
         </template>
       </v-data-table>
+
       <v-row dense class="mt-8">
         <v-col cols="6">
           <!-- <custom-button :disabled="!selected.length" class="carmine--text">Delete All</custom-button> -->
@@ -99,8 +109,8 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
-        :closeDialog="closeDialog"
-        :handleclick="handleDelete"
+        @closeDialog="closeDialog"
+        @handleDelete="handleDelete"
       ></Dialog-Delete>
     </div>
   </div>
@@ -129,9 +139,9 @@ export default {
           href: "channel",
         },
         {
-					text: "List Management",
-					disabled : true
-        }
+          text: "List Management",
+          disabled: true,
+        },
       ],
       params: {},
       isActive: "",
@@ -157,7 +167,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: 400,
+          width: 300,
         },
         {
           text: "Role",
@@ -165,6 +175,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
+          width: 200,
         },
         {
           text: "Status",
@@ -180,7 +191,7 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 200,
+          width: 140,
         },
       ],
       data: [],
@@ -216,7 +227,6 @@ export default {
         filterBy: this.isActive,
       };
       this.params = payload;
-      console.log(this.params);
     },
     handleClick(params) {
       this.$router.push(`/admin/${params}`);
@@ -229,7 +239,7 @@ export default {
         },
       });
     },
-    openModalDelete(id) {
+    openDialog(id) {
       this.dialog = true;
       this.idUser = id;
     },
@@ -245,7 +255,6 @@ export default {
         this.dialog = false;
         this.idUser = "";
       } else {
-        console.log(response);
         this.dialog = false;
         this.idUser = "";
       }
@@ -257,7 +266,6 @@ export default {
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
-        console.log(response)
         this.formatResponse(response);
       } else {
         console.log(response);
@@ -303,7 +311,6 @@ export default {
         type: "management",
       };
       const response = await this.getListAdmin(params);
-      console.log(response)
       if (response.status === 200) {
         this.formatResponse(response);
       } else {
@@ -328,4 +335,9 @@ export default {
       font-size: $font-size-12
     &__subtitle
       font-size: $font-size-10
+.item
+  &__data
+    padding-top: 16px
+    padding-bottom: 16px
+    // border-bottom: none !important
 </style>

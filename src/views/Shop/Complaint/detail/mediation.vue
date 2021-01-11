@@ -6,17 +6,21 @@
           >Bukti Kirim Barang Pembeli</span
         >
 
-        <div class="form__upload d-flex justify-center align-center mt-2">
+        <div
+          class="form__upload d-flex justify-center align-center mt-2"
+          :class="{ form__uploaded: photoBuyer }"
+        >
           <v-img
             :src="photoBuyer"
             v-show="photoBuyer"
-            @click="reUploadBuyer"
+            class="form__upload__box"
             max-height="100%"
             max-width="100%"
+            @click="reUploadBuyer"
           />
           <custom-upload
             id="image-buyer"
-            color="tertiary"
+            color="secondary"
             text
             @response="getPhotoBuyer"
             :class="photoBuyer && 'form__button-upload'"
@@ -29,17 +33,21 @@
           >Bukti Kirim Barang Penjual</span
         >
 
-        <div class="form__upload d-flex justify-center align-center mt-2">
+        <div
+          class="form__upload d-flex justify-center align-center mt-2"
+          :class="{ form__uploaded: photoSeller }"
+        >
           <v-img
             :src="photoSeller"
             v-show="photoSeller"
-            @click="reUploadSeller"
+            class="form__upload__box"
             max-height="100%"
             max-width="100%"
+            @click="reUploadSeller"
           />
           <custom-upload
             id="image-seller"
-            color="tertiary"
+            color="secondary"
             text
             @response="getPhotoSeller"
             :class="photoSeller && 'form__button-upload'"
@@ -51,7 +59,7 @@
     <div class="d-flex flex-column mt-8">
       <span class="detail__title silver--text">Admin Terkait</span>
       <span class="detail__content">
-        {{ item.admin }}
+        {{ item.accountAdmin ? item.accountAdmin.username : "-" }}
       </span>
     </div>
 
@@ -61,10 +69,10 @@
         outlined
         background="white"
         placeholder="Keputusan akhir mediasi"
-        v-model="decision"
+        v-model="payload.finalDecision"
         :items="listDecition"
         rules="required"
-        :value="decision"
+        :value="payload.finalDecision"
         name="Decision"
       />
     </div>
@@ -79,8 +87,8 @@
       >
 
       <text-editor
-        v-model="reportText"
-        :value="reportText"
+        v-model="payload.adminReport"
+        :value="payload.adminReport"
         rules="required"
         name="Content"
         class="mt-3"
@@ -91,16 +99,15 @@
 
 <script>
 export default {
-  props: ["item"],
+  props: ["item", "payload"],
   data() {
     return {
       photoBuyer: "",
       photoSeller: "",
-      urlPhotoBuyer: "",
-      urlPhotoSeller: "",
-      reportText: "",
-      decision: "",
-      listDecition: ["Kembalikan dana ke pembeli", "Teruskan dana ke penjual"],
+      listDecition: [
+        { text: "Kembalikan dana ke pembeli", value: true },
+        { text: "Teruskan dana ke penjual", value: false },
+      ],
     };
   },
   methods: {
@@ -110,18 +117,16 @@ export default {
     reUploadSeller() {
       document.getElementById("image-seller").click();
     },
-    getPhotoBuyer(payload) {
-      if (payload.status === "success") {
-        console.log(payload);
-        this.photoBuyer = payload.response.url;
-        this.urlPhotoBuyer = payload.response;
+    getPhotoBuyer(response) {
+      if (response.status === "success") {
+        this.photoBuyer = response.response.url;
+        this.payload.evidenceBuyerReceipt = response.response.url;
       }
     },
-    getPhotoSeller(payload) {
-      if (payload.status === "success") {
-        console.log(payload);
-        this.photoSeller = payload.response.url;
-        this.urlPhotoSeller = payload.response;
+    getPhotoSeller(response) {
+      if (response.status === "success") {
+        this.photoSeller = response.response.url;
+        this.payload.evidenceSellerReceipt = response.response.url;
       }
     },
   },
@@ -148,6 +153,11 @@ export default {
     height: 126px
     border: 1px dashed #1890FF
     border-radius: 5px
+    &__box
+      border: none !important
+      border-radius: 5px
+  &__uploaded
+    border: none !important
   &__button-upload
     position: absolute
     visibility: hidden
