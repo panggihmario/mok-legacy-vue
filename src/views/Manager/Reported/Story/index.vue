@@ -1,21 +1,26 @@
 <template>
   <div>
-    <Header-Content label="Reported Comment" :list="crumbs" />
+    <Header-Content label="Reported Post" :list="crumbs"></Header-Content>
+    <!-- <Header-Option :option="option"></Header-Option> -->
 
     <v-data-table
       :headers="headers"
       :items="reports"
-      disable-filtering
-      disable-sort
       hide-default-footer
+      disable-sort
+      disable-filtering
+      class="grey--text table__data"
     >
-      <template v-slot:[`item.comment`]="{ item }">
-        <div>
-          <span v-text="item.comment"></span>
+      <template v-slot:[`item.image`]="{ item }">
+        <div class="d-flex justify-center image__container">
+          <div class="d-flex justify-center image__box whitesnow">
+            <!-- <v-img max-width="100%" height="100%" :src="item.photo" /> -->
+            <video :src="item.photo" :poster="item.photo" height="100%"></video>
+          </div>
         </div>
       </template>
       <template v-slot:[`item.username`]="{ item }">
-        <span>{{ item.username }}</span>
+        <span>{{ item.username }} </span>
       </template>
       <template v-slot:[`item.report`]="{ item }">
         <div class="d-flex flex-column my-4">
@@ -30,7 +35,7 @@
               <span
                 class="table__show-reason"
                 :class="{ 'secondary--text': list.count !== 0 }"
-                @click="openDialogReason(item.id, list.id)"
+                @click="openDialogReason(item, list.id)"
                 >Lihat Alasan</span
               ></span
             >
@@ -84,6 +89,7 @@
     <Dialog-Reason
       :dialog="dialogReason"
       :list="reasonOthers"
+      :photo="dialogImage"
       @closeDialog="closeDialog"
     ></Dialog-Reason>
 
@@ -125,7 +131,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-// import HeaderOption from "./header.vue";
+import HeaderOption from "./header.vue";
 import DialogReason from "./dialog.vue";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import DialogSelect from "@/components/material/Dialog/DialogSelect";
@@ -134,7 +140,7 @@ import { mapActions } from "vuex";
 export default {
   components: {
     HeaderContent,
-    // HeaderOption,
+    HeaderOption,
     DialogReason,
     DialogDelete,
     DialogSelect,
@@ -143,7 +149,7 @@ export default {
     return {
       crumbs: [
         {
-          text: "Reported Comment",
+          text: "Reported Post",
           disabled: true,
         },
       ],
@@ -153,6 +159,7 @@ export default {
       dialogReason: false,
       dialogPass: false,
       dialogDelete: false,
+      dialogImage: "",
       idReport: "",
       loading: false,
       loadingDelete: false,
@@ -164,9 +171,8 @@ export default {
       alertFailedDelete: false,
       headers: [
         {
-          text: "Komentar",
-          value: "comment",
-          width: "200",
+          value: "image",
+          width: "150",
           class: "whitesnow",
         },
         {
@@ -199,7 +205,7 @@ export default {
       reasonOthers: [],
     };
   },
-  created() {
+  mounted() {
     this.handleGetReportedList();
   },
   methods: {
@@ -213,7 +219,7 @@ export default {
     async handleGetReportedList(p) {
       console.log({ p });
       const payload = {
-        type: "COMMENT",
+        type: "STORY",
         username: "",
         filter: "",
         size: 3,
@@ -228,16 +234,16 @@ export default {
     },
     async handleGetListReason() {
       const payload = {
-        type: "COMMENT",
+        type: "STORY",
       };
       const response = await this.getListReasonByType(payload);
       console.log(response);
       if (response.status === 200) {
         const responseData = response.data.data;
-        const formatResponse = responseData.map((d) => {
+        const formatResponse = responseData.map((data) => {
           return {
-            name: d.value,
-            id: d.id,
+            name: data.value,
+            id: data.id,
           };
         });
         this.items = formatResponse;
@@ -245,20 +251,25 @@ export default {
         return response;
       }
     },
-    async openDialogReason(reportId, reasonId) {
+    async openDialogReason(report, reasonId) {
       const payload = {
-        reportId,
+        reportId: report.id,
         reasonId,
         size: 10,
         page: 0,
         sort: "createAt,desc",
       };
       this.dialogReason = true;
+      this.dialogImage = report.photo;
       const response = await this.getDetailReasonOther(payload);
       console.log({ response });
       if (response.status == 200) {
         this.reasonOthers = response.data.data.content;
       }
+    },
+    openDialogPass(id) {
+      this.dialogPass = true;
+      this.idReport = id;
     },
     openDialogDelete(id) {
       this.handleGetListReason();
@@ -278,7 +289,7 @@ export default {
         reportId: this.idReport,
         params: {
           id: item.id,
-          type: "comment",
+          type: "story",
           value: item.name,
         },
       };
@@ -288,10 +299,12 @@ export default {
       console.log("delete", response);
       if (response.status == 200) {
         this.loadingDelete = false;
+        this.dialogDelete = false;
         this.alertSuccessDelete = true;
         setTimeout(() => {
           this.alertSuccessDelete = false;
         }, 2000);
+        this.handleGetReportedList();
       } else {
         this.loadingDelete = false;
         this.alertFailedDelete = true;
@@ -328,3 +341,20 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.image
+  &__box
+    width: 60px
+    height: 60px
+    overflow: hidden
+  &__container
+    padding: 10px
+.table
+  &__data
+    font-weight: 500
+    line-height: 32px
+  &__show-reason
+    cursor: pointer
+    text-decoration: underline
+</style>

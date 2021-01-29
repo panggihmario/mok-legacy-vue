@@ -1,9 +1,11 @@
 <template>
   <div>
     <v-data-table
-      hide-default-footer
       :headers="headers"
       :items="drafts.content"
+      hide-default-footer
+      disable-filtering
+      disable-sort
     >
       <template v-slot:[`item.status`]="{ item }">
         <span :class="getColor(item.status)">{{ item.status }}</span>
@@ -27,6 +29,37 @@
 import moment from "moment";
 export default {
   props: ["drafts"],
+  data() {
+    return {
+      headers: [
+        {
+          text: "Tanggal",
+          value: "date",
+          class: "whitesnow",
+          width: "100",
+        },
+        {
+          text: "Penulis",
+          value: "author",
+          class: "whitesnow",
+          width: "150",
+        },
+        {
+          text: "Headline",
+          value: "headline",
+          class: "whitesnow",
+          // width: "200",
+        },
+        {
+          text: "",
+          value: "action",
+          class: "whitesnow",
+          width: "250",
+          align: "end",
+        },
+      ],
+    };
+  },
   methods: {
     moveEdit(id) {
       this.$router.push({
