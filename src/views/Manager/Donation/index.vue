@@ -44,7 +44,7 @@
 
       <template v-slot:[`item.action`]="{ item }">
         <div class="d-flex justify-space-between align-center">
-          <v-btn icon @click="moveEdit(item.id)">
+          <v-btn icon @click="moveToEdit(item.id)">
             <v-icon x-small>$edit</v-icon>
           </v-btn>
           <v-btn @click="openModalDelete(item.id)" icon>

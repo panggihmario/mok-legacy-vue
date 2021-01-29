@@ -47,6 +47,16 @@ export default [
             path: "/report/comment",
             role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
           },
+          {
+            title: "Story",
+            path: "/report/story",
+            role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+          },
+          {
+            title: "Akun",
+            path: "/report/account",
+            role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+          },
         ],
       },
       {

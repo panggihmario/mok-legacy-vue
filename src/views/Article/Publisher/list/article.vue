@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-data-table
+      :headers="headers"
+      :items="news"
       hide-default-footer
       disable-filtering
       disable-sort
-      :headers="headers"
-      :items="news"
     >
       <template v-slot:[`item.status`]="{ item }">
         <span :class="getColor(item.status)">{{ item.status }}</span>
@@ -58,8 +58,8 @@
     />
     <DialogDelete
       title="Yakin menghapus news ini"
-      :dialog="dialog"
       description="News yang kamu hapus tidak akan tampil di halaman news"
+      :dialog="dialog"
       @closeDialog="closeDialog"
       @handleDelete="handleDelete"
     />
@@ -79,6 +79,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-snackbar top right v-model="alertSuccess" color="success">
       Delete Success
     </v-snackbar>

@@ -4,16 +4,13 @@
       <v-card-title class="d-flex justify-center mb-4">
         <span v-text="title"></span>
       </v-card-title>
-      <custom-textarea
-        :value="value"
-        placeholder="Komplain ini tidak valid karena.."
-        name="Admin Report"
-        rules="required"
-        color="white"
-        flat
-        outlined
-        v-on="inputListeners"
-      />
+      <custom-select
+        :items="items"
+        item-text="name"
+        item-value="id"
+        return-object
+        v-model="payload"
+      ></custom-select>
       <v-card-actions class="d-flex justify-center">
         <custom-button @click="closeDialog">Batalkan</custom-button>
         <custom-button
@@ -21,7 +18,7 @@
           class="white--text ml-6"
           @click="handleClick"
           :loading="loading"
-          :disabled="value ? false : true"
+          :disabled="payload.id == '' ? true : false"
           >Simpan Alasan Penolakan</custom-button
         >
       </v-card-actions>
@@ -39,8 +36,8 @@ export default {
       type: String,
       default: "Title",
     },
-    value: {
-      type: String,
+    items: {
+      type: Array,
     },
     rules: {
       type: String,
@@ -52,19 +49,17 @@ export default {
       type: Boolean,
     },
   },
-  computed: {
-    inputListeners() {
-      const vm = this;
-      return Object.assign({}, this.$listeners, {
-        input: function(event) {
-          vm.$emit("input", event);
-        },
-      });
-    },
+  data() {
+    return {
+      payload: {
+        id: "",
+        name: "",
+      },
+    };
   },
   methods: {
     handleClick() {
-      this.$emit("handleClick");
+      this.$emit("handleClick", this.payload);
     },
     closeDialog() {
       this.$emit("closeDialog");
