@@ -13,7 +13,10 @@
     >
       <template v-slot:[`item.image`]="{ item }">
         <div class="d-flex justify-center image__container">
-          <div class="d-flex justify-center image__box whitesnow">
+          <div
+            class="d-flex justify-center image__box whitesnow"
+            @click="openDialogImage(item)"
+          >
             <!-- <v-img max-width="100%" height="100%" :src="item.photo" /> -->
             <video :src="item.photo" :poster="item.photo" height="100%"></video>
           </div>
@@ -79,7 +82,7 @@
     </v-data-table>
 
     <Dialog-Delete
-      title="Apakah anda yakin report ini lolos pemeriksaan"
+      title="Apakah anda yakin report ini lolos pemeriksaan?"
       :dialog="dialogPass"
       :loading="loading"
       @closeDialog="closeDialog"
@@ -89,7 +92,7 @@
     <Dialog-Reason
       :dialog="dialogReason"
       :list="reasonOthers"
-      :photo="dialogImage"
+      :photo="imageDialog"
       @closeDialog="closeDialog"
     ></Dialog-Reason>
 
@@ -103,6 +106,19 @@
       @handleClick="handleDeleteReport"
       @closeDialog="closeDialog"
     ></Dialog-Select>
+
+    <v-dialog v-model="dialogImage" width="600" @click:outside="closeDialog">
+      <v-card class="text-center pa-8">
+        <!-- <v-img :src="imageDialog"></v-img> -->
+        <video
+          :src="imageDialog"
+          :poster="imageDialog"
+          controls
+          width="100%"
+          height="100%"
+        ></video>
+      </v-card>
+    </v-dialog>
 
     <v-pagination
       class="d-flex justify-end"
@@ -159,7 +175,8 @@ export default {
       dialogReason: false,
       dialogPass: false,
       dialogDelete: false,
-      dialogImage: "",
+      dialogImage: false,
+      imageDialog: "",
       idReport: "",
       loading: false,
       loadingDelete: false,
@@ -178,13 +195,13 @@ export default {
         {
           text: "Username",
           value: "username",
-          // width: "150",
+          width: "180",
           class: "whitesnow",
         },
         {
           text: "Report",
           value: "report",
-          // width: "150",
+          width: "400",
           class: "whitesnow",
         },
         {
@@ -260,12 +277,16 @@ export default {
         sort: "createAt,desc",
       };
       this.dialogReason = true;
-      this.dialogImage = report.photo;
+      this.imageDialog = report.photo;
       const response = await this.getDetailReasonOther(payload);
       console.log({ response });
       if (response.status == 200) {
         this.reasonOthers = response.data.data.content;
       }
+    },
+    openDialogImage(item) {
+      this.dialogImage = true;
+      this.imageDialog = item.photo;
     },
     openDialogPass(id) {
       this.dialogPass = true;
@@ -280,7 +301,8 @@ export default {
       this.dialogReason = false;
       this.dialogPass = false;
       this.dialogDelete = false;
-      this.dialogImage = "";
+      this.dialogImage = false;
+      this.imageDialog = "";
       this.reasonOthers = [];
       this.idReport = "";
     },
