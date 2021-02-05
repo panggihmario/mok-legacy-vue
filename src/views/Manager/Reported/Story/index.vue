@@ -79,7 +79,7 @@
     </v-data-table>
 
     <Dialog-Delete
-      title="Apakah anda yakin report ini lolos pemeriksaan"
+      title="Apakah anda yakin report ini lolos pemeriksaan?"
       :dialog="dialogPass"
       :loading="loading"
       @closeDialog="closeDialog"

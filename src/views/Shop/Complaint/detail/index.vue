@@ -42,7 +42,7 @@
         <Detail-Product v-if="item.order" :item="item"></Detail-Product>
       </v-col>
       <v-col lg="6" v-if="item.status != 'NEW'">
-        <Detail-Mediation :item="item" :payload="payload"></Detail-Mediation>
+        <Detail-Mediation :item="item" :payload="payload" :isDisabled="isDisabled"></Detail-Mediation>
       </v-col>
     </v-row>
     <Dialog-Text-Area
@@ -86,6 +86,7 @@ export default {
       dialog: false,
       alertSuccess: false,
       alertFailed: false,
+      isDisabled: false,
       item: {},
       adminReport: "",
       payload: {
@@ -112,6 +113,11 @@ export default {
       const response = await this.getComplaintById(payload);
       if (response.status === 200 || 204) {
         this.item = response.data.data;
+        if (this.item.status === "FINISHED") {
+          this.isDisabled = true;
+        } else {
+          this.isDisabled = false;
+        }
       } else {
         console.error(response);
       }

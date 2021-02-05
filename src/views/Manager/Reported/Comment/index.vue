@@ -74,7 +74,7 @@
     </v-data-table>
 
     <Dialog-Delete
-      title="Apakah anda yakin report ini lolos pemeriksaan"
+      title="Apakah anda yakin report ini lolos pemeriksaan?"
       :dialog="dialogPass"
       :loading="loading"
       @closeDialog="closeDialog"
@@ -328,3 +328,20 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.image
+  &__box
+    width: 60px
+    height: 60px
+    overflow: hidden
+  &__container
+    padding: 10px
+.table
+  &__data
+    font-weight: 500
+    line-height: 32px
+  &__show-reason
+    cursor: pointer
+    text-decoration: underline
+</style>
