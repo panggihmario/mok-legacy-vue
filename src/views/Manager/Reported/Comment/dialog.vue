@@ -16,7 +16,7 @@
       </v-card-title>
 
       <v-card-text>
-        <div class="d-flex">
+        <!-- <div class="d-flex">
           <div>
             <div class="d-flex justify-center mr-4">
               <div class="image__box">
@@ -24,7 +24,7 @@
               </div>
             </div>
           </div>
-          <div>
+          <div> -->
             <v-data-table
               :headers="headers"
               hide-default-footer
@@ -41,13 +41,13 @@
                     <span v-text="index + 1"></span>
                   </td>
                   <td>
-                    <span v-text="item.reason"></span>
+                    <span v-text="item.value"></span>
                   </td>
                 </tr>
               </template>
             </v-data-table>
-          </div>
-        </div>
+          <!-- </div>
+        </div> -->
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -61,6 +61,9 @@ export default {
     },
     photo: {
       type: String,
+    },
+    list: {
+      type: Array,
     },
   },
   data() {
@@ -77,17 +80,6 @@ export default {
           value: "reason",
           width: "574",
           class: "whitesmoke",
-        },
-      ],
-      list: [
-        {
-          reason: "Annoying so much",
-        },
-        {
-          reason: "Ga suka ih, sok banget",
-        },
-        {
-          reason: "Apaan sih gatau malu",
         },
       ],
     };

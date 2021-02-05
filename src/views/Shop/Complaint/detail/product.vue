@@ -14,23 +14,31 @@
       <span class="detail__content">{{ item.reason }}</span>
 
       <div class="d-flex mt-6">
+        <div
+          v-if="duration != ''"
+          class=" d-flex justify-center align-center detail__image whitesnow cursor-pointer"
+          @click="openDialogImage"
+        >
+          <v-icon size="60">mdi-arrow-right-drop-circle</v-icon>
+        </div>
         <video
+          v-else
           id="evidenceVideoUrl"
           :src="item.evidenceVideoUrl"
+          :poster="item.evidenceVideoUrl"
+          :controls="duration != ''"
           class="detail__image"
-          controls
           height="120"
           width="210"
+          @click="openDialogImage"
         ></video>
-        <div class="d-flex flex-column ml-4">
-          <span class="detail__title silver--text mt-6"
-            >Tanggal Video Diambil</span
-          >
+        <div class="d-flex flex-column mt-2 ml-4">
+          <span class="detail__title silver--text">Tanggal Video Diambil</span>
           <span class="detail__content">{{
             formatingDate(item.createAt)
           }}</span>
           <span class="detail__title silver--text mt-6">Durasi</span>
-          <span class="detail__content">{{}}</span>
+          <span class="detail__content">{{ duration || "-" }}</span>
         </div>
       </div>
 
@@ -42,7 +50,7 @@
             alt=""
           />
         </div>
-        <div class="d-flex flex-column ml-4">
+        <div class="d-flex flex-column mt-2 ml-4">
           <span class="detail__content">{{
             item.order.orderDetail.productName
           }}</span>
@@ -98,19 +106,65 @@
               item.order.orderDetail.sellerName
             }}</span>
             <span class="py-3 px-4">{{
-              item.order.orderDetail.mobile || "-"
+              item.order.orderDetail.mobile ||
+                item.order.orderShipment.originPhoneNumber ||
+                "-"
             }}</span>
           </div>
         </div>
       </div>
     </div>
+
+    <v-dialog
+      v-model="dialogImage"
+      width="600"
+      @click:outside="closeDialogImage"
+    >
+      <v-card class="text-center pa-8">
+        <video
+          id="evidenceVideoUrl"
+          :src="item.evidenceVideoUrl"
+          :poster="item.evidenceVideoUrl"
+          :controls="duration != ''"
+          autoplay
+          width="100%"
+          height="400"
+        ></video>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 export default {
   props: ["item"],
+  data() {
+    return {
+      dialogImage: false,
+      duration: "",
+    };
+  },
+  mounted() {
+    this.getDuration();
+  },
   methods: {
+    format(s) {
+      var m = Math.floor(s / 60);
+      m = m >= 10 ? m : "0" + m;
+      s = Math.floor(s % 60);
+      s = s >= 10 ? s : "0" + s;
+      return m + ":" + s;
+    },
+    getDuration() {
+      let vid = document.getElementsByTagName("video")[0];
+      const inter = setInterval(() => {
+        if (vid.readyState > 0) {
+          let rounded = Math.round(vid.duration * 10) / 10;
+          this.duration = this.format(rounded);
+          clearInterval(inter);
+        }
+      }, 200);
+    },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
       const day = newDt.getDate();
@@ -118,6 +172,12 @@ export default {
       const year = newDt.getFullYear();
       const newFormat = `${day}/${month}/${year}`;
       return newFormat;
+    },
+    openDialogImage() {
+      this.dialogImage = true;
+    },
+    closeDialogImage() {
+      this.dialogImage = false;
     },
   },
 };
@@ -140,4 +200,6 @@ export default {
     font-size: 12px
     &__box
       width: 193px
+.cursor-pointer
+  cursor: pointer
 </style>

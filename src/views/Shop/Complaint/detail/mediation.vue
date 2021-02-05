@@ -5,8 +5,8 @@
         <span class="detail__title silver--text"
           >Bukti Kirim Barang Pembeli</span
         >
-
         <div
+          v-if="!isDisabled"
           class="form__upload d-flex justify-center align-center mt-2"
           :class="{ form__uploaded: photoBuyer }"
         >
@@ -26,6 +26,18 @@
             :class="photoBuyer && 'form__button-upload'"
           />
         </div>
+        <div
+          v-else
+          class="form__upload d-flex justify-center align-center mt-2"
+          :class="{ form__uploaded: photoBuyer }"
+        >
+          <v-img
+            :src="item.evidenceBuyerReceipt"
+            class="form__upload__box"
+            max-height="100%"
+            max-width="100%"
+          />
+        </div>
       </div>
 
       <div class="d-flex flex-column ml-8">
@@ -34,6 +46,7 @@
         >
 
         <div
+          v-if="!isDisabled"
           class="form__upload d-flex justify-center align-center mt-2"
           :class="{ form__uploaded: photoSeller }"
         >
@@ -53,6 +66,18 @@
             :class="photoSeller && 'form__button-upload'"
           />
         </div>
+        <div
+          v-else
+          class="form__upload d-flex justify-center align-center mt-2"
+          :class="{ form__uploaded: photoSeller }"
+        >
+          <v-img
+            :src="item.evidenceSellerReceipt"
+            class="form__upload__box"
+            max-height="100%"
+            max-width="100%"
+          />
+        </div>
       </div>
     </div>
 
@@ -65,6 +90,20 @@
 
     <div class="mt-8">
       <custom-select
+        v-if="isDisabled"
+        disabled
+        dense
+        outlined
+        background="white"
+        placeholder="Keputusan akhir mediasi"
+        v-model="item.finalDecision"
+        :items="listDecition"
+        rules="required"
+        :value="item.finalDecision"
+        name="Decision"
+      />
+      <custom-select
+        v-else
         dense
         outlined
         background="white"
@@ -85,8 +124,17 @@
         >Tuliskan proses mediasi yang terjadi antara user dan penjual dalam
         bentuk rangkuman diskusi yang terjadi.</span
       >
-
       <text-editor
+        v-if="isDisabled"
+        v-model="item.adminReport"
+        :value="item.adminReport"
+        :disabled="isDisabled"
+        rules="required"
+        name="Content"
+        class="mt-3"
+      />
+      <text-editor
+        v-else
         v-model="payload.adminReport"
         :value="payload.adminReport"
         rules="required"
@@ -99,7 +147,7 @@
 
 <script>
 export default {
-  props: ["item", "payload"],
+  props: ["item", "payload", "isDisabled"],
   data() {
     return {
       photoBuyer: "",

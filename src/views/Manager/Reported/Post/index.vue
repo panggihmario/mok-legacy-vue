@@ -5,68 +5,57 @@
 
     <v-data-table
       :headers="headers"
-      hide-default-footer
       :items="reports"
+      hide-default-footer
       disable-sort
       disable-filtering
       class="grey--text table__data"
     >
       <template v-slot:[`item.image`]="{ item }">
         <div class="d-flex justify-center image__container">
-          <div class="image__box">
-            <v-img
-              max-width="100%"
-              height="100%"
-              :src="item.post.media[0].small"
-            />
+          <div
+            class="d-flex justify-center image__box whitesnow"
+            @click="openDialogImage(item)"
+          >
+            <!-- <v-img max-width="100%" height="100%" :src="item.photo" /> -->
+            <video :src="item.photo" :poster="item.photo" height="100%"></video>
           </div>
         </div>
       </template>
+      <template v-slot:[`item.username`]="{ item }">
+        <span>{{ item.username }} </span>
+      </template>
       <template v-slot:[`item.report`]="{ item }">
         <div class="d-flex flex-column my-4">
-          <span :class="{ 'silver--text': item.provoke == 0 }"
-            >Tidak manusiawi, kasar dan memprovokasi</span
+          <div
+            v-for="list in item.reason"
+            :key="list.id"
+            :class="{ 'silver--text': list.count == 0 }"
           >
-          <span :class="{ 'silver--text': item.disturbing == 0 }"
-            >Tidak sesuai dengan konten dan sangat mengganggu</span
-          >
-          <span :class="{ 'silver--text': item.illegal == 0 }"
-            >Masalah keamanan dan illegal di mata hukum</span
-          >
-          <span :class="{ 'silver--text': item.other.length == 0 }"
-            >Other -
-            <span
-              class="table__show-reason secondary--text"
-              @click="openDialogReason(item.id)"
-              >Lihat Alasan</span
-            ></span
-          >
+            <span v-if="list.value !== ''">{{ list.value }}</span>
+            <span v-else
+              >Others -
+              <span
+                class="table__show-reason"
+                :class="{ 'secondary--text': list.count !== 0 }"
+                @click="openDialogReason(item, list.id)"
+                >Lihat Alasan</span
+              ></span
+            >
+          </div>
+
           <span>TOTAL</span>
         </div>
       </template>
       <template v-slot:[`item.count`]="{ item }">
         <div class="d-flex flex-column">
           <span
-            :class="{ 'silver--text': item.provoke == 0 }"
-            v-text="item.provoke"
-          ></span>
-          <span
-            :class="{ 'silver--text': item.disturbing == 0 }"
-            v-text="item.disturbing"
-          ></span>
-          <span
-            :class="{ 'silver--text': item.illegal == 0 }"
-            v-text="item.illegal"
-          ></span>
-          <span
-            :class="{ 'silver--text': item.other.length == 0 }"
-            v-text="item.other.length"
-          ></span>
-          <span
-            v-text="
-              item.provoke + item.disturbing + item.illegal + item.other.length
-            "
-          ></span>
+            v-for="list in item.reason"
+            :key="list.id"
+            :class="{ 'silver--text': list.count == 0 }"
+            >{{ list.count }}</span
+          >
+          <span>{{ item.totalReason }}</span>
         </div>
       </template>
       <template v-slot:[`item.action`]="{ item }">
@@ -83,7 +72,7 @@
             </custom-button>
           </div>
           <div>
-            <custom-button text x-small>
+            <custom-button text x-small @click="openDialogPass(item.id)">
               <v-icon color="charcoal" x-small>$thumbup</v-icon
               ><span class="charcoal--text ml-1">Lolos Pemeriksaan</span>
             </custom-button>
@@ -92,18 +81,44 @@
       </template>
     </v-data-table>
 
+    <Dialog-Delete
+      title="Apakah anda yakin report ini lolos pemeriksaan?"
+      :dialog="dialogPass"
+      :loading="loading"
+      @closeDialog="closeDialog"
+      @handleDelete="handlePassInspect"
+    ></Dialog-Delete>
+
     <Dialog-Reason
       :dialog="dialogReason"
+      :list="reasonOthers"
+      :photo="imageDialog"
       @closeDialog="closeDialog"
     ></Dialog-Reason>
 
-    <Dialog-Delete
-      title="Yakin menghapus channel ini?"
-      description="Channel yang kamu hapus tidak akan tampil di halaman channel lagi"
+    <Dialog-Select
       :dialog="dialogDelete"
+      :loading="loadingDelete"
+      rules="required"
+      title="Postingan ini harus dihapus karena.."
+      name="Report"
+      :items="items"
+      @handleClick="handleDeleteReport"
       @closeDialog="closeDialog"
-      @handleDelete="handleDelete"
-    ></Dialog-Delete>
+    ></Dialog-Select>
+
+    <v-dialog v-model="dialogImage" width="600" @click:outside="closeDialog">
+      <v-card class="text-center pa-8">
+        <!-- <v-img :src="imageDialog"></v-img> -->
+        <video
+          :src="imageDialog"
+          :poster="imageDialog"
+          controls
+          width="100%"
+          height="100%"
+        ></video>
+      </v-card>
+    </v-dialog>
 
     <v-pagination
       class="d-flex justify-end"
@@ -111,8 +126,22 @@
       next-icon="mdi-menu-right"
       v-model="page"
       :length="totalPages"
-      @input="getReportedPostByPage"
+      @input="handleGetReportedList"
+      :total-visible="6"
     ></v-pagination>
+
+    <v-snackbar top right v-model="alertSuccess" color="success">
+      Pass Success
+    </v-snackbar>
+    <v-snackbar top right v-model="alertFailed" color="error">
+      Pass Error
+    </v-snackbar>
+    <v-snackbar top right v-model="alertSuccessDelete" color="success">
+      Delete Success
+    </v-snackbar>
+    <v-snackbar top right v-model="alertFailedDelete" color="error">
+      Delete Error
+    </v-snackbar>
   </div>
 </template>
 
@@ -121,6 +150,7 @@ import HeaderContent from "@/containers/HeaderContent";
 import HeaderOption from "./header.vue";
 import DialogReason from "./dialog.vue";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
+import DialogSelect from "@/components/material/Dialog/DialogSelect";
 import { mapActions } from "vuex";
 
 export default {
@@ -129,6 +159,7 @@ export default {
     HeaderOption,
     DialogReason,
     DialogDelete,
+    DialogSelect,
   },
   data() {
     return {
@@ -142,11 +173,19 @@ export default {
         sort: "Date",
       },
       dialogReason: false,
+      dialogPass: false,
       dialogDelete: false,
-      idPost: "",
+      dialogImage: false,
+      imageDialog: "",
+      idReport: "",
       loading: false,
+      loadingDelete: false,
       page: 1,
       totalPages: 0,
+      alertSuccess: false,
+      alertFailed: false,
+      alertSuccessDelete: false,
+      alertFailedDelete: false,
       headers: [
         {
           value: "image",
@@ -154,9 +193,15 @@ export default {
           class: "whitesnow",
         },
         {
+          text: "Username",
+          value: "username",
+          width: "180",
+          class: "whitesnow",
+        },
+        {
           text: "Report",
           value: "report",
-          // width: "150",
+          width: "400",
           class: "whitesnow",
         },
         {
@@ -172,63 +217,150 @@ export default {
           // align: "center",
         },
       ],
-      reports: [
-        {
-          provoke: 30,
-          disturbing: 400,
-          illegal: 0,
-          post: {
-            media: [
-              {
-                small:
-                  "https://www.post-it.com/wps/wcm/connect/ff9dae62-b691-41e9-a2aa-b31390905775/2670_Stories_from_Scratch_tile.jpg?MOD=AJPERES&CACHEID=ROOTWORKSPACE-ff9dae62-b691-41e9-a2aa-b31390905775-nl7a9Xt",
-              },
-            ],
-          },
-          other: [
-            {
-              reason: "Annoying so much",
-            },
-            {
-              reason: "Ga suka ih, sok banget",
-            },
-            {
-              reason: "Apaan sih gatau malu",
-            },
-          ],
-        },
-        ,
-      ],
+      items: [],
+      reports: [],
+      reasonOthers: [],
     };
   },
   mounted() {
-    this.getReportedPostByPage();
+    this.handleGetReportedList();
   },
   methods: {
     ...mapActions({
+      getListReasonByType: "report/getListReasonByType",
       getListReportByType: "report/getListReportByType",
+      getDetailReasonOther: "report/getDetailReasonOther",
+      reportPassed: "report/reportPassed",
+      reportDelete: "report/reportDelete",
     }),
-    async getReportedPostByPage() {
+    async handleGetReportedList(p) {
+      console.log({ p });
+      const payload = {
+        type: "FEED",
+        username: "",
+        filter: "",
+        size: 3,
+        page: p - 1 || 0,
+      };
+      const response = await this.getListReportByType(payload);
+      if (response.status == 200) {
+        console.log(response);
+        this.reports = response.data.data.content;
+        this.totalPages = response.data.data.totalPages;
+      }
+    },
+    async handleGetListReason() {
       const payload = {
         type: "FEED",
       };
-      const response = await this.getListReportByType(payload);
+      const response = await this.getListReasonByType(payload);
       console.log(response);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        const formatResponse = responseData.map((data) => {
+          return {
+            name: data.value,
+            id: data.id,
+          };
+        });
+        this.items = formatResponse;
+      } else {
+        return response;
+      }
     },
-    openDialogReason(id) {
+    async openDialogReason(report, reasonId) {
+      const payload = {
+        reportId: report.id,
+        reasonId,
+        size: 10,
+        page: 0,
+        sort: "createAt,desc",
+      };
       this.dialogReason = true;
-      this.idPost = id;
+      this.imageDialog = report.photo;
+      const response = await this.getDetailReasonOther(payload);
+      console.log({ response });
+      if (response.status == 200) {
+        this.reasonOthers = response.data.data.content;
+      }
+    },
+    openDialogImage(item) {
+      this.dialogImage = true;
+      this.imageDialog = item.photo;
+    },
+    openDialogPass(id) {
+      this.dialogPass = true;
+      this.idReport = id;
     },
     openDialogDelete(id) {
+      this.handleGetListReason();
       this.dialogDelete = true;
-      this.idPost = id;
+      this.idReport = id;
     },
     closeDialog() {
       this.dialogReason = false;
+      this.dialogPass = false;
       this.dialogDelete = false;
-      this.idPost = "";
+      this.dialogImage = false;
+      this.imageDialog = "";
+      this.reasonOthers = [];
+      this.idReport = "";
     },
-    handleDelete() {},
+    async handleDeleteReport(item) {
+      console.log(item);
+      const payload = {
+        reportId: this.idReport,
+        params: {
+          id: item.id,
+          type: "feed",
+          value: item.name,
+        },
+      };
+      console.log(payload);
+      this.loadingDelete = true;
+      const response = await this.reportDelete(payload);
+      console.log("delete", response);
+      if (response.status == 200) {
+        this.loadingDelete = false;
+        this.dialogDelete = false;
+        this.alertSuccessDelete = true;
+        setTimeout(() => {
+          this.alertSuccessDelete = false;
+        }, 2000);
+        this.handleGetReportedList();
+      } else {
+        this.loadingDelete = false;
+        this.alertFailedDelete = true;
+        setTimeout(() => {
+          this.alertFailedDelete = false;
+        }, 2000);
+      }
+    },
+    async handlePassInspect() {
+      const payload = {
+        reportId: this.idReport,
+      };
+      console.log(payload);
+      this.loading = true;
+      const response = await this.reportPassed(payload);
+      console.log("pass", response);
+      if (response.status == 200) {
+        this.loading = false;
+        this.dialogPass = false;
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.alertSuccess = false;
+        }, 2000);
+        this.getListReportByType();
+      } else {
+        this.loading = false;
+        this.dialogPass = false;
+        this.alertFailed = true;
+        setTimeout(() => {
+          this.alertFailed = false;
+        }, 2000);
+      }
+    },
   },
 };
 </script>
@@ -238,7 +370,6 @@ export default {
   &__box
     width: 60px
     height: 60px
-    background-color: grey
     overflow: hidden
   &__container
     padding: 10px
