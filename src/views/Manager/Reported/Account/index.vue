@@ -217,7 +217,6 @@ export default {
       reportDelete: "report/reportDelete",
     }),
     async handleGetReportedList(p) {
-      console.log({ p });
       const payload = {
         type: "ACCOUNT",
         username: "",

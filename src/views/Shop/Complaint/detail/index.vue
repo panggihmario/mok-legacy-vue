@@ -113,7 +113,7 @@ export default {
       const response = await this.getComplaintById(payload);
       if (response.status === 200 || 204) {
         this.item = response.data.data;
-        if (this.item.status === "FINISHED") {
+        if (this.item.status === "FINISH") {
           this.isDisabled = true;
         } else {
           this.isDisabled = false;
