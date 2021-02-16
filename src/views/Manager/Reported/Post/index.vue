@@ -14,7 +14,7 @@
       <template v-slot:[`item.image`]="{ item }">
         <div class="d-flex justify-center image__container">
           <div
-            class="d-flex justify-center image__box whitesnow"
+            class="d-flex justify-center image__box whitesnow cursor-pointer"
             @click="openDialogImage(item)"
           >
             <!-- <v-img max-width="100%" height="100%" :src="item.photo" /> -->
@@ -234,7 +234,6 @@ export default {
       reportDelete: "report/reportDelete",
     }),
     async handleGetReportedList(p) {
-      console.log({ p });
       const payload = {
         type: "FEED",
         username: "",
@@ -380,4 +379,6 @@ export default {
   &__show-reason
     cursor: pointer
     text-decoration: underline
+.cursor-pointer
+  cursor: pointer
 </style>

@@ -15,7 +15,7 @@
           </td>
           <td class="item__data">
             {{
-              item.finalDecision
+              item.finalDecision == "RETURN_TO_BUYER"
                 ? "Kembalikan dana ke pembeli"
                 : "Teruskan dana ke penjual"
             }}
@@ -102,9 +102,10 @@ export default {
         type: "finish",
       };
       const response = await this.getListComplaint(payload);
-      if (response.status === 200 || 204) {
+      if (response.status === 200) {
         this.items = response.data.data.content;
         this.$emit("getTotalList", this.items.length);
+      } else if (response.status === 204) {
       } else {
         console.error(error);
       }

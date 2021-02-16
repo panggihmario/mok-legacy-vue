@@ -96,10 +96,9 @@
         outlined
         background="white"
         placeholder="Keputusan akhir mediasi"
-        v-model="item.finalDecision"
+        :value="item.finalDecision"
         :items="listDecition"
         rules="required"
-        :value="item.finalDecision"
         name="Decision"
       />
       <custom-select
@@ -153,8 +152,8 @@ export default {
       photoBuyer: "",
       photoSeller: "",
       listDecition: [
-        { text: "Kembalikan dana ke pembeli", value: true },
-        { text: "Teruskan dana ke penjual", value: false },
+        { text: "Kembalikan dana ke pembeli", value: "RETURN_TO_BUYER" },
+        { text: "Teruskan dana ke penjual", value: "PASS_TO_SELLER" },
       ],
     };
   },
