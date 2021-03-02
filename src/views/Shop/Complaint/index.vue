@@ -3,28 +3,14 @@
     <HeaderContent label="Komplain" :list="crumbs" />
     <div class="mb-6">
       <custom-button
+        v-for="(item, idx) in tabLabel"
+        :key="idx"
         rounded
         depressed
         class="mr-2"
-        :class="{ 'primarylowtint primary--text': tab == 1 }"
-        @click="moveTab(1)"
-        >Komplain Baru {{ listNewLength }}</custom-button
-      >
-      <custom-button
-        rounded
-        depressed
-        class="mr-2"
-        :class="{ 'primarylowtint primary--text': tab == 2 }"
-        @click="moveTab(2)"
-        >Sedang Mediasi {{ listProcessLength }}</custom-button
-      >
-      <custom-button
-        rounded
-        depressed
-        class="mr-2"
-        :class="{ 'primarylowtint primary--text': tab == 3 }"
-        @click="moveTab(3)"
-        >Selesai Mediasi {{ listFinishLength }}</custom-button
+        :class="{ 'primarylowtint primary--text': tab == idx + 1 }"
+        @click="moveTab(idx + 1)"
+        >{{ item }}</custom-button
       >
     </div>
 
@@ -71,6 +57,7 @@ export default {
         },
       ],
       tab: 1,
+      tabLabel: ["Komplain Baru", "Sedang Mediasi", "Selesai Mediasi"],
       listNewLength: 0,
       listProcessLength: 0,
       listFinishLength: 0,
