@@ -25,6 +25,7 @@ import CategoryNews from "../views/Article/Category";
 import CategoryNewsCreate from "../views/Article/Category/create.vue";
 import CategoryNewsEdit from "../views/Article/Category/edit.vue";
 import Product from "../views/Shop/Product";
+import ProductDetail from "../views/Shop/Product/detail/index.vue";
 import CreateProduct from "../views/Shop/Product/create/index.vue";
 import Category from "../views/Shop/Category";
 import Seller from "../views/Shop/Seller";
@@ -43,6 +44,9 @@ import Complaint from "../views/Shop/Complaint";
 import ComplaintDetail from "../views/Shop/Complaint/detail";
 import CancelOrder from "../views/Order/cancelOrder.vue";
 import Ads from "../views/Article/Advertisement";
+import Order from "../views/Shop/Order";
+import OrderDetail from "../views/Shop/Order/detail";
+import Finance from "../views/Shop/Finance";
 
 const routes = [
   {
@@ -169,13 +173,23 @@ const routes = [
       },
       {
         path: "/complaint",
-        name: "complain",
+        name: "complaint",
         component: Complaint,
       },
       {
         path: "/complaint/detail/:id",
         name: "complaintDetail",
         component: ComplaintDetail,
+      },
+      {
+        path: "/order",
+        name: "order",
+        component: Order,
+      },
+      {
+        path: "/order/detail/:id",
+        name: "ordertDetail",
+        component: OrderDetail,
       },
       {
         path: "/publisher",
@@ -228,6 +242,11 @@ const routes = [
         component: CreateProduct,
       },
       {
+        path: "/product/:id",
+        name: "productDetail",
+        component: ProductDetail,
+      },
+      {
         path: "/category",
         name: "category",
         component: Category,
@@ -271,6 +290,11 @@ const routes = [
         path: "/ads",
         name: "ads",
         component: Ads,
+      },
+      {
+        path: "/finance",
+        name: "finance",
+        component: Finance,
       },
     ],
   },
