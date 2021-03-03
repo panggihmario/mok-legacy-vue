@@ -18,7 +18,7 @@ import { mapActions, mapState } from "vuex";
 export default {
   components: {
     HeaderContent,
-    FormUser
+    FormUser,
   },
   data() {
     return {
@@ -30,16 +30,16 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "/user"
+          href: "/user",
         },
         {
           text: "List Management",
           disabled: false,
-          href: "/user"
+          href: "/user",
         },
         {
-          text: "Edit Management"
-        }
+          text: "Edit Management",
+        },
       ],
       data: {
         name: "",
@@ -52,32 +52,22 @@ export default {
         mobile: "",
         isVerified: false,
         accountType: "",
-				role: "",
-      }
+        role: "",
+      },
     };
   },
   methods: {
     ...mapActions({
       getAccountById: "account/getAccountById",
-      updateAccount: "account/updateAccount"
+      updateAccount: "account/updateAccount",
     }),
     async onSubmit(params) {
       const id = this.$route.params.id;
-      let data = {};
-      if (params.password) {
-        data = params;
-      } else {
-        const newParams = {
-          ...params,
-          password: this.oldPassword
-        };
-        data = newParams;
-      }
       const payload = {
         id,
-        data
-			};
-			this.loading = true
+        data: params,
+      };
+      this.loading = true;
       const response = await this.updateAccount(payload);
       if (response.status === 200) {
         this.loading = false;
@@ -86,17 +76,17 @@ export default {
           this.$router.push("/user");
         }, 1000);
       } else {
-				this.loading = false
-				this.alertError = true
+      	this.loading = false
+      	this.alertError = true
       }
     },
     async handleResponseById() {
       const id = this.$route.params.id;
       const params = {
         id: id,
-        type: "users"
+        type: "users",
       };
-			const response = await this.getAccountById(params);
+      const response = await this.getAccountById(params);
       if (response.status === 200) {
         const responseData = response.data.data;
         const tempData = { ...this.data };
@@ -107,20 +97,20 @@ export default {
           photo: responseData.photo,
           gender: responseData.gender,
           mobile: responseData.mobile,
-					email: responseData.email,
-					isVerified : responseData.isVerified,
-					role : responseData.role,
-					accountType : responseData.accountType
-				};
+          email: responseData.email,
+          isVerified: responseData.isVerified,
+          role: responseData.role,
+          accountType: responseData.accountType,
+        };
         this.oldPassword = responseData.password;
-				this.data = dataById;
-				console.log(dataById)
+        this.data = dataById;
+        console.log(dataById);
       }
-    }
+    },
   },
   mounted() {
     this.handleResponseById();
-  }
+  },
 };
 </script>
 
