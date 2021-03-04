@@ -121,11 +121,9 @@ export default {
     downloadJournal() {
       let dateStarted
       let dateEnd
-      // let params
       if(this.started){
         const splitDate = this.started.split('-')
         const [year, month , date] = splitDate
-        console.log(year)
         dateStarted = `${date}/${month}/${year}`
       }
       if(this.end) {
@@ -137,10 +135,8 @@ export default {
         startAt : dateStarted,
         endAt : dateEnd ? dateEnd : dateStarted
       }
-      console.log(params)
       return this.getJournalByDate(params)
         .then(response => {
-          console.log(response)
           const data = response.data
           const downloadUrl = window.URL.createObjectURL(new Blob([data]))
           const link = document.createElement('a')
