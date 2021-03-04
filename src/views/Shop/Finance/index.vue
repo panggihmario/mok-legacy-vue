@@ -1,143 +1,65 @@
 <template>
   <div>
     <HeaderContent label="Finance" :list="crumbs"></HeaderContent>
-    <v-row>
-      <v-col cols="7">
-        <v-data-table
-          v-model="selected"
-          show-select
-          :headers="headers"
-          :items="items"
-          disable-sort
-          hide-default-footer
-        >
-          <template v-slot:[`header.name`]="{ header }">
-            {{ header.text.toUpperCase() }}
-          </template>
-          <template v-slot:[`header.action`]>
-            <div class="d-flex justify-center align-center">
-              <v-btn color="white" class="btn-cloud text-capitalize" small>
-                <v-icon size="16" color="secondary" left
-                  >mdi-cloud-download-outline</v-icon
-                >
-                <span class="secondary--text">Download</span>
-              </v-btn>
-            </div>
-          </template>
-          <template v-slot:[`item.action`]>
-            <v-btn color="white" class="btn-cloud" small>
-              <v-icon size="16" color="secondary"
-                >mdi-cloud-download-outline</v-icon
-              >
-            </v-btn>
-          </template>
-        </v-data-table>
-      </v-col>
-      <v-col cols="5">
-        <div class="card-option pa-6">
-          <h5>Pengunduhan Periode</h5>
-          <v-row>
-            <v-col>
-              <h6>Mulai dari</h6>
-              <v-dialog
-                ref="dialog"
-                v-model="dialogDateFrom"
-                :return-value.sync="dateFrom"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="dateFrom"
-                    append-icon="mdi-calendar-blank"
-                    readonly
-                    dense
-                    outlined
-                    style="font-size: 12px"
-                    class="pt-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="dateFrom" color="primary" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="whitesmoke"
-                    class="text-capitalize"
-                    depressed
-                    @click="dialogDateFrom = false"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="secondary"
-                    depressed
-                    @click="$refs.dialogDateFrom.save(dateFrom)"
-                  >
-                    OK
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-col>
-            <v-col>
-              <h6>Sampai</h6>
-              <v-dialog
-                ref="dialog"
-                v-model="dialogDateTo"
-                :return-value.sync="dateTo"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="dateTo"
-                    append-icon="mdi-calendar-blank"
-                    readonly
-                    dense
-                    outlined
-                    style="font-size: 12px"
-                    class="pt-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="dateTo" color="primary" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="whitesmoke"
-                    class="text-capitalize"
-                    depressed
-                    @click="dialogDateTo = false"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="secondary"
-                    depressed
-                    @click="$refs.dialogDateTo.save(dateTo)"
-                  >
-                    OK
-                  </v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-col>
-          </v-row>
-          <div>
-            <v-btn color="secondary" class="btn-cloud text-capitalize" block>
-              <v-icon size="16" left>mdi-cloud-download-outline</v-icon>
-              <span>Download</span>
-            </v-btn>
-          </div>
-        </div>
-      </v-col>
-    </v-row>
+    <v-alert width="700px" dense text color="secondary"    type="info">
+      <div class="finance__header">
+        Laporan transaksi hari ini hanya bisa di download setelah dari pukul 24:00 WIB.
+      </div>
+    </v-alert>
+
+    <v-card 
+      width="450px" 
+      elevation="0" 
+      color="whitesnow" 
+    >
+      <v-card-text>
+        <div class="black--text finance__title-card">Download Laporan</div>
+        <v-row>
+          <v-col>
+            <date-picker
+              label="Mulai dari"
+              v-model="started"
+              :value="started"
+              :max="minDate"
+            />
+          </v-col>
+          <v-col>
+            <date-picker
+              label="Sampai"
+              v-model="end"
+              :value="end"
+              :max="minDate"
+              :disabled="disableDate"
+            />
+          </v-col>
+        </v-row>
+          <v-checkbox
+            class="finance__checkbox"
+            v-model="oneDay"
+            color="secondary"
+            dense
+            @click="onedayClick"
+          >
+            <template v-slot:label>
+              <div class="finance__checkbox-text black--text">Download laporan keuangan di satu tanggal saja</div>
+            </template>
+          </v-checkbox>
+          <v-btn color="secondary" @click="downloadJournal" class="btn-cloud text-capitalize" block>
+            <v-icon size="16" left>mdi-cloud-download-outline</v-icon>
+            <span>Download</span>
+          </v-btn>
+      </v-card-text>
+    </v-card>
+    
+
+
+
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import { mapActions } from "vuex";
-
 export default {
   components: {
     HeaderContent,
@@ -146,7 +68,7 @@ export default {
     return {
       crumbs: [
         {
-          text: "List Finance",
+          text: "Download Laporan Transaksi",
           disabled: true,
         },
       ],
@@ -173,9 +95,21 @@ export default {
       selected: [],
       dateFrom: new Date().toISOString().substr(0, 10),
       dateTo: new Date().toISOString().substr(0, 10),
+      started : null,
+      end : null,
+      minDate : new Date().toISOString().substr(0, 10),
+      oneDay : false,
+      disableDate : false
     };
   },
   methods: {
+    ...mapActions({
+      getJournalByDate : 'finance/getJournalByDate'
+    }),
+    onedayClick() {
+      const one = this.oneDay
+      this.disableDate = one
+    },
     getToday() {
       const d = new Date();
       let date = d.getDate();
@@ -184,6 +118,41 @@ export default {
       const today = `${date}/${month}/${year}`;
       return today;
     },
+    downloadJournal() {
+      let dateStarted
+      let dateEnd
+      // let params
+      if(this.started){
+        const splitDate = this.started.split('-')
+        const [year, month , date] = splitDate
+        console.log(year)
+        dateStarted = `${date}/${month}/${year}`
+      }
+      if(this.end) {
+        const splitDate = this.started.split('-')
+        const [year, month , date] = splitDate
+        dateEnd = `${date}/${month}/${year}`
+      }
+      const params = {
+        startAt : dateStarted,
+        endAt : dateEnd ? dateEnd : dateStarted
+      }
+      console.log(params)
+      return this.getJournalByDate(params)
+        .then(response => {
+          console.log(response)
+          const data = response.data
+          const downloadUrl = window.URL.createObjectURL(new Blob([data]))
+          const link = document.createElement('a')
+          link.href = downloadUrl
+          link.setAttribute('download', 'file.xlsx')
+          link.click()
+          link.remove()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   },
 };
 </script>
@@ -195,4 +164,17 @@ export default {
 .card-option
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08)
   border-radius: 16px
+.finance
+  &__header
+    font-size: 12px
+    font-weight: 500
+    letter-spacing: 0.0833334px
+  &__title-card
+    font-size: 16px
+    font-weight: 500
+  &__checkbox
+    margin-top: -15px
+  &__checkbox-text
+    font-size: 12px
+    font-weight: 500
 </style>
