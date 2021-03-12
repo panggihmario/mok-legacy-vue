@@ -6,7 +6,6 @@
         Laporan transaksi hari ini hanya bisa di download setelah dari pukul 24:00 WIB.
       </div>
     </v-alert>
-
     <v-card 
       width="450px" 
       elevation="0" 
@@ -50,14 +49,11 @@
           </v-btn>
       </v-card-text>
     </v-card>
-    
-
-
-
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 import HeaderContent from "@/containers/HeaderContent";
 import { mapActions } from "vuex";
 export default {
@@ -119,21 +115,16 @@ export default {
       return today;
     },
     downloadJournal() {
-      let dateStarted
-      let dateEnd
-      if(this.started){
-        const splitDate = this.started.split('-')
-        const [year, month , date] = splitDate
-        dateStarted = `${date}/${month}/${year}`
-      }
-      if(this.end) {
-        const splitDate = this.started.split('-')
-        const [year, month , date] = splitDate
-        dateEnd = `${date}/${month}/${year}`
+      let epocEnded
+      const epocStarted = moment(`${this.started} 00:00:00`, "YYYY-MM-DD HH:mm:ss").unix()
+      if(this.disableDate || !this.end ) {
+        epocEnded = moment(`${this.started} 23:59:59`, "YYYY-MM-DD HH:mm:ss").unix()
+      }else{
+        epocEnded = moment(`${this.end} 23:59:59`, "YYYY-MM-DD HH:mm:ss").unix()
       }
       const params = {
-        startAt : dateStarted,
-        endAt : dateEnd ? dateEnd : dateStarted
+        startAt : epocStarted,
+        endAt : epocEnded
       }
       return this.getJournalByDate(params)
         .then(response => {
@@ -146,7 +137,7 @@ export default {
           link.remove()
         })
         .catch(err => {
-          console.log(err)
+          console.log(err.response)
         })
     }
   },

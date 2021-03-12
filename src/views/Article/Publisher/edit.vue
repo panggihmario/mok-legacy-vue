@@ -147,6 +147,7 @@ export default {
       };
       this.loadingPublish = true;
       const response = await this.publishNews(params);
+      console.log("======", response)
       if (response.status === 200) {
         this.loadingPublish = false;
         this.alertSuccess = true;
