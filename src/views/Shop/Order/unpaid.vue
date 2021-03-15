@@ -114,7 +114,7 @@ export default {
     }),
     handleGetListOrderByType() {
       const payload = {
-        type: "all",
+        type: "unpaid",
         size: 10,
         page: this.page - 1,
       };
