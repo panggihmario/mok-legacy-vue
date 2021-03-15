@@ -2,35 +2,74 @@
   <div>
     <HeaderContent label="Order List" :list="crumbs" />
     <div class="d-flex justify-space-between mb-6">
-      <div>
-        <custom-button
+      <div class="d-flex">
+        <div
           v-for="(item, idx) in tabLabel"
           :key="idx"
-          rounded
-          depressed
-          class="mr-2 mb-2"
+          class="d-flex justify-center align-center font-12 box-tab mr-3 pa-2"
           :class="{ 'primarylowtint primary--text': tab == idx + 1 }"
           @click="moveTab(idx + 1)"
-          >{{ item }}</custom-button
         >
+          {{ item }}
+          <span
+            class="ml-1"
+            :class="{
+              'primary--text': tab == idx + 1,
+              'grey--text': tab != idx + 1,
+            }"
+            >{{ tabCount[listCount[idx]] }}</span
+          >
+        </div>
       </div>
       <div class="ml-4" style="width: 200px;">
-        <v-text-field outlined dense placeholder="Search"></v-text-field>
+        <v-text-field
+          v-model="searchValue"
+          placeholder="Search"
+          outlined
+          dense
+          @keypress.enter="handleGetOrderSearch"
+        ></v-text-field>
       </div>
     </div>
 
-    <Table-All v-if="tab == 1"></Table-All>
+    <div v-if="isSearch">
+      <Table-Search :items="searchItems"></Table-Search>
+    </div>
+    <div v-else>
+      <Table-All v-if="tab == 1"></Table-All>
+      <Table-Unpaid v-if="tab == 2"></Table-Unpaid>
+      <Table-Witing v-if="tab == 3"></Table-Witing>
+      <Table-Process v-if="tab == 4"></Table-Process>
+      <Table-Shipping v-if="tab == 5"></Table-Shipping>
+      <Table-Complete v-if="tab == 6"></Table-Complete>
+      <Table-Cancel v-if="tab == 7"></Table-Cancel>
+    </div>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import TableSearch from "./search.vue";
 import TableAll from "./all.vue";
+import TableUnpaid from "./unpaid.vue";
+import TableWiting from "./waiting.vue";
+import TableProcess from "./process.vue";
+import TableShipping from "./shipping.vue";
+import TableComplete from "./complete.vue";
+import TableCancel from "./cancel.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
     HeaderContent,
+    TableSearch,
     TableAll,
+    TableUnpaid,
+    TableWiting,
+    TableProcess,
+    TableShipping,
+    TableComplete,
+    TableCancel,
   },
   data() {
     return {
@@ -52,24 +91,59 @@ export default {
         "Selesai",
         "Batal",
       ],
+      listCount: [
+        "all",
+        "unpaid",
+        "waiting",
+        "process",
+        "shipping",
+        "complete",
+        "cancel",
+      ],
       tab: 1,
-      listAllLength: 0,
+      tabCount: {},
+      isSearch: false,
+      searchValue: "",
+      searchItems: [],
     };
   },
+  watch: {
+    searchPage: function() {
+      this.handleGetOrderSearch();
+    },
+  },
+  mounted() {
+    this.handleGetOrderCount();
+  },
   methods: {
+    ...mapActions({
+      getOrderCount: "order/getOrderCount",
+      getOrderSearch: "order/getOrderSearch",
+    }),
+    handleGetOrderCount() {
+      return this.getOrderCount()
+        .then((response) => {
+          this.tabCount = response.data.data;
+        })
+        .catch();
+    },
+    handleGetOrderSearch() {
+      return this.getOrderSearch(this.searchValue)
+        .then((response) => {
+          this.isSearch = true;
+          this.searchItems = response.data.data;
+          console.log(response);
+        })
+        .catch((err) => {
+          this.isSearch = false;
+        });
+    },
     moveTab(i) {
+      this.isSearch = false;
+      this.searchValue = "";
+      this.searchItems = [];
       this.tab = i;
-    },
-    getTotalListNew(i) {
-      this.listAllLength = i;
-    },
-    goToDetail(params) {
-      this.$router.push({
-        name: "complaintDetail",
-        params: {
-          id: params.id,
-        },
-      });
+      this.handleGetOrderCount();
     },
   },
 };
@@ -89,4 +163,10 @@ export default {
 	&__data
 		font-size: 12px
 		color: #767676
+.box-tab
+	cursor: pointer
+	background-color: #FAFAFA
+	border-radius: 32px
+	height: 40px
+	min-width: 90px
 </style>
