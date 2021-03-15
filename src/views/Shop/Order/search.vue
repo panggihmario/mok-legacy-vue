@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-data-table
+      :items-per-page="100"
       :headers="headers"
       :items="items"
       hide-default-footer
@@ -29,12 +30,6 @@
       </template>
     </v-data-table>
 
-    <v-pagination
-      v-model="page"
-      :length="totalPages"
-      class="d-flex justify-end"
-    ></v-pagination>
-
     <Dialog-Detail
       :dialog="dialog"
       :detailItems="detailItems"
@@ -51,6 +46,7 @@ import DialogDetail from "./detail/index.vue";
 import { mapActions } from "vuex";
 
 export default {
+  props: ["items"],
   components: {
     DialogDetail,
   },
@@ -87,48 +83,19 @@ export default {
           width: "100",
         },
       ],
-      items: [],
       detailItems: null,
       sellerAddress: "",
       receiverAddress: "",
       shipmentHistory: "",
       loading: false,
       dialog: false,
-      page: 1,
-      totalPages: 0,
     };
-  },
-  watch: {
-    page: function() {
-      this.handleGetListOrderByType();
-    },
-  },
-  mounted() {
-    this.handleGetListOrderByType();
   },
   methods: {
     ...mapActions({
-      getListOrderByType: "order/getListOrderByType",
       getOrderById: "order/getOrderById",
       getOrderShipmentById: "order/getOrderShipmentById",
     }),
-    handleGetListOrderByType() {
-      const payload = {
-        type: "all",
-        size: 10,
-        page: this.page - 1,
-      };
-      this.loading = true;
-      return this.getListOrderByType(payload)
-        .then((response) => {
-          this.loading = false;
-          this.items = response.data.data.content;
-          this.totalPages = response.data.data.totalPages;
-        })
-        .catch((err) => {
-          this.loading = false;
-        });
-    },
     handleGetOrderById(id) {
       return this.getOrderById(id)
         .then((response) => {
