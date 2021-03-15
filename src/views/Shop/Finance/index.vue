@@ -49,6 +49,9 @@
           </v-btn>
       </v-card-text>
     </v-card>
+    <v-alert class="finance__alert" :value="alertError"  type="error">
+      Request Gagal
+    </v-alert>
   </div>
 </template>
 
@@ -62,6 +65,7 @@ export default {
   },
   data() {
     return {
+      alertError : false,
       crumbs: [
         {
           text: "Download Laporan Transaksi",
@@ -128,6 +132,7 @@ export default {
       }
       return this.getJournalByDate(params)
         .then(response => {
+          this.alertError = false
           const data = response.data
           const downloadUrl = window.URL.createObjectURL(new Blob([data]))
           const link = document.createElement('a')
@@ -137,6 +142,7 @@ export default {
           link.remove()
         })
         .catch(err => {
+          this.alertError = true
           console.log(err.response)
         })
     }
@@ -164,4 +170,8 @@ export default {
   &__checkbox-text
     font-size: 12px
     font-weight: 500
+  &__alert
+    position: absolute
+    top: 20px
+    right: 20px
 </style>
