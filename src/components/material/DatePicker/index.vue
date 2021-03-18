@@ -14,26 +14,61 @@
 			>
 			<label-field class="mb-4">{{label}}</label-field>
       <v-text-field
-				solo
-				flat
-				background-color="whitesnow"
-        append-icon="event"
+				outlined
+				dense
+				append-icon="mdi-calendar-blank"
 				v-on="on"
 				:error-messages="errors"
 				:value="valueDate"
 				readonly
+				:disabled="disabled"
 				v-bind="$attrs"
 				class="field"
+				background-color="white"
       />
 			</ValidationProvider>
     </template>
-    <v-date-picker :value="value"  v-on="inputListener"  @input="menu2 = false" />
+    <v-date-picker 
+			color="primary" 
+			:value="value"  
+			v-on="inputListener"  
+			@input="menu2 = false" 
+			:max="max"
+			:min="min"
+		/>
   </v-menu>
 </template>
 
 <script>
 export default {
-	props : ["value", "name", "rules", "label"],
+	// props : ["value", "name", "rules", "label"],
+	props : {
+		value : {
+			type : String
+		},
+		name : {
+			type : String
+		},
+		rules : {
+			type : String
+		},
+		label : {
+			type : String
+		},
+		min : {
+			type : String,
+			default : ''
+		},
+		max : {
+			type : String,
+			default : ' '
+		},
+		disabled : {
+			type : Boolean,
+			default : false
+		}
+
+	},
 	computed : {
 		inputListener : function () {
 			const vm = this
@@ -45,6 +80,7 @@ export default {
 				}
 			})
 		},
+		
 		valueDate() {
 			if(this.value){
 				const [year, month , date] = this.value.split('-')
@@ -66,6 +102,5 @@ export default {
 
 <style lang="sass" scoped>
 .field
-	border-radius: $border-radius-root
 	font-size: $font-size-root
 </style>

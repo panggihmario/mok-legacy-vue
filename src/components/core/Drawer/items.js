@@ -110,6 +110,10 @@ export default [
     title: "Shop",
     items: [
       {
+        title: "Order",
+        path: "/order",
+      },
+      {
         title: "Product",
         path: "/product",
       },
@@ -128,6 +132,10 @@ export default [
       {
         title: "Komplain",
         path: "/complaint",
+      },
+      {
+        title: "Finance",
+        path: "/finance",
       },
     ],
   },

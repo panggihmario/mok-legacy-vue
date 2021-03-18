@@ -9,7 +9,9 @@ import account from "./account";
 import complaint from "./complaint";
 import report from "./report";
 import ads from "./ads";
-
+import product from "./product";
+import finance from "./finance";
+import order from "./order";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -23,6 +25,9 @@ export default new Vuex.Store({
     complaint,
     report,
     ads,
+    product,
+    finance,
+    order,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,

@@ -35,6 +35,17 @@ const serviceUpload = () => axios.create({
   }
 })
 
+const exportFile = (token = getToken()) => axios.create({
+  baseURL: BASE_URL,
+  timeout: 60 * 4 * 1000,
+  responseType : 'blob',
+  headers: {
+    Authorization: "Bearer " + token,
+    "Content-Type": `application/json`
+	},
+});
+
 Vue.prototype.$http = serviceWithoutToken
 Vue.prototype.$httpWithToken = serviceWithToken
 Vue.prototype.$httpUpload = serviceUpload
+Vue.prototype.$httpDownload = exportFile

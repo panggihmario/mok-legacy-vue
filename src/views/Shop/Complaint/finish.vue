@@ -15,7 +15,7 @@
           </td>
           <td class="item__data">
             {{
-              item.finalDecision
+              item.finalDecision == "RETURN_TO_BUYER"
                 ? "Kembalikan dana ke pembeli"
                 : "Teruskan dana ke penjual"
             }}
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   data() {
@@ -85,6 +85,11 @@ export default {
   mounted() {
     this.handleGetListComplaint();
   },
+  computed: {
+    ...mapState({
+      role: (state) => state.authentication.role,
+    }),
+  },
   methods: {
     ...mapActions({
       getListComplaint: "complaint/getListComplaint",
@@ -98,11 +103,38 @@ export default {
       return newFormat;
     },
     async handleGetListComplaint() {
+      switch (this.role) {
+        case "ROLE_SPV_COMPLAINT":
+          this.handleGetAdminSpv();
+          break;
+        case "ROLE_CS_COMPLAINT":
+          this.handleGetAdminCs();
+          break;
+        default:
+          this.items = [];
+          break;
+      }
+    },
+    async handleGetAdminCs() {
       const payload = {
-        type: "finish",
+        type: "cs",
+        status: "finish",
       };
       const response = await this.getListComplaint(payload);
-      if (response.status === 200 || 204) {
+      if (response.status === 200) {
+        this.items = response.data.data.content;
+        this.$emit("getTotalList", this.items.length);
+      } else {
+        console.error(error);
+      }
+    },
+    async handleGetAdminSpv() {
+      const payload = {
+        type: "spv",
+        status: "finish",
+      };
+      const response = await this.getListComplaint(payload);
+      if (response.status === 200) {
         this.items = response.data.data.content;
         this.$emit("getTotalList", this.items.length);
       } else {

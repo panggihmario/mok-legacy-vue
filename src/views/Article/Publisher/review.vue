@@ -203,6 +203,7 @@ export default {
         data: this.payloadNews,
       };
       const isSchedule = this.payloadNews.isScheduled;
+      console.log(params)
       this.loadingPublish = true;
       if (isSchedule) {
         this.publishWithSchedule(params);

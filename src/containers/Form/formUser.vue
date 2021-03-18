@@ -14,6 +14,7 @@
             typeUpload="accounts"
             id="create"
             @response="getResponse"
+            color="secondary"
           />
         </div>
       </div>
@@ -55,14 +56,14 @@
             background-color="whitesnow"
             confirmPassword
           ></custom-input> -->
-					<Label>Confirm Password</Label>
+          <Label>Confirm Password</Label>
           <v-text-field
             solo
             flat
             class="field"
-						v-model="confirmPassword"
+            v-model="confirmPassword"
             background-color="whitesnow"
-						:error-messages="errorPassword"
+            :error-messages="errorPassword"
           />
           <custom-input
             :label="$t('input.email')"
@@ -100,14 +101,13 @@
             </div>
           </div>
           <custom-button
-						:loading="loading"
-						color="primary"
-						class="white--text"
-						type="submit"
-          >	
-						{{ $t('button.save') }}
-					</custom-button
+            :loading="loading"
+            color="primary"
+            class="white--text"
+            type="submit"
           >
+            {{ $t("button.save") }}
+          </custom-button>
         </v-col>
         <v-col cols="6"></v-col>
       </v-row>
@@ -116,43 +116,58 @@
 </template>
 
 <script>
-import Label from '../../components/material/Input/label'
+import Label from "../../components/material/Input/label";
 export default {
-	components : {
-		Label
-	},
-  data() {
-    return {
-      genderType: ["MALE", "FEMALE"],
-			confirmPassword: "",
-			errorPassword : '',
-    };
+  components: {
+    Label,
   },
   props: {
     loading: {
-      type: Boolean
+      type: Boolean,
     },
     data: {
-      type: Object
+      type: Object,
     },
     type: {
-      type: String
-    }
+      type: String,
+    },
+  },
+  data() {
+    return {
+      genderType: ["MALE", "FEMALE"],
+      confirmPassword: "",
+      errorPassword: "",
+    };
   },
   methods: {
     handleSubmit() {
-			if(this.confirmPassword === this.data.password){
-				this.$emit("onSubmit", this.data);
-				this.errorPassword = ''
-			}else{
-				this.errorPassword = 'Check your password again'
-			}
+      let payload;
+      if (this.confirmPassword != "") {
+        payload = {
+          ...this.data,
+        };
+        this.emitChange(payload);
+      } else {
+        payload = {
+          ...this.data,
+          password: null,
+        };
+        this.emitChange(payload);
+      }
+    },
+    emitChange(payload) {
+      if (this.confirmPassword === this.data.password) {
+        this.$emit("onSubmit", payload);
+        this.errorPassword = "";
+      } else {
+        this.errorPassword = "Check your password again";
+      }
     },
     getResponse(payload) {
       this.status = payload.status;
       this.data.photo = payload.response.url;
-    }
-  }
+    },
+  },
 };
 </script>
 
