@@ -138,8 +138,8 @@
 
       <v-divider class="mt-6"></v-divider>
 
-      <div class="font-14 mt-5">
-        <span class="font-12 font-weight-bold black--text">Tracking</span>
+      <div class="font-12 mt-5">
+        <span class="font-weight-bold black--text">Tracking</span>
         <v-row
           v-for="(hist, idx) in shipmentHistory"
           :key="idx"
@@ -148,15 +148,18 @@
         >
           <v-col
             cols="2"
-            class="d-flex justify-space-between font-12 font-weight-bold"
+            class="d-flex justify-space-between align-center"
           >
-            <span>{{ formatingDateTracking(hist.shipmentDate) }}</span>
-            <v-avatar class="primary mt-5 ml-6" size="8"></v-avatar>
+            <span class="font-weight-medium">{{ formatingDateTracking(hist.shipmentDate) }}</span>
+            <v-avatar
+              class="ml-6"
+              :class="{ 'primary': idx == 0, 'gainsboro': idx != 0 }"
+              size="8"
+            ></v-avatar>
           </v-col>
-          <v-col cols="8" class="d-flex">
-            <div class="d-flex flex-column ml-3">
-              <span class="font-weight-medium">(Data Api Belum Ada)</span>
-              <span class="mt-2">{{ hist.notes }}</span>
+          <v-col cols="8" class="d-flex align-center">
+            <div class="ml-3">
+              <span>{{ hist.notes }}</span>
             </div>
           </v-col>
         </v-row>

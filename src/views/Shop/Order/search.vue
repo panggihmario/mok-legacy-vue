@@ -46,7 +46,7 @@ import DialogDetail from "./detail/index.vue";
 import { mapActions } from "vuex";
 
 export default {
-  props: ["items"],
+  props: ["items", "loading"],
   components: {
     DialogDetail,
   },
@@ -87,7 +87,6 @@ export default {
       sellerAddress: "",
       receiverAddress: "",
       shipmentHistory: "",
-      loading: false,
       dialog: false,
     };
   },
