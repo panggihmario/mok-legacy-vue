@@ -148,10 +148,14 @@
         >
           <v-col
             cols="2"
-            class="d-flex justify-space-between align-center font-weight-bold"
+            class="d-flex justify-space-between align-center"
           >
-            <span>{{ formatingDateTracking(hist.shipmentDate) }}</span>
-            <v-avatar class="primary ml-6" size="8"></v-avatar>
+            <span class="font-weight-medium">{{ formatingDateTracking(hist.shipmentDate) }}</span>
+            <v-avatar
+              class="ml-6"
+              :class="{ 'primary': idx == 0, 'gainsboro': idx != 0 }"
+              size="8"
+            ></v-avatar>
           </v-col>
           <v-col cols="8" class="d-flex align-center">
             <div class="ml-3">
