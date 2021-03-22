@@ -1,19 +1,19 @@
 <template>
   <div>
-    <HeaderContent :list="items" :label="$t('title.user')">
+    <HeaderContent :list="crumbs" :label="$t('title.user')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
       >
-				{{ $t('button.userCreate') }}
-			</custom-button>
+        {{ $t("button.userCreate") }}
+      </custom-button>
     </HeaderContent>
 
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">
         <div class="d-flex align-center mr-12">
-          <span>Total User&nbsp;:&nbsp;{{ data.length }}</span>
+          <span>Total User&nbsp;:&nbsp;{{ totalUser }}</span>
         </div>
         <!-- <div class="d-flex align-center font-weight-medium">
           <span class="mr-4">Filter</span>
@@ -22,7 +22,11 @@
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input placeholder="Search" @keyup.enter="onSearch" v-model="payloadSearch" />
+          <custom-input
+            placeholder="Search"
+            @keyup.enter="onSearch"
+            v-model="payloadSearch"
+          />
         </div>
       </v-col>
     </v-row>
@@ -37,32 +41,41 @@
         item-key="id"
         hide-default-footer
       >
-        <template v-slot:item.user="{ item }">
-          <div class="d-flex align-center">
-            <v-avatar size="35" class="mr-2">
-              <img :src="item.photo" />
-            </v-avatar>
-            <span class="font-weight-medium">{{ item.user }}</span>
-          </div>
-        </template>
-
-        <template v-slot:item.type="{ item }">
-          <span v-if="item.type == 'General'" class="grey--text">{{item.type}}</span>
-          <span v-else class="primary--text">{{ item.type }}</span>
-        </template>
-
-        <template v-slot:item.verified="{ item }">
-          <span v-if="item.verified" class="dodgerblue--text">Verified</span>
-          <span v-else class="silver--text">Not Verified</span>
-        </template>
-
-        <template v-slot:item.manage="{ item }">
-          <custom-button icon @click="moveToEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
-          </custom-button>
-          <custom-button @click="openModalDelete(item.id)" icon>
-            <v-icon small color="carmine">delete</v-icon>
-          </custom-button>
+        <template v-slot:item="{ item }">
+          <tr>
+            <td class="item__data">
+              <div class="d-flex align-center">
+                <v-avatar v-if="item.photo" size="35" class="mr-2">
+                  <img :src="item.photo" />
+                </v-avatar>
+                <v-avatar v-else size="35" class="mr-2" color="gainsboro"></v-avatar>
+                <span class="font-weight-medium">{{ item.user }}</span>
+              </div>
+            </td>
+            <td class="item__data">{{ item.username }}</td>
+            <td class="item__data">
+              <span v-if="item.type == 'General'" class="grey--text">{{
+                item.type
+              }}</span>
+              <span v-else class="primary--text">{{ item.type }}</span>
+            </td>
+            <td class="item__data">
+              <span v-if="item.verified" class="dodgerblue--text"
+                >Verified</span
+              >
+              <span v-else class="silver--text">Not Verified</span>
+            </td>
+            <td class="item__data">
+              <div class="d-flex justify-space-between align-center">
+                <v-btn icon @click="moveToEdit(item.id)">
+                  <v-icon x-small>$edit</v-icon>
+                </v-btn>
+                <v-btn @click="openDialog(item.id)" icon>
+                  <v-icon x-small>$delete</v-icon>
+                </v-btn>
+              </div>
+            </td>
+          </tr>
         </template>
       </v-data-table>
 
@@ -70,8 +83,9 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
-        :closeModalDelete="closeModalDelete"
-        :handleDelete="handleDelete"
+        @closeDialog="closeDialog"
+        @handleDelete="handleDelete"
+        :loading="loading"
       ></Dialog-Delete>
       <div class="mt-8">
         <v-pagination
@@ -90,12 +104,12 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapACtions, mapActions } from "vuex";
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
   },
   data() {
     return {
@@ -103,20 +117,22 @@ export default {
       loading: false,
       dialog: false,
       idUser: "",
-      items: [
+      crumbs: [
         {
           text: "Manage Account",
           disabled: false,
-          href: "/user"
+          href: "/user",
         },
         {
-          text: "List User"
-        }
+          text: "List User",
+          disabled: true,
+        },
       ],
       sort: ["Oldest", "Newest"],
       filter: ["Today", "This Month"],
       page: 1,
       pageCount: 0,
+      totalUser: 0,
       itemsPerPage: 10,
       selected: [],
       headers: [
@@ -125,28 +141,28 @@ export default {
           value: "user",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Username",
           value: "username",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Account Type",
           value: "type",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Verified Account",
           value: "verified",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Manage",
@@ -155,23 +171,23 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 200
-        }
+          width: 140,
+        },
       ],
-      data: []
+      data: [],
     };
   },
   methods: {
     ...mapActions({
       getListRespone: "account/getListRespone",
       searchAccount: "account/searchAccount",
-      deleteUser: "account/deleteUser"
+      deleteUser: "account/deleteUser",
     }),
-    openModalDelete(id) {
+    openDialog(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },
@@ -180,20 +196,20 @@ export default {
       this.loading = true;
       const response = await this.deleteUser(id);
       if (response.status === 200) {
-        this.dialogDelete = false;
         this.loading = false;
         this.idUser = "";
+        this.dialog = false;
         this.getDataBaseOnPage();
       } else {
         this.loading = false;
         this.idUser = "";
-        this.dialogDelete = false;
+        this.dialog = false;
       }
     },
     async onSearch() {
       const payload = {
         params: this.payloadSearch,
-        type: "users"
+        type: "users",
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
@@ -206,25 +222,28 @@ export default {
       this.$router.push({
         name: "userEdit",
         params: {
-          id: id
-        }
+          id: id,
+        },
       });
     },
     handleClick(params) {
       this.$router.push(`/user/${params}`);
     },
     formattingResponse(response) {
+      const totalDataUser = response.data.data.totalElements;
+      this.totalUser = totalDataUser;
+      this.totalPages = totalDataUser;
       const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const responseData = response.data.data.content;
-      const formatResponse = responseData.map(r => {
+      const formatResponse = responseData.map((r) => {
         return {
           user: r.name,
           username: r.username,
           photo: r.photo,
           verified: r.isVerified,
           type: r.accountType,
-          id: r.id
+          id: r.id,
         };
       });
       this.data = formatResponse;
@@ -233,8 +252,8 @@ export default {
       const params = {
         type: "users",
         param: {
-          page: this.page - 1
-        }
+          page: this.page - 1,
+        },
       };
       const response = await this.getListRespone(params);
       if (response.status === 200) {
@@ -244,17 +263,17 @@ export default {
     async handleResponse() {
       const params = {
         type: "users",
-        page: 0
+        page: 0,
       };
       const response = await this.getListRespone(params);
       if (response.status === 200) {
         this.formattingResponse(response);
       }
-    }
+    },
   },
   mounted() {
     this.handleResponse();
-  }
+  },
 };
 </script>
 
@@ -264,4 +283,9 @@ export default {
     font-size: $font-size-24
   &__subTitle
     font-size: $font-size-12
+.item
+  &__data
+    padding-top: 16px
+    padding-bottom: 16px
+    // border-bottom: none !important
 </style>

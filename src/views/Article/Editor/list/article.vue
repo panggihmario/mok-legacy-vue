@@ -1,15 +1,33 @@
 <template>
   <div>
-    <v-data-table :headers="headers" hide-default-footer :items="articles">
-      <template v-slot:item.status="{item}">
-        <span :class="getColor(item.status)">{{item.status}}</span>
-      </template>
-      <template v-slot:item.action="{item}">
-        <custom-button
-          class="carmine--text"
-          @click="moveToEdit(item.id)"
-          v-if="item.status === 'Rejected'"
-        >Edit</custom-button>
+    <v-data-table
+      :headers="headers"
+      hide-default-footer
+      disable-sort
+      disable-pagination
+      :items="articles"
+    >
+      <template v-slot:item="{ item }">
+        <tr>
+          <td class="item__data">
+            <span>{{ item.date }}</span>
+          </td>
+          <td class="item__data">
+            <span :class="getColor(item.status)">{{ item.status }}</span>
+          </td>
+          <td class="item__data">
+            <span>{{ item.headline }}</span>
+          </td>
+          <td class="item__data">
+            <custom-button
+              class="secondary--text"
+              size="small"
+              @click="moveToEdit(item.id)"
+              v-if="item.status === 'Rejected'"
+              >Edit</custom-button
+            >
+          </td>
+        </tr>
       </template>
     </v-data-table>
   </div>
@@ -19,29 +37,6 @@
 import { mapActions } from "vuex";
 export default {
   props: ["articles"],
-  methods: {
-    ...mapActions({
-      getNews: "news/getListNews"
-    }),
-    moveToEdit(id) {
-      this.$router.push({
-        name: "editArticle",
-        params: {
-          id: id
-        }
-      });
-    },
-    getColor(status) {
-      switch (status) {
-        case "Approved":
-          return "primary--text";
-        case "Rejected":
-          return "carmine--text";
-        default:
-          return "grey--text";
-      }
-    }
-  },
   data() {
     return {
       headers: [
@@ -49,35 +44,56 @@ export default {
           text: "Tanggal",
           value: "date",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "100"
+          width: "100",
         },
         {
           text: "Status",
           value: "status",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "100"
+          width: "150",
         },
         {
           text: "Headline",
           value: "headline",
           class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "750"
+          width: "600",
         },
         {
           text: "",
           value: "action",
           class: "whitesnow",
           sortable: false,
-          filterable: false
-        }
-      ]
+          filterable: false,
+        },
+      ],
     };
-  }
+  },
+  methods: {
+    moveToEdit(id) {
+      this.$router.push({
+        name: "editArticle",
+        params: {
+          id: id,
+        },
+      });
+    },
+    getColor(status) {
+      switch (status) {
+        case "Approved":
+          return "kellygreen--text";
+        case "Rejected":
+          return "carmine--text";
+        default:
+          return "grey--text";
+      }
+    },
+  },
 };
 </script>
+
+<style lang="sass" scoped>
+.item
+  &__data
+    padding-top: 15px
+    padding-bottom: 15px
+</style>

@@ -131,7 +131,6 @@ export default {
 				typePost : 'product',
 				params
 			}
-			console.log(params)
 			this.loading = true
 			const response = await this.postProduct(payload);
       if (response.status === 201) {

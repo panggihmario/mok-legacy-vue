@@ -10,9 +10,12 @@ import i18n from './plugins/localization'
 Vue.config.productionTip = false
 
 new Vue({
-  router,
 	store,
 	vuetify,
 	i18n,
-  render: h => h(App)
+	beforeCreate () {
+		this.$store.commit('authentication/setInitialiseData')
+	},
+	render: h => h(App),
+	router,
 }).$mount('#app')

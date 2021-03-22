@@ -8,13 +8,14 @@
         <span v-text="description"></span>
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <custom-button @click="closeModalDelete">Batal</custom-button>
+        <custom-button @click="closeDialog">Batal</custom-button>
         <custom-button
-          color="carmine"
+          color="primary"
           class="white--text ml-6"
           @click="handleDelete"
           :loading="loading"
-        >Hapus</custom-button>
+          >Hapus</custom-button
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,23 +25,25 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
     },
     description: {
-      type: String
+      type: String,
     },
     dialog: {
-      type: Boolean
+      type: Boolean,
     },
     loading: {
-      type: Boolean
+      type: Boolean,
     },
-    closeModalDelete: {
-      type: Function
+  },
+  methods: {
+    handleDelete() {
+      this.$emit("handleDelete");
     },
-    handleDelete: {
-      type: Function
-    }
-  }
+    closeDialog() {
+      this.$emit("closeDialog");
+    },
+  },
 };
 </script>

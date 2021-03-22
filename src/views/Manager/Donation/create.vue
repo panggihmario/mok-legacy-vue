@@ -27,12 +27,13 @@
 <script>
 import moment from "moment";
 import HeaderContent from "../../../containers/HeaderContent";
-import FormDonation from '../../../containers/Form/formDonation';
+import FormDonation from "../../../containers/Form/formDonation";
 import { mapActions } from "vuex";
+
 export default {
   components: {
-		HeaderContent,
-		FormDonation
+    HeaderContent,
+    FormDonation,
   },
   data() {
     return {
@@ -50,18 +51,18 @@ export default {
         {
           text: "List Channel",
           href: "/channel",
-          disabled: false
+          disabled: false,
         },
         {
           text: "List Donasi",
           href: "/donation",
-          disabled: false
+          disabled: false,
         },
 
         {
           text: "Buat Donasi",
-          disabled: true
-        }
+          disabled: true,
+        },
       ],
       donationPhoto: "",
       donation: {
@@ -69,13 +70,13 @@ export default {
         description: "",
         targetAmount: "",
         organizer: {
-          id: ""
+          id: "",
         },
         verifier: {
-          id: ""
+          id: "",
         },
         recipientName: "",
-        media: [],
+        medias: [],
         expiredAt: ""
       }
     };
@@ -94,15 +95,15 @@ export default {
 		},
 		getDonationPhoto(payload) {
 			this.donationPhoto = payload.url
-			this.donation.media.splice(0,1,  payload)
+			this.donation.medias.splice(0,1,  payload)
 		},
     async handleSubmit(payload) {
-			const x = moment(payload.expiredAt, 'YYYY-MM-DD').unix();
-			const mili = x * 1000
-			const newPayload = {
-				...payload,
-				expiredAt : mili
-			}
+      const x = moment(payload.expiredAt, "YYYY-MM-DD").unix();
+      const mili = x * 1000;
+      const newPayload = {
+        ...payload,
+        expiredAt: mili,
+      };
       this.loading = true;
       const response = await this.createDonation(newPayload);
       if (response.status === 201) {
@@ -140,7 +141,7 @@ export default {
       } else {
         console.log({ error: response.response });
       }
-    }
+    },
   },
   watch: {
     organizers(value) {
@@ -148,8 +149,8 @@ export default {
     },
     verifier(value) {
       this.handleResponseVerifier(value);
-    }
-  }
+    },
+  },
 };
 </script>
 
