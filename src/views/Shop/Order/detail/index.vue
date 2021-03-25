@@ -1,13 +1,10 @@
 <template>
   <v-dialog v-model="dialog" width="726" @click:outside="closeDialog">
-    <v-card
-      v-if="!detailItems"
-      class="d-flex justify-center align-center py-8 px-11"
-    >
+    <v-card v-if="!detailItems" class="d-flex justify-center align-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-card>
 
-    <v-card v-else class="charcoal--text py-8 px-11">
+    <v-card v-else class="charcoal--text detail__card">
       <v-row no-gutters>
         <v-col cols="2"></v-col>
         <v-col cols="8" align-self="center" class="text-center">
@@ -146,14 +143,13 @@
           no-gutters
           class="mt-3"
         >
-          <v-col
-            cols="2"
-            class="d-flex justify-space-between align-center"
-          >
-            <span class="font-weight-medium">{{ formatingDateTracking(hist.shipmentDate) }}</span>
+          <v-col cols="2" class="d-flex justify-space-between align-center">
+            <span class="font-weight-medium">{{
+              formatingDateTracking(hist.shipmentDate)
+            }}</span>
             <v-avatar
               class="ml-6"
-              :class="{ 'primary': idx == 0, 'gainsboro': idx != 0 }"
+              :class="{ primary: idx == 0, gainsboro: idx != 0 }"
               size="8"
             ></v-avatar>
           </v-col>
@@ -187,3 +183,15 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.detail
+  &__card
+    padding: 32px 42px 42px
+.font-10
+  font-size: 10px
+.font-12
+  font-size: 12px
+.font-14
+  font-size: 14px
+</style>
