@@ -1,15 +1,25 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs v-model="tab" fixed-tabs class="tab__box" color="primary">
-      <v-tab @change="changeTabs('list')">
+    <v-tabs 
+      v-model="tab" 
+      active-class="tab__active" 
+      class="tab__box" 
+      color="primary"
+      hide-slider
+      height="40"
+    >
+      <v-tab  :ripple="false" @change="changeTabs('list')">
         <span class="text-capitalize">List News</span>
       </v-tab>
-      <v-tab @change="changeTabs('draft')">
+      <v-tab :ripple="false" @change="changeTabs('draft')">
         <span class="text-capitalize">Draft</span>
       </v-tab>
-      <v-tab @change="changeTabs('scheduled')">
+      <v-tab :ripple="false" @change="changeTabs('scheduled')">
         <span class="text-capitalize">Terjadwal</span>
+      </v-tab>
+      <v-tab :ripple="false">
+        <span class="text-capitalize">News Agrigator</span>
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
@@ -26,6 +36,9 @@
       <v-tab-item>
         <Scheduled :listNews="listNews" class="mt-4" />
       </v-tab-item>
+      <v-tab-item>
+        <Agregrator  class="mt-4"/>
+      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
@@ -36,6 +49,7 @@ import { mapState, mapActions } from "vuex";
 import ListArticle from "./list/article";
 import Draft from "./list/draft";
 import Scheduled from "./list/scheduled";
+import Agregrator from "./list/agregrator";
 
 export default {
   components: {
@@ -43,6 +57,7 @@ export default {
     ListArticle,
     Draft,
     Scheduled,
+    Agregrator
   },
   data() {
     return {
@@ -123,4 +138,16 @@ export default {
 .tab
   &__box
     width: 500px
+  &__active
+    border-radius: 32px
+    background-color: #FFF3E7
+</style>
+
+<style scoped>
+.v-tab:hover {
+  background-color: transparent
+}
+.v-tab:focus {
+  background-color: transparent
+}
 </style>
