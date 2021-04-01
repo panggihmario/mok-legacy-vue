@@ -137,6 +137,6 @@ export default {
 <style lang="sass" scoped>
 .item
   &__data
-    padding-top: 16px
-    padding-bottom: 16px
+    height: 72px
+    font-size: 12px
 </style>

@@ -2,15 +2,41 @@
   <div>
     <CoreDrawer />
     <div class="my-12">
-      <v-container class="auto-space">
+      <v-container :class="viewNews ? 'auto-space-right'  : 'auto-space'">
         <CoreView />
       </v-container>
     </div>
+    <DrawerNews  v-if="viewNews" />
   </div>
 </template>
 
+<script>
+import {mapActions, mapState} from 'vuex'
+import DrawerNews from "../components/core/Drawer/news"
+export default {
+  components : {
+    DrawerNews
+  },
+  data () {
+    return {
+      view : false
+    }
+  },
+  computed : {
+    ...mapState({
+      viewNews : 'viewNews'
+    })
+  }
+}
+</script>
+
 <style scoped>
 .auto-space {
+  padding-left: 180px;
+}
+
+.auto-space-right {
+  padding-right: 470px;
   padding-left: 180px;
 }
 

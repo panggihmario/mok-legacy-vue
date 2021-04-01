@@ -1,132 +1,135 @@
 <template>
   <div>
     <v-data-table
-      v-model="selected"
       :headers="headers"
       :items="desserts"
-      :single-select="singleSelect"
-      item-key="name"
+      item-key="headline"
+      class="my-table"
       show-select
       hide-default-footer
-      disable-filtering
-      disable-sort
+      v-model="selected"
+      @toggle-select-all="selectAllNews"
     >
-      <template v-slot:item.data-table-select="{ isSelected, select }">
-        <v-simple-checkbox
-          color="secondary"
-          :value="isSelected"
-          @input="select($event)"
-        ></v-simple-checkbox>
+      <template v-slot:[`item.action`]="{ item }">
+        <custom-button
+          color="primary"
+          v-if="!viewNews"
+          size="medium"
+          class="my-3"
+          width="101"
+        >
+          Publish
+        </custom-button>
+      </template>
+      <template v-slot:header.action>
+        <custom-button
+          color="primary"
+          v-if="!viewNews"
+          size="medium"
+          class="my-3"
+          width="101"
+        >
+          Publish All
+        </custom-button>
+      </template>
+      <template v-slot:body="{ items }">
+        <tbody>
+          <tr
+            v-for="(item, key) in items"
+            :key="key"
+            :class="
+              key === selectedRow ? 'row__highlight' : 'row__nonhighlight'
+            "
+          >
+            <td>
+              <v-checkbox :value="item" v-model="selected" />
+            </td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.source }}</td>
+            <td style="cursor: pointer" @click="openSideViewNews(key)">
+              {{ item.headline }}
+            </td>
+            <td>
+              <custom-button
+                color="primary"
+                v-if="!viewNews"
+                size="medium"
+                class="my-3"
+                width="101"
+              >
+                Publish
+              </custom-button>
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
+  computed: {
+    ...mapState({
+      viewNews: "viewNews",
+    }),
+  },
   methods: {
     isEnabled(slot) {
       return this.enabled === slot;
     },
+    ...mapActions({
+      changeStatusViewNews: "changeStatusViewNews",
+    }),
+    openSideViewNews(idx) {
+      this.selectedRow = idx;
+      return this.changeStatusViewNews(true);
+    },
+    selectAllNews(items, value) {
+      console.log({items})
+    }
   },
   data() {
     return {
       singleSelect: false,
+      selectedRow: null,
       selected: [],
       headers: [
         {
-          text: "Dessert (100g serving)",
-          align: "start",
-          sortable: false,
-          value: "name",
-          class: "whitesnow",
+          text: "Tanggal",
+          value: "date",
+          width: "100",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
+        {
+          text: "Sumber",
+          value: "source",
+          width: "150",
+        },
+        {
+          text: "Headline",
+          value: "headline",
+          // width: "200",
+        },
+        {
+          text: "",
+          value: "action",
+          width: "250",
+          align: "start",
+        },
       ],
       desserts: [
         {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
+          date: "02/02/2020",
+          source: "Kompasiana",
+          headline:
+            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia",
         },
         {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
+          date: "02/02/2020",
+          source: "Kompasiana",
+          headline:
+            "2 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia",
         },
       ],
     };
@@ -134,16 +137,28 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-data-table-header {
-  background-color: blue !important;
+
+
+<style lang="scss" >
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
+}
+.header-table {
+  color: black;
+  font-size: 14px;
 }
 </style>
 
-<style lang="scss" scoped>
-.table-header {
-  thead {
-    background-color: black;
-  }
-}
+<style lang="sass" scoped>
+.row
+  &__highlight
+    color: rgba(24, 144, 255, 1)
+    font-size: 12px
+    letter-spacing: 0.01em
+  &__nonhighlight
+    color: #4A4A4A
+    font-size: 12px
+    letter-spacing: 0.01em
 </style>

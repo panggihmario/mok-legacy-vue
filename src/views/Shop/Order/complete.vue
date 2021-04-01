@@ -22,7 +22,7 @@
               color="secondary"
               @click="openDialog(item.id)"
             >
-              <v-icon left size="16">mdi-eye</v-icon>Lihat Detail
+              <icon-eye class="mr-1"></icon-eye>Lihat Detail
             </custom-button>
           </td>
         </tr>
@@ -162,8 +162,8 @@ export default {
 <style lang="sass" scoped>
 .item
   &__data
-    padding-top: 16px
-    padding-bottom: 16px
+    height: 72px
+    font-size: 12px
 .font-12
   font-size: 12px
 .font-14

@@ -1,13 +1,10 @@
 <template>
   <v-dialog v-model="dialog" width="726" @click:outside="closeDialog">
-    <v-card
-      v-if="!detailItems"
-      class="d-flex justify-center align-center py-8 px-11"
-    >
+    <v-card v-if="!detailItems" class="d-flex justify-center align-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-card>
 
-    <v-card v-else class="charcoal--text py-8 px-11">
+    <v-card v-else class="charcoal--text detail__card">
       <v-row no-gutters>
         <v-col cols="2"></v-col>
         <v-col cols="8" align-self="center" class="text-center">
@@ -138,25 +135,27 @@
 
       <v-divider class="mt-6"></v-divider>
 
-      <div class="font-14 mt-5">
-        <span class="font-12 font-weight-bold black--text">Tracking</span>
+      <div class="font-12 mt-5">
+        <span class="font-weight-bold black--text">Tracking</span>
         <v-row
           v-for="(hist, idx) in shipmentHistory"
           :key="idx"
           no-gutters
           class="mt-3"
         >
-          <v-col
-            cols="2"
-            class="d-flex justify-space-between font-12 font-weight-bold"
-          >
-            <span>{{ formatingDateTracking(hist.shipmentDate) }}</span>
-            <v-avatar class="primary mt-5 ml-6" size="8"></v-avatar>
+          <v-col cols="2" class="d-flex justify-space-between align-center">
+            <span class="font-weight-medium">{{
+              formatingDateTracking(hist.shipmentDate)
+            }}</span>
+            <v-avatar
+              class="ml-6"
+              :class="{ primary: idx == 0, gainsboro: idx != 0 }"
+              size="8"
+            ></v-avatar>
           </v-col>
-          <v-col cols="8" class="d-flex">
-            <div class="d-flex flex-column ml-3">
-              <span class="font-weight-medium">(Data Api Belum Ada)</span>
-              <span class="mt-2">{{ hist.notes }}</span>
+          <v-col cols="8" class="d-flex align-center">
+            <div class="ml-3">
+              <span>{{ hist.notes }}</span>
             </div>
           </v-col>
         </v-row>
@@ -184,3 +183,15 @@ export default {
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.detail
+  &__card
+    padding: 32px 42px 42px
+.font-10
+  font-size: 10px
+.font-12
+  font-size: 12px
+.font-14
+  font-size: 14px
+</style>

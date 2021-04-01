@@ -17,6 +17,7 @@ import IconComment from "../../components/icon/iconComment.vue";
 import IconShare from "../../components/icon/iconShare.vue";
 import IconClockSquare from "../../components/icon/iconClockSquare.vue";
 import IconThumbUp from "../../components/icon/iconThumbUp.vue";
+import IconEye from "../../components/icon/iconEye.vue";
 import LabelField from "../../components/material/Input/label.vue";
 import InputArea from "../../components/material/InputArea";
 import DatePicker from "../../components/material/DatePicker";
@@ -100,6 +101,10 @@ export default [
   {
     name: "icon-thumb-up",
     component: IconThumbUp,
+  },
+  {
+    name: "icon-eye",
+    component: IconEye,
   },
   {
     name: "label-field",

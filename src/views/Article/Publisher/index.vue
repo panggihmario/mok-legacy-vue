@@ -1,7 +1,36 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs 
+    <div class="d-flex">
+      <div v-for="(tab, idx) in tabList" class="mr-4">
+        <div
+          :class="
+            tab.active ? `ctab__box  ctab__active` : `ctab__box ctab__nonactive`
+          "
+          @click="changeActive(tab)"
+        >
+          <div>{{ tab.label }}</div>
+        </div>
+      </div>
+    </div>
+    <div v-if="tabPosition === 1">
+      <ListArticle
+        class="mt-4"
+        :listNews="listNews"
+        @getNewsBaseOnPage="getNewsBaseOnPage"
+      />
+    </div>
+    <div v-if="tabPosition === 2">
+      <Draft :drafts="listNews" class="mt-4" />
+    </div>
+    <div v-if="tabPosition === 3">
+      <Scheduled :listNews="listNews" class="mt-4" />
+    </div>
+    <div v-if="tabPosition === 4">
+      <Agregrator class="mt-4" />
+    </div>
+
+    <!-- <v-tabs 
       v-model="tab" 
       active-class="tab__active" 
       class="tab__box" 
@@ -21,8 +50,8 @@
       <v-tab :ripple="false">
         <span class="text-capitalize">News Agrigator</span>
       </v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
+    </v-tabs> -->
+    <!-- <v-tabs-items v-model="tab">
       <v-tab-item>
         <ListArticle
           class="mt-4"
@@ -39,7 +68,7 @@
       <v-tab-item>
         <Agregrator  class="mt-4"/>
       </v-tab-item>
-    </v-tabs-items>
+    </v-tabs-items> -->
   </div>
 </template>
 
@@ -57,11 +86,38 @@ export default {
     ListArticle,
     Draft,
     Scheduled,
-    Agregrator
+    Agregrator,
   },
   data() {
     return {
       tab: null,
+      tabPosition: 1,
+      tabList: [
+        {
+          label: "List News",
+          active: true,
+          position: 1,
+          payload: "list",
+        },
+        {
+          label: "Draft",
+          active: false,
+          position: 2,
+          payload: "draft",
+        },
+        {
+          label: "Terjadwal",
+          active: false,
+          position: 3,
+          payload: "scheduled",
+        },
+        {
+          label: "News Agrigrator",
+          active: false,
+          position: 4,
+          payload: "scheduled",
+        },
+      ],
       list: [
         {
           text: "News",
@@ -86,6 +142,24 @@ export default {
       getNews: "news/getListNews",
       searchNews: "news/searchNews",
     }),
+    changeActive(tab) {
+      this.tabPosition = tab.position;
+      const newTabList = this.tabList.map((t) => {
+        if (t.position === tab.position) {
+          return {
+            ...t,
+            active: true,
+          };
+        } else {
+          return {
+            ...t,
+            active: false,
+          };
+        }
+      });
+      this.tabList = newTabList;
+      return this.changeTabs(tab.payload);
+    },
     async handleSearch() {
       this.isSearch = true;
       const payload = {
@@ -103,7 +177,6 @@ export default {
         page: 0,
       };
       const response = await this.getNews(payload);
-      console.log(response);
       if (response.status === 200) {
         const responseData = response.data.data;
         this.listNews = responseData;
@@ -141,13 +214,26 @@ export default {
   &__active
     border-radius: 32px
     background-color: #FFF3E7
+.ctab
+  &__box
+    border-radius: 32px
+    font-size: 12px
+    padding: 9px 24px 9px 24px
+    display: inline-block
+    cursor: pointer
+  &__nonactive
+    background-color: #FAFAFA
+    color: #777777
+  &__active
+    background-color: #FFF3E7
+    color: #FF8717
 </style>
 
 <style scoped>
 .v-tab:hover {
-  background-color: transparent
+  background-color: transparent;
 }
 .v-tab:focus {
-  background-color: transparent
+  background-color: transparent;
 }
 </style>
