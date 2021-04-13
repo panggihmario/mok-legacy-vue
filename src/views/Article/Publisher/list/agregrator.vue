@@ -2,11 +2,11 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="newsAgregrator"
       item-key="headline"
       class="my-table"
       show-select
-      hide-default-footer
+
       v-model="selected"
       @toggle-select-all="selectAllNews"
     >
@@ -44,10 +44,10 @@
             <td>
               <v-checkbox :value="item" v-model="selected" />
             </td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.source }}</td>
+            <td>{{ formatingDate(item.postNewsDto.createAt) }}</td>
+            <td>{{ item.postNewsDto.siteReference }}</td>
             <td style="cursor: pointer" @click="openSideViewNews(key)">
-              {{ item.headline }}
+              {{ item.postNewsDto.title }}
             </td>
             <td>
               <custom-button
@@ -75,13 +75,35 @@ export default {
       viewNews: "viewNews",
     }),
   },
+  mounted() {
+    this.handleNewsAgregator()
+  },
   methods: {
     isEnabled(slot) {
       return this.enabled === slot;
     },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
+      getAllNewsAgregrator : 'news/getAllNewsAgregrator'
     }),
+    handleNewsAgregator () {
+      return this.getAllNewsAgregrator()
+        .then(response => {
+          console.log(response)
+          this.newsAgregrator = response
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     openSideViewNews(idx) {
       this.selectedRow = idx;
       return this.changeStatusViewNews(true);
@@ -95,20 +117,21 @@ export default {
       singleSelect: false,
       selectedRow: null,
       selected: [],
+      newsAgregrator : [],
       headers: [
         {
           text: "Tanggal",
-          value: "date",
+          value: "createAt",
           width: "100",
         },
         {
           text: "Sumber",
-          value: "source",
+          value: "siteReference",
           width: "150",
         },
         {
           text: "Headline",
-          value: "headline",
+          value: "title",
           // width: "200",
         },
         {

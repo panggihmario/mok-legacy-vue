@@ -186,5 +186,35 @@ export default {
         return error;
       }
     },
+    async getCategoryAgregrator({state}) {
+      let response;
+      try {
+        response = await this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/category`)
+        const responseData = response.data.data
+        return responseData
+      }
+      catch(error) {
+        throw error
+      } 
+    },
+    mappingCategory ({state}, payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/mappingcategory`, payload)
+        .then(response => {
+          return response
+        })
+        .catch(err => {
+          throw err
+        })
+    },
+    getAllNewsAgregrator({state}) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE`)
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(error => {
+          throw error
+        })
+    }
   },
 };

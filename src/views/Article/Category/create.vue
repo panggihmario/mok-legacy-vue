@@ -1,16 +1,42 @@
 <template>
-  <div>
-    <HeaderContent label="Buat Kategori News"></HeaderContent>
-		<Form
-			:categoryName="categoryName"
-			:loading="loading"
-			@onSubmit="onSubmit"
-			label="Create"
-			@getCategoryName="getCategoryName"
-		/>
-    <v-snackbar top v-model="alertSuccess" color="success">Create Kategori News Success</v-snackbar>
-    <v-snackbar top v-model="alertFailed" color="error">Create Kategori Failed</v-snackbar>
-  </div>
+  <v-dialog
+		v-model="dialogCreate"
+		width="450"
+		@click:outside="closeDialogCreate"
+	>
+		<v-card>
+			<v-card-title>Nama Kategori</v-card-title>
+			<v-card-text>
+				
+			<!-- <Form
+				:categoryName="categoryName"
+				:loading="loading"
+				@onSubmit="onSubmit"
+				label="Create"
+				@getCategoryName="getCategoryName"
+			/> -->
+
+				<custom-form :onSubmit="handleSubmit">
+					<custom-input
+						v-model="categoryName"
+						:value="categoryName"
+						name="Category Name"
+					/>
+				</custom-form>
+				<div class="d-flex justify-end">
+					<!-- <custom-button class="mr-4" @click="closeDialogCreate" >
+						Batalkan
+					</custom-button> -->
+					<custom-button @click="handleSubmit" type="submit" color="primary">
+						Buat Kategori
+					</custom-button>
+				</div>
+				
+			<v-snackbar top v-model="alertSuccess" color="success">Create Kategori News Success</v-snackbar>
+			<v-snackbar top v-model="alertFailed" color="error">Create Kategori Failed</v-snackbar>
+			</v-card-text>
+		</v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -18,6 +44,7 @@ import HeaderContent from "@/containers/HeaderContent";
 import Form from './formCategory';
 import { mapActions } from "vuex";
 export default {
+	props : ['dialogCreate'],
   components: {
 		HeaderContent,
 		Form
@@ -34,10 +61,13 @@ export default {
 		getCategoryName (value) {
 			this.categoryName = value
 		},
+		closeDialogCreate() {
+			this.$emit('closeDialogCreate', false)
+		},
     ...mapActions({
       createCategory: "news/createCategoryNews"
     }),
-    async onSubmit(name) {
+    async handleSubmit() {
       const payload = {
         name : this.categoryName
 			};
@@ -48,7 +78,8 @@ export default {
 					this.loading = false
 					setTimeout(() => {
 						this.alertSuccess = false
-						this.$router.push('/categorynews')
+						// this.$router.push('/categorynews')
+						this.$emit('closeDialogCreate', false)
 					}, 1500)
 				})
         .catch(err => {

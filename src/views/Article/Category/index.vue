@@ -1,16 +1,25 @@
 <template>
   <div>
-    <HeaderContent label="List Category News">
-      <custom-button
+    <HeaderContent label="Kategori News">
+      <!-- <custom-button
         color="primary"
         class="white--text"
         @click="moveToCreateCategory"
       >
         Buat Kategori News
-      </custom-button>
+      </custom-button> -->
     </HeaderContent>
-    <v-row>
-      <v-col cols="6">
+
+    <div class="category__top-container">
+      <div class="category__top-header">Sumber Berita</div>
+      <div class="category__top-action secondary--text">Edit Sumber</div>
+      <v-btn depressed color="white" class="mt-4">
+        <div class="text-capitalize">Kompas.com</div>
+      </v-btn>
+    </div>
+
+    <v-row no-gutters>
+      <v-col cols="5">
         <v-data-table
           :headers="headers"
           :items="items"
@@ -18,7 +27,7 @@
           disable-sort
           hide-default-footer
         >
-          <template v-slot:[`item.sequence`]="props">
+          <!-- <template v-slot:[`item.sequence`]="props">
             <v-edit-dialog
               :return-value.sync="props.item.sequence"
               @open="open"
@@ -36,18 +45,52 @@
                 />
               </template>
             </v-edit-dialog>
-          </template>
-          <template v-slot:[`item.actions`]="{ item }">
+          </template> -->
+          <!-- <template v-slot:[`item.actions`]="{ item }">
             <v-btn @click="moveToEdit(item.id)" icon>
               <v-icon x-small>$edit</v-icon>
             </v-btn>
             <v-btn @click="openDialogDelete(item.id)" icon>
               <v-icon x-small>$delete</v-icon>
             </v-btn>
+          </template> -->
+          <template v-slot:header.action>
+            <custom-button
+              color="primary"
+              class="white--text"
+              @click="openDialogCreate"
+            >
+              Create Category
+            </custom-button>
+          </template>
+          <template v-slot:body="{ items }">
+            <tbody>
+              <tr
+                v-for="(item, idx) in items"
+                :key="idx"
+                @click="selectRow(item,idx)"
+                :class="idx === indexRow ? 'row__highlight' : ''"
+              >
+                <td>{{ item.sequence }}</td>
+                <td>{{ item.name }}</td>
+                <td></td>
+              </tr>
+            </tbody>
           </template>
         </v-data-table>
       </v-col>
+      <v-col cols="7">
+        <RightSide 
+          :categoryWebhose="categoryWebhose"
+          :category="category"
+        />
+      </v-col>
     </v-row>
+
+    <DialogCreate
+      :dialogCreate="dialogCreate"
+      @closeDialogCreate="closeDialogCreate"
+    />
 
     <DialogDelete
       title="Yakin menghapus category ini?"
@@ -65,31 +108,39 @@ import HeaderContent from "@/containers/HeaderContent";
 import moment from "moment";
 import { mapActions } from "vuex";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
+import RightSide from "./rightSide";
+import DialogCreate from "./create";
 export default {
   components: {
     HeaderContent,
     DialogDelete,
+    RightSide,
+    DialogCreate
   },
   data() {
     return {
       items: [],
+      categoryWebhose : [],
       id: "",
       dialog: false,
+      dialogCreate : false,
+      category : '',
       loading: false,
+      indexRow: null,
       headers: [
+        {
+          text: "No",
+          value: "sequence",
+          class: "whitesnow",
+          width: 100,
+        },
         {
           text: "Nama",
           value: "name",
           class: "whitesnow",
         },
         {
-          text: "Position",
-          value: "sequence",
-          class: "whitesnow",
-        },
-        {
-          text: "",
-          value: "actions",
+          value: "action",
           class: "whitesnow",
           align: "end",
         },
@@ -97,6 +148,16 @@ export default {
     };
   },
   methods: {
+    selectRow(item,idx) {
+      this.indexRow = idx;
+      this.category = item
+    },
+    openDialogCreate() {
+      this.dialogCreate = true
+    },
+    closeDialogCreate (payload) {
+      this.dialogCreate = payload
+    },
     open() {
       this.snack = true;
       this.snackColor = "info";
@@ -154,6 +215,7 @@ export default {
       getCategoryNews: "news/getCategoryNews",
       deleteCategoryNews: "news/deleteCategoryNews",
       editSequence: "news/editSequence",
+      getCategoryAgregrator: "news/getCategoryAgregrator",
     }),
     async handleCategoryNews() {
       const response = await this.getCategoryNews();
@@ -173,9 +235,71 @@ export default {
         this.items = formatingList;
       }
     },
+    handleGetAgregratorCategory() {
+      return this.getCategoryAgregrator()
+        .then((response) => {
+          let data = response.reduce((r, e) => {
+            let group = e.name[0];
+            var regex = /^[a-zA-Z]*$/;
+            let isSpecial = regex.test(group)
+            if(!isSpecial) {
+              // if(!r['special']){
+              //   r['special'] = {group : 'special' ,children: []}
+              //   r['special'].children.push(e);
+              // }else{
+              //   r['special'].children.push(e);
+              // }
+            }
+            else{
+              if (!r[group]) {
+                r[group] = { group, children: [e] };
+              } else r[group].children.push(e);
+            }
+            return r;
+          }, {});
+          let result = Object.values(data);
+          const sortResult = result.sort((a,b) => {
+            if(a.group < b.group) {
+              return -1
+            }
+            if(a.group > b.group) {
+              return 1
+            }
+            return 0
+          })
+          this.categoryWebhose = sortResult
+          
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   mounted() {
     this.handleCategoryNews();
+    this.handleGetAgregratorCategory();
   },
 };
 </script>
+
+<style lang="sass" scoped>
+.row
+  &__highlight
+    background-color: #F1F7FE
+.category
+  &__top-container
+    background-color: #FAFAFA
+    width: 100%
+    height: 148px
+    margin-bottom: 16px
+    padding: 24px
+  &__top-header
+    color: #4A4A4A
+    font-size: 14px
+    font-weight: bold
+    letter-spacing: 0.01em
+  &__top-action
+    font-size: 10px
+    letter-spacing: 0.01em
+    margin-top: 12px
+</style>
