@@ -3,11 +3,12 @@
     <v-data-table
       :headers="headers"
       :items="newsAgregrator"
-      item-key="headline"
+      item-key="idNewsExternal"
       class="my-table"
       show-select
-
+      disable-pagination
       v-model="selected"
+      hide-default-footer
       @toggle-select-all="selectAllNews"
     >
       <template v-slot:[`item.action`]="{ item }">
@@ -37,12 +38,10 @@
           <tr
             v-for="(item, key) in items"
             :key="key"
-            :class="
-              key === selectedRow ? 'row__highlight' : 'row__nonhighlight'
-            "
+            :class="key === selectedRow ? 'row__highlight' : 'row__nonhighlight'"
           >
             <td>
-              <v-checkbox :value="item" v-model="selected" />
+              <v-checkbox :value="item" color="secondary" v-model="selected" />
             </td>
             <td>{{ formatingDate(item.postNewsDto.createAt) }}</td>
             <td>{{ item.postNewsDto.siteReference }}</td>
@@ -56,6 +55,7 @@
                 size="medium"
                 class="my-3"
                 width="101"
+                @click="handlePublish(item)"
               >
                 Publish
               </custom-button>
@@ -70,52 +70,12 @@
 <script>
 import { mapActions, mapState } from "vuex";
 export default {
-  computed: {
-    ...mapState({
-      viewNews: "viewNews",
-    }),
-  },
-  mounted() {
-    this.handleNewsAgregator()
-  },
-  methods: {
-    isEnabled(slot) {
-      return this.enabled === slot;
-    },
-    formatingDate(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const year = newDt.getFullYear();
-      const newFormat = `${day}/${month}/${year}`;
-      return newFormat;
-    },
-    ...mapActions({
-      changeStatusViewNews: "changeStatusViewNews",
-      getAllNewsAgregrator : 'news/getAllNewsAgregrator'
-    }),
-    handleNewsAgregator () {
-      return this.getAllNewsAgregrator()
-        .then(response => {
-          console.log(response)
-          this.newsAgregrator = response
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    openSideViewNews(idx) {
-      this.selectedRow = idx;
-      return this.changeStatusViewNews(true);
-    },
-    selectAllNews(items, value) {
-      console.log({items})
-    }
-  },
   data() {
     return {
       singleSelect: false,
       selectedRow: null,
+      statusLoading : true,
+      isLoading : true,
       selected: [],
       newsAgregrator : [],
       headers: [
@@ -157,6 +117,61 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapState({
+      viewNews: "viewNews",
+    }),
+  },
+  mounted() {
+    this.handleNewsAgregator()
+  },
+  methods: {
+    handlePublish(payload) {
+      const params = { ...payload}
+      return this.publishNewsAgregator(params)
+        .then(resp => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    isEnabled(slot) {
+      return this.enabled === slot;
+    },
+    formatingDate(rawDate) {
+      const newDt = new Date(rawDate);
+      const day = newDt.getDate();
+      const month = newDt.getMonth() + 1;
+      const year = newDt.getFullYear();
+      const newFormat = `${day}/${month}/${year}`;
+      return newFormat;
+    },
+    ...mapActions({
+      changeStatusViewNews: "changeStatusViewNews",
+      getAllNewsAgregrator : 'news/getAllNewsAgregrator',
+      publishNewsAgregator: 'news/publishNewsAgregator'
+    }),
+    handleNewsAgregator () {
+      this.isLoading = true
+      return this.getAllNewsAgregrator()
+        .then(response => {
+          this.newsAgregrator = response
+          this.isLoading = false
+        })
+        .catch(err => {
+          // this.statusLoading = false
+        })
+    },
+    openSideViewNews(idx) {
+      this.selectedRow = idx;
+      return this.changeStatusViewNews(true);
+    },
+    selectAllNews(items, value) {
+      console.log({items})
+    }
+  },
+  
 };
 </script>
 

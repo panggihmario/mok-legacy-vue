@@ -1,6 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
+    <div class="d-flex justify-space-between">
     <div class="d-flex">
       <div v-for="(tab, idx) in tabList" class="mr-4">
         <div
@@ -12,6 +13,17 @@
           <div>{{ tab.label }}</div>
         </div>
       </div>
+    </div>
+      <custom-input
+        placeholder="Cari kategori berita"
+        colorbg="white"
+        outlined
+        dense
+        append-icon="search"
+        v-if="tabPosition === 1"
+        v-model="keyword"
+        @keyup.enter="handleSearch"
+      />
     </div>
     <div v-if="tabPosition === 1">
       <ListArticle
@@ -29,46 +41,6 @@
     <div v-if="tabPosition === 4">
       <Agregrator class="mt-4" />
     </div>
-
-    <!-- <v-tabs 
-      v-model="tab" 
-      active-class="tab__active" 
-      class="tab__box" 
-      color="primary"
-      hide-slider
-      height="40"
-    >
-      <v-tab  :ripple="false" @change="changeTabs('list')">
-        <span class="text-capitalize">List News</span>
-      </v-tab>
-      <v-tab :ripple="false" @change="changeTabs('draft')">
-        <span class="text-capitalize">Draft</span>
-      </v-tab>
-      <v-tab :ripple="false" @change="changeTabs('scheduled')">
-        <span class="text-capitalize">Terjadwal</span>
-      </v-tab>
-      <v-tab :ripple="false">
-        <span class="text-capitalize">News Agrigator</span>
-      </v-tab>
-    </v-tabs> -->
-    <!-- <v-tabs-items v-model="tab">
-      <v-tab-item>
-        <ListArticle
-          class="mt-4"
-          :listNews="listNews"
-          @getNewsBaseOnPage="getNewsBaseOnPage"
-        />
-      </v-tab-item>
-      <v-tab-item>
-        <Draft :drafts="listNews" class="mt-4" />
-      </v-tab-item>
-      <v-tab-item>
-        <Scheduled :listNews="listNews" class="mt-4" />
-      </v-tab-item>
-      <v-tab-item>
-        <Agregrator  class="mt-4"/>
-      </v-tab-item>
-    </v-tabs-items> -->
   </div>
 </template>
 
@@ -167,6 +139,9 @@ export default {
       };
       const response = await this.searchNews(payload);
       if (response.status === 200) {
+        console.log(response)
+        const responseData = response.data.data
+        this.listNews = responseData
       } else {
         return response;
       }

@@ -207,7 +207,7 @@ export default {
         })
     },
     getAllNewsAgregrator({state}) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE`)
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/ekonomi`)
         .then(response => {
           const responseData = response.data.data
           return responseData
@@ -215,6 +215,13 @@ export default {
         .catch(error => {
           throw error
         })
+    },
+    publishNewsAgregator({state}, payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publish`, payload)
+        .then(response => {
+          return response
+        })
+        .catch(err => {throw err})
     }
   },
 };

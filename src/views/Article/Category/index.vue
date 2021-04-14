@@ -12,7 +12,7 @@
 
     <div class="category__top-container">
       <div class="category__top-header">Sumber Berita</div>
-      <div class="category__top-action secondary--text">Edit Sumber</div>
+      <div @click="editSource" style="cursor: pointer" class="category__top-action secondary--text"><v-icon color="secondary" size="9">$edit</v-icon>  Edit Sumber</div>
       <v-btn depressed color="white" class="mt-4">
         <div class="text-capitalize">Kompas.com</div>
       </v-btn>
@@ -92,6 +92,11 @@
       @closeDialogCreate="closeDialogCreate"
     />
 
+    <DialogSource
+      :dialogSource="dialogSource"
+      @closeDialogSource="closeDialogSource"
+    />
+
     <DialogDelete
       title="Yakin menghapus category ini?"
       description="Category yang kamu hapus tidak akan tampil dihalaman category news"
@@ -110,12 +115,14 @@ import { mapActions } from "vuex";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import RightSide from "./rightSide";
 import DialogCreate from "./create";
+import DialogSource from "./source"
 export default {
   components: {
     HeaderContent,
     DialogDelete,
     RightSide,
-    DialogCreate
+    DialogCreate,
+    DialogSource
   },
   data() {
     return {
@@ -124,6 +131,7 @@ export default {
       id: "",
       dialog: false,
       dialogCreate : false,
+      dialogSource : false,
       category : '',
       loading: false,
       indexRow: null,
@@ -148,6 +156,9 @@ export default {
     };
   },
   methods: {
+    editSource() {
+      this.dialogSource = true
+    },
     selectRow(item,idx) {
       this.indexRow = idx;
       this.category = item
@@ -157,6 +168,9 @@ export default {
     },
     closeDialogCreate (payload) {
       this.dialogCreate = payload
+    },
+    closeDialogSource(payload) {
+      this.dialogSource = payload
     },
     open() {
       this.snack = true;
