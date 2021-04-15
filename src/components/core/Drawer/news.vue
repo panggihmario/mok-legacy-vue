@@ -1,25 +1,25 @@
 <template>
-  <v-navigation-drawer floating absolute width="470" permanent right>
-    <template v-slot:prepend>
+  <v-navigation-drawer  floating color="whitesnow"  app width="470" permanent right>
+    <!-- <template v-slot:prepend> -->
       <div class="preview__container overflow-y-auto">
         <div class="preview__title">
-          Korban Banjir Gugat Anies, Sekda DKI: Kami Respons Bencana Dengan Cepat 
+          {{previewNewsAgregator.postNewsDto.title}}
         </div>
         <div class="preview__image-container">
           <img
             style="max-height :100%;max-width :100%; border-radius : 8px"
-            :src="`https://picsum.photos/500/300?image=10`"
+            :src="previewNewsAgregator.postNewsDto.medias[0].url"
           />
         </div>
         <div class="preview__created">
-          08/01/2020 Sumber - Kompas.com
+          {{formatDate(previewNewsAgregator.postNewsDto.createAt)}} Sumber - {{previewNewsAgregator.agent}}
         </div>
         <div class="preview__publisher">
-          <div>Penyunting Nursita Sari </div>
-          <div>Penulis Ambaranie Nadia Kemala Movanita</div>
+          <div>Penyunting {{previewNewsAgregator.postNewsDto.publisher}} </div>
+          <div>Penulis {{previewNewsAgregator.postNewsDto.editor}}</div>
         </div>
-        <div class="preview__content">
-          Jakarta - Ketua DPRD DKI Jakarta, Prasetio Edi mengkritik kebijakan pemangkasan jam operasional MRT, LRT dan TransJakarta, bahkan rute TransJakarta dipotong. Hal ini, menurut Pras, panggilan akrab Prasetio malah menimbulkan masalah baru yang perlu diselesaikan. "Ini kebijakan sebenarnya justru memicu penumpukan. Karena itu harus dan wajib petugas-petugas di sana turun langsung untuk mengurai terjadinya penumpukan yang terjadi," kata Pras, dalam keterangannya, Senin (17/3/2020). Pagi ini, cukup banyak yang mengeluhkan sedikitnya bus TransJ yang tersedia. Calon penumpang TransJ sampai ada yang mengantre ke luar halte. Pras berpesan, Pemerintah Provinsi (Pemprov) DKI Jakarta harus membuat kebijakan tepat dalam kondisi penanganan virus Corona (COVID-19).
+        <div class="preview__content" v-html="previewNewsAgregator.postNewsDto.content">
+
         </div>
         <div>
           <div class="preview__footer-text">Kategori News</div>
@@ -28,8 +28,10 @@
               :items="categories"
               dense
               outlined
+              v-model="selectedCategory"
+              item-text="name"
+              return-object
             ></v-select>
-
           </div>
           <div>
             <custom-button
@@ -43,24 +45,59 @@
           </div>
         </div>
       </div>
-    </template>
+    <!-- </template> -->
   </v-navigation-drawer>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
+import moment from 'moment'
 export default {
   data () {
     return {
-      categories : ['Sport', 'Hobby']
+      categories : [],
+      selectedCategory : {}
     }
+  },
+  computed : {
+    ...mapState({
+      previewNewsAgregator : state => state.news.previewNewsAgregator
+    }),
+  },
+  mounted() {
+    this.handleGetMapping()
   },
   methods : {
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
+      publishNewsAgregator : 'news/publishNewsAgregator',
+      getCategoryNews : 'news/getCategoryNews'
     }),
+    handleGetMapping() {
+      return this.getCategoryNews()
+        .then(response => {
+          const responseData = response.data.data
+          this.categories = responseData
+          console.log("categories", responseData)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    formatDate(rawDate) {
+      const secondRawDate = rawDate/1000
+      const newDate = moment.unix(secondRawDate).format("D/M/YYYY")
+      return newDate
+    },
     publishNews() {
-      return this.changeStatusViewNews(false)
+      console.log(this.selectedCategory)
+      // return this.publishNewsAgregator(this.previewNewsAgregator)
+      //   .then(response => {
+      //     return this.changeStatusViewNews(false)
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     }
   }
 }
@@ -70,7 +107,7 @@ export default {
 .preview
   &__container
     padding: 40px 32px 40px 32px
-    background-color: #FAFAFA
+    // background-color: #FAFAFA
     border-left: none
     height: 100vh
   &__title

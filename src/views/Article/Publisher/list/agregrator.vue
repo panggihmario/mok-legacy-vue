@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div class="d-flex">
+      <div class="mt-2 mr-2 agg__filter">Filter</div>
+      <custom-select
+        :items="mappingCategory"
+        dense
+        item-text="newsCategory.name"
+        v-model="selectedMapping"
+      />
+    </div>
     <v-data-table
       :headers="headers"
       :items="newsAgregrator"
@@ -9,6 +18,7 @@
       disable-pagination
       v-model="selected"
       hide-default-footer
+      :loading="statusLoading"
       @toggle-select-all="selectAllNews"
     >
       <template v-slot:[`item.action`]="{ item }">
@@ -45,7 +55,7 @@
             </td>
             <td>{{ formatingDate(item.postNewsDto.createAt) }}</td>
             <td>{{ item.postNewsDto.siteReference }}</td>
-            <td style="cursor: pointer" @click="openSideViewNews(key)">
+            <td style="cursor: pointer" @click="openSideViewNews(item, key)">
               {{ item.postNewsDto.title }}
             </td>
             <td>
@@ -55,10 +65,12 @@
                 size="medium"
                 class="my-3"
                 width="101"
+
                 @click="handlePublish(item)"
               >
                 Publish
               </custom-button>
+              <!-- <v-btn  :loading="statusLoading" >test</v-btn> -->
             </td>
           </tr>
         </tbody>
@@ -68,16 +80,19 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
       singleSelect: false,
       selectedRow: null,
-      statusLoading : true,
-      isLoading : true,
+      statusLoading : false,
+      loadingPublish : false,
+      isLoading : false,
       selected: [],
       newsAgregrator : [],
+      mappingCategory : [],
+      selectedMapping : 'EKONOMI',
       headers: [
         {
           text: "Tanggal",
@@ -101,39 +116,39 @@ export default {
           align: "start",
         },
       ],
-      desserts: [
-        {
-          date: "02/02/2020",
-          source: "Kompasiana",
-          headline:
-            "1 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia",
-        },
-        {
-          date: "02/02/2020",
-          source: "Kompasiana",
-          headline:
-            "2 WNI Pasien Isolasi di RSPI Sulianti Saroso Meninggal Dunia",
-        },
-      ],
     };
   },
   computed: {
     ...mapState({
       viewNews: "viewNews",
+      // statusLoading : state => state.news.statusLoading,
+      // newsAgregator :state => state.news.newsAgregator
     }),
   },
   mounted() {
     this.handleNewsAgregator()
+    this.handleGetMapping()
   },
   methods: {
     handlePublish(payload) {
       const params = { ...payload}
+      this.statusLoading = true
+      // this.setStatusLoading(true)
       return this.publishNewsAgregator(params)
         .then(resp => {
-          console.log(response)
+          this.newsAgregrator = []
+          // return this.getAllNewsAgregrator()
+        })
+        .then(response=> {
+          this.statusLoading = false
+          // this.setStatusLoading(false)
+          // this.setNewsAgregator(response)
+          this.selected = []
+          this.newsAgregrator = response
         })
         .catch(err => {
           console.log(err)
+          this.statusLoading = false
         })
     },
     isEnabled(slot) {
@@ -150,21 +165,37 @@ export default {
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
       getAllNewsAgregrator : 'news/getAllNewsAgregrator',
-      publishNewsAgregator: 'news/publishNewsAgregator'
+      publishNewsAgregator: 'news/publishNewsAgregator',
+      getMappingCategory : 'news/getMappingCategory',
+      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory'
     }),
+    ...mapMutations({
+      setPreviewNewsAgregrator : 'news/setPreviewNewsAgregrator',
+      setStatusLoading : 'news/setStatusLoading',
+      setNewsAgregator : 'news/setNewsAgregator'
+    }),
+    handleGetMapping() {
+      return this.getMappingCategory()
+        .then(response => {
+          console.log(response)
+          this.mappingCategory = response
+        })
+    },
     handleNewsAgregator () {
       this.isLoading = true
-      return this.getAllNewsAgregrator()
+      return this.getNewsAgregatorByCategory(this.selectedMapping)
         .then(response => {
           this.newsAgregrator = response
-          this.isLoading = false
+          // this.setNewsAgregator(response)
+          this.statusLoading = false
         })
         .catch(err => {
           // this.statusLoading = false
         })
     },
-    openSideViewNews(idx) {
+    openSideViewNews(data, idx) {
       this.selectedRow = idx;
+      this.setPreviewNewsAgregrator(data)
       return this.changeStatusViewNews(true);
     },
     selectAllNews(items, value) {
@@ -199,4 +230,8 @@ export default {
     color: #4A4A4A
     font-size: 12px
     letter-spacing: 0.01em
+.agg
+  &__filter
+    color: #9B9B9B
+    font-size: 14px
 </style>

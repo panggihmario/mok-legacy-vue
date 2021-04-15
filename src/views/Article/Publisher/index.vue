@@ -84,7 +84,7 @@ export default {
           payload: "scheduled",
         },
         {
-          label: "News Agrigrator",
+          label: "News Agregrator",
           active: false,
           position: 4,
           payload: "scheduled",

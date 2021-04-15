@@ -6,12 +6,13 @@
         <CoreView />
       </v-container>
     </div>
+    <!-- <CoreDrawer v-if="viewNews" /> -->
     <DrawerNews  v-if="viewNews" />
   </div>
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex'
+import { mapState } from 'vuex'
 import DrawerNews from "../components/core/Drawer/news"
 export default {
   components : {

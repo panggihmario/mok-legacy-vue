@@ -4,7 +4,7 @@
     <div class="d-flex justify-space-between align-center">
       <div class="d-flex">
         <div class="mr-2 charcoal--text right__action">Delete Kategori</div>
-        <div class="charcoal--text right__action">Edit Kategori</div>
+        <div @click="openDialogEdit" class="charcoal--text right__action">Edit Kategori</div>
       </div>
       <div>
         <custom-button color="white"> Batalkan </custom-button>
@@ -49,25 +49,41 @@
         </div>
       </div>
 
-
+    <Edit
+      :dialogEdit="dialogEdit"
+      @closeDialogEdit="closeDialogEdit"
+      :category="category"
+    />
     </div>
   </div>
 </template>
 
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
+import Edit from './edit'
 export default {
   props : ['categoryWebhose', 'category'],
+  components : {
+    Edit
+  },
   data () {
     return {
-      selected : []
+      selected : [],
+      dialogEdit : false
     }
   },
   methods : {
     ...mapActions({
       mappingCategory : 'news/mappingCategory'
     }),
+    openDialogEdit() {
+      this.dialogEdit = true
+    },
+    closeDialogEdit(status) {
+      this.dialogEdit = status
+      this.$emit('reGetCategory')
+    },
     saveMapping () {
       const idCategory = this.category.id
       const payload = {
@@ -103,6 +119,7 @@ export default {
   &__action
     font-size: 10px
     letter-spacing: 0.01em
+    cursor: pointer
   &__label
     font-size: 14px
     font-weight: bold

@@ -2,6 +2,20 @@ export default {
   namespaced: true,
   state: {
     pathNews: "admin/news",
+    previewNewsAgregator : {},
+    statusLoading : false,
+    newsAgregrator : []
+  },
+  mutations : {
+    setPreviewNewsAgregrator (state, payload) {
+      state.previewNewsAgregator = payload
+    },
+    setStatusLoading(state, payload) {
+      state.statusLoading = payload
+    },
+    setNewsAgregator(state, payload) {
+      state.newsAgregrator = payload
+    }
   },
   actions: {
     createCategoryNews({ state }, payload) {
@@ -216,12 +230,32 @@ export default {
           throw error
         })
     },
-    publishNewsAgregator({state}, payload) {
+    getNewsAgregatorByCategory({state}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload}`)
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(err => {
+          throw err
+        })
+    },
+    publishNewsAgregator({state, commit}, payload) {
       return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publish`, payload)
         .then(response => {
           return response
         })
         .catch(err => {throw err})
+    },
+    getMappingCategory({state}) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/mappingcategory`)
+        .then(response=> {
+          const responseData = response.data
+          return responseData
+        })
+        .catch(error => {
+          return error
+        })
     }
   },
 };

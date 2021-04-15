@@ -25,9 +25,10 @@
           :items="items"
           disable-filtering
           disable-sort
+          disable-pagination
           hide-default-footer
         >
-          <!-- <template v-slot:[`item.sequence`]="props">
+          <template v-slot:[`item.sequence`]="props">
             <v-edit-dialog
               :return-value.sync="props.item.sequence"
               @open="open"
@@ -45,7 +46,7 @@
                 />
               </template>
             </v-edit-dialog>
-          </template> -->
+          </template>
           <!-- <template v-slot:[`item.actions`]="{ item }">
             <v-btn @click="moveToEdit(item.id)" icon>
               <v-icon x-small>$edit</v-icon>
@@ -83,6 +84,7 @@
         <RightSide 
           :categoryWebhose="categoryWebhose"
           :category="category"
+          @reGetCategory="reGetCategory"
         />
       </v-col>
     </v-row>
@@ -168,6 +170,10 @@ export default {
     },
     closeDialogCreate (payload) {
       this.dialogCreate = payload
+      return this.handleCategoryNews()
+    },
+    reGetCategory() {
+      return this.handleCategoryNews()
     },
     closeDialogSource(payload) {
       this.dialogSource = payload
@@ -234,7 +240,6 @@ export default {
     async handleCategoryNews() {
       const response = await this.getCategoryNews();
       if (response.status === 200) {
-        console.log(response);
         const responseData = response.data.data;
         const formatingList = responseData.map((r) => {
           const unixDate = r.createAt / 1000;

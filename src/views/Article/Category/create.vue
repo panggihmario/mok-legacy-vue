@@ -7,15 +7,6 @@
 		<v-card>
 			<v-card-title>Nama Kategori</v-card-title>
 			<v-card-text>
-				
-			<!-- <Form
-				:categoryName="categoryName"
-				:loading="loading"
-				@onSubmit="onSubmit"
-				label="Create"
-				@getCategoryName="getCategoryName"
-			/> -->
-
 				<custom-form :onSubmit="handleSubmit">
 					<custom-input
 						v-model="categoryName"
@@ -24,9 +15,6 @@
 					/>
 				</custom-form>
 				<div class="d-flex justify-end">
-					<!-- <custom-button class="mr-4" @click="closeDialogCreate" >
-						Batalkan
-					</custom-button> -->
 					<custom-button @click="handleSubmit" type="submit" color="primary">
 						Buat Kategori
 					</custom-button>
