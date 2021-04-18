@@ -12,10 +12,21 @@
 
     <div class="category__top-container">
       <div class="category__top-header">Sumber Berita</div>
-      <div @click="editSource" style="cursor: pointer" class="category__top-action secondary--text"><v-icon color="secondary" size="9">$edit</v-icon>  Edit Sumber</div>
-      <v-btn depressed color="white" class="mt-4">
-        <div class="text-capitalize">Kompas.com</div>
-      </v-btn>
+      <div
+        @click="editSource"
+        style="cursor: pointer"
+        class="category__top-action secondary--text"
+      >
+        <v-icon color="secondary" size="9">$edit</v-icon> Edit Sumber
+      </div>
+      <div class="d-flex">
+        <div v-for="(site, idx) in showSiteAgregator" :key="idx" class="mr-2">
+          <v-btn depressed color="white" class="mt-4">
+            <div class="text-capitalize">{{site.name}}</div>
+          </v-btn>
+        </div>
+      </div>
+      
     </div>
 
     <v-row no-gutters>
@@ -69,7 +80,7 @@
               <tr
                 v-for="(item, idx) in items"
                 :key="idx"
-                @click="selectRow(item,idx)"
+                @click="selectRow(item, idx)"
                 :class="idx === indexRow ? 'row__highlight' : ''"
               >
                 <td>{{ item.sequence }}</td>
@@ -81,10 +92,13 @@
         </v-data-table>
       </v-col>
       <v-col cols="7">
-        <RightSide 
+        <RightSide
           :categoryWebhose="categoryWebhose"
           :category="category"
           @reGetCategory="reGetCategory"
+          :selectedCategoryWebHose="selectedCategoryWebHose"
+          @getSelectedWebhose="getSelectedWebhose"
+          @finishMappingCategory="finishMappingCategory"
         />
       </v-col>
     </v-row>
@@ -97,6 +111,8 @@
     <DialogSource
       :dialogSource="dialogSource"
       @closeDialogSource="closeDialogSource"
+      :dataSiteAgregator="dataSiteAgregator"
+      @setNewDataAgregator="setNewDataAgregator"
     />
 
     <DialogDelete
@@ -117,26 +133,29 @@ import { mapActions } from "vuex";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import RightSide from "./rightSide";
 import DialogCreate from "./create";
-import DialogSource from "./source"
+import DialogSource from "./source";
 export default {
   components: {
     HeaderContent,
     DialogDelete,
     RightSide,
     DialogCreate,
-    DialogSource
+    DialogSource,
   },
   data() {
     return {
       items: [],
-      categoryWebhose : [],
+      categoryWebhose: [],
+      selectedCategoryWebHose : [],
       id: "",
       dialog: false,
-      dialogCreate : false,
-      dialogSource : false,
-      category : '',
+      dialogCreate: false,
+      dialogSource: false,
+      category: "",
       loading: false,
       indexRow: null,
+      showSiteAgregator : [],
+      dataSiteAgregator : '',
       headers: [
         {
           text: "No",
@@ -159,24 +178,34 @@ export default {
   },
   methods: {
     editSource() {
-      this.dialogSource = true
+      this.dialogSource = true;
     },
-    selectRow(item,idx) {
+    setNewDataAgregator(value) {
+      this.dataSiteAgregator = value
+    },
+    getSelectedWebhose(payload) {
+      this.selectedCategoryWebHose = payload
+    },
+    finishMappingCategory() {
+      return this.handleCategoryNews()
+    },
+    selectRow(item, idx) {
+      this.selectedCategoryWebHose = item.aggregatorCategories
       this.indexRow = idx;
-      this.category = item
+      this.category = item;
     },
     openDialogCreate() {
-      this.dialogCreate = true
+      this.dialogCreate = true;
     },
-    closeDialogCreate (payload) {
-      this.dialogCreate = payload
-      return this.handleCategoryNews()
+    closeDialogCreate(payload) {
+      this.dialogCreate = payload;
+      return this.handleCategoryNews();
     },
     reGetCategory() {
-      return this.handleCategoryNews()
+      return this.handleCategoryNews();
     },
     closeDialogSource(payload) {
-      this.dialogSource = payload
+      this.dialogSource = payload;
     },
     open() {
       this.snack = true;
@@ -236,23 +265,64 @@ export default {
       deleteCategoryNews: "news/deleteCategoryNews",
       editSequence: "news/editSequence",
       getCategoryAgregrator: "news/getCategoryAgregrator",
+      getMappingCategory : "news/getMappingCategory",
+      getNewSiteAgregator : "news/getNewSiteAgregator"
     }),
-    async handleCategoryNews() {
-      const response = await this.getCategoryNews();
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        const formatingList = responseData.map((r) => {
-          const unixDate = r.createAt / 1000;
-          const formatingDate = moment.unix(unixDate).format("D/M/YYYY");
-          return {
-            date: formatingDate,
-            name: r.name,
-            id: r.id,
-            sequence: r.sequence,
-          };
-        });
-        this.items = formatingList;
-      }
+    handleGetNewSiteAgregator() {
+      return this.getNewSiteAgregator() 
+        .then(response => {
+          this.showSiteAgregator = response
+          const listSiteName = []
+          response.forEach(r => {
+            listSiteName.push(r.name)
+          })
+          const joinData = listSiteName.join(',')
+          this.dataSiteAgregator = joinData
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    handleCategoryNews() {
+      let newFormat
+      return this.getCategoryNews()
+        .then((response) => {
+          const responseData = response.data.data;
+          const formatingList = responseData.map((r) => {
+            const unixDate = r.createAt / 1000;
+            const formatingDate = moment.unix(unixDate).format("D/M/YYYY");
+            return {
+              date: formatingDate,
+              name: r.name,
+              id: r.id,
+              sequence: r.sequence,
+            };
+          });
+          newFormat = [...formatingList]
+        })
+        .then(() => {
+          return this.getMappingCategory()
+        })
+        .then(response => {
+          const itemsCategories = newFormat
+          const mapping = response
+          const newMapping = itemsCategories.map(c => {
+            for(let i=0;i< mapping.length ;i++) {
+              if(c.id === mapping[i].newsCategory.id) {
+                return {
+                  ...c,
+                  aggregatorCategories : mapping[i].aggregatorCategories
+                }
+              }
+            }
+            return {
+                  ...c,
+                  aggregatorCategories : []
+                }
+          })
+          this.items = newMapping
+        })
+        .catch((err) => {});
     },
     handleGetAgregratorCategory() {
       return this.getCategoryAgregrator()
@@ -260,16 +330,15 @@ export default {
           let data = response.reduce((r, e) => {
             let group = e.name[0];
             var regex = /^[a-zA-Z]*$/;
-            let isSpecial = regex.test(group)
-            if(!isSpecial) {
+            let isSpecial = regex.test(group);
+            if (!isSpecial) {
               // if(!r['special']){
               //   r['special'] = {group : 'special' ,children: []}
               //   r['special'].children.push(e);
               // }else{
               //   r['special'].children.push(e);
               // }
-            }
-            else{
+            } else {
               if (!r[group]) {
                 r[group] = { group, children: [e] };
               } else r[group].children.push(e);
@@ -277,17 +346,16 @@ export default {
             return r;
           }, {});
           let result = Object.values(data);
-          const sortResult = result.sort((a,b) => {
-            if(a.group < b.group) {
-              return -1
+          const sortResult = result.sort((a, b) => {
+            if (a.group < b.group) {
+              return -1;
             }
-            if(a.group > b.group) {
-              return 1
+            if (a.group > b.group) {
+              return 1;
             }
-            return 0
-          })
-          this.categoryWebhose = sortResult
-          
+            return 0;
+          });
+          this.categoryWebhose = sortResult;
         })
         .catch((err) => {
           console.log(err);
@@ -297,6 +365,7 @@ export default {
   mounted() {
     this.handleCategoryNews();
     this.handleGetAgregratorCategory();
+    this.handleGetNewSiteAgregator()
   },
 };
 </script>

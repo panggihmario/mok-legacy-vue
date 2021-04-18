@@ -39,6 +39,7 @@
               size="medium"
               class="my-3"
               @click="publishNews"
+              :loading="loading"
             >
               Publish
         </custom-button>
@@ -50,19 +51,29 @@
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import moment from 'moment'
 export default {
   data () {
     return {
       categories : [],
-      selectedCategory : {}
+      loading : false,
     }
   },
   computed : {
     ...mapState({
-      previewNewsAgregator : state => state.news.previewNewsAgregator
+      previewNewsAgregator : state => state.news.previewNewsAgregator,
+      category : state => state.news.category,
+      selectedMappingCategory : state => state.news.selectedMappingCategory
     }),
+    selectedCategory : {
+      get () {
+        return this.category
+      },
+      set(value) {
+        return this.setCategory(value)
+      }
+    }
   },
   mounted() {
     this.handleGetMapping()
@@ -71,14 +82,18 @@ export default {
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
       publishNewsAgregator : 'news/publishNewsAgregator',
-      getCategoryNews : 'news/getCategoryNews'
+      getCategoryNews : 'news/getCategoryNews',
+      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory'
+    }),
+    ...mapMutations({
+      setCategory : "news/setCategory",
+      setSelectedToPublish : 'news/setSelectedToPublish'
     }),
     handleGetMapping() {
       return this.getCategoryNews()
         .then(response => {
           const responseData = response.data.data
           this.categories = responseData
-          console.log("categories", responseData)
         })
         .catch(err => {
           console.log(err)
@@ -90,15 +105,31 @@ export default {
       return newDate
     },
     publishNews() {
-      console.log(this.selectedCategory)
-      // return this.publishNewsAgregator(this.previewNewsAgregator)
-      //   .then(response => {
-      //     return this.changeStatusViewNews(false)
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
-    }
+      const payload = {
+        ...this.previewNewsAgregator,
+        postNewsDto : {
+          ...this.previewNewsAgregator.postNewsDto,
+          newsCategory : this.selectedCategory
+        }
+      }
+      this.loading = true
+      return this.publishNewsAgregator(payload)
+        .then(response => {
+          return this.getNewsAgregatorByCategory(this.selectedMappingCategory)
+        })
+        .then(() => {
+          this.loading = false
+          return this.changeStatusViewNews(false)
+        })
+        .then(() => {
+          return this.setSelectedToPublish([])
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    
+      }
+      
   }
 }
 </script>

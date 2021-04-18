@@ -54,7 +54,7 @@ export default {
 		}
 	},
 	mounted () {
-		this.handleResponse()
+		// this.handleResponse()
 	},
 	methods : {
 		...mapActions({

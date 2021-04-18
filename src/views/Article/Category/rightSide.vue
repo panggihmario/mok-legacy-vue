@@ -3,12 +3,12 @@
     <div class="right__title charcoal--text">Kategori - {{category.name}}</div>
     <div class="d-flex justify-space-between align-center">
       <div class="d-flex">
-        <div class="mr-2 charcoal--text right__action">Delete Kategori</div>
+        <div @click="openDialogDelete" class="mr-2 charcoal--text right__action">Delete Kategori</div>
         <div @click="openDialogEdit" class="charcoal--text right__action">Edit Kategori</div>
       </div>
       <div>
         <custom-button color="white"> Batalkan </custom-button>
-        <custom-button class="ml-4" @click="saveMapping" color="primary">
+        <custom-button :loading="loadingSaveMapping" class="ml-4" @click="saveMapping" color="primary">
           Simpan Pengaturan Mapping
         </custom-button>
       </div>
@@ -41,9 +41,10 @@
                 :label="`${child.name}`"
                 dense
                 hide-details
-                v-model="selected"
+                v-model="selectedWebhose"
                 :value="child"
               />
+                <!-- @change="getSelectedWebhose" -->
               </v-col>
           </v-row>
         </div>
@@ -54,6 +55,14 @@
       @closeDialogEdit="closeDialogEdit"
       :category="category"
     />
+    <DialogDelete
+      title="Yakin menghapus category ini?"
+      description="Category yang kamu hapus tidak akan tampil dihalaman category news"
+      :dialog="dialogDelete"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
+      :loading="loading"
+    />
     </div>
   </div>
 </template>
@@ -62,21 +71,60 @@
 <script>
 import { mapActions } from 'vuex'
 import Edit from './edit'
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
-  props : ['categoryWebhose', 'category'],
+  props : ['categoryWebhose', 'category', 'selectedCategoryWebHose'],
   components : {
-    Edit
+    Edit,
+    DialogDelete
+  },
+  computed : {
+    selectedWebhose : {
+      get() {
+        return this.selectedCategoryWebHose
+      },
+      set(value) {
+        this.$emit('getSelectedWebhose',value)
+      }
+    }
   },
   data () {
     return {
       selected : [],
-      dialogEdit : false
+      dialogEdit : false,
+      dialogDelete : false,
+      loading : false,
+      loadingSaveMapping : false
     }
   },
   methods : {
     ...mapActions({
-      mappingCategory : 'news/mappingCategory'
+      mappingCategory : 'news/mappingCategory',
+      deleteCategoryNews : "news/deleteCategoryNews"
     }),
+    closeDialog() {
+      // this.id = "";
+      this.dialogDelete = false;
+    },
+    handleDelete() {
+      this.loading = true
+      return this.deleteCategoryNews(this.category.id)
+        .then((r) => {
+          this.dialogDelete = false;
+          this.loading = false
+          this.$emit('reGetCategory')
+        })
+        .catch((err) => {
+          this.loading = false
+          return err;
+        });
+    },
+    openDialogDelete() {
+      this.dialogDelete = true
+    },
+    getSelectedWebhose(value) {
+      this.$emit('getSelectedWebhose',value)
+    },
     openDialogEdit() {
       this.dialogEdit = true
     },
@@ -90,13 +138,17 @@ export default {
         newsCategory : {
           id : idCategory
         },
-        aggregatorCategories : this.selected
+        aggregatorCategories : this.selectedWebhose,
+        agent : 'WEBHOSE'
       }
+      this.loadingSaveMapping = true
       return this.mappingCategory(payload)
-        .then(response => {
-          console.log(response)
+        .then(() => {
+          this.$emit('finishMappingCategory')
+          this.loadingSaveMapping = false
         })
         .catch(err => {
+          this.loadingSaveMapping = false
           console.log(err)
         })
     }

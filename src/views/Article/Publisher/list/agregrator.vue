@@ -7,6 +7,9 @@
         dense
         item-text="newsCategory.name"
         v-model="selectedMapping"
+        @change="filterAgregator"
+        clearable
+        @click:clear="handleNewsAgregator"
       />
     </div>
     <v-data-table
@@ -20,6 +23,7 @@
       hide-default-footer
       :loading="statusLoading"
       @toggle-select-all="selectAllNews"
+      no-data-text="no data"
     >
       <template v-slot:[`item.action`]="{ item }">
         <custom-button
@@ -39,6 +43,7 @@
           size="medium"
           class="my-3"
           width="101"
+          @click="handlePublishAll"
         >
           Publish All
         </custom-button>
@@ -48,7 +53,7 @@
           <tr
             v-for="(item, key) in items"
             :key="key"
-            :class="key === selectedRow ? 'row__highlight' : 'row__nonhighlight'"
+            :class="key === selectedRow && viewNews ? 'row__highlight' : 'row__nonhighlight'"
           >
             <td>
               <v-checkbox :value="item" color="secondary" v-model="selected" />
@@ -89,10 +94,10 @@ export default {
       statusLoading : false,
       loadingPublish : false,
       isLoading : false,
-      selected: [],
-      newsAgregrator : [],
+      // selected: [],
+      // newsAgregrator : [],
       mappingCategory : [],
-      selectedMapping : 'EKONOMI',
+      selectedMapping : null,
       headers: [
         {
           text: "Tanggal",
@@ -121,9 +126,17 @@ export default {
   computed: {
     ...mapState({
       viewNews: "viewNews",
-      // statusLoading : state => state.news.statusLoading,
-      // newsAgregator :state => state.news.newsAgregator
+      newsAgregrator : state => state.news.newsAgregrator,
+      selectedToPublish :state => state.news.selectedToPublish
     }),
+    selected : {
+      get() {
+        return this.selectedToPublish
+      },
+      set(value) {
+        return this.setSelectedToPublish(value)
+      }
+    }
   },
   mounted() {
     this.handleNewsAgregator()
@@ -133,21 +146,37 @@ export default {
     handlePublish(payload) {
       const params = { ...payload}
       this.statusLoading = true
-      // this.setStatusLoading(true)
       return this.publishNewsAgregator(params)
-        .then(resp => {
-          this.newsAgregrator = []
-          // return this.getAllNewsAgregrator()
-        })
         .then(response=> {
+          return this.handleNewsAgregator()
+        })
+        .then(() => {
           this.statusLoading = false
-          // this.setStatusLoading(false)
-          // this.setNewsAgregator(response)
-          this.selected = []
-          this.newsAgregrator = response
+          return this.setSelectedToPublish([])
         })
         .catch(err => {
           console.log(err)
+          this.statusLoading = false
+        })
+    },
+    handlePublishAll() {
+      console.log("selected", this.selected)
+      const selectedNews = this.selected
+      return this.publishAllNewsAgregator(selectedNews)
+        .then(response => {
+          console.log(response)
+          return this.handleNewsAgregator()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    filterAgregator() {
+      this.selectedMappingCategory(this.selectedMapping)
+      this.statusLoading = true
+      return this.getNewsAgregatorByCategory(this.selectedMapping)
+        .then(() => {
+          this.selected = []
           this.statusLoading = false
         })
     },
@@ -167,29 +196,31 @@ export default {
       getAllNewsAgregrator : 'news/getAllNewsAgregrator',
       publishNewsAgregator: 'news/publishNewsAgregator',
       getMappingCategory : 'news/getMappingCategory',
-      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory'
+      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory',
+      publishAllNewsAgregator : "news/publishAllNewsAgregator"
     }),
     ...mapMutations({
       setPreviewNewsAgregrator : 'news/setPreviewNewsAgregrator',
       setStatusLoading : 'news/setStatusLoading',
-      setNewsAgregator : 'news/setNewsAgregator'
+      setNewsAgregator : 'news/setNewsAgregator',
+      selectedMappingCategory : 'news/selectedMappingCategory',
+      setSelectedToPublish : 'news/setSelectedToPublish'
     }),
     handleGetMapping() {
       return this.getMappingCategory()
         .then(response => {
-          console.log(response)
           this.mappingCategory = response
         })
     },
     handleNewsAgregator () {
-      this.isLoading = true
-      return this.getNewsAgregatorByCategory(this.selectedMapping)
+      this.statusLoading = true
+      return this.getAllNewsAgregrator()
         .then(response => {
-          this.newsAgregrator = response
-          // this.setNewsAgregator(response)
+          this.selected = []
           this.statusLoading = false
         })
         .catch(err => {
+          console.log(err)
           // this.statusLoading = false
         })
     },

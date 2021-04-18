@@ -13,11 +13,12 @@
         <div class="mt-6">
           <v-textarea
             outlined
+            v-model="sourceNews"
           />
         </div>
         <div class="d-flex justify-end">
-          <custom-button class="mr-2">Batalkan</custom-button>
-          <custom-button color="primary">Simpan</custom-button>
+          <custom-button @click="closeDialogSource" class="mr-2">Batalkan</custom-button>
+          <custom-button @click="saveSourceNews" color="primary">Simpan</custom-button>
         </div>
       </v-card-text>
     </v-card>
@@ -25,11 +26,42 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
-  props : ['dialogSource'],
+  props : ['dialogSource', 'dataSiteAgregator'],
+  data () {
+    return {
+      // sourceNews : ''
+    }
+  },
+  computed : {
+    sourceNews : {
+      get() {
+        return  this.dataSiteAgregator
+      },
+      set(value) {
+        this.$emit('setNewDataAgregator', value)
+      }
+    }
+  },
   methods : {
     closeDialogSource() {
       this.$emit('closeDialogSource', false)
+    },
+    ...mapActions({
+      saveNewsSiteAggregator : 'news/saveNewsSiteAggregator'
+    }),
+    saveSourceNews() {
+      console.log(this.sourceNews)
+      const splitValue = this.sourceNews.split(',')
+      console.log(splitValue)
+      const payload = splitValue.map(pay => {
+        return {
+          agent : 'WEBHOSE',
+          name : pay
+        }
+      })
+      console.log(payload)
     }
   }
 }
