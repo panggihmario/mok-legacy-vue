@@ -31,6 +31,12 @@ export default new Vuex.Store({
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
+    viewNews : false
+  },
+  mutations : {
+    setViewNews (state, payload) {
+      state.viewNews = payload
+    }
   },
   getters: {
     appVersion: (state) => {
@@ -38,6 +44,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    changeStatusViewNews({commit}, params) {
+      commit('setViewNews', params)
+    },
     getWithToken(ctx, params) {
       return this._vm.$httpWithToken().get(params);
     },
