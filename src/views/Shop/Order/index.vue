@@ -2,11 +2,11 @@
   <div>
     <HeaderContent label="Order List" :list="crumbs" />
     <div class="d-flex justify-space-between mb-6">
-      <div class="d-flex">
+      <div class="d-flex flex-wrap">
         <div
           v-for="(item, idx) in tabLabel"
           :key="idx"
-          class="d-flex justify-center align-center font-12 box-tab mr-3 pa-2"
+          class="d-flex justify-center align-center font-12 box-tab mb-2 mr-3 py-2 px-4"
           :class="{ 'primarylowtint primary--text': tab == idx + 1 }"
           @click="moveTab(idx + 1)"
         >
@@ -33,7 +33,10 @@
     </div>
 
     <div v-if="isSearch">
-      <Table-Search :items="searchItems"></Table-Search>
+      <Table-Search
+        :items="searchItems"
+        :loading="searchLoading"
+      ></Table-Search>
     </div>
     <div v-else>
       <Table-All v-if="tab == 1"></Table-All>
@@ -105,6 +108,7 @@ export default {
       isSearch: false,
       searchValue: "",
       searchItems: [],
+      searchLoading: false,
     };
   },
   watch: {
@@ -128,14 +132,17 @@ export default {
         .catch();
     },
     handleGetOrderSearch() {
+      this.isSearch = true;
+      this.searchLoading = true;
       return this.getOrderSearch(this.searchValue)
         .then((response) => {
-          this.isSearch = true;
+          this.searchLoading = false;
           this.searchItems = response.data.data;
-          console.log(response);
         })
         .catch((err) => {
+          console.error(err);
           this.isSearch = false;
+          this.searchLoading = false;
         });
     },
     moveTab(i) {
