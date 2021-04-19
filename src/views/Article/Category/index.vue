@@ -206,6 +206,7 @@ export default {
     },
     closeDialogSource(payload) {
       this.dialogSource = payload;
+      return this.handleGetNewSiteAgregator()
     },
     open() {
       this.snack = true;

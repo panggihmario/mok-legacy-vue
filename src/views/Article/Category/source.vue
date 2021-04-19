@@ -18,7 +18,7 @@
         </div>
         <div class="d-flex justify-end">
           <custom-button @click="closeDialogSource" class="mr-2">Batalkan</custom-button>
-          <custom-button @click="saveSourceNews" color="primary">Simpan</custom-button>
+          <custom-button :loading="loading" @click="saveSourceNews" color="primary">Simpan</custom-button>
         </div>
       </v-card-text>
     </v-card>
@@ -31,7 +31,7 @@ export default {
   props : ['dialogSource', 'dataSiteAgregator'],
   data () {
     return {
-      // sourceNews : ''
+      loading : false
     }
   },
   computed : {
@@ -52,16 +52,23 @@ export default {
       saveNewsSiteAggregator : 'news/saveNewsSiteAggregator'
     }),
     saveSourceNews() {
-      console.log(this.sourceNews)
+      this.loading = true
       const splitValue = this.sourceNews.split(',')
-      console.log(splitValue)
       const payload = splitValue.map(pay => {
         return {
           agent : 'WEBHOSE',
           name : pay
         }
       })
-      console.log(payload)
+      return this.saveNewsSiteAggregator(payload)
+        .then(() => {
+          this.loading = false
+          this.closeDialogSource()
+        })
+        .catch(err => {
+          this.loading = false
+          console.log(err)
+        })
     }
   }
 }

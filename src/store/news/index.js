@@ -278,7 +278,7 @@ export default {
         })
     },
     saveNewsSiteAggregator({state},payload) {
-      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/sites`)
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/sites`, payload)
       .then(response => {
         return response
       })
