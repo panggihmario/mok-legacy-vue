@@ -1,7 +1,13 @@
 <template>
-  <v-navigation-drawer  floating color="whitesnow"  app width="470" permanent right>
+  <v-navigation-drawer  floating color="whitesnow"  app width="400" permanent right>
     <!-- <template v-slot:prepend> -->
       <div class="preview__container overflow-y-auto">
+        <div>
+          <custom-button @click="closePreview" size="small" class="mb-2">
+            <v-icon size="9" color="charcoal" class="mr-2">$close</v-icon>
+            <div class="charcoal--text">Close</div>
+          </custom-button>
+        </div>
         <div class="preview__title">
           {{previewNewsAgregator.postNewsDto.title}}
         </div>
@@ -12,11 +18,11 @@
           />
         </div>
         <div class="preview__created">
-          {{formatDate(previewNewsAgregator.postNewsDto.createAt)}} Sumber - {{previewNewsAgregator.agent}}
+          {{formatDate(previewNewsAgregator.postNewsDto.createAt)}} Sumber - {{previewNewsAgregator.postNewsDto.siteReference}}
         </div>
         <div class="preview__publisher">
-          <div>Penyunting {{previewNewsAgregator.postNewsDto.publisher}} </div>
-          <div>Penulis {{previewNewsAgregator.postNewsDto.editor}}</div>
+          <div v-if="previewNewsAgregator.postNewsDto.publisher">Penyunting {{previewNewsAgregator.postNewsDto.publisher}} </div>
+          <div v-if="previewNewsAgregator.postNewsDto.editor">Penulis {{previewNewsAgregator.postNewsDto.editor}}</div>
         </div>
         <div class="preview__content" v-html="previewNewsAgregator.postNewsDto.content">
 
@@ -24,6 +30,7 @@
         <div>
           <div class="preview__footer-text">Kategori News</div>
           <div>
+            {{this.category}}
             <v-select
               :items="categories"
               dense
@@ -58,6 +65,7 @@ export default {
     return {
       categories : [],
       loading : false,
+      cat : {},
     }
   },
   computed : {
@@ -89,6 +97,9 @@ export default {
       setCategory : "news/setCategory",
       setSelectedToPublish : 'news/setSelectedToPublish'
     }),
+    closePreview() {
+      return this.changeStatusViewNews(false)
+    },
     handleGetMapping() {
       return this.getCategoryNews()
         .then(response => {
@@ -147,7 +158,7 @@ export default {
     font-weight: bold
   &__image-container
     width: 100%
-    height: 219px
+    height: 170px
     border-radius: 8px
     margin-top: 18px
   &__created

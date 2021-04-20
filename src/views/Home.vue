@@ -37,7 +37,7 @@ export default {
 }
 
 .auto-space-right {
-  padding-right: 470px;
+  padding-right: 300px;
   padding-left: 180px;
 }
 
