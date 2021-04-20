@@ -15,7 +15,7 @@
       </div>
     </div>
       <custom-input
-        placeholder="Cari kategori berita"
+        placeholder="Search"
         colorbg="white"
         outlined
         dense

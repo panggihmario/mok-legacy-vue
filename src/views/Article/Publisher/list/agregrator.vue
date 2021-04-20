@@ -75,7 +75,6 @@
               >
                 Publish
               </custom-button>
-              <!-- <v-btn  :loading="statusLoading" >test</v-btn> -->
             </td>
           </tr>
         </tbody>
@@ -102,22 +101,22 @@ export default {
         {
           text: "Tanggal",
           value: "createAt",
-          width: "100",
+          width: "10",
         },
         {
           text: "Sumber",
           value: "siteReference",
-          width: "150",
+          width : '5'
         },
         {
           text: "Headline",
           value: "title",
-          // width: "200",
+          width : '300'
         },
         {
           text: "",
           value: "action",
-          width: "250",
+          width: "100",
           align: "start",
         },
       ],
