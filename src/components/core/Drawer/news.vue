@@ -30,7 +30,6 @@
         <div>
           <div class="preview__footer-text">Kategori News</div>
           <div>
-            {{this.category}}
             <v-select
               :items="categories"
               dense
