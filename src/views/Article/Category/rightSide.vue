@@ -25,26 +25,31 @@
         placeholder="Cari kategori berita"
         colorbg="white"
         append-icon="search"
+        v-model="dataSearch"
       />
     </div>
     <div>
       <div 
         class="d-flex"
-        v-for="(cate, idx) in categoryWebhose"
+        v-for="(cate, idx) in resultCategory"
         :key="idx"
       >
         <div class="mr-4 text-uppercase right__group-label">{{cate.group}}</div>
         <div>
           <v-row no-gutters>
             <v-col  cols="6" v-for="(child, idx) in cate.children"  :key="idx">
-              <v-checkbox
+              <!-- <v-checkbox
                 :label="`${child.name}`"
                 dense
                 hide-details
-                v-model="selectedWebhose"
+                v-model="test"
                 :value="child"
-              />
-                <!-- @change="getSelectedWebhose" -->
+                @change="getSelectedWebhose"
+              /> -->
+              <div class="d-flex align-center">
+                <input  type="checkbox" v-model="selectedWebhose" :value="child" >
+                <div class="ml-2" >{{child.name}}</div>
+              </div>
               </v-col>
           </v-row>
         </div>
@@ -72,11 +77,13 @@
 import { mapActions } from 'vuex'
 import Edit from './edit'
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
+import Label from '../../../components/material/Input/label.vue';
 export default {
   props : ['categoryWebhose', 'category', 'selectedCategoryWebHose'],
   components : {
     Edit,
-    DialogDelete
+    DialogDelete,
+    Label
   },
   computed : {
     selectedWebhose : {
@@ -86,15 +93,40 @@ export default {
       set(value) {
         this.$emit('getSelectedWebhose',value)
       }
+    },
+    resultCategory () {
+      if(this.dataSearch) {
+        const search = this.dataSearch.toLowerCase().trim()
+        const data = this.categoryWebhose.map((item) => {
+          return {
+            ...item,
+            children : item.children.filter(cat => {
+              return cat.name.toLowerCase().includes(search)
+            })
+          }
+        })
+        const newDataFilter = data.filter(d => {
+          if(d.children.length > 0) {
+            return d
+          }
+        })
+        return newDataFilter
+      }else{
+        return this.categoryWebhose
+      }
     }
   },
+
   data () {
     return {
+      test : [],
       selected : [],
+      autoFilter : [],
       dialogEdit : false,
       dialogDelete : false,
       loading : false,
-      loadingSaveMapping : false
+      loadingSaveMapping : false,
+      dataSearch : ''
     }
   },
   methods : {
@@ -102,6 +134,12 @@ export default {
       mappingCategory : 'news/mappingCategory',
       deleteCategoryNews : "news/deleteCategoryNews"
     }),
+    comparator(a,b) {
+      console.log(a, "===")
+    },
+    toggleSearch() {
+      this.$emit("searchCategoryWebhose",this.dataSearch)
+    },
     closeDialog() {
       // this.id = "";
       this.dialogDelete = false;
@@ -180,7 +218,7 @@ export default {
     font-size: 12px
     letter-spacing: 0.01em
   &__group-label
-    padding-top: 8px
+    padding-top: 4px
 </style>
 
 <style scoped>

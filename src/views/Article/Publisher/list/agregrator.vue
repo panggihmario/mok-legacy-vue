@@ -1,15 +1,25 @@
 <template>
   <div>
-    <div class="d-flex">
-      <div class="mt-2 mr-2 agg__filter">Filter</div>
-      <custom-select
-        :items="mappingCategory"
+    <div class="d-flex justify-space-between">
+      <div class="d-flex">
+        <div class="mt-2 mr-2 agg__filter">Filter</div>
+        <custom-select
+          :items="mappingCategory"
+          dense
+          item-text="newsCategory.name"
+          v-model="selectedMapping"
+          @change="filterAgregator"
+          clearable
+          @click:clear="handleNewsAgregator"
+          class="mr-4"
+        />
+      </div>
+      <custom-input
+        placeholder="Search"
+        v-model="searchNewsAg"
+        size="small"
         dense
-        item-text="newsCategory.name"
-        v-model="selectedMapping"
-        @change="filterAgregator"
-        clearable
-        @click:clear="handleNewsAgregator"
+        @keyup.enter="filterAgregator"
       />
     </div>
     <v-data-table
@@ -18,9 +28,7 @@
       item-key="idNewsExternal"
       class="my-table"
       show-select
-      disable-pagination
       v-model="selected"
-      hide-default-footer
       :loading="statusLoading"
       @toggle-select-all="selectAllNews"
       no-data-text="no data"
@@ -53,10 +61,20 @@
           <tr
             v-for="(item, key) in items"
             :key="key"
-            :class="key === selectedRow && viewNews ? 'row__highlight' : 'row__nonhighlight'"
+            :class="
+              key === selectedRow && viewNews
+                ? 'row__highlight'
+                : 'row__nonhighlight'
+            "
           >
             <td>
-              <v-checkbox :value="item" color="secondary" v-model="selected" />
+              <!-- <v-checkbox  :value="item" color="secondary" v-model="selected" /> -->
+              <input
+                style="width: 20px"
+                type="checkbox"
+                v-model="selected"
+                :value="item"
+              />
             </td>
             <td>{{ formatingDate(item.postNewsDto.createAt) }}</td>
             <td>{{ item.postNewsDto.siteReference }}</td>
@@ -70,7 +88,6 @@
                 size="medium"
                 class="my-3"
                 width="101"
-
                 @click="handlePublish(item)"
               >
                 Publish
@@ -90,13 +107,13 @@ export default {
     return {
       singleSelect: false,
       selectedRow: null,
-      statusLoading : false,
-      loadingPublish : false,
-      isLoading : false,
-      // selected: [],
+      statusLoading: false,
+      loadingPublish: false,
+      isLoading: false,
+      searchNewsAg: "",
       // newsAgregrator : [],
-      mappingCategory : [],
-      selectedMapping : null,
+      mappingCategory: [],
+      selectedMapping: null,
       headers: [
         {
           text: "Tanggal",
@@ -106,12 +123,12 @@ export default {
         {
           text: "Sumber",
           value: "siteReference",
-          width : '5'
+          width: "5",
         },
         {
           text: "Headline",
           value: "title",
-          width : '300'
+          width: "300",
         },
         {
           text: "",
@@ -125,59 +142,70 @@ export default {
   computed: {
     ...mapState({
       viewNews: "viewNews",
-      newsAgregrator : state => state.news.newsAgregrator,
-      selectedToPublish :state => state.news.selectedToPublish
+      newsAgregrator: (state) => state.news.newsAgregrator,
+      selectedToPublish: (state) => state.news.selectedToPublish,
     }),
-    selected : {
+    selected: {
       get() {
-        return this.selectedToPublish
+        return this.selectedToPublish;
       },
       set(value) {
-        return this.setSelectedToPublish(value)
-      }
-    }
+        return this.setSelectedToPublish(value);
+      },
+    },
   },
   mounted() {
-    this.handleNewsAgregator()
-    this.handleGetMapping()
+    this.handleNewsAgregator();
+    this.handleGetMapping();
   },
   methods: {
     handlePublish(payload) {
-      const params = { ...payload}
-      this.statusLoading = true
+      const params = { ...payload };
+      this.statusLoading = true;
       return this.publishNewsAgregator(params)
-        .then(response=> {
-          return this.handleNewsAgregator()
+        .then((response) => {
+          return this.handleNewsAgregator();
         })
         .then(() => {
-          this.statusLoading = false
-          return this.setSelectedToPublish([])
+          this.statusLoading = false;
+          return this.setSelectedToPublish([]);
         })
-        .catch(err => {
-          console.log(err)
-          this.statusLoading = false
-        })
+        .catch((err) => {
+          console.log(err);
+          this.statusLoading = false;
+        });
     },
     handlePublishAll() {
-      console.log("selected", this.selected)
-      const selectedNews = this.selected
+      const selectedNews = this.selected;
       return this.publishAllNewsAgregator(selectedNews)
-        .then(response => {
-          console.log(response)
-          return this.handleNewsAgregator()
+        .then((response) => {
+          return this.handleNewsAgregator();
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getSearchNews() {
+      const payload = {
+        category: this.selectedMapping,
+        keyword: {
+          search: this.searchNewsAg,
+        },
+      };
     },
     filterAgregator() {
-      this.selectedMappingCategory(this.selectedMapping)
-      this.statusLoading = true
-      return this.getNewsAgregatorByCategory(this.selectedMapping)
-        .then(() => {
-          this.selected = []
-          this.statusLoading = false
-        })
+      const payload = {
+        category: this.selectedMapping,
+        keyword: {
+          search: this.searchNewsAg,
+        },
+      };
+      this.selectedMappingCategory(this.selectedMapping);
+      this.statusLoading = true;
+      return this.getNewsAgregatorByCategory(payload).then(() => {
+        this.selected = [];
+        this.statusLoading = false;
+      });
     },
     isEnabled(slot) {
       return this.enabled === slot;
@@ -192,47 +220,45 @@ export default {
     },
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
-      getAllNewsAgregrator : 'news/getAllNewsAgregrator',
-      publishNewsAgregator: 'news/publishNewsAgregator',
-      getMappingCategory : 'news/getMappingCategory',
-      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory',
-      publishAllNewsAgregator : "news/publishAllNewsAgregator"
+      getAllNewsAgregrator: "news/getAllNewsAgregrator",
+      publishNewsAgregator: "news/publishNewsAgregator",
+      getMappingCategory: "news/getMappingCategory",
+      getNewsAgregatorByCategory: "news/getNewsAgregatorByCategory",
+      publishAllNewsAgregator: "news/publishAllNewsAgregator",
     }),
     ...mapMutations({
-      setPreviewNewsAgregrator : 'news/setPreviewNewsAgregrator',
-      setStatusLoading : 'news/setStatusLoading',
-      setNewsAgregator : 'news/setNewsAgregator',
-      selectedMappingCategory : 'news/selectedMappingCategory',
-      setSelectedToPublish : 'news/setSelectedToPublish'
+      setPreviewNewsAgregrator: "news/setPreviewNewsAgregrator",
+      setStatusLoading: "news/setStatusLoading",
+      setNewsAgregator: "news/setNewsAgregator",
+      selectedMappingCategory: "news/selectedMappingCategory",
+      setSelectedToPublish: "news/setSelectedToPublish",
     }),
     handleGetMapping() {
-      return this.getMappingCategory()
-        .then(response => {
-          this.mappingCategory = response
-        })
+      return this.getMappingCategory().then((response) => {
+        this.mappingCategory = response;
+      });
     },
-    handleNewsAgregator () {
-      this.statusLoading = true
+    handleNewsAgregator() {
+      this.statusLoading = true;
       return this.getAllNewsAgregrator()
-        .then(response => {
-          this.selected = []
-          this.statusLoading = false
+        .then((response) => {
+          this.selected = [];
+          this.statusLoading = false;
         })
-        .catch(err => {
-          console.log(err)
+        .catch((err) => {
+          console.log(err);
           // this.statusLoading = false
-        })
+        });
     },
     openSideViewNews(data, idx) {
       this.selectedRow = idx;
-      this.setPreviewNewsAgregrator(data)
+      this.setPreviewNewsAgregrator(data);
       return this.changeStatusViewNews(true);
     },
     selectAllNews(items, value) {
-      console.log({items})
-    }
+      console.log({ items });
+    },
   },
-  
 };
 </script>
 

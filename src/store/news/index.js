@@ -246,7 +246,11 @@ export default {
         })
     },
     getNewsAgregatorByCategory({state, commit}, payload) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload}`)
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload.category}`,{
+        params : {
+          ...payload.keyword
+        }
+      })
         .then(response => {
           const responseData = response.data.data
           commit('setNewsAgregator', responseData)

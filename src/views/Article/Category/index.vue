@@ -99,6 +99,7 @@
           :selectedCategoryWebHose="selectedCategoryWebHose"
           @getSelectedWebhose="getSelectedWebhose"
           @finishMappingCategory="finishMappingCategory"
+          @searchCategoryWebhose="searchCategoryWebhose"
         />
       </v-col>
     </v-row>
@@ -179,6 +180,23 @@ export default {
   methods: {
     editSource() {
       this.dialogSource = true;
+    },
+    searchCategoryWebhose(value) {
+      const tempCategory = this.categoryWebhose
+      if(value) {
+        const searchValue = value.toLowerCase().trim()
+        const data = tempCategory.map(item => {
+          return {
+            ...item,
+            children : item.children.filter(d => {
+              return d.name.toLowerCase().includes(searchValue)
+            })
+          }
+        })
+        this.categoryWebhose = data
+      }else{
+        this.categoryWebhose = tempCategory
+      }
     },
     setNewDataAgregator(value) {
       this.dataSiteAgregator = value

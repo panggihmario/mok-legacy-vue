@@ -90,7 +90,8 @@ export default {
       changeStatusViewNews: "changeStatusViewNews",
       publishNewsAgregator : 'news/publishNewsAgregator',
       getCategoryNews : 'news/getCategoryNews',
-      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory'
+      getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory',
+      getAllNewsAgregrator : 'news/getAllNewsAgregrator'
     }),
     ...mapMutations({
       setCategory : "news/setCategory",
@@ -125,7 +126,7 @@ export default {
       this.loading = true
       return this.publishNewsAgregator(payload)
         .then(response => {
-          return this.getNewsAgregatorByCategory(this.selectedMappingCategory)
+          return this.getAllNewsAgregrator()
         })
         .then(() => {
           this.loading = false
