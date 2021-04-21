@@ -218,7 +218,7 @@ export default {
     font-size: 12px
     letter-spacing: 0.01em
   &__group-label
-    padding-top: 8px
+    padding-top: 4px
 </style>
 
 <style scoped>
