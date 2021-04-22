@@ -19,7 +19,7 @@
         v-model="searchNewsAg"
         size="small"
         dense
-        @keyup.enter="filterAgregator"
+        @keyup.enter="getSearchNews"
       />
     </div>
     <v-data-table
@@ -187,11 +187,13 @@ export default {
     },
     getSearchNews() {
       const payload = {
-        category: this.selectedMapping,
-        keyword: {
           search: this.searchNewsAg,
-        },
       };
+      if(this.selectedMapping) {
+        return this.filterAgregator()
+      }else{
+        return this.getAllNewsAgregrator(payload)
+      }
     },
     filterAgregator() {
       const payload = {

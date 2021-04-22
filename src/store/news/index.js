@@ -234,8 +234,12 @@ export default {
           throw err
         })
     },
-    getAllNewsAgregrator({state, commit}) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview`)
+    getAllNewsAgregrator({state, commit}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview`,{
+        params : {
+          ...payload
+        }
+      })
         .then(response => {
           const responseData = response.data.data
           commit('setNewsAgregator', responseData)

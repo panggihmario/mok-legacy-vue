@@ -1,14 +1,6 @@
 <template>
   <div>
-    <HeaderContent label="Kategori News">
-      <!-- <custom-button
-        color="primary"
-        class="white--text"
-        @click="moveToCreateCategory"
-      >
-        Buat Kategori News
-      </custom-button> -->
-    </HeaderContent>
+    <HeaderContent label="Kategori News"/>
 
     <div class="category__top-container">
       <div class="category__top-header">Sumber Berita</div>
@@ -39,33 +31,6 @@
           disable-pagination
           hide-default-footer
         >
-          <template v-slot:[`item.sequence`]="props">
-            <v-edit-dialog
-              :return-value.sync="props.item.sequence"
-              @open="open"
-              @close="close"
-              @save="save(props.item)"
-              @cancel="cancel"
-            >
-              {{ props.item.sequence }}
-              <template v-slot:input>
-                <v-text-field
-                  v-model="props.item.sequence"
-                  single-line
-                  label="Edit"
-                  type="number"
-                />
-              </template>
-            </v-edit-dialog>
-          </template>
-          <!-- <template v-slot:[`item.actions`]="{ item }">
-            <v-btn @click="moveToEdit(item.id)" icon>
-              <v-icon x-small>$edit</v-icon>
-            </v-btn>
-            <v-btn @click="openDialogDelete(item.id)" icon>
-              <v-icon x-small>$delete</v-icon>
-            </v-btn>
-          </template> -->
           <template v-slot:header.action>
             <custom-button
               color="primary"
@@ -83,7 +48,24 @@
                 @click="selectRow(item, idx)"
                 :class="idx === indexRow ? 'row__highlight' : ''"
               >
-                <td>{{ item.sequence }}</td>
+                <td>
+                  <v-edit-dialog
+                    :return-value.sync="item.sequence"
+                    @open="open"
+                    @close="close"
+                    @save="save(item)"
+                    @cancel="cancel"
+                  >
+                    {{item.sequence}}
+                    <template v-slot:input>
+                      <v-text-field
+                        v-model="item.sequence"
+                        label="Edit"
+                        single-line
+                      />
+                    </template>
+                  </v-edit-dialog>
+                </td>
                 <td>{{ item.name }}</td>
                 <td></td>
               </tr>
@@ -338,6 +320,9 @@ export default {
                   ...c,
                   aggregatorCategories : []
                 }
+          })
+          newMapping.sort((a,b) => {
+            return (b.sequence != null) - (a.sequence != null) || a.sequence - b.sequence;
           })
           this.items = newMapping
         })
