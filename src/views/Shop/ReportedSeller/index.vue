@@ -20,7 +20,7 @@
 			:items="data"
 		>
 			<template v-slot:item.action>
-				<custom-button @click="moveToDetail" class="carmine--text">Read Report</custom-button>
+				<custom-button @click="moveToDetail" class="grey--text">Read Report</custom-button>
 			</template>
 		</v-data-table>
   </div>

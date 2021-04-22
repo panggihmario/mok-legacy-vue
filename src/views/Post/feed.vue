@@ -2,12 +2,12 @@
   <div>
     <HeaderContent :list="list" label="List Feed">
       <custom-button
-        color="carmine"
+        color="primary"
         @click="moveToPostProduct"
         class="white--text mr-6"
         >Post Product</custom-button
       >
-      <custom-button color="carmine" class="white--text" @click="moveToCreate"
+      <custom-button color="primary" class="white--text" @click="moveToCreate"
         >Post Feed</custom-button
       >
     </HeaderContent>

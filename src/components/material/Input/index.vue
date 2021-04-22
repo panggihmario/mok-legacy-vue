@@ -9,7 +9,7 @@
       :value="value"
       v-on="inputListener"
       :error-messages="errors"
-      background-color="whitesnow"
+      :background-color="colorbg"
     ></v-text-field>
   </ValidationProvider>
 </template>
@@ -29,6 +29,10 @@ export default {
     },
     rules: {
       type: String
+    },
+    colorbg : {
+      type : String,
+      default : 'whitesnow'
     }
   },
   computed: {

@@ -2,6 +2,34 @@ export default {
   namespaced: true,
   state: {
     pathNews: "admin/news",
+    previewNewsAgregator : {},
+    statusLoading : false,
+    newsAgregrator : [],
+    category : {},
+    selectedMappingCategory : "",
+    selectedToPublish : []
+  },
+  mutations : {
+    setSelectedToPublish(state, payload) {
+      state.selectedToPublish = payload
+    },
+    setPreviewNewsAgregrator (state, payload) {
+      state.previewNewsAgregator = payload
+      state.category = payload.postNewsDto.newsCategory
+      console.log(payload)
+    },
+    setCategory (state, payload) {
+      state.category = payload
+    },
+    setStatusLoading(state, payload) {
+      state.statusLoading = payload
+    },
+    selectedMappingCategory(state, payload) {
+      state.selectedMappingCategory = payload
+    },
+    setNewsAgregator(state, payload) {
+      state.newsAgregrator = payload
+    }
   },
   actions: {
     createCategoryNews({ state }, payload) {
@@ -186,5 +214,94 @@ export default {
         return error;
       }
     },
+    async getCategoryAgregrator({state}) {
+      let response;
+      try {
+        response = await this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/category`)
+        const responseData = response.data.data
+        return responseData
+      }
+      catch(error) {
+        throw error
+      } 
+    },
+    mappingCategory ({state}, payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/mappingcategory`, payload)
+        .then(response => {
+          return response
+        })
+        .catch(err => {
+          throw err
+        })
+    },
+    getAllNewsAgregrator({state, commit}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview`,{
+        params : {
+          ...payload
+        }
+      })
+        .then(response => {
+          const responseData = response.data.data
+          commit('setNewsAgregator', responseData)
+          return responseData
+        })
+        .catch(error => {
+          throw error
+        })
+    },
+    getNewsAgregatorByCategory({state, commit}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload.category}`,{
+        params : {
+          ...payload.keyword
+        }
+      })
+        .then(response => {
+          const responseData = response.data.data
+          commit('setNewsAgregator', responseData)
+          return responseData
+        })
+        .catch(err => {
+          throw err
+        })
+    },
+    publishNewsAgregator({state, commit}, payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publish`, payload)
+        .then(response => {
+          return response
+        })
+        .catch(err => {throw err})
+    },
+    publishAllNewsAgregator({state}, payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publishall`, payload)
+        .then(response => {return response})
+        .catch(err => { throw err })
+    },
+    getMappingCategory({state}) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/mappingcategory`)
+        .then(response=> {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(error => {
+          return error
+        })
+    },
+    saveNewsSiteAggregator({state},payload) {
+      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/sites`, payload)
+      .then(response => {
+        return response
+      })
+      .catch(err => {
+        throw err
+      })
+    },
+    getNewSiteAgregator({state}) {
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/sites`)
+        .then(response => {
+          const responseData = response.data
+          return responseData
+        })
+        .catch(err => {throw err})
+    }
   },
 };
