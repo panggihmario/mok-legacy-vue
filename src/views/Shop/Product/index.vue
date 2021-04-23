@@ -10,19 +10,17 @@
       </custom-button>
     </HeaderContent>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="8" class="d-flex">
         <div class="d-flex align-center">
-          <div class="mb-8 mr-2">Sort</div>
+          <span class="mb-8 mr-2">Sort</span>
           <custom-select :items="sortList" v-model="selection" />
         </div>
-      </v-col>
-      <v-col cols="3">
-        <div class="d-flex align-center">
-          <div class="mb-8 mr-2">Filter</div>
+        <div class="d-flex align-center ml-4">
+          <span class="mb-8 mr-2">Filter</span>
           <custom-select :items="filterList" v-model="filter" />
         </div>
       </v-col>
-      <v-col cols="3" offset="4">
+      <v-col cols="4" class="d-flex justify-end">
         <custom-input placeholder="search" />
       </v-col>
     </v-row>

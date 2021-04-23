@@ -111,6 +111,9 @@ export default {
       const payload = {
         type: "cs",
         status: "new",
+        params: {
+          sort: "ASC",
+        },
       };
       const response = await this.getListComplaint(payload);
       if (response.status === 200) {
@@ -124,6 +127,9 @@ export default {
       const payload = {
         type: "spv",
         status: "new",
+        params: {
+          sort: "ASC",
+        },
       };
       const response = await this.getListComplaint(payload);
       if (response.status === 200) {

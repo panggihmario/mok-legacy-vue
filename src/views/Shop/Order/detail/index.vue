@@ -1,6 +1,9 @@
 <template>
   <v-dialog v-model="dialog" width="726" @click:outside="closeDialog">
-    <v-card v-if="!detailItems" class="d-flex justify-center align-center">
+    <v-card
+      v-if="!detailItems"
+      class="d-flex justify-center align-center py-12"
+    >
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-card>
 
