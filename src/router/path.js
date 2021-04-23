@@ -221,11 +221,11 @@ const routes = [
         name: "categoryNews",
         component: CategoryNews,
       },
-      {
-        path: "/categorynews/create",
-        name: "categoryNewsCreate",
-        component: CategoryNewsCreate,
-      },
+      // {
+      //   path: "/categorynews/create",
+      //   name: "categoryNewsCreate",
+      //   component: CategoryNewsCreate,
+      // },
       {
         path: "/categorynews/:id",
         name: "categoryNewsEdit",

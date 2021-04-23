@@ -3,7 +3,7 @@
     v-on="$listeners"
     v-bind="$attrs"
     class="custom-button"
-    size="default"
+    :size="size"
     depressed
     :style="classSize"
   >

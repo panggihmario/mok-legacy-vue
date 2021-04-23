@@ -1,7 +1,6 @@
 <template>
   <custom-form :onSubmit="handleSubmit">
     <custom-input
-      label="Category Name"
       v-model="name"
       :value="name"
       rules="required"
