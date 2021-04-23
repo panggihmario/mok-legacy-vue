@@ -2,23 +2,27 @@
   <div>
     <HeaderContent :list="list" label="List Feed">
       <custom-button
-        color="carmine"
+        color="primary"
         @click="moveToPostProduct"
         class="white--text mr-6"
-      >Post Product</custom-button>
-      <custom-button color="carmine" class="white--text" @click="moveToCreate">Post Feed</custom-button>
+        >Post Product</custom-button
+      >
+      <custom-button color="primary" class="white--text" @click="moveToCreate"
+        >Post Feed</custom-button
+      >
     </HeaderContent>
     <v-data-table :headers="headers" hide-default-footer :items="items" class="grey--text">
-      <template v-slot:item.image="{ item }">
+      <template v-slot:[`item.image`]="{ item }">
         <custom-button
           color="carmine"
           class="white--text"
           @click="showMedia(item)"
           size="small"
-        >Show Media</custom-button>
+          >Show Media</custom-button
+        >
       </template>
 
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <custom-button @click="openModalDelete(item.id)" size="small">
           <v-icon small color="carmine">delete</v-icon>
         </custom-button>
@@ -50,9 +54,9 @@
     <Dialog-Delete
       title="Yakin menghapus feed ini?"
       description="Feed yang kamu hapus tidak akan tampil di halaman feed lagi"
-      :dialog="dialogDelete"
-      :closeModalDelete="closeModalDelete"
-      :handleDelete="deleteFeed"
+      :dialog="dialog"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
     ></Dialog-Delete>
   </div>
 </template>
@@ -60,11 +64,11 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
   },
   data() {
     return {
@@ -74,17 +78,17 @@ export default {
       totalPage: 0,
       dialog: false,
       dialogMedia: {},
-      dialogDelete: false,
+      dialog: false,
       loading: false,
       list: [
         {
           text: "Post",
           disabled: false,
-          href: "post"
+          href: "post",
         },
         {
-          text: "List Feed"
-        }
+          text: "List Feed",
+        },
       ],
       items: [],
       itemsDummy: [
@@ -92,14 +96,14 @@ export default {
           date: "06/06/20",
           image: "",
           description: "coba aja dl",
-          type: "Type"
+          type: "Type",
         },
         {
           date: "06/06/20",
           image: "",
           description: "coba aja dl22",
-          type: "Type"
-        }
+          type: "Type",
+        },
       ],
       headers: [
         {
@@ -108,7 +112,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "100"
+          width: "100",
         },
         {
           text: "Photo Feed/Product",
@@ -116,21 +120,21 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "190"
+          width: "190",
         },
         {
           text: "Deskripsi Feed/Product",
           value: "description",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Type Post",
           value: "type",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           value: "action",
@@ -138,9 +142,9 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 200
-        }
-      ]
+          width: 200,
+        },
+      ],
     };
   },
   mounted() {
@@ -149,10 +153,9 @@ export default {
   methods: {
     ...mapActions({
       getListFeed: "post/getListFeed",
-      deletePost: "post/deletePost"
+      deletePost: "post/deletePost",
     }),
     showMedia(payload) {
-			console.log(payload)
       this.dialog = true;
       this.dialogMedia = payload.media[0];
     },
@@ -171,23 +174,23 @@ export default {
       this.$router.push("/post/product");
     },
     openModalDelete(id) {
-      this.dialogDelete = true;
+      this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
-      this.dialogDelete = false;
+    closeDialog() {
+      this.dialog = false;
       this.idUser = "";
     },
-    async deleteFeed() {
+    async handleDelete() {
       const id = this.idUser;
       const response = await this.deletePost(id);
       if (response.status === 200) {
         this.handleListFeed();
-        this.dialogDelete = false;
+        this.dialog = false;
         this.idUser = "";
         this.loading = false;
       } else {
-        this.dialogDelete = false;
+        this.dialog = false;
         this.idUser = "";
         this.loading = false;
       }
@@ -197,14 +200,13 @@ export default {
       const payload = {
         id: id,
         typePost: "seleb",
-        page: this.page - 1
+        page: this.page - 1,
       };
       this.getResponseFeed(payload);
     },
     getResponseFeed(payload) {
       return this.getListFeed(payload)
         .then(response => {
-					console.log(response)
           const content = response.data.data.content;
           this.totalPage = response.data.data.totalPages;
           const formatingContent = content.map(c => {
@@ -228,10 +230,10 @@ export default {
       const payload = {
         id: id,
         typePost: "seleb",
-        page: 0
+        page: 0,
       };
       this.getResponseFeed(payload);
-    }
-  }
+    },
+  },
 };
 </script>

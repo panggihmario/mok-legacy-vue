@@ -1,6 +1,6 @@
 <template>
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
-    <label-field class="mb-4">{{label}}</label-field>
+    <label-field class="mb-4">{{ label }}</label-field>
     <v-select
       v-on="selectListeners"
       :items="items"
@@ -10,7 +10,7 @@
       :value="value"
       v-bind="$attrs"
       class="field"
-      background-color="whitesnow"
+      :background-color="background"
       full-width
     />
   </ValidationProvider>
@@ -21,18 +21,22 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => ["Foo", "Bar"]
+      // default: () => ["Foo", "Bar"]
     },
     rules: {
-      type: String
+      type: String,
     },
     name: {
-      type: String
+      type: String,
     },
     value: {},
     label: {
-      type: String
-    }
+      type: String,
+    },
+    background: {
+      type: String,
+      default: "whitesnow"
+    },
   },
   computed: {
     selectListeners() {
@@ -40,10 +44,10 @@ export default {
       return Object.assign({}, this.$listeners, {
         input: function(event) {
           vm.$emit("input", event);
-        }
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -56,25 +56,20 @@
           <custom-input
             label="Password"
             name="Password"
-            :value="data.password"
-						:rules="type === 'create' ? 'required' : ''"
-            v-model="data.password"
+            value="********"
+            v-if="status === 'edit'"
           />
-          <!-- <custom-input
-            label="Confirm Password"
-            name="Confirm Password"
-            v-model="checkPassword"
-						error-messages="cxs"
-          /> -->
-          <Label>Confirm Password</Label>
-          <v-text-field
-            solo
-            flat
-            class="field"
-            v-model="confirmPassword"
-            background-color="whitesnow"
-            :error-messages="errorPassword"
-          />
+    
+         <custom-input
+          label="New Password"
+          placeholder="Input Password"
+          v-model="data.password"
+          name="Password"
+          :rules="statusForm"
+					@click:append="show1 = !show1"
+					:type="show1 ? 'text' : 'password'"
+					:append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+        />
 
           <custom-input
             label="Email"
@@ -99,11 +94,11 @@
           />
           <custom-button
             :loading="loading"
-            color="carmine"
+            color="primary"
             class="white--text"
             type="submit"
         	>
-						{{ $t('button.save') }}
+						{{labelButton}}
 					</custom-button
           >
         </v-col>
@@ -119,16 +114,26 @@ export default {
   components: {
     Label
   },
+  computed : {
+    statusForm () {
+      if(this.status === 'create'){
+        return 'required'
+      }else {
+        return ''
+      }
+    }
+  },
   data() {
     return {
       checkPassword: "",
+      show1 : false,
       listRole: [
         "USER",
         "SELEB",
         "MGR_SELEB",
         "ADMIN",
         "ADMIN_SOCIAL",
-        "SUPERVISOR",
+        "AUTHOR",
 				"EDITOR",
 				"MODERATOR"
       ],
@@ -146,20 +151,23 @@ export default {
 		},
 		type : {
 			type : String
-		}
+    },
+    labelButton : {
+      type : String,
+      default : 'Create'
+    },
+    status : {
+      type : String,
+      default : 'create'
+    }
   },
   methods: {
     getResponse(payload) {
-      this.status = payload.status;
+      // this.status = payload.status;
       this.data.photo = payload.response.url;
     },
     handleSubmit() {
-      if (this.confirmPassword === this.data.password) {
-        this.$emit("onSubmit", this.data);
-        this.errorPassword = "";
-      } else {
-        this.errorPassword = "Check your password again";
-      }
+      this.$emit("onSubmit", this.data);
     }
   }
 };

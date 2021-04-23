@@ -2,12 +2,12 @@
   <div>
     <HeaderContent :list="items" :label="$t('title.account')">
       <custom-button
-        color="carmine"
+        color="primary"
         class="white--text"
         @click="handleClick('create')"
       >
-				{{ $t('button.accountCreate') }}
-			</custom-button>
+        {{ $t("button.accountCreate") }}
+      </custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
@@ -34,7 +34,11 @@
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
-          <custom-input placeholder="Search" @keyup.enter="onSearch" v-model="payloadSearch" />
+          <custom-input
+            placeholder="Search"
+            @keyup.enter="onSearch"
+            v-model="payloadSearch"
+          />
         </div>
       </v-col>
     </v-row>
@@ -47,30 +51,44 @@
         item-key="user"
         hide-default-footer
       >
-        <template v-slot:item.user="{ item }">
-          <div class="d-flex align-center">
-            <v-avatar size="35" class="mr-2">
-              <img :src="item.photo" />
-            </v-avatar>
-            <div class="d-flex flex-column">
-              <span class="account-manage__user__title font-weight-medium">{{item.user}}</span>
-              <span class="account-manage__user__subtitle font-weight-light">{{item.role}}</span>
-            </div>
-          </div>
-        </template>
-        <template v-slot:item.status="{ item }">
-          <span v-if="item.status" class="primary--text">Active</span>
-          <span v-else class="silver--text">Inactive</span>
-        </template>
-        <template v-slot:item.manage="{ item }">
-          <custom-button icon @click="moveEdit(item.id)">
-            <v-icon small>mdi-pencil</v-icon>
-          </custom-button>
-          <custom-button icon @click="openModalDelete(item.id)">
-            <v-icon small color="carmine">mdi-delete</v-icon>
-          </custom-button>
+        <template v-slot:item="{ item }">
+          <tr>
+            <td class="item__data">
+              <div class="d-flex align-center">
+                <v-avatar size="35" class="mr-2">
+                  <img :src="item.photo" />
+                </v-avatar>
+                <div class="d-flex flex-column">
+                  <span
+                    class="account-manage__user__title font-weight-medium"
+                    >{{ item.user }}</span
+                  >
+                  <span
+                    class="account-manage__user__subtitle font-weight-light"
+                    >{{ item.role }}</span
+                  >
+                </div>
+              </div>
+            </td>
+            <td class="item__data">{{ item.role }}</td>
+            <td class="item__data secondary--text">
+              <span v-if="item.status" class="kellygreen--text">Active</span>
+              <span v-else class="silver--text">Inactive</span>
+            </td>
+            <td class="item__data">
+              <div class="d-flex justify-space-between align-center">
+                <v-btn icon @click="moveEdit(item.id)">
+                  <v-icon x-small>$edit</v-icon>
+                </v-btn>
+                <v-btn icon @click="openDialog(item.id)">
+                  <v-icon x-small>$delete</v-icon>
+                </v-btn>
+              </div>
+            </td>
+          </tr>
         </template>
       </v-data-table>
+
       <v-row dense class="mt-8">
         <v-col cols="6">
           <!-- <custom-button :disabled="!selected.length" class="carmine--text">Delete All</custom-button> -->
@@ -91,8 +109,8 @@
         title="Yakin menghapus user ini?"
         description="User yang kamu hapus tidak akan tampil di halaman user lagi"
         :dialog="dialog"
-        :closeModalDelete="closeModalDelete"
-        :handleDelete="handleDelete"
+        @closeDialog="closeDialog"
+        @handleDelete="handleDelete"
       ></Dialog-Delete>
     </div>
   </div>
@@ -100,12 +118,13 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import DialogDelete from "@/components/material/DialogDelete";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 import { mapActions } from "vuex";
+
 export default {
   components: {
     HeaderContent,
-    DialogDelete
+    DialogDelete,
   },
   data() {
     return {
@@ -117,11 +136,12 @@ export default {
         {
           text: "Manage Account",
           disabled: false,
-          href: "channel"
+          href: "channel",
         },
         {
-          text: "List Management"
-        }
+          text: "List Management",
+          disabled: true,
+        },
       ],
       params: {},
       isActive: "",
@@ -133,7 +153,7 @@ export default {
         "ADMIN",
         "ADMIN_SOCIAL",
         "SUPERVISOR",
-        "EDITOR"
+        "EDITOR",
       ],
       filter: ["Active", "Inactive"],
       page: 1,
@@ -147,21 +167,22 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: 400
+          width: 300,
         },
         {
           text: "Role",
           value: "role",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
+          width: 200,
         },
         {
           text: "Status",
           value: "status",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
         },
         {
           text: "Manage",
@@ -170,10 +191,10 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 200
-        }
+          width: 140,
+        },
       ],
-      data: []
+      data: [],
     };
   },
   methods: {
@@ -182,12 +203,12 @@ export default {
       if (this.role) {
         payload = {
           ...this.params,
-          sortBy: this.role
+          sortBy: this.role,
         };
       } else {
         payload = {
           ...this.params,
-          sortBy: ""
+          sortBy: "",
         };
       }
       this.params = payload;
@@ -195,18 +216,17 @@ export default {
         type: "management",
         param: {
           page: this.page - 1,
-          ...this.params
-        }
+          ...this.params,
+        },
       };
       const response = await this.getListAdmin(data);
     },
     filterByStatus() {
       const payload = {
         ...this.params,
-        filterBy: this.isActive
+        filterBy: this.isActive,
       };
       this.params = payload;
-      console.log(this.params);
     },
     handleClick(params) {
       this.$router.push(`/admin/${params}`);
@@ -215,15 +235,15 @@ export default {
       this.$router.push({
         name: "adminEdit",
         params: {
-          id: id
-        }
+          id: id,
+        },
       });
     },
-    openModalDelete(id) {
+    openDialog(id) {
       this.dialog = true;
       this.idUser = id;
     },
-    closeModalDelete() {
+    closeDialog() {
       this.dialog = false;
       this.idUser = "";
     },
@@ -235,7 +255,6 @@ export default {
         this.dialog = false;
         this.idUser = "";
       } else {
-        console.log(response);
         this.dialog = false;
         this.idUser = "";
       }
@@ -243,7 +262,7 @@ export default {
     async onSearch() {
       const payload = {
         params: this.payloadSearch,
-        type: "management"
+        type: "management",
       };
       const response = await this.searchAccount(payload);
       if (response.status === 200) {
@@ -255,19 +274,19 @@ export default {
     ...mapActions({
       getListAdmin: "account/getListRespone",
       searchAccount: "account/searchAccount",
-      deleteAccount: "account/deleteAccount"
+      deleteAccount: "account/deleteAccount",
     }),
     formatResponse(response) {
       const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const dataResponse = response.data.data.content;
-      const formatResponse = dataResponse.map(d => {
+      const formatResponse = dataResponse.map((d) => {
         return {
           id: d.id,
           photo: d.photo,
           role: d.accountType,
           status: d.enabled,
-          user: d.username
+          user: d.username,
         };
       });
       this.data = formatResponse;
@@ -277,8 +296,8 @@ export default {
         type: "management",
         param: {
           page: this.page - 1,
-          ...this.params
-        }
+          ...this.params,
+        },
       };
       const response = await this.getListAdmin(payload);
       if (response.status === 200) {
@@ -289,7 +308,7 @@ export default {
     },
     async handleResponseListAdmin() {
       const params = {
-        type: "management"
+        type: "management",
       };
       const response = await this.getListAdmin(params);
       if (response.status === 200) {
@@ -297,11 +316,11 @@ export default {
       } else {
         console.log(response);
       }
-    }
+    },
   },
   mounted() {
     this.handleResponseListAdmin();
-  }
+  },
 };
 </script>
 
@@ -316,4 +335,9 @@ export default {
       font-size: $font-size-12
     &__subtitle
       font-size: $font-size-10
+.item
+  &__data
+    padding-top: 16px
+    padding-bottom: 16px
+    // border-bottom: none !important
 </style>

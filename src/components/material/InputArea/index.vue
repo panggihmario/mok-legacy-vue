@@ -5,10 +5,10 @@
       solo
       flat
       v-bind="$attrs"
-      background-color="whitesnow"
+      :background-color="color"
       class="field-area"
-			v-on="inputListeners"
-			:error-messages="errors"
+      v-on="inputListeners"
+      :error-messages="errors"
     />
   </ValidationProvider>
 </template>
@@ -17,14 +17,18 @@
 export default {
   props: {
     label: {
-      type: String
-		},
-		rules : {
-			type : String
-		},
-		name : {
-			type : String
-		}
+      type: String,
+    },
+    rules: {
+      type: String,
+    },
+    name: {
+      type: String,
+    },
+    color: {
+      type: String,
+      default: "whitesnow",
+    },
   },
   computed: {
     inputListeners() {
@@ -32,10 +36,10 @@ export default {
       return Object.assign({}, this.$listeners, {
         input: function(event) {
           vm.$emit("input", event);
-        }
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

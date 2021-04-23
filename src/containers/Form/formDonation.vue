@@ -77,14 +77,14 @@
           name="Receiver Name"
         />
         <custom-button
-          color="carmine"
-          class="white--text mr-6"
+          class="mr-6 grey--text"
           @click="previewResult"
+					color="whitesnow"
         >
           Preview
         </custom-button>
         <custom-button
-          color="carmine"
+          color="primary"
           type="submit"
           class="white--text"
           :loading="loading"
@@ -97,7 +97,7 @@
         <div class="card__header">
           <div class="charcoal--text">Ikut Berdonasi</div>
         </div>
-        <div class="card__image-container">
+        <div class="d-flex flex-column justify-center card__image-container ">
           <img width="100%" :src="donationPhoto" />
         </div>
         <div class="card__box-container ">
@@ -113,7 +113,10 @@
                 <div class="carmine--text">
                   Rp 50.000
                 </div>
-								<v-progress-linear color="carmine" value="15"></v-progress-linear>
+                <v-progress-linear
+                  color="carmine"
+                  value="15"
+                ></v-progress-linear>
               </div>
               <div class="card__box__right">
                 <div class="card__box__right-title white--text">
@@ -125,19 +128,21 @@
             </div>
           </div>
         </div>
-				<br/>
+        <br />
         <v-card-text>
-					<div class="card__donation-target">Target Donasi</div>
-					<div class="charcoal--text">Rp {{donation.targetAmount.toLocaleString('id')}} </div>
-					<br/>
-					<div class="card__content-title">Diverifikasi oleh</div>
-					<div class="charcoal--text" >{{verifier}}</div>
-					<br/>
-					<div class="card__content-title">Wali Penerima</div>
-					<div class="charocoal--text">{{donation.recipientName}}</div>
-					<br/>
-					<div>{{donation.description}}</div>
-				</v-card-text>
+          <div class="card__donation-target">Target Donasi</div>
+          <div class="charcoal--text">
+            Rp {{ donation.targetAmount.toLocaleString("id") }}
+          </div>
+          <br />
+          <div class="card__content-title">Diverifikasi oleh</div>
+          <div class="charcoal--text">{{ verifier }}</div>
+          <br />
+          <div class="card__content-title">Wali Penerima</div>
+          <div class="charocoal--text">{{ donation.recipientName }}</div>
+          <br />
+          <div>{{ donation.description }}</div>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </custom-form>
@@ -147,27 +152,27 @@
 export default {
   data() {
     return {
-      dialog: false
+      dialog: false,
     };
   },
   props: {
     donation: {
-      type: Object
+      type: Object,
     },
     listVerifier: {
-      type: Array
+      type: Array,
     },
     items: {
-      type: Array
+      type: Array,
     },
     organizers: {
-      type: String
+      type: String,
     },
     verifier: {
-      type: String
+      type: String,
     },
     donationPhoto: {
-      type: String
+      type: String,
     },
     loading: {
       type: Boolean
@@ -183,7 +188,7 @@ export default {
       },
       set(value) {
         this.$emit("getParamOrganizer", value);
-      }
+      },
     },
     responseVerifier: {
       get() {
@@ -191,8 +196,8 @@ export default {
       },
       set(value) {
         this.$emit("getParamsVerifier", value);
-      }
-    }
+      },
+    },
   },
   methods: {
     previewResult() {
@@ -203,7 +208,8 @@ export default {
     },
     getDonationImage(payload) {
       if (payload.status === "success") {
-        const urlProfile = payload.response.url;
+				// console.log(payload)
+        // const urlProfile = payload.response.url;
         const urlData = payload.response;
         this.$emit("getDonationPhoto", urlData);
         // this.donation.media.push(payload.response);
@@ -213,8 +219,8 @@ export default {
     },
     reUpload() {
       document.getElementById("donation-image").click();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -236,7 +242,7 @@ export default {
 		align-items: center
 	&__image-container
 		height: 230px
-		width: 100%
+		overflow: hidden
 	&__box
 		width: 340px
 		height: 174px

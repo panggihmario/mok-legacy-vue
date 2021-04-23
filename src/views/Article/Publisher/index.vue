@@ -1,36 +1,46 @@
 <template>
   <div>
     <HeaderContent :list="list" label="List News" />
-    <v-tabs @change="changeTabs" v-model="tab" color="carmine">
-      <v-tab>
-        <span class="text-capitalize">List News</span>
-      </v-tab>
-      <v-tab>
-        <span class="text-capitalize">Draft</span>
-      </v-tab>
-      <v-tab>
-        <span class="text-capitalize">History</span>
-      </v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item>
-        <ListArticle :articles="articles" class="mt-4" />
-        <v-pagination
-          class="d-flex justify-end"
-          :length="totalPages"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-          v-model="pageNews"
-          @input="getNewsBaseOnPage"
-        ></v-pagination>
-      </v-tab-item>
-      <v-tab-item>
-        <Draft :drafts="drafts" class="mt-4"></Draft>
-      </v-tab-item>
-      <v-tab-item>
-        <history :history="drafts" class="mt-4"></history>
-      </v-tab-item>
-    </v-tabs-items>
+    <div class="d-flex justify-space-between">
+    <div class="d-flex">
+      <div v-for="(tab, idx) in tabList" class="mr-4">
+        <div
+          :class="
+            tab.active ? `ctab__box  ctab__active` : `ctab__box ctab__nonactive`
+          "
+          @click="changeActive(tab)"
+        >
+          <div>{{ tab.label }}</div>
+        </div>
+      </div>
+    </div>
+      <custom-input
+        placeholder="Search"
+        colorbg="white"
+        outlined
+        dense
+        append-icon="search"
+        v-if="tabPosition === 1"
+        v-model="keyword"
+        @keyup.enter="handleSearch"
+      />
+    </div>
+    <div v-if="tabPosition === 1">
+      <ListArticle
+        class="mt-4"
+        :listNews="listNews"
+        @getNewsBaseOnPage="getNewsBaseOnPage"
+      />
+    </div>
+    <div v-if="tabPosition === 2">
+      <Draft :drafts="listNews" class="mt-4" />
+    </div>
+    <div v-if="tabPosition === 3">
+      <Scheduled :listNews="listNews" class="mt-4" />
+    </div>
+    <div v-if="tabPosition === 4">
+      <Agregrator class="mt-4" />
+    </div>
   </div>
 </template>
 
@@ -39,117 +49,132 @@ import HeaderContent from "@/containers/HeaderContent";
 import { mapState, mapActions } from "vuex";
 import ListArticle from "./list/article";
 import Draft from "./list/draft";
-import History from "./list/history";
+import Scheduled from "./list/scheduled";
+import Agregrator from "./list/agregrator";
 
 export default {
   components: {
     HeaderContent,
     ListArticle,
     Draft,
-    History
+    Scheduled,
+    Agregrator,
   },
   data() {
     return {
       tab: null,
+      tabPosition: 1,
+      tabList: [
+        {
+          label: "List News",
+          active: true,
+          position: 1,
+          payload: "list",
+        },
+        {
+          label: "Draft",
+          active: false,
+          position: 2,
+          payload: "draft",
+        },
+        {
+          label: "Terjadwal",
+          active: false,
+          position: 3,
+          payload: "scheduled",
+        },
+        {
+          label: "News Agregrator",
+          active: false,
+          position: 4,
+          payload: "scheduled",
+        },
+      ],
       list: [
         {
           text: "News",
           disabled: false,
-          href: "publisher"
-        }
+          href: "publisher",
+        },
       ],
       articles: [],
       drafts: [],
       totalPages: 0,
-      pageNews: 1
+      pageNews: 1,
+      keyword: "",
+      isSearch: false,
+      listNews: [],
     };
   },
-  mounted() {
-    this.getResponseNews();
+  created() {
+    this.changeTabs("list");
   },
   methods: {
     ...mapActions({
-      getNews: "news/getListNews"
+      getNews: "news/getListNews",
+      searchNews: "news/searchNews",
     }),
-    formatingDate(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const year = newDt.getFullYear();
-      const newFormat = `${day}/${month}/${year}`;
-      return newFormat;
-    },
-    changeTabs(e) {
-      const positionTabs = e;
-      if (e === 1) {
-        this.getResponseDraft();
-      } else {
-        this.getResponseNews();
-      }
-    },
-    async getResponseDraft() {
-      const payload = {
-        tab: "draft",
-        page: 0
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        const listNews = response.data.data.content;
-        this.totalPages = response.data.data.totalPages;
-        const formatingList = listNews.map(news => {
-          const newFormatDate = this.formatingDate(news.createAt);
+    changeActive(tab) {
+      this.tabPosition = tab.position;
+      const newTabList = this.tabList.map((t) => {
+        if (t.position === tab.position) {
           return {
-            date: newFormatDate,
-            headline: news.headline,
-            id: news.id
+            ...t,
+            active: true,
           };
-        });
-        this.drafts = formatingList;
-      } else {
-        return response;
-      }
-    },
-    async getResponseNews() {
-      const payload = {
-        tab: "list",
-        page: 0
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        this.formatingResponse(response);
-      } else {
-        console.log(response);
-        return response;
-      }
-    },
-    async getNewsBaseOnPage() {
-      const payload = {
-        tab: "list",
-        page: this.pageNews - 1
-      };
-      const response = await this.getNews(payload);
-      if (response.status === 200) {
-        this.formatingResponse(response);
-      } else {
-        console.log(response);
-        return response;
-      }
-    },
-    formatingResponse(response) {
-      const listNews = response.data.data.content;
-      this.totalPages = response.data.data.totalPages;
-      const formatingList = listNews.map(news => {
-        const newFormatDate = this.formatingDate(news.createAt);
-        return {
-          date: newFormatDate,
-          status: news.status,
-          headline: news.headline,
-          id: news.id
-        };
+        } else {
+          return {
+            ...t,
+            active: false,
+          };
+        }
       });
-      this.articles = formatingList;
-    }
-  }
+      this.tabList = newTabList;
+      return this.changeTabs(tab.payload);
+    },
+    async handleSearch() {
+      this.isSearch = true;
+      const payload = {
+        title: this.keyword,
+      };
+      const response = await this.searchNews(payload);
+      if (response.status === 200) {
+        console.log(response)
+        const responseData = response.data.data
+        this.listNews = responseData
+      } else {
+        return response;
+      }
+    },
+    async changeTabs(e) {
+      const payload = {
+        tab: e,
+        page: 0,
+      };
+      const response = await this.getNews(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.listNews = responseData;
+        this.totalPages = response.data.data.totalPages;
+      } else {
+        this.listNews = [];
+        return response;
+      }
+    },
+    async getNewsBaseOnPage(params) {
+      const payload = {
+        tab: params.tab,
+        page: params.page - 1,
+      };
+      const response = await this.getNews(payload);
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.listNews = responseData;
+      } else {
+        return response;
+      }
+    },
+  },
 };
 </script>
 
@@ -158,4 +183,32 @@ export default {
   &__label
     font-size: 24px
     font-weight: 500
+.tab
+  &__box
+    width: 500px
+  &__active
+    border-radius: 32px
+    background-color: #FFF3E7
+.ctab
+  &__box
+    border-radius: 32px
+    font-size: 12px
+    padding: 9px 24px 9px 24px
+    display: inline-block
+    cursor: pointer
+  &__nonactive
+    background-color: #FAFAFA
+    color: #777777
+  &__active
+    background-color: #FFF3E7
+    color: #FF8717
+</style>
+
+<style scoped>
+.v-tab:hover {
+  background-color: transparent;
+}
+.v-tab:focus {
+  background-color: transparent;
+}
 </style>
