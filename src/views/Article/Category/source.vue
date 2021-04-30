@@ -1,4 +1,5 @@
 <template>
+<div>
   <v-dialog
     v-model="dialogSource"
     width="450"
@@ -22,7 +23,12 @@
         </div>
       </v-card-text>
     </v-card>
+    
   </v-dialog>
+  <v-alert class="source__alert" :value="alertError"  type="error">
+      {{errorMessage}}
+    </v-alert>
+  </div>
 </template>
 
 <script>
@@ -31,7 +37,9 @@ export default {
   props : ['dialogSource', 'dataSiteAgregator'],
   data () {
     return {
-      loading : false
+      loading : false,
+      errorMessage : '',
+      alertError : false
     }
   },
   computed : {
@@ -46,13 +54,17 @@ export default {
   },
   methods : {
     closeDialogSource() {
+      this.errorMessage = ''
       this.$emit('closeDialogSource', false)
+      this.alertError = false
     },
     ...mapActions({
       saveNewsSiteAggregator : 'news/saveNewsSiteAggregator'
     }),
     saveSourceNews() {
       this.loading = true
+      this.alertError = false
+      this.errorMessage = ''
       const splitValue = this.sourceNews.split(',')
       const payload = splitValue.map(pay => {
         return {
@@ -62,12 +74,14 @@ export default {
       })
       return this.saveNewsSiteAggregator(payload)
         .then(() => {
+          this.errorMessage = ''
           this.loading = false
           this.closeDialogSource()
         })
         .catch(err => {
           this.loading = false
-          console.log(err)
+          this.alertError = true
+          this.errorMessage = err.response.data
         })
     }
   }
@@ -80,4 +94,8 @@ export default {
     color: #4A4A4A
     font-size: 12px
     font-weight: 500
+  &__alert
+    position: absolute
+    top: 20px
+    right: 20px
 </style>
