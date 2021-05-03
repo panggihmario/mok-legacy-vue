@@ -32,7 +32,7 @@
     <v-pagination
       v-model="page"
       :length="totalPages"
-      class="d-flex justify-end"
+      class="d-flex justify-end pt-6"
     ></v-pagination>
 
     <Dialog-Detail

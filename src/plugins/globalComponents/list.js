@@ -99,6 +99,10 @@ export default [
     component: IconShare,
   },
   {
+    name: "icon-clock-square",
+    component: IconClockSquare,
+  },
+  {
     name: "icon-thumb-up",
     component: IconThumbUp,
   },

@@ -12,6 +12,7 @@
           >
           <custom-upload
             id="create"
+            color="secondary"
             @response="getResponse"
             typeUpload="accounts"
           />
@@ -24,7 +25,7 @@
               :label="$t('input.chooseAccount')"
               placeholder="Pilih jenis akun"
               v-model="data.accountType"
-              :items="listRole"
+              :items="listAccountType"
               rules="required"
               :value="data.accountType"
               name="Account"
@@ -59,17 +60,17 @@
             value="********"
             v-if="status === 'edit'"
           />
-    
-         <custom-input
-          label="New Password"
-          placeholder="Input Password"
-          v-model="data.password"
-          name="Password"
-          :rules="statusForm"
-					@click:append="show1 = !show1"
-					:type="show1 ? 'text' : 'password'"
-					:append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-        />
+
+          <custom-input
+            label="New Password"
+            placeholder="Input Password"
+            v-model="data.password"
+            name="Password"
+            :rules="statusForm"
+            @click:append="show1 = !show1"
+            :type="show1 ? 'text' : 'password'"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+          />
 
           <custom-input
             label="Email"
@@ -97,10 +98,9 @@
             color="primary"
             class="white--text"
             type="submit"
-        	>
-						{{labelButton}}
-					</custom-button
           >
+            {{ labelButton }}
+          </custom-button>
         </v-col>
         <v-col cols="6"></v-col>
       </v-row>
@@ -110,56 +110,50 @@
 
 <script>
 import Label from "../../components/material/Input/label";
+
 export default {
   components: {
-    Label
+    Label,
   },
-  computed : {
-    statusForm () {
-      if(this.status === 'create'){
-        return 'required'
-      }else {
-        return ''
+  computed: {
+    statusForm() {
+      if (this.status === "create") {
+        return "required";
+      } else {
+        return "";
       }
-    }
+    },
   },
   data() {
     return {
       checkPassword: "",
-      show1 : false,
-      listRole: [
-        "USER",
-        "SELEB",
-        "MGR_SELEB",
-        "ADMIN",
-        "ADMIN_SOCIAL",
-        "AUTHOR",
-				"EDITOR",
-				"MODERATOR"
-      ],
+      show1: false,
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",
-      errorPassword: ""
+      errorPassword: "",
     };
   },
   props: {
     data: {
-      type: Object
+      type: Object,
+    },
+    listAccountType: {
+      type: Array,
     },
     loading: {
-      type: Boolean
-		},
-		type : {
-			type : String
+      type: Boolean,
     },
-    labelButton : {
-      type : String,
-      default : 'Create'
+    type: {
+      type: String,
     },
-    status : {
-      type : String,
-      default : 'create'
-    }
+    labelButton: {
+      type: String,
+      default: "Create",
+    },
+    status: {
+      type: String,
+      default: "create",
+    },
   },
   methods: {
     getResponse(payload) {
@@ -168,8 +162,8 @@ export default {
     },
     handleSubmit() {
       this.$emit("onSubmit", this.data);
-    }
-  }
+    },
+  },
 };
 </script>
 
