@@ -56,7 +56,13 @@
             <td class="item__data">
               <div class="d-flex align-center">
                 <v-avatar size="35" class="mr-2">
-                  <img :src="item.photo" />
+                  <img
+                    :src="
+                      item.photo
+                        ? item.photo
+                        : 'https://dummyimage.com/100x100/ddd/ddd'
+                    "
+                  />
                 </v-avatar>
                 <div class="d-flex flex-column">
                   <span
@@ -89,21 +95,16 @@
         </template>
       </v-data-table>
 
-      <v-row dense class="mt-8">
-        <v-col cols="6">
-          <!-- <custom-button :disabled="!selected.length" class="carmine--text">Delete All</custom-button> -->
-        </v-col>
-        <v-col cols="6">
-          <v-pagination
-            class="d-flex justify-end"
-            v-model="page"
-            :length="pageCount"
-            prev-icon="mdi-menu-left"
-            next-icon="mdi-menu-right"
-            @input="getDataBaseOnPage"
-          ></v-pagination>
-        </v-col>
-      </v-row>
+      <div class="d-flex justify-end mt-10">
+        <v-pagination
+          class="d-flex justify-end"
+          v-model="page"
+          :length="pageCount"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right"
+          @input="getDataBaseOnPage"
+        ></v-pagination>
+      </div>
 
       <Dialog-Delete
         title="Yakin menghapus user ini?"

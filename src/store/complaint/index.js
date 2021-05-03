@@ -10,7 +10,10 @@ export default {
       try {
         response = await this._vm
           .$httpWithToken()
-          .get(`${state.pathComplaintList}/${payload.type}/${payload.status}`);
+          .get(
+            `${state.pathComplaintList}/${payload.type}/${payload.status}`,
+            payload.params
+          );
         return response;
       } catch (error) {
         return error;
