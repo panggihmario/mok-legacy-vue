@@ -91,7 +91,7 @@
         <v-col cols="6">
           <div class="d-flex flex-column">
             <span class="font-12 font-weight-bold black--text">Nomor Resi</span>
-            <span>{{ detailItems.orderShipment.bookingNumber }}</span>
+            <span>{{ detailItems.orderShipment.awbNumber || "-" }}</span>
           </div>
           <div class="d-flex flex-column mt-8">
             <span class="font-12 font-weight-bold black--text">Penerima</span>
@@ -128,10 +128,11 @@
             formatPrice(detailItems.orderShipment.cost)
           }}</span>
           <span class="font-weight-medium primary--text">{{
-            formatPrice(detailItems.payment.amount)
+            formatPrice(detailItems.amount)
           }}</span>
           <span class="font-weight-medium">{{
-            `${detailItems.payment.bank} ${detailItems.payment.type}`
+            `${detailItems.payment.bank || "-"} ${detailItems.payment.type ||
+              ""}`
           }}</span>
         </v-col>
       </v-row>
