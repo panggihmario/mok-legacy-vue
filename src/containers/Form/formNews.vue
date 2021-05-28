@@ -236,11 +236,12 @@ export default {
     },
     setSchedule() {
       let schedule = `${this.scheduleDate} ${this.scheduleTime}`;
-      const epochDate = moment(schedule, "YY-MM-DD HH:mm").unix();
-      // const x = moment.unix(epochDate)
+      console.log({schedule})
+      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").unix();
       const [year, month, date] = this.scheduleDate.split("-");
       const f = `${date}/${month}/${year}`;
       const miliEpoch = epochDate * 1000;
+      console.log("epoch", miliEpoch)
       this.humanDate = `${f} ${this.scheduleTime}`;
       this.$emit("getEpochDate", miliEpoch);
       this.dialogDate = false;
