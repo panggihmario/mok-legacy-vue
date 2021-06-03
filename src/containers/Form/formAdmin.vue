@@ -29,6 +29,7 @@
               rules="required"
               :value="data.accountType"
               name="Account"
+              style="width : 200px"
             />
             <custom-select
               label="Gender"
