@@ -6,6 +6,7 @@
       :loading="loading" 
       @onSubmit="onSubmit" 
       labelButton="Save"
+      :listAccountType="listAccountType"
       :status="'edit'"
     />
     <v-snackbar top right v-model="alertError" color="error">
@@ -26,6 +27,7 @@ export default {
   data() {
     return {
       loading: false,
+      listAccountType : [],
       oldPassword: "",
 			errorMessage: "",
 			alertError : false,
@@ -63,8 +65,17 @@ export default {
   methods: {
     ...mapActions({
       getAccountById: "account/getAccountById",
-      updateAccount: "account/updateAccount"
+      updateAccount: "account/updateAccount",
+      getListRole: "account/getListRole",
     }),
+    handleGetListRole() {
+      return this.getListRole().then((response) => {
+        const listRole = response.data.data;
+        for (let i = 0; i < listRole.length; i++) {
+          this.listAccountType.push(listRole[i].replace("ROLE_", ""));
+        }
+      });
+    },
     async onSubmit(params) {
       const id = this.$route.params.id;
       let data = {};
@@ -86,7 +97,6 @@ export default {
         id,
         data
       };
-      // console.log(data)
       this.loading = true;
       const response = await this.updateAccount(payload);
       if (response.status === 200) {
@@ -96,9 +106,10 @@ export default {
         this.loading = false;
         this.alertError = true;
         if (response.response) {
+          console.log(response.response)
           this.errorMessage = response.response.data.data;
         } else {
-          this.errorMessage = "Failed Create Account";
+          this.errorMessage = "Failed Edit Account";
         }
         setTimeout(() => {
           this.alertError = false;
@@ -132,6 +143,7 @@ export default {
   },
   mounted() {
     this.getResponseById();
+    this.handleGetListRole();
   }
 };
 </script>
