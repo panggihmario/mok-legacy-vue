@@ -43,7 +43,8 @@ export default {
           value: "publish",
           class: "whitesnow",
           sortable: false,
-          filterable: false
+          filterable: false,
+          width : '200'
         }
       ]
     };

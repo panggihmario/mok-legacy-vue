@@ -26,6 +26,7 @@ export default {
             params: {
               size: payload.size,
               page: payload.page,
+              sort: "createAt,desc",
             },
           });
         return response;
