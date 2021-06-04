@@ -134,7 +134,6 @@ export default {
 				this.loadingSubmit = true
         return this.actionPostNews(payload)
       } else {
-        console.log("masuk else")
         this.alertImage = true
         if(this.payloadNews.medias && this.payloadNews.thumbnailUrl){
           this.alertImage = false

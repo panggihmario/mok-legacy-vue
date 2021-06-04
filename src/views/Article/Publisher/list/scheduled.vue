@@ -16,7 +16,7 @@ export default {
   methods : {
     formatingDate(rawDate) {
       const second = rawDate/1000
-      const newD = moment.unix(second).format("D/M/YYYY HH:mm");
+      const newD = moment.unix(second).add(7, 'hours').format("DD/MM/YYYY HH:mm")
       return newD;
     },
   },
