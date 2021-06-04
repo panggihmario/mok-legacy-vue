@@ -39,7 +39,7 @@ export default {
       default: "default label"
 		},
 		rules : {
-			type : String
+			type : [String, Object]
 		},
 		name : {
 			type : String

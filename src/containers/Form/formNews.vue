@@ -120,6 +120,7 @@
             v-model="payloadNews.linkReference"
             :value="payloadNews.linkReference"
             name="Link Refrence"
+            :rules="{ regex: /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi }"
           />
           <icon-input :disabled="true" label="Artikel Terkait 1" />
           <icon-input :disabled="true" label="Artiket Terkait 2" />
@@ -236,12 +237,10 @@ export default {
     },
     setSchedule() {
       let schedule = `${this.scheduleDate} ${this.scheduleTime}`;
-      console.log({schedule})
       const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").unix();
       const [year, month, date] = this.scheduleDate.split("-");
       const f = `${date}/${month}/${year}`;
       const miliEpoch = epochDate * 1000;
-      console.log("epoch", miliEpoch)
       this.humanDate = `${f} ${this.scheduleTime}`;
       this.$emit("getEpochDate", miliEpoch);
       this.dialogDate = false;
