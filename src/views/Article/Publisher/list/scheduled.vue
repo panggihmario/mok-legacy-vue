@@ -6,6 +6,14 @@
         <!-- {{item.scheduledTime}} -->
       </template>
     </v-data-table>
+    <v-pagination
+      :length="listNews.totalPages"
+      prev-icon="mdi-menu-left"
+      next-icon="mdi-menu-right"
+      v-model="pageNews"
+      @input="getNewsBaseOnPage"
+      :total-visible="6"
+    />
   </div>
 </template>
 
@@ -16,12 +24,22 @@ export default {
   methods : {
     formatingDate(rawDate) {
       const second = rawDate/1000
-      const newD = moment.unix(second).add(7, 'hours').format("DD/MM/YYYY HH:mm")
+      // const second = 1622799900000/1000
+      // .add(7, 'hours').
+      const newD = moment.unix(second).format("DD/MM/YYYY HH:mm")
       return newD;
+    },
+    getNewsBaseOnPage(p) {
+      const params = {
+        page: p,
+        tab: "scheduled",
+      };
+      this.$emit("getNewsBaseOnPage", params);
     },
   },
   data() {
     return {
+      pageNews: 1,
       headers: [
         {
           text: "Penyunting",

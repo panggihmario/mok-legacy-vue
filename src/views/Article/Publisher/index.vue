@@ -33,10 +33,18 @@
       />
     </div>
     <div v-if="tabPosition === 2">
-      <Draft :drafts="listNews" class="mt-4" />
+      <Draft 
+        :drafts="listNews" 
+        class="mt-4" 
+        
+      />
     </div>
     <div v-if="tabPosition === 3">
-      <Scheduled :listNews="listNews" class="mt-4" />
+      <Scheduled 
+        :listNews="listNews" 
+        class="mt-4" 
+        @getNewsBaseOnPage="getNewsBaseOnPage"
+      />
     </div>
     <div v-if="tabPosition === 4">
       <Agregrator class="mt-4" />
@@ -166,10 +174,13 @@ export default {
         tab: params.tab,
         page: params.page - 1,
       };
+      console.log(payload)
       const response = await this.getNews(payload);
       if (response.status === 200) {
+        console.log(response)
         const responseData = response.data.data;
         this.listNews = responseData;
+         this.totalPages = response.data.data.totalPages;
       } else {
         return response;
       }
