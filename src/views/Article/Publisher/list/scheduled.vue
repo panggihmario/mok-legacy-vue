@@ -24,7 +24,9 @@ export default {
   methods : {
     formatingDate(rawDate) {
       const second = rawDate/1000
-      const newD = moment.unix(second).add(7, 'hours').format("DD/MM/YYYY HH:mm")
+      // const second = 1622799900000/1000
+      // .add(7, 'hours').
+      const newD = moment.unix(second).format("DD/MM/YYYY HH:mm")
       return newD;
     },
     getNewsBaseOnPage(p) {
