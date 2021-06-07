@@ -74,7 +74,7 @@
           <v-spacer></v-spacer>
           <custom-button @click="closeDialog">Batalkan</custom-button>
           <custom-button color="primary" @click="handlePushNotificationById"
-            >Buat Kategori</custom-button
+            >Push News</custom-button
           >
         </v-card-actions>
       </v-card>
