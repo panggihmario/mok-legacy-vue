@@ -40,6 +40,52 @@
             ></v-select>
           </div>
           <div>
+            <v-checkbox
+              :label="`Publikasi Terjadwal`"
+              v-model="previewNewsAgregator.postNewsDto.isScheduled"
+            />
+            <v-text-field
+              readonly
+              outlined
+              dense
+              @focus="openDate"
+              v-model="humanDate"
+            />
+            <v-dialog persistent v-model="dialogDate" max-width="650">
+            <v-card class="pt-6">
+              <v-card-text>
+                <div class="d-flex justify-space-between form__dialog-date">
+                  <div>
+                    <v-date-picker v-model="scheduleDate" color="primary" />
+                  </div>
+                  <div>
+                    <v-time-picker v-model="scheduleTime" ampm-in-title />
+                  </div>
+                </div>
+                <div class="d-flex justify-space-between form__dialog-date">
+                  <div class="form__date-box">
+                    {{ newFormatDate }} {{ scheduleTime }}
+                  </div>
+                  <div>
+                    <custom-button @click="cancelSchedule">
+                      <span class="form__dialog-button">Batalkan</span>
+                    </custom-button>
+                    <custom-button
+                      color="primary"
+                      @click="setSchedule"
+                      class="ml-4"
+                    >
+                      <span class="form__dialog-button"
+                        >Jadwalkan Publikasi</span
+                      >
+                    </custom-button>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+          </div>
+          <div>
             <custom-button
               color="primary"
               size="medium"
@@ -65,6 +111,11 @@ export default {
       categories : [],
       loading : false,
       cat : {},
+      humanDate : '',
+      dialogDate : false,
+      scheduleDate: "",
+      scheduleTime: "",
+      epoch : ''
     }
   },
   computed : {
@@ -80,9 +131,19 @@ export default {
       set(value) {
         return this.setCategory(value)
       }
-    }
+    },
+    newFormatDate() {
+      if (this.scheduleDate) {
+        const [year, month, date] = this.scheduleDate.split("-");
+        const f = `${date}/${month}/${year}`;
+        return f;
+      } else {
+        return null;
+      }
+    },
   },
   mounted() {
+    console.log("preview",this.previewNewsAgregator)
     this.handleGetMapping()
   },
   methods : {
@@ -97,6 +158,27 @@ export default {
       setCategory : "news/setCategory",
       setSelectedToPublish : 'news/setSelectedToPublish'
     }),
+    openDate() {
+      if (this.previewNewsAgregator.postNewsDto.isScheduled) {
+        this.dialogDate = true;
+      }
+    },
+    cancelSchedule() {
+      this.dialogDate = false;
+    },
+    setSchedule(){
+      let schedule = `${this.scheduleDate} ${this.scheduleTime}`;
+      // const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").unix();
+      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").add(7, 'hours').unix()
+      // console.log({test})
+      const [year, month, date] = this.scheduleDate.split("-");
+      const f = `${date}/${month}/${year}`;
+      const miliEpoch = epochDate * 1000;
+      this.epoch = miliEpoch
+      this.humanDate = `${f} ${this.scheduleTime}`;
+      // this.$emit("getEpochDate", miliEpoch);
+      this.dialogDate = false;
+    },
     closePreview() {
       return this.changeStatusViewNews(false)
     },
@@ -120,9 +202,11 @@ export default {
         ...this.previewNewsAgregator,
         postNewsDto : {
           ...this.previewNewsAgregator.postNewsDto,
-          newsCategory : this.selectedCategory
+          newsCategory : this.selectedCategory,
+          scheduledTime : this.epoch
         }
       }
+      console.log("payload", payload)
       this.loading = true
       return this.publishNewsAgregator(payload)
         .then(response => {

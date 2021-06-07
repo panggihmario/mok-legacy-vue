@@ -16,7 +16,6 @@ export default {
     setPreviewNewsAgregrator (state, payload) {
       state.previewNewsAgregator = payload
       state.category = payload.postNewsDto.newsCategory
-      console.log(payload)
     },
     setCategory (state, payload) {
       state.category = payload
