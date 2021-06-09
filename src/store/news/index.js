@@ -16,7 +16,6 @@ export default {
     setPreviewNewsAgregrator (state, payload) {
       state.previewNewsAgregator = payload
       state.category = payload.postNewsDto.newsCategory
-      console.log(payload)
     },
     setCategory (state, payload) {
       state.category = payload
@@ -257,10 +256,12 @@ export default {
       })
         .then(response => {
           const responseData = response.data.data
+          console.log(response)
           commit('setNewsAgregator', responseData)
           return responseData
         })
         .catch(err => {
+          console.log(err.response)
           throw err
         })
     },

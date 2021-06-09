@@ -3,16 +3,28 @@
     <div class="d-flex justify-space-between">
       <div class="d-flex">
         <div class="mt-2 mr-2 agg__filter">Filter</div>
-        <custom-select
-          :items="mappingCategory"
-          dense
-          item-text="newsCategory.name"
-          v-model="selectedMapping"
-          @change="filterAgregator"
-          clearable
-          @click:clear="handleNewsAgregator"
-          class="mr-4"
-        />
+          <custom-select
+            :items="mappingCategory"
+            dense
+            item-text="newsCategory.name"
+            v-model="selectedMapping"
+            @change="filterAgregator"
+            clearable
+            @click:clear="handleNewsAgregator"
+            class="mr-4"
+            placeholder="Kategori"
+          />
+          <custom-select
+            :items="agregratorSites"
+            placeholder="Agregrator Sites"
+            dense
+            item-text="name"
+            v-model="selectedSite"
+            @change="filterBySite"
+            clearable
+            @click:clear="handleNewsAgregator"
+            class="mr-4"
+          />
       </div>
       <custom-input
         placeholder="Search"
@@ -111,9 +123,10 @@ export default {
       loadingPublish: false,
       isLoading: false,
       searchNewsAg: "",
-      // newsAgregrator : [],
+      agregratorSites : [],
       mappingCategory: [],
-      selectedMapping: null,
+      selectedMapping: '',
+      selectedSite : '',
       headers: [
         {
           text: "Tanggal",
@@ -157,6 +170,7 @@ export default {
   mounted() {
     this.handleNewsAgregator();
     this.handleGetMapping();
+    this.handleGetSiteAgregrator()
   },
   methods: {
     handlePublish(payload) {
@@ -200,10 +214,24 @@ export default {
         category: this.selectedMapping,
         keyword: {
           search: this.searchNewsAg,
+          site : this.selectedSite
         },
       };
       this.selectedMappingCategory(this.selectedMapping);
       this.statusLoading = true;
+      return this.getNewsAgregatorByCategory(payload).then(() => {
+        this.selected = [];
+        this.statusLoading = false;
+      });
+    },
+    filterBySite() {
+      const payload = {
+        category: this.selectedMapping,
+        keyword: {
+          search: this.searchNewsAg,
+          site : this.selectedSite
+        },
+      }
       return this.getNewsAgregatorByCategory(payload).then(() => {
         this.selected = [];
         this.statusLoading = false;
@@ -220,6 +248,13 @@ export default {
       const newFormat = `${day}/${month}/${year}`;
       return newFormat;
     },
+    handleGetSiteAgregrator() {
+      return this.getNewSiteAgregator()
+        .then(response => {
+          this.agregratorSites = response
+          console.log(response)
+        })
+    },
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
       getAllNewsAgregrator: "news/getAllNewsAgregrator",
@@ -227,6 +262,7 @@ export default {
       getMappingCategory: "news/getMappingCategory",
       getNewsAgregatorByCategory: "news/getNewsAgregatorByCategory",
       publishAllNewsAgregator: "news/publishAllNewsAgregator",
+      getNewSiteAgregator : "news/getNewSiteAgregator"
     }),
     ...mapMutations({
       setPreviewNewsAgregrator: "news/setPreviewNewsAgregrator",
