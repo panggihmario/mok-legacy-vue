@@ -214,6 +214,7 @@ export default {
         category: this.selectedMapping,
         keyword: {
           search: this.searchNewsAg,
+          site : this.selectedSite
         },
       };
       this.selectedMappingCategory(this.selectedMapping);
