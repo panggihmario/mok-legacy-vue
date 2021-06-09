@@ -24,7 +24,29 @@
         <custom-input placeholder="search" />
       </v-col>
     </v-row>
-    <v-data-table
+
+    <v-row  justify="center">
+      <v-col 
+        cols="auto"
+        v-for="(item, idx) in items"
+        :key="idx"
+      >
+        <v-card max-width="130">
+          <v-img
+            height="130"
+            :src="defaultImage"
+          ></v-img>
+
+          <v-card-text style="padding: 10px; height: 70px">
+            <div class="product__label">
+              {{item.name}}
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      
+    </v-row>
+    <!-- <v-data-table
       disable-pagination
       :headers="headers"
       :items="items"
@@ -47,13 +69,14 @@
           </td>
         </tr>
       </template>
-    </v-data-table>
+    </v-data-table> -->
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import { mapActions } from "vuex";
+import image from '../../../assets/no-image.jpeg'
 
 export default {
   components: {
@@ -62,6 +85,7 @@ export default {
   data() {
     return {
       items: [],
+      defaultImage : image,
       headers: [
         {
           text: "Nama",
@@ -118,7 +142,7 @@ export default {
     async handleGetListProduct() {
       const response = await this.getListProduct();
       if (response.status == 200) {
-        console.log(response);
+        console.log("products", response.data.data);
         this.items = response.data.data;
       }
     },
@@ -137,4 +161,15 @@ export default {
   &__data
     height: 72px
     font-size: 12px
+.product
+  &__label
+    color: #000000
+    font-size: 12px
+    font-weight: 500
+    line-height: 15px
+    text-overflow: ellipsis
+    overflow: hidden
+    display: -webkit-box
+    -webkit-line-clamp: 3
+    -webkit-box-orient: vertical
 </style>

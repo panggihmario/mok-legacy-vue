@@ -54,7 +54,7 @@
     <Dialog-Delete
       title="Yakin menghapus feed ini?"
       description="Feed yang kamu hapus tidak akan tampil di halaman feed lagi"
-      :dialog="dialog"
+      :dialog="dialogDelete"
       @closeDialog="closeDialog"
       @handleDelete="handleDelete"
     ></Dialog-Delete>
@@ -78,7 +78,7 @@ export default {
       totalPage: 0,
       dialog: false,
       dialogMedia: {},
-      dialog: false,
+      dialogDelete: false,
       loading: false,
       list: [
         {
@@ -174,11 +174,11 @@ export default {
       this.$router.push("/post/product");
     },
     openModalDelete(id) {
-      this.dialog = true;
+      this.dialogDelete = true;
       this.idUser = id;
     },
     closeDialog() {
-      this.dialog = false;
+      this.dialogDelete = false;
       this.idUser = "";
     },
     async handleDelete() {
