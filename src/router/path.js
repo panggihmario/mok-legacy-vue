@@ -24,7 +24,6 @@ import EditorArticle from "../views/Article/Editor/Article";
 import CategoryNews from "../views/Article/Category";
 import CategoryNewsCreate from "../views/Article/Category/create.vue";
 import CategoryNewsEdit from "../views/Article/Category/edit.vue";
-import Product from "../views/Shop/Product";
 import ProductDetail from "../views/Shop/Product/detail/index.vue";
 import CreateProduct from "../views/Shop/Product/create/index.vue";
 import Category from "../views/Shop/Category";
@@ -49,6 +48,17 @@ import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
 
 const routes = [
+  {
+    path : "/product",
+    component : () => import('../layouts/Product'),
+    children : [
+      {
+        path : '/product',
+        component : () => import('../views/Shop/Product'),
+        name : 'products'
+      }
+    ]
+  },
   {
     path: "/",
     component: Home,
@@ -231,11 +241,11 @@ const routes = [
         name: "categoryNewsEdit",
         component: CategoryNewsEdit,
       },
-      {
-        path: "/product",
-        name: "product",
-        component: Product,
-      },
+      // {
+      //   path: "/product",
+      //   name: "product",
+      //   component: Product,
+      // },
       {
         path: "/product/add",
         name: "addProduct",
