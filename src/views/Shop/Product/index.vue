@@ -25,101 +25,35 @@
       </v-col>
     </v-row>
 
-    <v-row  justify="center">
+    <v-row
+      dense
+    >
       <v-col 
         cols="auto"
         v-for="(item, idx) in items"
         :key="idx"
       >
-        <v-card max-width="130">
-          <v-img
-            height="130"
-            :src="defaultImage"
-          ></v-img>
-
-          <v-card-text style="padding: 10px; height: 70px">
-            <div class="product__label">
-              {{item.name}}
-            </div>
-          </v-card-text>
-        </v-card>
+        <CardImage :item="item" />
       </v-col>
       
     </v-row>
-    <!-- <v-data-table
-      disable-pagination
-      :headers="headers"
-      :items="items"
-      hide-default-footer
-      disable-filtering
-      disable-sort
-      no-data-text="Tidak Ada Order"
-    >
-      <template v-slot:item="col">
-        <tr>
-          <td class="item__data">{{ col.item.name }}</td>
-          <td class="item__data">{{ col.item.price }}</td>
-          <td class="item__data">{{ col.item.category }}</td>
-          <td class="item__data">{{ col.item.stock }}</td>
-          <td class="item__data">{{ col.item.sold }}</td>
-          <td class="item__data">
-            <custom-button class="grey--text" @click="moveDetail(col.item.id)"
-              >View Product</custom-button
-            >
-          </td>
-        </tr>
-      </template>
-    </v-data-table> -->
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import image from '../../../assets/no-image.jpeg'
-
+import CardImage from './cardImage'
 export default {
   components: {
     HeaderContent,
+    CardImage
   },
   data() {
     return {
       items: [],
       defaultImage : image,
-      headers: [
-        {
-          text: "Nama",
-          value: "name",
-          class: "whitesnow",
-          width: 240,
-        },
-        {
-          text: "Harga",
-          value: "price",
-          class: "whitesnow",
-        },
-        {
-          text: "Kategory",
-          value: "category",
-          class: "whitesnow",
-        },
-        {
-          text: "Stok",
-          value: "stock",
-          class: "whitesnow",
-        },
-        {
-          text: "Terjual",
-          value: "sold",
-          class: "whitesnow",
-        },
-        {
-          text: "",
-          value: "action",
-          class: "whitesnow",
-          width: "200",
-        },
-      ],
       selection: "Newest",
       filter: "All Category",
       crumbs: [
@@ -140,10 +74,13 @@ export default {
       getListProduct: "product/getListProduct",
     }),
     async handleGetListProduct() {
-      const response = await this.getListProduct();
+      const payload = {
+        size : 21,
+        page : 0
+      }
+      const response = await this.getListProduct(payload);
       if (response.status == 200) {
-        console.log("products", response.data.data);
-        this.items = response.data.data;
+        this.items = response.data.data.content;
       }
     },
     moveCreate() {
@@ -156,20 +93,3 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-.item
-  &__data
-    height: 72px
-    font-size: 12px
-.product
-  &__label
-    color: #000000
-    font-size: 12px
-    font-weight: 500
-    line-height: 15px
-    text-overflow: ellipsis
-    overflow: hidden
-    display: -webkit-box
-    -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-</style>
