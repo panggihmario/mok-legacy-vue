@@ -4,6 +4,14 @@ export default {
     pathReport: "admin/reports",
   },
   actions: {
+    getReasonsReport({state}) {
+      return this._vm.$httpWithToken().get(`${state.pathReport}/FEED/reasons`)
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(err => { throw err })
+    },
     async getListReasonByType({ state }, payload) {
       let response;
       try {

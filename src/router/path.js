@@ -56,6 +56,11 @@ const routes = [
         path : '/product',
         component : () => import('../views/Shop/Product'),
         name : 'products'
+      },
+      {
+        path : 'banned',
+        component : () => import('../views/Shop/Banned'),
+        name : 'bannedProduct'
       }
     ]
   },
@@ -250,11 +255,6 @@ const routes = [
         path: "/product/add",
         name: "addProduct",
         component: CreateProduct,
-      },
-      {
-        path: "/product/:id",
-        name: "productDetail",
-        component: ProductDetail,
       },
       {
         path: "/category",

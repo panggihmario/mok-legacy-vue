@@ -13,36 +13,30 @@
       <v-col cols="8" class="d-flex">
         <div class="d-flex align-center">
           <span class="mb-8 mr-2">Sort</span>
-          <custom-select :items="sortList" v-model="selection" />
-        </div>
-        <div class="d-flex align-center ml-4">
-          <span class="mb-8 mr-2">Filter</span>
-          <custom-select :items="filterList" v-model="filter" />
+          <custom-select dense :items="sortList" v-model="selection" />
         </div>
       </v-col>
       <v-col cols="4" class="d-flex justify-end">
-        <custom-input placeholder="search" />
+        <custom-input dense placeholder="search" />
       </v-col>
     </v-row>
-
     <v-row
       dense
     >
       <v-col 
         cols="auto"
-        v-for="(item, idx) in items"
+        v-for="(item, idx) in products"
         :key="idx"
       >
         <CardImage :item="item" />
       </v-col>
-      
     </v-row>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapState } from "vuex";
 import image from '../../../assets/no-image.jpeg'
 import CardImage from './cardImage'
 export default {
@@ -68,6 +62,11 @@ export default {
   },
   mounted() {
     this.handleGetListProduct();
+  },
+  computed : {
+    ...mapState({
+      products : (state) => state.product.products
+    })
   },
   methods: {
     ...mapActions({
