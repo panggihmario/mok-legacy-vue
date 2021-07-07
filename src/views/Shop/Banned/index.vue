@@ -9,7 +9,12 @@
       <v-col cols="8" class="d-flex">
         <div class="d-flex align-center">
           <span class="mb-8 mr-2">Sort</span>
-          <custom-select dense :items="sortList" v-model="selection" />
+          <custom-select 
+            dense :items="sortList" 
+            v-model="selection" 
+            item-text="name"
+            @input="onSelect"
+          />
         </div>
       </v-col>
       <v-col cols="4" class="d-flex justify-end">
@@ -32,7 +37,7 @@
 
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import HeaderContent from "@/containers/HeaderContent";
 import CardImage from './cardImage'
 export default {
@@ -49,8 +54,17 @@ export default {
           disabled : true
         }
       ],
-      sortList: ["Newest", "Oldest"],
-      selection: "Newest",
+      sortList: [
+        {
+          name : 'Newest',
+          value : 'desc'
+        },
+        {
+          name : 'Oldest',
+          value : 'asc'
+        }
+      ],
+      selection: "desc",
     }
   },
   components : {
@@ -66,6 +80,35 @@ export default {
     ...mapActions({
       getListProductBanned : 'product/getListProductBanned'
     }),
+    ...mapMutations({
+      setBannedProducts : 'product/setBannedProducts'
+    }),
+    onSelect(value) {
+      console.log(value)
+      const payload = {
+        size: 24,
+        page: 0,
+        sort : `createAt,${value}`
+      };
+      return this.getListProductBanned(payload)
+        .then(response =>{
+          console.log(response)
+          const responseData = response.data.data.content
+          return this.setBannedProducts(responseData)
+        })
+    },
+    fetchBannedProduct : function () {
+      const payload = {
+        size: 24,
+        page: 0,
+        sort : `createAt,${this.selection}`
+      };
+      return this.getListProductBanned(payload)
+        .then(response =>{
+          const responseData = response.data.data.content
+          return this.setBannedProducts(responseData)
+        })
+    },
     onSearch : function () {
       const value = this.value
       this.$router.push({
@@ -78,7 +121,7 @@ export default {
     },
   },
   mounted() {
-    this.getListProductBanned()
+    this.fetchBannedProduct()
   }
 }
 </script>

@@ -50,16 +50,18 @@ export default {
       })
       .then(response => {
         const dataProduct = response.data.data.content
-        // commit('setProducts', dataProduct)
         return response
       })
       .catch(err => { throw err })
     },
-    getListProductBanned({state, commit}) {
-      return this._vm.$httpWithToken().get(`${state.pathProducts}/banned`)
+    getListProductBanned({state}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathProducts}/banned`, {
+        params : {
+          ...payload
+        }
+      })
         .then(response => {
           const responseData = response.data.data.content
-          commit('setBannedProducts', responseData)
           return response
         })
         .catch(err => { throw err })

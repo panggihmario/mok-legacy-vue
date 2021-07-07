@@ -9,14 +9,22 @@
       <v-col cols="8" class="d-flex">
         <div class="d-flex align-center">
           <span class="mb-8 mr-2">Sort</span>
-          <custom-select dense :items="sortList" v-model="selection" />
+          <custom-select 
+            dense :items="sortList" 
+            v-model="selection" 
+            item-text="name"
+            @input="onSelect"
+          />
         </div>
       </v-col>
       <v-col cols="4" class="d-flex justify-end">
         <custom-input @keyup.enter="onSearch" v-model="value" dense placeholder="search" />
       </v-col>
     </v-row>
-    <Infinite/>
+    <Infinite
+      :sort="selection"
+      @onScroll="onScroll"
+    />
   </div>
 </template>
 
@@ -37,7 +45,7 @@ export default {
       items: [],
       defaultImage : image,
       value : '',
-      selection: "Newest",
+      selection:  "desc",
       filter: "All Category",
       crumbs: [
         {
@@ -45,17 +53,27 @@ export default {
           disabled: true,
         },
       ],
-      sortList: ["Newest", "Oldest"],
+      sortList: [
+        {
+          name : 'Newest',
+          value : 'desc'
+        },
+        {
+          name : 'Oldest',
+          value : 'asc'
+        }
+      ],
       filterList: ["All Category"],
+      page : 1
     };
-  },
-  mounted() {
-    this.handleGetListProduct();
   },
   computed : {
     ...mapState({
       products : (state) => state.product.products
     })
+  },
+  mounted () {
+    this.handleGetlistProduct('desc')
   },
   methods: {
     ...mapActions({
@@ -65,8 +83,32 @@ export default {
     ...mapMutations({
       setProducts : 'product/setProducts'
     }),
-    infiniteScrolling : function () {
-      console.log("infinte scroll")
+    onSelect (value) {
+      this.page = 1
+      const payload = {
+          size: 24,
+          page: 0,
+          sort : `createAt,${value}`
+        };
+       return this.getListProduct(payload).then((response) => {
+        const data = response.data.data.content;
+        return this.setProducts(data);
+      });
+    },
+    onScroll() {
+      setTimeout(() => {
+        const payload = {
+          size: 24,
+          page: this.page,
+          sort : `createAt,${this.selection}`
+        };
+        console.log(payload)
+        this.page++;
+        return this.getListProduct(payload).then((response) => {
+          const dataProducts = response.data.data.content;
+          dataProducts.forEach((item) => this.products.push(item));
+        });
+      }, 1500);
     },
     onSearch : function () {
       const value = this.value
@@ -82,21 +124,16 @@ export default {
         }
       })
     },
-    async handleGetListProduct() {
+    handleGetlistProduct(selection) {
       const payload = {
-        size : 21,
-        page : 0
-      }
-      const response = await this.getListProduct(payload);
-      if (response.status == 200) {
-        this.items = response.data.data.content;
-      }
-    },
-    moveCreate() {
-      this.$router.push("product/add");
-    },
-    moveDetail(id) {
-      this.$router.push(`product/${id}`);
+        size: 24,
+        page: 0,
+        sort : `createAt,${selection}`
+      };
+      return this.getListProduct(payload).then((response) => {
+        const data = response.data.data.content;
+        return this.setProducts(data);
+      });
     },
   },
 };
