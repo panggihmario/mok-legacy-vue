@@ -12,6 +12,7 @@ export default {
       state.detail = payload
     },
     setDetailProduct(state, payload) {
+      console.log(payload)
       state.detailProduct = payload
     },
     setProducts(state, payload) {
@@ -29,6 +30,18 @@ export default {
         })
         .catch(err => { throw err })
     },
+    searchProduct({state, commit}, payload) {
+      return this._vm.$httpWithToken().get(`${state.pathProducts}/search`,{
+        params : {
+          ...payload
+        }
+      })
+      .then(response => {
+        const responseData = response.data.data
+        return responseData
+      })
+      .catch(err => { throw err })
+    },
     getListProduct ({state, commit}, payload) {
       return this._vm.$httpWithToken().get(state.pathProducts,{
         params : {
@@ -37,7 +50,7 @@ export default {
       })
       .then(response => {
         const dataProduct = response.data.data.content
-        commit('setProducts', dataProduct)
+        // commit('setProducts', dataProduct)
         return response
       })
       .catch(err => { throw err })

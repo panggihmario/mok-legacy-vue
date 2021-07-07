@@ -7,7 +7,7 @@
     <v-img
       height="130"
       :src="imageProduct"
-      :lazy-src="imageProduct"
+      :lazy-src="defaultImage"
     />
     <v-card-text class="product__footer">
       <div class="product__label">

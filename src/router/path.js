@@ -61,6 +61,12 @@ const routes = [
         path : 'banned',
         component : () => import('../views/Shop/Banned'),
         name : 'bannedProduct'
+      },
+      {
+        path : "search",
+        component  : () => import('../views/Shop/Product/search.vue'),
+        name : 'searchProduct',
+        props : route => {return route.query}
       }
     ]
   },

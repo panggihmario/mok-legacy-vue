@@ -2,12 +2,8 @@
   <div>
     <HeaderContent
       label="List Product"
-      labelAction="Create Category"
       :list="crumbs"
     >
-      <custom-button color="primary" @click="moveCreate">
-        Add Product
-      </custom-button>
     </HeaderContent>
     <v-row>
       <v-col cols="8" class="d-flex">
@@ -17,37 +13,30 @@
         </div>
       </v-col>
       <v-col cols="4" class="d-flex justify-end">
-        <custom-input dense placeholder="search" />
+        <custom-input @keyup.enter="onSearch" v-model="value" dense placeholder="search" />
       </v-col>
     </v-row>
-    <v-row
-      dense
-    >
-      <v-col 
-        cols="auto"
-        v-for="(item, idx) in products"
-        :key="idx"
-      >
-        <CardImage :item="item" />
-      </v-col>
-    </v-row>
+    <Infinite/>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import image from '../../../assets/no-image.jpeg'
 import CardImage from './cardImage'
+import Infinite from './infinite.vue'
 export default {
   components: {
     HeaderContent,
-    CardImage
+    CardImage,
+    Infinite
   },
   data() {
     return {
       items: [],
       defaultImage : image,
+      value : '',
       selection: "Newest",
       filter: "All Category",
       crumbs: [
@@ -71,7 +60,28 @@ export default {
   methods: {
     ...mapActions({
       getListProduct: "product/getListProduct",
+      searchProduct : "product/searchProduct"
     }),
+    ...mapMutations({
+      setProducts : 'product/setProducts'
+    }),
+    infiniteScrolling : function () {
+      console.log("infinte scroll")
+    },
+    onSearch : function () {
+      const value = this.value
+      const payload = {
+        value,
+        isBanned : false
+      }
+      this.$router.push({
+        name : 'searchProduct',
+        query : {
+          value,
+          isBanned : false
+        }
+      })
+    },
     async handleGetListProduct() {
       const payload = {
         size : 21,
@@ -91,4 +101,3 @@ export default {
   },
 };
 </script>
-
