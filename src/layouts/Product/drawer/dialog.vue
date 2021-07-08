@@ -61,13 +61,14 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setDetailView : "product/setDetailView"
+      setDetailView : "product/setDetailView",
+      setProducts : 'product/setProducts'
     }),
     ...mapActions({
       banProduct: "product/banProduct",
       getReasonsReport: "report/getReasonsReport",
       getListReasonByType : 'report/getListReasonByType',
-      getListProduct : 'product/getListProduct'
+      getListProduct : 'product/getListProduct',
     }),
     handleGetReasons: function () {
       const typeReport = {
@@ -97,10 +98,16 @@ export default {
     },
     handleGetListProduct() {
       const payload = {
-        size : 21,
-        page : 0
+        size : 24,
+        page : 0,
+        sort : `createAt,desc`
       }
-      return this.getListProduct(payload);
+      return this.getListProduct(payload)
+      .then((response) => {
+        console.log("succes get banned")
+        const data = response.data.data.content;
+        return this.setProducts(data);
+      });
     },
     onClick: function () {
       const value = this.radioGroup.others ? this.othersReason : this.radioGroup.value

@@ -1,14 +1,16 @@
 <template>
   <v-navigation-drawer  floating color="whitesnow"  app width="500" permanent right>
     <div class="drawer__container">
+      <Actions
+        :product="product"
+        @openDialogBanned="openDialogBanned"
+        class="mb-4"
+      />
       <div v-if="product.isBanned" class="drawer__bannedContainer">
         <div class="drawer__bannedTitle"> Alasan Banned </div>
         <div class="drawer__bannedReason"> {{product.reasonBanned}}</div>
       </div>
-      <Actions
-        v-else
-        @openDialogBanned="openDialogBanned"
-      />
+
       <div class="drawer__images">
         <ProductImages :product="product" />
       </div>

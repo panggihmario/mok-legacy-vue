@@ -31,7 +31,7 @@ export default {
     imageProduct () {
       if(this.item.medias) {
         if(this.item.medias[0].url) {
-          return this.item.medias[0].url
+          return this.item.medias[0].thumbnail.small
         }else{
           return this.defaultImage
         }

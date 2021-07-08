@@ -90,10 +90,11 @@ export default {
           page: 0,
           sort : `createAt,${value}`
         };
-       return this.getListProduct(payload).then((response) => {
-        const data = response.data.data.content;
-        return this.setProducts(data);
-      });
+       return this.getListProduct(payload)
+        .then((response) => {
+          const data = response.data.data.content;
+          return this.setProducts(data);
+        });
     },
     onScroll() {
       setTimeout(() => {
