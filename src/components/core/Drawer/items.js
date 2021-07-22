@@ -118,6 +118,10 @@ export default [
         path: "/product",
       },
       {
+        title : 'Banned Product',
+        path : '/product/banned'
+      },
+      {
         title: "Category",
         path: "/category",
       },
@@ -137,6 +141,7 @@ export default [
         title: "Finance",
         path: "/finance",
       },
+     
     ],
   },
   {

@@ -126,7 +126,7 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .put(
-            `${state.pathNews}/${payload.id}/editor/${payload.type}`,
+            `${state.pathNews}/${payload.id}/author/${payload.type}`,
             payload.params
           );
         return response;
