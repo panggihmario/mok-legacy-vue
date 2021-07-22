@@ -6,7 +6,6 @@
         <CoreView />
       </v-container>
     </div>
-    <!-- <CoreDrawer v-if="viewNews" /> -->
     <DrawerNews  v-if="viewNews" />
   </div>
 </template>

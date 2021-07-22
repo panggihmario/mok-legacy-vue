@@ -2,125 +2,50 @@
   <div>
     <HeaderContent
       label="List Product"
-      labelAction="Create Category"
       :list="crumbs"
     >
-      <custom-button color="primary" @click="moveCreate">
-        Add Product
-      </custom-button>
     </HeaderContent>
     <v-row>
       <v-col cols="8" class="d-flex">
         <div class="d-flex align-center">
           <span class="mb-8 mr-2">Sort</span>
-          <custom-select :items="sortList" v-model="selection" />
-        </div>
-        <div class="d-flex align-center ml-4">
-          <span class="mb-8 mr-2">Filter</span>
-          <custom-select :items="filterList" v-model="filter" />
+          <custom-select 
+            dense :items="sortList" 
+            v-model="selection" 
+            item-text="name"
+            @input="onSelect"
+          />
         </div>
       </v-col>
       <v-col cols="4" class="d-flex justify-end">
-        <custom-input placeholder="search" />
+        <custom-input @keyup.enter="onSearch" v-model="value" dense placeholder="search" />
       </v-col>
     </v-row>
-
-    <v-row  justify="center">
-      <v-col 
-        cols="auto"
-        v-for="(item, idx) in items"
-        :key="idx"
-      >
-        <v-card max-width="130">
-          <v-img
-            height="130"
-            :src="defaultImage"
-          ></v-img>
-
-          <v-card-text style="padding: 10px; height: 70px">
-            <div class="product__label">
-              {{item.name}}
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      
-    </v-row>
-    <!-- <v-data-table
-      disable-pagination
-      :headers="headers"
-      :items="items"
-      hide-default-footer
-      disable-filtering
-      disable-sort
-      no-data-text="Tidak Ada Order"
-    >
-      <template v-slot:item="col">
-        <tr>
-          <td class="item__data">{{ col.item.name }}</td>
-          <td class="item__data">{{ col.item.price }}</td>
-          <td class="item__data">{{ col.item.category }}</td>
-          <td class="item__data">{{ col.item.stock }}</td>
-          <td class="item__data">{{ col.item.sold }}</td>
-          <td class="item__data">
-            <custom-button class="grey--text" @click="moveDetail(col.item.id)"
-              >View Product</custom-button
-            >
-          </td>
-        </tr>
-      </template>
-    </v-data-table> -->
+    <Infinite
+      :sort="selection"
+      @onScroll="onScroll"
+    />
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import image from '../../../assets/no-image.jpeg'
-
+import CardImage from './cardImage'
+import Infinite from './infinite.vue'
 export default {
   components: {
     HeaderContent,
+    CardImage,
+    Infinite
   },
   data() {
     return {
       items: [],
       defaultImage : image,
-      headers: [
-        {
-          text: "Nama",
-          value: "name",
-          class: "whitesnow",
-          width: 240,
-        },
-        {
-          text: "Harga",
-          value: "price",
-          class: "whitesnow",
-        },
-        {
-          text: "Kategory",
-          value: "category",
-          class: "whitesnow",
-        },
-        {
-          text: "Stok",
-          value: "stock",
-          class: "whitesnow",
-        },
-        {
-          text: "Terjual",
-          value: "sold",
-          class: "whitesnow",
-        },
-        {
-          text: "",
-          value: "action",
-          class: "whitesnow",
-          width: "200",
-        },
-      ],
-      selection: "Newest",
+      value : '',
+      selection:  "desc",
       filter: "All Category",
       crumbs: [
         {
@@ -128,48 +53,89 @@ export default {
           disabled: true,
         },
       ],
-      sortList: ["Newest", "Oldest"],
+      sortList: [
+        {
+          name : 'Newest',
+          value : 'desc'
+        },
+        {
+          name : 'Oldest',
+          value : 'asc'
+        }
+      ],
       filterList: ["All Category"],
+      page : 1
     };
   },
-  mounted() {
-    this.handleGetListProduct();
+  computed : {
+    ...mapState({
+      products : (state) => state.product.products
+    })
+  },
+  mounted () {
+    this.handleGetlistProduct('desc')
   },
   methods: {
     ...mapActions({
       getListProduct: "product/getListProduct",
+      searchProduct : "product/searchProduct"
     }),
-    async handleGetListProduct() {
-      const response = await this.getListProduct();
-      if (response.status == 200) {
-        console.log("products", response.data.data);
-        this.items = response.data.data;
+    ...mapMutations({
+      setProducts : 'product/setProducts'
+    }),
+    onSelect (value) {
+      this.page = 1
+      const payload = {
+          size: 24,
+          page: 0,
+          sort : `createAt,${value}`
+        };
+       return this.getListProduct(payload)
+        .then((response) => {
+          const data = response.data.data.content;
+          return this.setProducts(data);
+        });
+    },
+    onScroll() {
+      setTimeout(() => {
+        const payload = {
+          size: 24,
+          page: this.page,
+          sort : `createAt,${this.selection}`
+        };
+        console.log(payload)
+        this.page++;
+        return this.getListProduct(payload).then((response) => {
+          const dataProducts = response.data.data.content;
+          dataProducts.forEach((item) => this.products.push(item));
+        });
+      }, 1500);
+    },
+    onSearch : function () {
+      const value = this.value
+      const payload = {
+        value,
+        isBanned : false
       }
+      this.$router.push({
+        name : 'searchProduct',
+        query : {
+          value,
+          isBanned : false
+        }
+      })
     },
-    moveCreate() {
-      this.$router.push("product/add");
-    },
-    moveDetail(id) {
-      this.$router.push(`product/${id}`);
+    handleGetlistProduct(selection) {
+      const payload = {
+        size: 24,
+        page: 0,
+        sort : `createAt,${selection}`
+      };
+      return this.getListProduct(payload).then((response) => {
+        const data = response.data.data.content;
+        return this.setProducts(data);
+      });
     },
   },
 };
 </script>
-
-<style lang="sass" scoped>
-.item
-  &__data
-    height: 72px
-    font-size: 12px
-.product
-  &__label
-    color: #000000
-    font-size: 12px
-    font-weight: 500
-    line-height: 15px
-    text-overflow: ellipsis
-    overflow: hidden
-    display: -webkit-box
-    -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-</style>
