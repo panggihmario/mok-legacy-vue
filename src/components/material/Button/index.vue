@@ -31,7 +31,7 @@ export default {
 				height : '24px',
 				"padding-left": "14px",
 				"padding-right": "14px",
-				"font-size" : "12px"
+				"font-size" : "10px"
 			}
     };
   },
