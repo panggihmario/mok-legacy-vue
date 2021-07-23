@@ -1,11 +1,11 @@
 <template>
   <div>
     <CoreDrawer />
-      <v-main>
-        <v-container class="mt-8 pr-12">
+      <div class="my-12">
+        <v-container :class="detail ? 'auto-space-right'  : 'auto-space'">
         <CoreView />
         </v-container>
-      </v-main>
+      </div>
     <DrawerDetail v-if="detail"/>
   </div>
 </template>
