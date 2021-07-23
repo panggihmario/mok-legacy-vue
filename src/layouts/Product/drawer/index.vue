@@ -2,9 +2,15 @@
   <v-navigation-drawer  floating color="whitesnow"  app width="500" permanent right>
     <div class="drawer__container">
       <Actions
+        :product="product"
         @openDialogBanned="openDialogBanned"
-        
+        class="mb-4"
       />
+      <div v-if="product.isBanned" class="drawer__bannedContainer">
+        <div class="drawer__bannedTitle"> Alasan Banned </div>
+        <div class="drawer__bannedReason"> {{product.reasonBanned}}</div>
+      </div>
+
       <div class="drawer__images">
         <ProductImages :product="product" />
       </div>
@@ -45,7 +51,6 @@ export default {
   },
   methods : {
     openDialogBanned() {
-      console.log('open dialog')
       this.bannedDialog = true
     },
     closeDialog (value) {
@@ -63,4 +68,17 @@ export default {
     margin-top: 48px
   &__description
     margin-top: 24px
+  &__bannedContainer
+    background: #FFF3E7
+    border: 1px solid #FF8717
+    box-sizing: border-box
+    border-radius: 6px
+    padding: 14px
+  &__bannedTitle
+    font-size: 11px
+    color: #4A4A4A
+  &__bannedReason
+    font-size: 14px
+    font-weight: bold
+    color: #4A4A4A
 </style>

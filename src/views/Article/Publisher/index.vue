@@ -3,7 +3,7 @@
     <HeaderContent :list="list" label="List News" />
     <div class="d-flex justify-space-between">
     <div class="d-flex">
-      <div v-for="(tab, idx) in tabList" class="mr-4">
+      <div v-for="(tab, idx) in tabList" :key="idx" class="mr-4">
         <div
           :class="
             tab.active ? `ctab__box  ctab__active` : `ctab__box ctab__nonactive`
@@ -159,6 +159,7 @@ export default {
         tab: e,
         page: 0,
       };
+      this.listNews = []
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
@@ -174,10 +175,8 @@ export default {
         tab: params.tab,
         page: params.page - 1,
       };
-      console.log(payload)
       const response = await this.getNews(payload);
       if (response.status === 200) {
-        console.log(response)
         const responseData = response.data.data;
         this.listNews = responseData;
          this.totalPages = response.data.data.totalPages;

@@ -7,7 +7,7 @@
     <v-img
       height="130"
       :src="imageProduct"
-      :lazy-src="imageProduct"
+      :lazy-src="defaultImage"
     />
     <v-card-text class="product__footer">
       <div class="product__label">
@@ -31,7 +31,7 @@ export default {
     imageProduct () {
       if(this.item.medias) {
         if(this.item.medias[0].url) {
-          return this.item.medias[0].url
+          return this.item.medias[0].thumbnail.small
         }else{
           return this.defaultImage
         }
