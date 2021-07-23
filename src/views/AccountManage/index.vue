@@ -11,26 +11,6 @@
     </HeaderContent>
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex justify-space-between">
-        <!-- <div class="d-flex align-center">
-          <span class="mr-4">Sort</span>
-          <custom-select
-            hideDetails
-            :items="listRole"
-            v-model="role"
-            @change="getByRole"
-            clearable
-          />
-        </div>
-        <div class="d-flex align-center">
-          <span class="mr-4">Filter</span>
-          <custom-select
-            hideDetails
-            :items="filter"
-            v-model="isActive"
-            @change="filterByStatus"
-            clearable
-          />
-        </div>-->
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
