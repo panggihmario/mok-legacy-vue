@@ -21,7 +21,6 @@
             item-text="name"
             v-model="selectedSite"
             @change="filterBySite"
-            clearable
             @click:clear="handleNewsAgregator"
             class="mr-4"
           />
@@ -45,7 +44,7 @@
       @toggle-select-all="selectAllNews"
       no-data-text="no data"
     >
-      <template v-slot:[`item.action`]="{ item }">
+      <template v-slot:[`item.action`]>
         <custom-button
           color="primary"
           v-if="!viewNews"
@@ -56,7 +55,7 @@
           Publish
         </custom-button>
       </template>
-      <template v-slot:header.action>
+      <template v-slot:[`header.action`]>
         <custom-button
           color="primary"
           v-if="!viewNews"
@@ -123,10 +122,14 @@ export default {
       loadingPublish: false,
       isLoading: false,
       searchNewsAg: "",
-      agregratorSites : [],
+      agregratorSites : [
+        "CUMICUMI",
+        "SUARA",
+        "MATAMATA"
+      ],
       mappingCategory: [],
       selectedMapping: '',
-      selectedSite : '',
+      selectedSite : 'CUMICUMI',
       headers: [
         {
           text: "Tanggal",
@@ -170,7 +173,7 @@ export default {
   mounted() {
     this.handleNewsAgregator();
     this.handleGetMapping();
-    this.handleGetSiteAgregrator()
+    // this.handleGetSiteAgregrator()
   },
   methods: {
     handlePublish(payload) {
@@ -225,17 +228,18 @@ export default {
       });
     },
     filterBySite() {
-      const payload = {
-        category: this.selectedMapping,
-        keyword: {
-          search: this.searchNewsAg,
-          site : this.selectedSite
-        },
-      }
-      return this.getNewsAgregatorByCategory(payload).then(() => {
-        this.selected = [];
-        this.statusLoading = false;
-      });
+      return this.handleNewsAgregator()
+      // const payload = {
+      //   category: this.selectedMapping,
+      //   keyword: {
+      //     search: this.searchNewsAg,
+      //     site : this.selectedSite
+      //   },
+      // }
+      // return this.getNewsAgregatorByCategory(payload).then(() => {
+      //   this.selected = [];
+      //   this.statusLoading = false;
+      // });
     },
     isEnabled(slot) {
       return this.enabled === slot;
@@ -278,7 +282,8 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
-      return this.getAllNewsAgregrator()
+      const payload = this.selectedSite
+      return this.getAllNewsAgregrator(payload)
         .then((response) => {
           this.selected = [];
           this.statusLoading = false;
