@@ -174,6 +174,7 @@ export default {
     this.handleNewsAgregator();
     this.handleGetMapping();
     // this.handleGetSiteAgregrator()
+    this.fetchListAgregratorSites()
   },
   methods: {
     handlePublish(payload) {
@@ -266,7 +267,8 @@ export default {
       getMappingCategory: "news/getMappingCategory",
       getNewsAgregatorByCategory: "news/getNewsAgregatorByCategory",
       publishAllNewsAgregator: "news/publishAllNewsAgregator",
-      getNewSiteAgregator : "news/getNewSiteAgregator"
+      getNewSiteAgregator : "news/getNewSiteAgregator",
+      getListAgregratorSite : "news/getListAgregratorSite"
     }),
     ...mapMutations({
       setPreviewNewsAgregrator: "news/setPreviewNewsAgregrator",
@@ -275,6 +277,12 @@ export default {
       selectedMappingCategory: "news/selectedMappingCategory",
       setSelectedToPublish: "news/setSelectedToPublish",
     }),
+    fetchListAgregratorSites() {
+      return this.getListAgregratorSite()
+        .then(response => {
+          this.agregratorSites = response
+        })
+    },
     handleGetMapping() {
       return this.getMappingCategory().then((response) => {
         this.mappingCategory = response;
