@@ -270,3 +270,12 @@ export default {
     font-size: 12px
     font-weight: 500
 </style>
+
+
+<style lang="scss" >
+.preview__content iframe {
+  width: 100% !important;
+  height: 170px !important;
+  border-radius: 8px;
+}
+</style>
