@@ -234,10 +234,11 @@ export default {
         })
     },
     getAllNewsAgregrator({state, commit}, payload) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview`,{
-        params : {
-          ...payload
-        }
+      commit('setNewsAgregator', [])
+      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${payload}/preview`,{
+        // params : {
+        //   ...payload
+        // }
       })
         .then(response => {
           const responseData = response.data.data
@@ -245,6 +246,7 @@ export default {
           return responseData
         })
         .catch(error => {
+          commit('setNewsAgregator', [])
           throw error
         })
     },
