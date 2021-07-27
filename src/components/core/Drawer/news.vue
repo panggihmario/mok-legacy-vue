@@ -208,8 +208,7 @@ export default {
       this.loading = true
       return this.publishNewsAgregator(payload)
         .then(() => {
-          const payload = "CUMICUMI"
-          return this.getAllNewsAgregrator(payload)
+          return this.getAllNewsAgregrator()
         })
         .then(() => {
           this.loading = false

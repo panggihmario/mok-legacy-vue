@@ -1,18 +1,20 @@
-function getListAgregratorSite({state}) {
+function getListAgregratorSite({state, commit}) {
   const data = {
     url : `admin/news/aggregators`
   }
   return this._vm.$httpWithToken().get(`${state.pathNews}/aggregators`)
     .then(response => {
       const responseData = response.data.data
+      commit('setListSites', responseData)
       return responseData
     })
     .catch(err => { throw err })
 }
 
-function  getAllNewsAgregrator({state, commit}, payload) {
+function  getAllNewsAgregrator({state, commit}) {
   commit('setNewsAgregator', [])
-  return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${payload}/preview`,{
+  const site = state.site
+  return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${site}/preview`,{
   })
     .then(response => {
       const responseData = response.data.data
@@ -39,9 +41,26 @@ function  publishAllNewsAgregator({state}, payload) {
     .catch(err => { throw err })
 }
 
+function searchNewsAgregrator({state, commit}, payload) {
+  return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${payload.params}/preview`, {
+    params : {
+      ...payload.data,
+      site : 'cumicumi.com'
+    }
+  })
+    .then(response => {
+      const responseData = response.data.data
+      console.log(responseData)
+      commit('setNewsAgregator', responseData)
+      return responseData
+    })
+    .catch(err => { throw err })
+}
+
 export { 
   getListAgregratorSite, 
   getAllNewsAgregrator, 
   publishNewsAgregator,
-  publishAllNewsAgregator
+  publishAllNewsAgregator,
+  searchNewsAgregrator
 }
