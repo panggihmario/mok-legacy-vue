@@ -1,3 +1,4 @@
+import methods from "./actions"
 export default {
   namespaced: true,
   state: {
@@ -31,6 +32,7 @@ export default {
     }
   },
   actions: {
+    ...methods,
     createCategoryNews({ state }, payload) {
       return this._vm
         .$httpWithToken()
@@ -233,23 +235,6 @@ export default {
           throw err
         })
     },
-    getAllNewsAgregrator({state, commit}, payload) {
-      commit('setNewsAgregator', [])
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${payload}/preview`,{
-        // params : {
-        //   ...payload
-        // }
-      })
-        .then(response => {
-          const responseData = response.data.data
-          commit('setNewsAgregator', responseData)
-          return responseData
-        })
-        .catch(error => {
-          commit('setNewsAgregator', [])
-          throw error
-        })
-    },
     getNewsAgregatorByCategory({state, commit}, payload) {
       return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload.category}`,{
         params : {
@@ -258,7 +243,6 @@ export default {
       })
         .then(response => {
           const responseData = response.data.data
-          console.log(response)
           commit('setNewsAgregator', responseData)
           return responseData
         })
@@ -266,18 +250,6 @@ export default {
           console.log(err.response)
           throw err
         })
-    },
-    publishNewsAgregator({state, commit}, payload) {
-      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publish`, payload)
-        .then(response => {
-          return response
-        })
-        .catch(err => {throw err})
-    },
-    publishAllNewsAgregator({state}, payload) {
-      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publishall`, payload)
-        .then(response => {return response})
-        .catch(err => { throw err })
     },
     getMappingCategory({state}) {
       return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/mappingcategory`)

@@ -143,7 +143,6 @@ export default {
     },
   },
   mounted() {
-    console.log("preview",this.previewNewsAgregator)
     this.handleGetMapping()
   },
   methods : {
@@ -152,7 +151,7 @@ export default {
       publishNewsAgregator : 'news/publishNewsAgregator',
       getCategoryNews : 'news/getCategoryNews',
       getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory',
-      getAllNewsAgregrator : 'news/getAllNewsAgregrator'
+      getAllNewsAgregrator : 'news/getAllNewsAgregrator',
     }),
     ...mapMutations({
       setCategory : "news/setCategory",
@@ -206,11 +205,11 @@ export default {
           scheduledTime : this.epoch
         }
       }
-      console.log("payload", payload)
       this.loading = true
       return this.publishNewsAgregator(payload)
-        .then(response => {
-          return this.getAllNewsAgregrator()
+        .then(() => {
+          const payload = "CUMICUMI"
+          return this.getAllNewsAgregrator(payload)
         })
         .then(() => {
           this.loading = false
@@ -273,9 +272,17 @@ export default {
 
 
 <style lang="scss" >
-.preview__content iframe {
-  width: 100% !important;
-  height: 170px !important;
-  border-radius: 8px;
+.preview {
+  &__content {
+    img {
+      width: 100% !important;
+      border-radius: 8px;
+    }
+    iframe {
+      width: 100% !important;
+      height: 170px !important;
+      border-radius: 8px;
+    }
+  }
 }
 </style>
