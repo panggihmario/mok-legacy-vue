@@ -8,9 +8,17 @@ export default {
     newsAgregrator : [],
     category : {},
     selectedMappingCategory : "",
-    selectedToPublish : []
+    selectedToPublish : [],
+    sites : [],
+    site : 'CUMICUMI'
   },
   mutations : {
+    setListSites(state, payload) {
+      state.sites = payload
+    },
+    setSite(state, payload) {
+      state.site = payload
+    },
     setSelectedToPublish(state, payload) {
       state.selectedToPublish = payload
     },
@@ -232,22 +240,6 @@ export default {
           return response
         })
         .catch(err => {
-          throw err
-        })
-    },
-    getNewsAgregatorByCategory({state, commit}, payload) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload.category}`,{
-        params : {
-          ...payload.keyword
-        }
-      })
-        .then(response => {
-          const responseData = response.data.data
-          commit('setNewsAgregator', responseData)
-          return responseData
-        })
-        .catch(err => {
-          console.log(err.response)
           throw err
         })
     },
