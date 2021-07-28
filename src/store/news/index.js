@@ -1,3 +1,4 @@
+import methods from "./actions"
 export default {
   namespaced: true,
   state: {
@@ -7,9 +8,17 @@ export default {
     newsAgregrator : [],
     category : {},
     selectedMappingCategory : "",
-    selectedToPublish : []
+    selectedToPublish : [],
+    sites : [],
+    site : 'CUMICUMI'
   },
   mutations : {
+    setListSites(state, payload) {
+      state.sites = payload
+    },
+    setSite(state, payload) {
+      state.site = payload
+    },
     setSelectedToPublish(state, payload) {
       state.selectedToPublish = payload
     },
@@ -31,6 +40,7 @@ export default {
     }
   },
   actions: {
+    ...methods,
     createCategoryNews({ state }, payload) {
       return this._vm
         .$httpWithToken()
@@ -232,50 +242,6 @@ export default {
         .catch(err => {
           throw err
         })
-    },
-    getAllNewsAgregrator({state, commit}, payload) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview`,{
-        params : {
-          ...payload
-        }
-      })
-        .then(response => {
-          const responseData = response.data.data
-          commit('setNewsAgregator', responseData)
-          return responseData
-        })
-        .catch(error => {
-          throw error
-        })
-    },
-    getNewsAgregatorByCategory({state, commit}, payload) {
-      return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/preview/${payload.category}`,{
-        params : {
-          ...payload.keyword
-        }
-      })
-        .then(response => {
-          const responseData = response.data.data
-          console.log(response)
-          commit('setNewsAgregator', responseData)
-          return responseData
-        })
-        .catch(err => {
-          console.log(err.response)
-          throw err
-        })
-    },
-    publishNewsAgregator({state, commit}, payload) {
-      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publish`, payload)
-        .then(response => {
-          return response
-        })
-        .catch(err => {throw err})
-    },
-    publishAllNewsAgregator({state}, payload) {
-      return this._vm.$httpWithToken().post(`${state.pathNews}/aggregator/publishall`, payload)
-        .then(response => {return response})
-        .catch(err => { throw err })
     },
     getMappingCategory({state}) {
       return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/WEBHOSE/mappingcategory`)

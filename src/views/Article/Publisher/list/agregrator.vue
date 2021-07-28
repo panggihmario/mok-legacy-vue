@@ -3,25 +3,23 @@
     <div class="d-flex justify-space-between">
       <div class="d-flex">
         <div class="mt-2 mr-2 agg__filter">Filter</div>
-          <custom-select
+          <!-- <custom-select
             :items="mappingCategory"
             dense
             item-text="newsCategory.name"
             v-model="selectedMapping"
-            @change="filterAgregator"
             clearable
             @click:clear="handleNewsAgregator"
             class="mr-4"
             placeholder="Kategori"
-          />
+          /> -->
           <custom-select
-            :items="agregratorSites"
+            :items="sites"
             placeholder="Agregrator Sites"
             dense
             item-text="name"
             v-model="selectedSite"
             @change="filterBySite"
-            clearable
             @click:clear="handleNewsAgregator"
             class="mr-4"
           />
@@ -45,7 +43,7 @@
       @toggle-select-all="selectAllNews"
       no-data-text="no data"
     >
-      <template v-slot:[`item.action`]="{ item }">
+      <template v-slot:[`item.action`]>
         <custom-button
           color="primary"
           v-if="!viewNews"
@@ -56,7 +54,7 @@
           Publish
         </custom-button>
       </template>
-      <template v-slot:header.action>
+      <template v-slot:[`header.action`]>
         <custom-button
           color="primary"
           v-if="!viewNews"
@@ -123,10 +121,8 @@ export default {
       loadingPublish: false,
       isLoading: false,
       searchNewsAg: "",
-      agregratorSites : [],
       mappingCategory: [],
       selectedMapping: '',
-      selectedSite : '',
       headers: [
         {
           text: "Tanggal",
@@ -157,7 +153,17 @@ export default {
       viewNews: "viewNews",
       newsAgregrator: (state) => state.news.newsAgregrator,
       selectedToPublish: (state) => state.news.selectedToPublish,
+      sites : (state) => state.news.sites,
+      site : (state) => state.news.site
     }),
+    selectedSite : {
+      get() {
+        return this.site
+      },
+      set(value) {
+        return this.setSite(value)
+      }
+    },
     selected: {
       get() {
         return this.selectedToPublish;
@@ -170,7 +176,8 @@ export default {
   mounted() {
     this.handleNewsAgregator();
     this.handleGetMapping();
-    this.handleGetSiteAgregrator()
+    // this.handleGetSiteAgregrator()
+    this.fetchListAgregratorSites()
   },
   methods: {
     handlePublish(payload) {
@@ -201,41 +208,16 @@ export default {
     },
     getSearchNews() {
       const payload = {
+        data : {
           search: this.searchNewsAg,
-      };
-      if(this.selectedMapping) {
-        return this.filterAgregator()
-      }else{
-        return this.getAllNewsAgregrator(payload)
-      }
-    },
-    filterAgregator() {
-      const payload = {
-        category: this.selectedMapping,
-        keyword: {
-          search: this.searchNewsAg,
-          site : this.selectedSite
         },
+        params : this.site
       };
-      this.selectedMappingCategory(this.selectedMapping);
-      this.statusLoading = true;
-      return this.getNewsAgregatorByCategory(payload).then(() => {
-        this.selected = [];
-        this.statusLoading = false;
-      });
+      return this.searchNewsAgregrator(payload)
     },
+    
     filterBySite() {
-      const payload = {
-        category: this.selectedMapping,
-        keyword: {
-          search: this.searchNewsAg,
-          site : this.selectedSite
-        },
-      }
-      return this.getNewsAgregatorByCategory(payload).then(() => {
-        this.selected = [];
-        this.statusLoading = false;
-      });
+      return this.handleNewsAgregator()
     },
     isEnabled(slot) {
       return this.enabled === slot;
@@ -252,7 +234,6 @@ export default {
       return this.getNewSiteAgregator()
         .then(response => {
           this.agregratorSites = response
-          console.log(response)
         })
     },
     ...mapActions({
@@ -260,9 +241,10 @@ export default {
       getAllNewsAgregrator: "news/getAllNewsAgregrator",
       publishNewsAgregator: "news/publishNewsAgregator",
       getMappingCategory: "news/getMappingCategory",
-      getNewsAgregatorByCategory: "news/getNewsAgregatorByCategory",
       publishAllNewsAgregator: "news/publishAllNewsAgregator",
-      getNewSiteAgregator : "news/getNewSiteAgregator"
+      getNewSiteAgregator : "news/getNewSiteAgregator",
+      getListAgregratorSite : "news/getListAgregratorSite",
+      searchNewsAgregrator : "news/searchNewsAgregrator"
     }),
     ...mapMutations({
       setPreviewNewsAgregrator: "news/setPreviewNewsAgregrator",
@@ -270,7 +252,14 @@ export default {
       setNewsAgregator: "news/setNewsAgregator",
       selectedMappingCategory: "news/selectedMappingCategory",
       setSelectedToPublish: "news/setSelectedToPublish",
+      setSite : "news/setSite"
     }),
+    fetchListAgregratorSites() {
+      return this.getListAgregratorSite()
+        .then(response => {
+          this.agregratorSites = response
+        })
+    },
     handleGetMapping() {
       return this.getMappingCategory().then((response) => {
         this.mappingCategory = response;
@@ -278,7 +267,8 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
-      return this.getAllNewsAgregrator()
+      const payload = this.selectedSite
+      return this.getAllNewsAgregrator(payload)
         .then((response) => {
           this.selected = [];
           this.statusLoading = false;
