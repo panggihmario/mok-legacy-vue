@@ -143,7 +143,6 @@ export default {
     },
   },
   mounted() {
-    console.log("preview",this.previewNewsAgregator)
     this.handleGetMapping()
   },
   methods : {
@@ -152,7 +151,7 @@ export default {
       publishNewsAgregator : 'news/publishNewsAgregator',
       getCategoryNews : 'news/getCategoryNews',
       getNewsAgregatorByCategory : 'news/getNewsAgregatorByCategory',
-      getAllNewsAgregrator : 'news/getAllNewsAgregrator'
+      getAllNewsAgregrator : 'news/getAllNewsAgregrator',
     }),
     ...mapMutations({
       setCategory : "news/setCategory",
@@ -206,10 +205,9 @@ export default {
           scheduledTime : this.epoch
         }
       }
-      console.log("payload", payload)
       this.loading = true
       return this.publishNewsAgregator(payload)
-        .then(response => {
+        .then(() => {
           return this.getAllNewsAgregrator()
         })
         .then(() => {
@@ -269,4 +267,21 @@ export default {
     letter-spacing: 0.01em
     font-size: 12px
     font-weight: 500
+</style>
+
+
+<style lang="scss" >
+.preview {
+  &__content {
+    img {
+      width: 100% !important;
+      border-radius: 8px;
+    }
+    iframe {
+      width: 100% !important;
+      height: 170px !important;
+      border-radius: 8px;
+    }
+  }
+}
 </style>

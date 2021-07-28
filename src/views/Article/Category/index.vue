@@ -31,7 +31,7 @@
           disable-pagination
           hide-default-footer
         >
-          <template v-slot:header.action>
+          <template v-slot:[`header.action`]>
             <custom-button
               color="primary"
               class="white--text"
@@ -74,7 +74,7 @@
         </v-data-table>
       </v-col>
       <v-col cols="7">
-        <RightSide
+        <!-- <RightSide
           :categoryWebhose="categoryWebhose"
           :category="category"
           @reGetCategory="reGetCategory"
@@ -82,7 +82,7 @@
           @getSelectedWebhose="getSelectedWebhose"
           @finishMappingCategory="finishMappingCategory"
           @searchCategoryWebhose="searchCategoryWebhose"
-        />
+        /> -->
       </v-col>
     </v-row>
 
