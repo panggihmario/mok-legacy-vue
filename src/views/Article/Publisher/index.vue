@@ -163,6 +163,7 @@ export default {
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
+        console.log(responseData)
         this.listNews = responseData;
         this.totalPages = response.data.data.totalPages;
       } else {
@@ -178,6 +179,7 @@ export default {
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
+        console.log(responseData)
         this.listNews = responseData;
          this.totalPages = response.data.data.totalPages;
       } else {
