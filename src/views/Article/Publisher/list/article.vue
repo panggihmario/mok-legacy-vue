@@ -109,6 +109,7 @@ export default {
       const list = this.listNews.content;
       if (list) {
         const filterSchedule = list.filter((f) => {
+          console.log(f)
           if (!f.isScheduled) {
             return f;
           }
@@ -165,7 +166,9 @@ export default {
             return f;
           }
         });
-        return filterSchedule;
+        // console.log(filterSchedule)
+        // return filterSchedule;
+        return list
       }
     },
   },
