@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer  floating color="whitesnow"  app width="500" permanent right>
+  <v-navigation-drawer  floating color="whitesnow"  app width="400" permanent right>
     <div class="drawer__container">
       <Actions
         :product="product"
