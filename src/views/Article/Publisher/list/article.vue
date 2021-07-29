@@ -161,14 +161,14 @@ export default {
     news() {
       const list = this.listNews.content;
       if (list) {
-        console.log
         const filterSchedule = list.filter((f) => {
           if (!f.isScheduled) {
             return f;
           }
         });
-        console.log(filterSchedule)
-        return filterSchedule;
+        // console.log(filterSchedule)
+        // return filterSchedule;
+        return list
       }
     },
   },
