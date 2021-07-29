@@ -12,10 +12,13 @@
 
 <script>
 import { mapState } from 'vuex'
-import DrawerNews from "../components/core/Drawer/news"
+import DrawerNews from "../../components/core/Drawer/news"
 export default {
   components : {
     DrawerNews
+  },
+  mounted() {
+    console.log(this.$route)
   },
   data () {
     return {
