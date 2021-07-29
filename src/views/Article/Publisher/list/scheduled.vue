@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table hide-default-footer :headers="headers" :items="listNews.content">
-      <template v-slot:item.publish="{item}">
+      <template v-slot:[`item.publish`]="{item}">
         {{formatingDate(item.scheduledTime)}}
         <!-- {{item.scheduledTime}} -->
       </template>
