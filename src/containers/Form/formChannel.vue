@@ -32,7 +32,7 @@
         label="Kode Channel"
         v-model="channel.code"
         :value="channel.code"
-        name="Name"
+        name="code"
         :disabled="status ===  'edit' ? true : false "
       />
       <custom-textarea
