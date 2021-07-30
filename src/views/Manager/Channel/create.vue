@@ -7,6 +7,7 @@
       @onSubmit="onSubmit"
       :labelButton="$t('button.channelAdd')"
       :loading="loading"
+      status="create"
     />
     <v-snackbar top right v-model="alertSuccess" color="success">
       Post Success
@@ -59,6 +60,7 @@ export default {
     }),
     async onSubmit(payload) {
       this.loading = true;
+      console.log(this.channel)
       const response = await this.createChannel(this.channel);
       if (response.status === 201) {
         this.alertSuccess = true;

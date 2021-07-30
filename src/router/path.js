@@ -1,6 +1,4 @@
-import Home from "../views/Home.vue";
 import Auth from "../views/Auth";
-import Dashboard from "../views/Dashboard";
 import Article from "../views/Article";
 import CreateArticle from "../views/Article/Editor/create.vue";
 import EditArticle from "../views/Article/Editor/edit.vue";
@@ -22,9 +20,7 @@ import EditPublisher from "../views/Article/Publisher/edit.vue";
 import Editor from "../views/Article/Editor";
 import EditorArticle from "../views/Article/Editor/Article";
 import CategoryNews from "../views/Article/Category";
-import CategoryNewsCreate from "../views/Article/Category/create.vue";
 import CategoryNewsEdit from "../views/Article/Category/edit.vue";
-import ProductDetail from "../views/Shop/Product/detail/index.vue";
 import CreateProduct from "../views/Shop/Product/create/index.vue";
 import Category from "../views/Shop/Category";
 import Seller from "../views/Shop/Seller";
@@ -48,31 +44,31 @@ import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
 
 const routes = [
-  {
-    path : "/product",
-    component : () => import('../layouts/Product'),
-    children : [
-      {
-        path : '/product',
-        component : () => import('../views/Shop/Product'),
-        name : 'products'
-      },
-      {
-        path : 'banned',
-        component : () => import('../views/Shop/Banned'),
-        name : 'bannedProduct'
-      },
-      {
-        path : "search",
-        component  : () => import('../views/Shop/Product/search.vue'),
-        name : 'searchProduct',
-        props : route => {return route.query}
-      }
-    ]
-  },
+  // {
+  //   path : "/product",
+  //   component : () => import('../layouts/Product'),
+  //   children : [
+  //     {
+  //       path : '/product',
+  //       component : () => import('../views/Shop/Product'),
+  //       name : 'products'
+  //     },
+  //     {
+  //       path : 'banned',
+  //       component : () => import('../views/Shop/Banned'),
+  //       name : 'bannedProduct'
+  //     },
+  //     {
+  //       path : "search",
+  //       component  : () => import('../views/Shop/Product/search.vue'),
+  //       name : 'searchProduct',
+  //       props : route => {return route.query}
+  //     }
+  //   ]
+  // },
   {
     path: "/",
-    component: Home,
+    component: () => import('../layouts/MainLayout'),
     meta: {
       requireAuth: true,
     },
@@ -216,16 +212,25 @@ const routes = [
         path: "/publisher",
         name: "publisher",
         component: Publisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/pubisher/review/:id",
         name: "reviewPublisher",
         component: ReviewPublisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/publisher/:id",
         name: "editPublisher",
         component: EditPublisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/editor",
@@ -242,26 +247,39 @@ const routes = [
         name: "categoryNews",
         component: CategoryNews,
       },
-      // {
-      //   path: "/categorynews/create",
-      //   name: "categoryNewsCreate",
-      //   component: CategoryNewsCreate,
-      // },
       {
         path: "/categorynews/:id",
         name: "categoryNewsEdit",
         component: CategoryNewsEdit,
       },
-      // {
-      //   path: "/product",
-      //   name: "product",
-      //   component: Product,
-      // },
+
       {
-        path: "/product/add",
-        name: "addProduct",
-        component: CreateProduct,
+        path : '/product',
+        component : () => import('../views/Shop/Product'),
+        name : 'products',
+        meta : {
+          page : 'product'
+        }
       },
+      {
+        path : '/banned',
+        component : () => import('../views/Shop/Banned'),
+        name : 'bannedProduct',
+        meta : {
+          page : 'product'
+        }
+      },
+      {
+        path : "search",
+        component  : () => import('../views/Shop/Product/search.vue'),
+        name : 'searchProduct',
+        meta : {
+          page : 'product'
+        }
+      },
+
+
+
       {
         path: "/category",
         name: "category",

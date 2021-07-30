@@ -27,6 +27,14 @@
         rules="required"
         name="Name"
       />
+        <!-- rules="required" -->
+      <custom-input
+        label="Kode Channel"
+        v-model="channel.code"
+        :value="channel.code"
+        name="Name"
+        :disabled="status ===  'edit' ? true : false "
+      />
       <custom-textarea
         label="Deskripsi Channel"
         v-model="channel.description"
@@ -75,6 +83,7 @@ export default {
     loading: {
       type: Boolean,
     },
+    status : String
   },
   data() {
     return {
