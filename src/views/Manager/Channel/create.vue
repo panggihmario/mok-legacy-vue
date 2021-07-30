@@ -5,6 +5,7 @@
     <FormChannel
       :channel="channel"
       @onSubmit="onSubmit"
+      @setCode="setCode"
       :labelButton="$t('button.channelAdd')"
       :loading="loading"
       status="create"
@@ -38,6 +39,7 @@ export default {
         description: "",
         photo: "",
         isSensitive: "",
+        code : ''
       },
       image: "",
       status: "",
@@ -58,9 +60,11 @@ export default {
     ...mapActions({
       createChannel: "channel/createChannel",
     }),
-    async onSubmit(payload) {
+    setCode(value) {
+      this.channel.code = value
+    },
+    async onSubmit() {
       this.loading = true;
-      console.log(this.channel)
       const response = await this.createChannel(this.channel);
       if (response.status === 201) {
         this.alertSuccess = true;

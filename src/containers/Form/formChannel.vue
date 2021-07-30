@@ -30,8 +30,8 @@
         <!-- rules="required" -->
       <custom-input
         label="Kode Channel"
-        v-model="channel.code"
-        :value="channel.code"
+        v-model="codeChannel"
+        :value="codeChannel"
         name="code"
         :disabled="status ===  'edit' ? true : false "
       />
@@ -85,6 +85,17 @@ export default {
     },
     status : String
   },
+  computed : {
+    codeChannel : {
+      get() {
+        return this.channel.code
+      },
+      set(value) {
+        const upper = value.toUpperCase()
+        this.$emit('setCode', upper)
+      }
+    }
+  },
   data() {
     return {
       isNoImage: false,
@@ -99,7 +110,6 @@ export default {
       }
     },
     getResponse(payload) {
-      this.status = payload.status;
       this.channel.photo = payload.response.url;
       if (payload.response.url) {
         this.isNoImage = false;
