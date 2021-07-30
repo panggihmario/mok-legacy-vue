@@ -44,28 +44,28 @@ import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
 
 const routes = [
-  {
-    path : "/product",
-    component : () => import('../layouts/Product'),
-    children : [
-      {
-        path : '/product',
-        component : () => import('../views/Shop/Product'),
-        name : 'products'
-      },
-      {
-        path : 'banned',
-        component : () => import('../views/Shop/Banned'),
-        name : 'bannedProduct'
-      },
-      {
-        path : "search",
-        component  : () => import('../views/Shop/Product/search.vue'),
-        name : 'searchProduct',
-        props : route => {return route.query}
-      }
-    ]
-  },
+  // {
+  //   path : "/product",
+  //   component : () => import('../layouts/Product'),
+  //   children : [
+  //     {
+  //       path : '/product',
+  //       component : () => import('../views/Shop/Product'),
+  //       name : 'products'
+  //     },
+  //     {
+  //       path : 'banned',
+  //       component : () => import('../views/Shop/Banned'),
+  //       name : 'bannedProduct'
+  //     },
+  //     {
+  //       path : "search",
+  //       component  : () => import('../views/Shop/Product/search.vue'),
+  //       name : 'searchProduct',
+  //       props : route => {return route.query}
+  //     }
+  //   ]
+  // },
   {
     path: "/",
     component: () => import('../layouts/MainLayout'),
@@ -212,16 +212,25 @@ const routes = [
         path: "/publisher",
         name: "publisher",
         component: Publisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/pubisher/review/:id",
         name: "reviewPublisher",
         component: ReviewPublisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/publisher/:id",
         name: "editPublisher",
         component: EditPublisher,
+        meta : {
+          page : 'news'
+        }
       },
       {
         path: "/editor",
@@ -238,26 +247,39 @@ const routes = [
         name: "categoryNews",
         component: CategoryNews,
       },
-      // {
-      //   path: "/categorynews/create",
-      //   name: "categoryNewsCreate",
-      //   component: CategoryNewsCreate,
-      // },
       {
         path: "/categorynews/:id",
         name: "categoryNewsEdit",
         component: CategoryNewsEdit,
       },
-      // {
-      //   path: "/product",
-      //   name: "product",
-      //   component: Product,
-      // },
+
       {
-        path: "/product/add",
-        name: "addProduct",
-        component: CreateProduct,
+        path : '/product',
+        component : () => import('../views/Shop/Product'),
+        name : 'products',
+        meta : {
+          page : 'product'
+        }
       },
+      {
+        path : '/banned',
+        component : () => import('../views/Shop/Banned'),
+        name : 'bannedProduct',
+        meta : {
+          page : 'product'
+        }
+      },
+      {
+        path : "search",
+        component  : () => import('../views/Shop/Product/search.vue'),
+        name : 'searchProduct',
+        meta : {
+          page : 'product'
+        }
+      },
+
+
+
       {
         path: "/category",
         name: "category",

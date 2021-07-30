@@ -7,6 +7,7 @@
       @onSubmit="onSubmit"
       :labelButton="$t('button.channelEdit')"
       :loading="loading"
+      status="edit"
     />
     <v-snackbar top right v-model="alertSuccess" color="success">
       Post Success
