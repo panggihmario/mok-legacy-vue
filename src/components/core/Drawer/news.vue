@@ -208,7 +208,11 @@ export default {
       this.loading = true
       return this.publishNewsAgregator(payload)
         .then(() => {
-          return this.getAllNewsAgregrator()
+          const p = {
+            size : 10,
+            page :0
+          }
+          return this.getAllNewsAgregrator(p)
         })
         .then(() => {
           this.loading = false

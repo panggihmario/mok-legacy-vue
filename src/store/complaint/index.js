@@ -16,7 +16,7 @@ export default {
           );
         return response;
       } catch (error) {
-        return error;
+        throw error;
       }
     },
     async getComplaintById({ state }, payload) {

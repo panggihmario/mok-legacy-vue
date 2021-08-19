@@ -1,3 +1,4 @@
+import router from "../../router"
 export default {
 	namespaced: true,
 	state: {
@@ -51,12 +52,6 @@ export default {
 				const id = response.data.accountId
 				const username = response.data.userName
 				const role = response.data.role
-				// context.commit('setUser', username)
-				// context.commit('setAccountId', id)
-				// localStorage.setItem("persada_token", token)
-				// localStorage.setItem("persada_id" , id)
-				// localStorage.setItem("persada_username", username)
-				// localStorage.setItem("persada_role", role)
 				const initialiseData = {
 					token,
 					accountId : id,
@@ -65,8 +60,6 @@ export default {
 				}
 				localStorage.setItem('adminKoanba', JSON.stringify(initialiseData))
 				context.commit('setInitialiseDataFromLogin', initialiseData)
-				// context.commit('setRole',role)
-				// context.commit('setToken',token)
 				return response
 			} catch (error) {
 				return error
@@ -75,6 +68,22 @@ export default {
 		logout(context){
 			context.commit('clearToken', '')
 			localStorage.removeItem('adminKoanba')
+		},
+		getProfile({state, dispatch }) {
+			const id = state.accountId
+			return this._vm.$httpWithToken().get(`profile/${id}`)
+				.then(response => {
+					// console.log(response)
+				})
+				.catch(err => {
+					const codeResponse = err.response.status
+					if(codeResponse === 401) {
+						dispatch('logout')
+						router.push({
+							name : 'Authentication'
+						})
+					}
+				})
 		}
 	},
 	getters : {
