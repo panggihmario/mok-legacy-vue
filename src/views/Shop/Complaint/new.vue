@@ -133,10 +133,11 @@ export default {
       };
       const response = await this.getListComplaint(payload);
       if (response.status === 200) {
+        console.log(response)
         this.items = response.data.data.content;
         this.$emit("getTotalList", this.items.length);
       } else {
-        console.error(error);
+        console.log(error);
       }
     },
     goToDetail(item) {

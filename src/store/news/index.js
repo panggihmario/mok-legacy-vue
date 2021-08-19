@@ -10,7 +10,7 @@ export default {
     selectedMappingCategory : "",
     selectedToPublish : [],
     sites : [],
-    site : 'CUMICUMI'
+    site : 'CUMICUMI',
   },
   mutations : {
     setListSites(state, payload) {
