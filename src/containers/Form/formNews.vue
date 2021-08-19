@@ -260,7 +260,11 @@ export default {
         this.thumbnailImage = payload.response.url;
         this.$emit("getThumbnail", payload.response);
         this.visibleThumbnail = false;
-      } else {
+      }
+      else if(payload.status === 'failed') {
+        this.visibleThumbnail = false
+      }
+      else {
         this.visibleThumbnail = true;
       }
     },
@@ -270,7 +274,11 @@ export default {
         this.image = payload.response.thumbnail.medium;
         this.$emit("getImageUpload", payload.response);
         this.visible = false;
-      } else {
+      }
+      else if(payload.status === 'failed') {
+        this.visible = false
+      }
+      else {
         this.visible = true;
       }
     },

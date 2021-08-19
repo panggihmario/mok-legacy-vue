@@ -99,6 +99,9 @@
         </div>
       </div>
     <!-- </template> -->
+    <v-alert class="agg__alert" :value="alertError" type="error">
+      {{ errorMessage }}
+    </v-alert>
   </v-navigation-drawer>
 </template>
 
@@ -110,6 +113,8 @@ export default {
     return {
       categories : [],
       loading : false,
+      alertError : false,
+      errorMessage : '',
       cat : {},
       humanDate : '',
       dialogDate : false,
@@ -208,7 +213,11 @@ export default {
       this.loading = true
       return this.publishNewsAgregator(payload)
         .then(() => {
-          return this.getAllNewsAgregrator()
+          const p = {
+            size : 10,
+            page :0
+          }
+          return this.getAllNewsAgregrator(p)
         })
         .then(() => {
           this.loading = false
@@ -218,7 +227,16 @@ export default {
           return this.setSelectedToPublish([])
         })
         .catch(err => {
-          console.log(err)
+          const message = err.response.data.message;
+          if (message) {
+            this.alertError = true;
+            this.errorMessage = message;
+          }
+          setTimeout(() => {
+            this.alertError = false
+            this.errorMessage = ''
+            this.loading = false
+          }, 2000)
         })
     
       }

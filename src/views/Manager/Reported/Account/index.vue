@@ -226,7 +226,6 @@ export default {
       };
       const response = await this.getListReportByType(payload);
       if (response.status == 200) {
-        console.log(response);
         this.reports = response.data.data.content;
         this.totalPages = response.data.data.totalPages;
       }

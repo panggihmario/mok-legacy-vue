@@ -11,17 +11,23 @@ function getListAgregratorSite({state, commit}) {
     .catch(err => { throw err })
 }
 
-function  getAllNewsAgregrator({state, commit}) {
+function  getAllNewsAgregrator({state, commit}, payload) {
   commit('setNewsAgregator', [])
   const site = state.site
   return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${site}/preview`,{
+    params : {
+      ...payload,
+      sort : 'createAt,desc'
+    }
   })
     .then(response => {
-      const responseData = response.data.data
+      const data = response.data.data
+      const responseData = response.data.data.content
       commit('setNewsAgregator', responseData)
-      return responseData
+      return data
     })
     .catch(error => {
+      console.log("=",err.response)
       commit('setNewsAgregator', [])
       throw error
     })

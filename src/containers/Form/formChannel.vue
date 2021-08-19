@@ -27,6 +27,14 @@
         rules="required"
         name="Name"
       />
+        <!-- rules="required" -->
+      <custom-input
+        label="Kode Channel"
+        v-model="codeChannel"
+        :value="codeChannel"
+        name="code"
+        :disabled="status ===  'edit' ? true : false "
+      />
       <custom-textarea
         label="Deskripsi Channel"
         v-model="channel.description"
@@ -75,6 +83,18 @@ export default {
     loading: {
       type: Boolean,
     },
+    status : String
+  },
+  computed : {
+    codeChannel : {
+      get() {
+        return this.channel.code
+      },
+      set(value) {
+        const upper = value.toUpperCase()
+        this.$emit('setCode', upper)
+      }
+    }
   },
   data() {
     return {
@@ -90,7 +110,6 @@ export default {
       }
     },
     getResponse(payload) {
-      this.status = payload.status;
       this.channel.photo = payload.response.url;
       if (payload.response.url) {
         this.isNoImage = false;
