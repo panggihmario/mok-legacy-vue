@@ -119,7 +119,7 @@ export default [
       },
       {
         title : 'Banned Product',
-        path : '/product/banned'
+        path : '/banned'
       },
       {
         title: "Category",

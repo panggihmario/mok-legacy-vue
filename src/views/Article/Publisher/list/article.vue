@@ -108,12 +108,6 @@ export default {
     news() {
       const list = this.listNews.content;
       if (list) {
-        const filterSchedule = list.filter((f) => {
-          console.log(f)
-          if (!f.isScheduled) {
-            return f;
-          }
-        });
         return filterSchedule;
       }
     },
@@ -161,13 +155,6 @@ export default {
     news() {
       const list = this.listNews.content;
       if (list) {
-        const filterSchedule = list.filter((f) => {
-          if (!f.isScheduled) {
-            return f;
-          }
-        });
-        // console.log(filterSchedule)
-        // return filterSchedule;
         return list
       }
     },
@@ -250,7 +237,6 @@ export default {
     },
     async handlePushNotificationById() {
       const response = await this.pushNotificationById(this.idNews);
-      console.log(response);
       if (response.status === 200) {
         this.dialogPush = false;
         this.alertSuccessPush = true;

@@ -5,8 +5,10 @@
     <FormChannel
       :channel="channel"
       @onSubmit="onSubmit"
+      @setCode="setCode"
       :labelButton="$t('button.channelAdd')"
       :loading="loading"
+      status="create"
     />
     <v-snackbar top right v-model="alertSuccess" color="success">
       Post Success
@@ -37,6 +39,7 @@ export default {
         description: "",
         photo: "",
         isSensitive: "",
+        code : ''
       },
       image: "",
       status: "",
@@ -57,7 +60,10 @@ export default {
     ...mapActions({
       createChannel: "channel/createChannel",
     }),
-    async onSubmit(payload) {
+    setCode(value) {
+      this.channel.code = value
+    },
+    async onSubmit() {
       this.loading = true;
       const response = await this.createChannel(this.channel);
       if (response.status === 201) {

@@ -7,6 +7,7 @@
       @onSubmit="onSubmit"
       :labelButton="$t('button.channelEdit')"
       :loading="loading"
+      status="edit"
     />
     <v-snackbar top right v-model="alertSuccess" color="success">
       Post Success
@@ -82,7 +83,8 @@ export default {
           name: data.name,
           id: data.id,
           description: data.description,
-          photo: data.photo
+          photo: data.photo,
+          code : data.code
         };
         this.channel = payload;
       } else {
