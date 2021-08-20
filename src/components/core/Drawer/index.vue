@@ -94,8 +94,6 @@ export default {
     }),
     appVersion() {
       return this.$store.getters.appVersion;
-      // return process.env.PACKAGE_VERSION
-      // console.log(process.env)
     },
   },
   data() {
@@ -113,9 +111,6 @@ export default {
     handleLogout() {
       this.logout();
       this.$router.push("/auth");
-      // .catch(err => {
-      // 	console.log(err)
-      // })
     },
     ...mapActions({
       logout: "authentication/logout",

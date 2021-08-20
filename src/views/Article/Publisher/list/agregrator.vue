@@ -3,7 +3,7 @@
     <div class="d-flex justify-space-between">
       <div class="d-flex">
         <div class="mt-2 mr-2 agg__filter">Filter</div>
-          <!-- <custom-select
+        <!-- <custom-select
             :items="mappingCategory"
             dense
             item-text="newsCategory.name"
@@ -13,16 +13,16 @@
             class="mr-4"
             placeholder="Kategori"
           /> -->
-          <custom-select
-            :items="sites"
-            placeholder="Agregrator Sites"
-            dense
-            item-text="name"
-            v-model="selectedSite"
-            @change="filterBySite"
-            @click:clear="handleNewsAgregator"
-            class="mr-4"
-          />
+        <custom-select
+          :items="sites"
+          placeholder="Agregrator Sites"
+          dense
+          item-text="name"
+          v-model="selectedSite"
+          @change="filterBySite"
+          @click:clear="handleNewsAgregator"
+          class="mr-4"
+        />
       </div>
       <custom-input
         placeholder="Search"
@@ -40,6 +40,7 @@
       show-select
       v-model="selected"
       :loading="statusLoading"
+      hide-default-footer
       @toggle-select-all="selectAllNews"
       no-data-text="no data"
     >
@@ -107,6 +108,17 @@
         </tbody>
       </template>
     </v-data-table>
+
+    <v-pagination
+      v-model="page"
+      :length="totalPages"
+      :total-visible="7"
+      @input="getNewsByPage"
+    ></v-pagination>
+
+    <v-alert class="agg__alert" :value="alertError" type="error">
+      {{ errorMessage }}
+    </v-alert>
   </div>
 </template>
 
@@ -115,6 +127,10 @@ import { mapActions, mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      errorMessage: "",
+      page: 1,
+      totalPages: 0,
+      alertError: false,
       singleSelect: false,
       selectedRow: null,
       statusLoading: false,
@@ -122,7 +138,7 @@ export default {
       isLoading: false,
       searchNewsAg: "",
       mappingCategory: [],
-      selectedMapping: '',
+      selectedMapping: "",
       headers: [
         {
           text: "Tanggal",
@@ -153,16 +169,16 @@ export default {
       viewNews: "viewNews",
       newsAgregrator: (state) => state.news.newsAgregrator,
       selectedToPublish: (state) => state.news.selectedToPublish,
-      sites : (state) => state.news.sites,
-      site : (state) => state.news.site
+      sites: (state) => state.news.sites,
+      site: (state) => state.news.site,
     }),
-    selectedSite : {
+    selectedSite: {
       get() {
-        return this.site
+        return this.site;
       },
       set(value) {
-        return this.setSite(value)
-      }
+        return this.setSite(value);
+      },
     },
     selected: {
       get() {
@@ -177,7 +193,7 @@ export default {
     this.handleNewsAgregator();
     this.handleGetMapping();
     // this.handleGetSiteAgregrator()
-    this.fetchListAgregratorSites()
+    this.fetchListAgregratorSites();
   },
   methods: {
     handlePublish(payload) {
@@ -192,7 +208,14 @@ export default {
           return this.setSelectedToPublish([]);
         })
         .catch((err) => {
-          console.log(err);
+          const message = err.response.data.message;
+          if (message) {
+            this.alertError = true;
+            this.errorMessage = message;
+          }
+          setTimeout(() => {
+            (this.alertError = false), (this.errorMessage = "");
+          }, 2000);
           this.statusLoading = false;
         });
     },
@@ -203,21 +226,28 @@ export default {
           return this.handleNewsAgregator();
         })
         .catch((err) => {
-          console.log(err);
+          const message = err.response.data.message;
+          if (message) {
+            this.alertError = true;
+            this.errorMessage = message;
+          }
+          setTimeout(() => {
+            (this.alertError = false), (this.errorMessage = "");
+          }, 2000);
         });
     },
     getSearchNews() {
       const payload = {
-        data : {
+        data: {
           search: this.searchNewsAg,
         },
-        params : this.site
+        params: this.site,
       };
-      return this.searchNewsAgregrator(payload)
+      return this.searchNewsAgregrator(payload);
     },
-    
+
     filterBySite() {
-      return this.handleNewsAgregator()
+      return this.handleNewsAgregator();
     },
     isEnabled(slot) {
       return this.enabled === slot;
@@ -231,10 +261,9 @@ export default {
       return newFormat;
     },
     handleGetSiteAgregrator() {
-      return this.getNewSiteAgregator()
-        .then(response => {
-          this.agregratorSites = response
-        })
+      return this.getNewSiteAgregator().then((response) => {
+        this.agregratorSites = response;
+      });
     },
     ...mapActions({
       changeStatusViewNews: "changeStatusViewNews",
@@ -242,9 +271,9 @@ export default {
       publishNewsAgregator: "news/publishNewsAgregator",
       getMappingCategory: "news/getMappingCategory",
       publishAllNewsAgregator: "news/publishAllNewsAgregator",
-      getNewSiteAgregator : "news/getNewSiteAgregator",
-      getListAgregratorSite : "news/getListAgregratorSite",
-      searchNewsAgregrator : "news/searchNewsAgregrator"
+      getNewSiteAgregator: "news/getNewSiteAgregator",
+      getListAgregratorSite: "news/getListAgregratorSite",
+      searchNewsAgregrator: "news/searchNewsAgregrator",
     }),
     ...mapMutations({
       setPreviewNewsAgregrator: "news/setPreviewNewsAgregrator",
@@ -252,13 +281,12 @@ export default {
       setNewsAgregator: "news/setNewsAgregator",
       selectedMappingCategory: "news/selectedMappingCategory",
       setSelectedToPublish: "news/setSelectedToPublish",
-      setSite : "news/setSite"
+      setSite: "news/setSite",
     }),
     fetchListAgregratorSites() {
-      return this.getListAgregratorSite()
-        .then(response => {
-          this.agregratorSites = response
-        })
+      return this.getListAgregratorSite().then((response) => {
+        this.agregratorSites = response;
+      });
     },
     handleGetMapping() {
       return this.getMappingCategory().then((response) => {
@@ -267,7 +295,27 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
-      const payload = this.selectedSite
+      const payload = {
+        size: 10,
+        page: 0,
+      };
+      return this.getAllNewsAgregrator(payload)
+        .then((response) => {
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.selected = [];
+          this.statusLoading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          // this.statusLoading = false
+        });
+    },
+    getNewsByPage(value) {
+      const payload = {
+        size: 10,
+        page: value - 1,
+      };
       return this.getAllNewsAgregrator(payload)
         .then((response) => {
           this.selected = [];
@@ -318,4 +366,8 @@ export default {
   &__filter
     color: #9B9B9B
     font-size: 14px
+  &__alert
+    position: absolute
+    top: 20px
+    right: 20px
 </style>

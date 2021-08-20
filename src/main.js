@@ -15,6 +15,7 @@ new Vue({
 	i18n,
 	beforeCreate () {
 		this.$store.commit('authentication/setInitialiseData')
+		this.$store.dispatch('authentication/getProfile')
 	},
 	render: h => h(App),
 	router,
