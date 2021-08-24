@@ -284,9 +284,7 @@ export default {
       setSite: "news/setSite",
     }),
     fetchListAgregratorSites() {
-      return this.getListAgregratorSite().then((response) => {
-        this.agregratorSites = response;
-      });
+      return this.getListAgregratorSite()
     },
     handleGetMapping() {
       return this.getMappingCategory().then((response) => {
