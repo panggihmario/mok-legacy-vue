@@ -84,10 +84,12 @@ export default [
       {
         title: "Category",
         path: "/categorynews",
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Iklan",
         path: "/ads",
+        role : ["ROLE_ADMIN"],
       },
     ],
   },
@@ -112,34 +114,43 @@ export default [
       {
         title: "Order",
         path: "/order",
+        role : ["ROLE_ADMIN"],
+        
       },
       {
         title: "Product",
         path: "/product",
+        role : ["ROLE_ADMIN"],
       },
       {
         title : 'Banned Product',
-        path : '/banned'
+        path : '/banned',
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Category",
         path: "/category",
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Seller",
         path: "/seller",
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Report",
         path: "/reported-seller",
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Komplain",
         path: "/complaint",
+        role : ["ROLE_ADMIN"],
       },
       {
         title: "Finance",
         path: "/finance",
+        role : ["ROLE_ADMIN"],
       },
      
     ],
