@@ -74,22 +74,22 @@ export default [
       {
         title: "Penyunting",
         path: "/publisher",
-        role: ["ROLE_SUPERVISOR", "ROLE_ADMIN"],
+        role: ["ROLE_EDITOR", "ROLE_ADMIN"],
       },
       {
         title: "Penulis",
         path: "/editor",
-        role: ["ROLE_EDITOR", "ROLE_ADMIN"],
+        role: ["ROLE_AUTHOR", "ROLE_ADMIN", "ROLE_EDITOR"],
       },
       {
         title: "Category",
         path: "/categorynews",
-        role : ["ROLE_ADMIN"],
+        role : ["ROLE_ADMIN" , "ROLE_EDITOR"],
       },
       {
         title: "Iklan",
         path: "/ads",
-        role : ["ROLE_ADMIN"],
+        role : ["ROLE_ADMIN" , "ROLE_EDITOR"],
       },
     ],
   },
@@ -114,7 +114,7 @@ export default [
       {
         title: "Order",
         path: "/order",
-        role : ["ROLE_ADMIN"],
+        role : ["ROLE_ADMIN" , "ROLE_SPV_COMPLAINT"],
         
       },
       {
@@ -145,12 +145,12 @@ export default [
       {
         title: "Komplain",
         path: "/complaint",
-        role : ["ROLE_ADMIN"],
+        role : ["ROLE_ADMIN", "ROLE_CS_COMPLAINT" , "ROLE_SPV_COMPLAINT"],
       },
       {
         title: "Finance",
         path: "/finance",
-        role : ["ROLE_ADMIN"],
+        role : ["ROLE_ADMIN" , "ROLE_ADMIN_FINANCE"],
       },
      
     ],
@@ -162,7 +162,7 @@ export default [
       {
         title: "Feed",
         path: "/post",
-        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_USER"],
+        role: ["ROLE_SELEB", "ROLE_ADMIN"],
       },
       // {
       // 	title : 'Product',
