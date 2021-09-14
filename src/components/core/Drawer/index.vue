@@ -34,7 +34,7 @@
         </template>
 
         <div v-for="(sub, i) in item.items" :key="i">
-          <v-list-item v-if="!sub.items" :to="sub.path">
+          <v-list-item v-if="!sub.items" :to="sub.path" :disabled="checkRole(sub.role)">
             <v-list-item-content disabled>
               <div class="drawer__label drawer__sub ml-3">
                 {{ sub.title }}
@@ -49,7 +49,7 @@
             sub-group
           >
             <template v-slot:activator>
-              <v-list-item-content>
+              <v-list-item-content >
                 <div class="d-flex align-center">
                   <div class="drawer__label">{{ sub.title }}</div>
                 </div>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-// :disabled="checkRole(sub.role)"
+
 import { mapState, mapMutations, mapActions } from "vuex";
 import listNavigation from "./items";
 
@@ -104,8 +104,9 @@ export default {
     };
   },
   mounted() {
-    const role = localStorage.getItem("persada_role");
-    this.roleUser = role;
+    const data = localStorage.getItem("adminKoanba");
+    const parseString = JSON.parse(data)
+    this.roleUser = parseString.role;
   },
   methods: {
     handleLogout() {
