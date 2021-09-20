@@ -66,8 +66,25 @@
                     </template>
                   </v-edit-dialog>
                 </td>
-                <td>{{ item.name }}</td>
-                <td></td>
+                <!-- <td>{{ item.name }}</td> -->
+                <td>
+                  <v-edit-dialog
+                    :return-value.sync="item.name"
+                    @open="open"
+                    @close="close"
+                    @save="saveCategory(item)"
+                    @cancel="cancel"
+                  >
+                    {{item.name}}
+                    <template v-slot:input>
+                      <v-text-field
+                        v-model="item.name"
+                        label="Edit"
+                        single-line
+                      />
+                    </template>
+                  </v-edit-dialog>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -215,6 +232,14 @@ export default {
     },
     close() {
       console.log("Dialog closed");
+    },
+    saveCategory(item) {
+      console.log(item)
+      const id = item.id
+      const name = item.name
+      const payload = {
+        id, name
+      }
     },
     async save(c) {
       const payload = {
