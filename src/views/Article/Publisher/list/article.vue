@@ -73,7 +73,7 @@
         <v-card-actions class="px-6">
           <v-spacer></v-spacer>
           <custom-button @click="closeDialog">Batalkan</custom-button>
-          <custom-button color="primary" @click="handlePushNotificationById"
+          <custom-button :loading="loadingPush" color="primary" @click="handlePushNotificationById"
             >Push News</custom-button
           >
         </v-card-actions>
@@ -115,6 +115,7 @@ export default {
   data() {
     return {
       dialog: false,
+      loadingPush : false,
       dialogPush: false,
       pageNews: 1,
       alertSuccess: false,
@@ -236,12 +237,14 @@ export default {
       }
     },
     async handlePushNotificationById() {
+      this.loadingPush = true
       const response = await this.pushNotificationById(this.idNews);
       if (response.status === 200) {
         this.dialogPush = false;
         this.alertSuccessPush = true;
         setTimeout(() => {
           this.alertSuccessPush = false;
+          this.loadingPush = false
         }, 2000);
         this.$emit("reloadDataNews");
       } else if (response.status === 204) {
@@ -249,12 +252,14 @@ export default {
         this.alertFailedPush = true;
         setTimeout(() => {
           this.alertFailedPush = false;
+          this.loadingPush = false
         }, 2000);
       } else {
         this.dialogPush = false;
         this.alertFailedPush = true;
         setTimeout(() => {
           this.alertFailedPush = false;
+          this.loadingPush = false
         }, 2000);
       }
     },
