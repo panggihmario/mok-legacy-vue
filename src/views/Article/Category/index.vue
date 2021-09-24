@@ -66,8 +66,22 @@
                     </template>
                   </v-edit-dialog>
                 </td>
-                <td>{{ item.name }}</td>
-                <td></td>
+                <!-- <td>{{ item.name }}</td> -->
+                <td>
+                  <v-edit-dialog
+                    :return-value.sync="item.name"
+                    @save="saveCategory(item)"
+                  >
+                    {{item.name}}
+                    <template v-slot:input>
+                      <v-text-field
+                        v-model="item.name"
+                        label="Edit"
+                        single-line
+                      />
+                    </template>
+                  </v-edit-dialog>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -216,6 +230,17 @@ export default {
     close() {
       console.log("Dialog closed");
     },
+    saveCategory(item) {
+      const id = item.id
+      const name = item.name
+      const payload = {
+        id, name
+      }
+      return this.editCategoryNews(payload)
+        .then(response => {
+          console.log("success", response)
+        })
+    },
     async save(c) {
       const payload = {
         id: c.id,
@@ -267,7 +292,8 @@ export default {
       editSequence: "news/editSequence",
       getCategoryAgregrator: "news/getCategoryAgregrator",
       getMappingCategory : "news/getMappingCategory",
-      getNewSiteAgregator : "news/getNewSiteAgregator"
+      getNewSiteAgregator : "news/getNewSiteAgregator",
+      editCategoryNews : 'news/editCategoryNews'
     }),
     handleGetNewSiteAgregator() {
       return this.getNewSiteAgregator() 

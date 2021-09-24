@@ -84,7 +84,7 @@ export default [
       {
         title: "Category",
         path: "/categorynews",
-        role : ["ROLE_ADMIN" , "ROLE_EDITOR"],
+        role : ["ROLE_ADMIN" , "ROLE_EDITOR"]  ,
       },
       {
         title: "Iklan",
