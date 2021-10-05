@@ -1,60 +1,67 @@
 <template>
   <div>
-    dashboard
-    <div class="random">
-      <TrendChart
-        :datasets="[
-          {
-            data: [10, 50, 20, 120, 40, 60, 80],
-            smooth: true,
-            fill: true,
-          },
-        ]"
-        :grid="{
-          verticalLines: true,
-          horizontalLines: true,
-        }"
-        :labels="{
-          xLabels,
-          yLabels: 5,
-					yLabelsTextFormatter: val => Math.round(val * 100) / 100
-        }"
-        :min="0"
-      >
-      </TrendChart>
+    <HeaderContent label="Dashboard" :list="items" />
+
+    <div class="chart__label">Perkembangan Jumlah User</div>
+    <div class="chart__container">
+      <ChartUser />
     </div>
+    <div class="chart__label">Perkembangan Jumlah Seleb</div>
+    <div class="chart__container">
+      <ChartSeleb/>
+    </div>
+
+    <div class="chart__label">Unggahan User</div>
+    <div class="chart__container">
+      <ChartFeed/>
+    </div>
+
+
+  
   </div>
 </template>
 
 <script>
-import moment from "moment"
-import Publisher from "./Publisher";
-import Editor from "./Editor";
-import { mapState } from "vuex";
+import ChartUser from "./ChartUser";
+import ChartSeleb from "./ChartSeleb";
+import ChartFeed from "./ChartFeed";
+import HeaderContent from "@/containers/HeaderContent";
 export default {
   data() {
     return {
-      xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      items: [
+        {
+          text: "Dashboard",
+          disabled: true,
+        },
+      ],
     };
   },
   components: {
-    Publisher,
-    Editor,
-  },
-   mounted() {
-     const w = moment().week(1).year(2021).format("DD/MM/YYYY");
-     console.log("==== ini week",w)
-   },
-   computed: {
-    ...mapState(["user"]),
+    HeaderContent,
+    ChartUser,
+    ChartSeleb,
+    ChartFeed
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.random {
-	.vtc {
-		height: 300px;
-	}
+
+.chart {
+  &__label {
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+    color: #4a4a4a;
+    margin-bottom: 14px;
+  }
+  &__container {
+    background: #ffffff;
+    box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 24px;
+  }
 }
 </style>

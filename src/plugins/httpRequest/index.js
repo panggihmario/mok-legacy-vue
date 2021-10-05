@@ -2,8 +2,8 @@ import axios from 'axios'
 import Vue from 'vue'
 import store from '../../store'
 
-// const BASE_URL = process.env.VUE_APP_BASE_URL
-const BASE_URL = 'https://stg-api-main.kipaskipas.com/api/v1/'
+const BASE_URL = process.env.VUE_APP_BASE_URL
+// const BASE_URL = 'https://stg-api-main.kipaskipas.com/api/v1/'
 const BASE_UPLOAD_URL = process.env.VUE_APP_UPLOAD
 const getToken = () => {
 	const token = store.state.authentication.token
@@ -46,7 +46,13 @@ const exportFile = (token = getToken()) => axios.create({
 	},
 });
 
+const getWithToken = (payload) => serviceWithToken().get(payload.url, {
+  params : payload.params
+})
+
 Vue.prototype.$http = serviceWithoutToken
 Vue.prototype.$httpWithToken = serviceWithToken
 Vue.prototype.$httpUpload = serviceUpload
 Vue.prototype.$httpDownload = exportFile
+
+Vue.prototype.$fetchWithToken = getWithToken

@@ -1,0 +1,137 @@
+<template>
+  <div class="chart-seleb">
+    <trend-chart
+      v-if="datasets"
+      :datasets="datasets"
+      :grid="{
+        verticalLines: true,
+        horizontalLines: true,
+      }"
+      :labels="labels"
+      :min="0"
+      padding="5"
+      :interactive="true"
+      @mouse-move="onMouseMove"
+      class="chart-seleb"
+    ></trend-chart>
+    <div
+      id="pop"
+      role="tooltip"
+      ref="tooltip"
+      class="tooltip"
+      :class="{ 'is-active': tooltipData }"
+    >
+      <div class="tooltip-container" v-if="tooltipData">
+        <strong>{{ labels.xLabels[tooltipData.index] }}</strong>
+        <div class="tooltip-data">
+          <div class="tooltip-data-item tooltip-data-item--1">
+            {{ tooltipData.data[0] }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { createPopper } from "@popperjs/core";
+export default {
+  props : ['datasets', 'labels' ],
+  data() {
+    return {
+      grid: {
+        verticalLines: true,
+        horizontalLines: true,
+        verticalLinesNumber: 1,
+        horizontalLinesNumber: 1,
+      },
+      tooltipData: null,
+      popper: null,
+      popperIsActive: false,
+    };
+  },
+  methods: {
+    initPopper() {
+      const chart = document.querySelector(".chart-seleb");
+      const ref = chart.querySelector(".active-line");
+      const tooltip = this.$refs.tooltip;
+      this.popper = createPopper(ref, tooltip, {
+        placement: "auto",
+      });
+    },
+    onMouseMove(params) {
+      this.popperIsActive = !!params;
+      this.popper.update();
+      this.tooltipData = params || null;
+    },
+  },
+  mounted() {
+    this.initPopper();
+  },
+};
+</script>
+
+<style lang="scss">
+.chart-seleb {
+  width: 100%;
+  .vtc {
+    height: 203px;
+    font-size: 12px;
+    @media (min-width: 699px) {
+      height: 320px;
+    }
+  }
+  .labels {
+    stroke: rgba(0, 0, 0, 0.05);
+  }
+  .active-line {
+    stroke: rgba(0, 0, 0, 0.2);
+  }
+  .point {
+    stroke-width: 2;
+    transition: stroke-width 0.2s;
+  }
+  .point.is-active {
+    stroke-width: 5;
+  }
+  .curve1 {
+    .stroke {
+      stroke: #52C41A;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #52C41A;
+      stroke: #52C41A;
+    }
+  }
+  .tooltip {
+    &:not(.is-active) {
+      display: none;
+    }
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    &-data {
+      display: flex;
+      &-item {
+        display: flex;
+        align-items: center;
+        &:not(:first-child) {
+          margin-left: 20px;
+        }
+        &:before {
+          content: "";
+          display: block;
+          width: 15px;
+          height: 15px;
+          margin-right: 5px;
+        }
+        &--1:before {
+          background: #1890FF;
+        }
+      }
+    }
+  }
+}
+</style>
