@@ -16,6 +16,16 @@
       <ChartFeed/>
     </div>
 
+    <div class="chart__label">Produk</div>
+    <div class="chart__container">
+      <ChartProduct/>
+    </div>
+
+    <div class="chart__label">Order</div>
+    <div class="chart__container">
+      <ChartOrder/>
+    </div>
+
 
   
   </div>
@@ -25,7 +35,9 @@
 import ChartUser from "./ChartUser";
 import ChartSeleb from "./ChartSeleb";
 import ChartFeed from "./ChartFeed";
+import ChartProduct from "./ChartProduct"
 import HeaderContent from "@/containers/HeaderContent";
+import ChartOrder from "./ChartOrder"
 export default {
   data() {
     return {
@@ -41,7 +53,9 @@ export default {
     HeaderContent,
     ChartUser,
     ChartSeleb,
-    ChartFeed
+    ChartFeed,
+    ChartProduct,
+    ChartOrder
   },
 };
 </script>

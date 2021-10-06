@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-seleb">
+  <div class="chart-user">
     <trend-chart
       v-if="datasets"
       :datasets="datasets"
@@ -12,7 +12,7 @@
       padding="5"
       :interactive="true"
       @mouse-move="onMouseMove"
-      class="chart-seleb"
+      :class="classChart"
     ></trend-chart>
     <div
       id="pop"
@@ -22,10 +22,11 @@
       :class="{ 'is-active': tooltipData }"
     >
       <div class="tooltip-container" v-if="tooltipData">
+        
         <strong>{{ labels.xLabels[tooltipData.index] }}</strong>
-        <div class="tooltip-data">
-          <div class="tooltip-data-item tooltip-data-item--1">
-            {{ tooltipData.data[0] }}
+        <div v-for="(d, idx) in tooltipData.data" :key="idx"  class="tooltip-data">
+          <div :class="`tooltip-data-item tooltip-data-item--${idx+1}`">
+            {{d}}
           </div>
         </div>
       </div>
@@ -36,7 +37,38 @@
 <script>
 import { createPopper } from "@popperjs/core";
 export default {
-  props : ['datasets', 'labels' ],
+  props: {
+    tooltipClass : {
+      type : String,
+      default : '1'
+    },
+    datasets: {
+      type: Array,
+      default() {
+        return [
+          {
+            data: [70, 100, 400, 180, 100, 300, 500],
+            smooth: true,
+            showPoints: true,
+            className: "curve1",
+          },
+        ];
+      },
+    },
+    labels: {
+      type: Object,
+      default() {
+        return {
+          xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          yLabels: 5,
+          yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
+        };
+      },
+    },
+    classChart: {
+      type: String,
+    },
+  },
   data() {
     return {
       grid: {
@@ -52,7 +84,7 @@ export default {
   },
   methods: {
     initPopper() {
-      const chart = document.querySelector(".chart-seleb");
+      const chart = document.querySelector(`.${this.classChart}`);
       const ref = chart.querySelector(".active-line");
       const tooltip = this.$refs.tooltip;
       this.popper = createPopper(ref, tooltip, {
@@ -72,7 +104,7 @@ export default {
 </script>
 
 <style lang="scss">
-.chart-seleb {
+.chart-user {
   width: 100%;
   .vtc {
     height: 203px;
@@ -94,7 +126,7 @@ export default {
   .point.is-active {
     stroke-width: 5;
   }
-  .curve1 {
+  .curve2 {
     .stroke {
       stroke: #52C41A;
       stroke-width: 2;
@@ -102,6 +134,26 @@ export default {
     .point {
       fill: #52C41A;
       stroke: #52C41A;
+    }
+  }
+  .curve1 {
+    .stroke {
+      stroke: #1890ff;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #1890ff;
+      stroke: #1890ff;
+    }
+  }
+  .curve-cancel {
+    .stroke {
+      stroke: #FF5252;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #FF5252;
+      stroke: #FF5252;
     }
   }
   .tooltip {
@@ -128,7 +180,10 @@ export default {
           margin-right: 5px;
         }
         &--1:before {
-          background: #1890FF;
+          background: #FF5252;
+        }
+        &--2:before {
+          background: #52C41A;
         }
       }
     }

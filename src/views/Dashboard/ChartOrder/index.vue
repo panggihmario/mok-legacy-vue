@@ -1,10 +1,7 @@
 <template>
   <div>
     <div class="action__container">
-      <Menu 
-        @changeSort="changeSort" 
-        color="kellygreen"
-      />
+      <Menu @changeSort="changeSort" />
       <div v-if="label === 'Daily'">
         <Date @getPayloadDate="getPayloadDate" />
       </div>
@@ -15,14 +12,20 @@
         <Year @getPayloadYear="getPayloadYear" />
       </div>
     </div>
-    <Chart 
-      classChart="chart-product" 
-      :labels="labels" :datasets="datasets" 
-      pointClass="kellygreen"
-    />
-    <div class="total__container-kelly">
-      <div class="total__label">Total Seleb</div>
-      <div class="total__count-kelly">{{totalSeleb}}</div>
+    <Chart classChart="chart-order" :labels="labels" :datasets="datasets" />
+    <div>
+      <div class="legends__container">
+        <hr class="legends__complete">
+        <div class="legends__label">
+          Completed
+        </div>
+      </div>
+      <div class="legends__container">
+        <hr class="legends__cancel">
+        <div class="legends__label">
+          Canceled
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +33,7 @@
 <script>
 import Menu from "../containers/menu.vue";
 import Date from "../containers/date.vue";
-import Chart from "../containers/chart.vue";
+import Chart from "./chart.vue";
 import Month from "../containers/month.vue";
 import Year from "../containers/year.vue";
 import { mapActions } from "vuex";
@@ -52,7 +55,6 @@ export default {
         yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
       },
       datasets: [],
-      totalSeleb : 0,
       payloadMonth: {
         startAt: 6,
         endAt: 9,
@@ -85,7 +87,7 @@ export default {
     getDailyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "orders",
         params: { ...this.payloadDate },
       };
       return this.fetchApi(payload);
@@ -93,7 +95,7 @@ export default {
     getMontylyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "orders",
         params: { ...this.payloadMonth },
       };
       return this.fetchApi(payload);
@@ -101,7 +103,7 @@ export default {
     getYearlyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "orders",
         params: { ...this.payloadYear },
       };
       return this.fetchApi(payload);
@@ -115,7 +117,7 @@ export default {
       const type = this.label.toLowerCase();
       const d = {
         type,
-        data: "seleb-registers",
+        data: "orders",
         params: { ...payload },
       };
       return this.fetchApi(d);
@@ -125,7 +127,7 @@ export default {
       const type = this.label.toLowerCase();
       const d = {
         type,
-        data: "seleb-registers",
+        data: "orders",
         params: { ...payload },
       };
       return this.fetchApi(d);
@@ -135,7 +137,7 @@ export default {
       const payload = {
         type,
         params: { ...this.payloadDate },
-        data: "seleb-registers",
+        data: "orders",
       };
       return this.fetchApi(payload);
     },
@@ -144,19 +146,28 @@ export default {
         .then((response) => {
           const xLabels = response.xlabels;
           const data = response.datasets;
-          const totalSeleb = data[0].totalSeleb;
-          this.totalSeleb = totalSeleb;
-          const formatDataset = data.map((d) => {
-            return {
-              data: d.data,
-              smooth: true,
-              showPoints: true,
-              className: "curve2",
-            };
-          });
+          const totalUser = data[0].totalSeleb;
+          this.totalUser = totalUser;
+          const formatDataset = data.map((d,idx)=> {
+            if(d.legend === "order_cancelled") {
+              return {
+                data: d.data,
+                smooth: true,
+                showPoints: true,
+                className: `curve-cancel`,
+              }
+            }else{
+              return {
+                data: d.data,
+                smooth: true,
+                showPoints: true,
+                className: `curve2`,
+              }
+            }
+          })
           const label = {
             xLabels,
-            yLabels: 6,
+            yLabels: xLabels.length,
             yLabelsTextFormatter: (val) => {
               const c = Math.round(val * 10) / 10;
               return c;

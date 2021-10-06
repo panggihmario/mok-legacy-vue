@@ -3,7 +3,7 @@
     <div class="action__container">
       <Menu 
         @changeSort="changeSort" 
-        color="kellygreen"
+        color="primary"
       />
       <div v-if="label === 'Daily'">
         <Date @getPayloadDate="getPayloadDate" />
@@ -16,14 +16,10 @@
       </div>
     </div>
     <Chart 
-      classChart="chart-product" 
+      classChart="chart-post"
+      pointClass="primary" 
       :labels="labels" :datasets="datasets" 
-      pointClass="kellygreen"
     />
-    <div class="total__container-kelly">
-      <div class="total__label">Total Seleb</div>
-      <div class="total__count-kelly">{{totalSeleb}}</div>
-    </div>
   </div>
 </template>
 
@@ -52,7 +48,6 @@ export default {
         yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
       },
       datasets: [],
-      totalSeleb : 0,
       payloadMonth: {
         startAt: 6,
         endAt: 9,
@@ -85,7 +80,7 @@ export default {
     getDailyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "products",
         params: { ...this.payloadDate },
       };
       return this.fetchApi(payload);
@@ -93,7 +88,7 @@ export default {
     getMontylyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "products",
         params: { ...this.payloadMonth },
       };
       return this.fetchApi(payload);
@@ -101,7 +96,7 @@ export default {
     getYearlyData(type) {
       const payload = {
         type,
-        data: "seleb-registers",
+        data: "products",
         params: { ...this.payloadYear },
       };
       return this.fetchApi(payload);
@@ -115,7 +110,7 @@ export default {
       const type = this.label.toLowerCase();
       const d = {
         type,
-        data: "seleb-registers",
+        data: "products",
         params: { ...payload },
       };
       return this.fetchApi(d);
@@ -125,7 +120,7 @@ export default {
       const type = this.label.toLowerCase();
       const d = {
         type,
-        data: "seleb-registers",
+        data: "products",
         params: { ...payload },
       };
       return this.fetchApi(d);
@@ -135,7 +130,7 @@ export default {
       const payload = {
         type,
         params: { ...this.payloadDate },
-        data: "seleb-registers",
+        data: "products",
       };
       return this.fetchApi(payload);
     },
@@ -144,14 +139,14 @@ export default {
         .then((response) => {
           const xLabels = response.xlabels;
           const data = response.datasets;
-          const totalSeleb = data[0].totalSeleb;
-          this.totalSeleb = totalSeleb;
+          const totalUser = data[0].totalSeleb;
+          this.totalUser = totalUser;
           const formatDataset = data.map((d) => {
             return {
               data: d.data,
               smooth: true,
               showPoints: true,
-              className: "curve2",
+              className: "curve3",
             };
           });
           const label = {

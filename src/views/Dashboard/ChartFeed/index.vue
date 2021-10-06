@@ -12,7 +12,7 @@
         <Year @getPayloadYear="getPayloadYear" />
       </div>
     </div>
-    <Chart classChart="chart-post" :labels="labels" :datasets="datasets" />
+    <Chart classChart="chart-feed" :labels="labels" :datasets="datasets" />
   </div>
 </template>
 

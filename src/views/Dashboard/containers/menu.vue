@@ -4,7 +4,7 @@
       <v-btn depressed :color="color" v-bind="attrs" v-on="on" width="121px">
         <div class="menu__btn-ctr">
           <div class="menu__label-btn text-capitalize text-white">{{ label }}</div>
-          <v-icon right dark> arrow_drop_down </v-icon>
+          <v-icon  right color="white"> arrow_drop_down </v-icon>
         </div>
       </v-btn>
     </template>

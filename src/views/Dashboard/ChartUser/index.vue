@@ -1,108 +1,141 @@
 <template>
-  <div class="ctr">
-    <div class="action__ctr">
-      <Menus @changeSort="changeSort" />
+  <div>
+    <div class="action__container">
+      <Menu @changeSort="changeSort" />
       <div v-if="label === 'Daily'">
         <Date @getPayloadDate="getPayloadDate" />
       </div>
       <div v-if="label === 'Monthly'">
-        <Monthly
-					@getPayloadMonth="getPayloadMonth"
-				/>
-      </div >
-			<div v-if="label === 'Yearly' " >
-				<Year
-					@getPayloadYear="getPayloadYear"
-				/>
-			</div> 
+        <Month @getPayloadMonth="getPayloadMonth" />
+      </div>
+      <div v-if="label === 'Yearly'">
+        <Year @getPayloadYear="getPayloadYear" />
+      </div>
     </div>
-    <Chart :datasets="datasets" :labels="labels" />
-    <div class="total__ctr">
+    <Chart classChart="chart-feed" :labels="labels" :datasets="datasets" />
+    <div class="total__container">
       <div class="total__label">Total User</div>
-      <div class="total__count">{{ totalUser }}</div>
+      <div class="total__count">{{totalUser}}</div>
     </div>
   </div>
 </template>
 
 <script>
-import Chart from "./chart.vue";
-import Menus from "./menu.vue";
-import Date from "./date.vue";
-import Monthly from "./month.vue";
-import Year from "./year.vue";
+import Menu from "../containers/menu.vue";
+import Date from "../containers/date.vue";
+import Chart from "../containers/chart.vue";
+import Month from "../containers/month.vue";
+import Year from "../containers/year.vue";
 import { mapActions } from "vuex";
 export default {
   components: {
-    Chart,
-    Menus,
+    Menu,
     Date,
-    Monthly,
-		Year
+    Chart,
+    Month,
+    Year,
   },
   data() {
     return {
       label: "Daily",
       payloadDate: {},
-			payloadMonth : {
-				startAt : 6,
-        endAt : 9
-			},
-			payloadYear : {
-				startAt : 2019,
-        endAt : 2021
-			},
-      totalUser: 0,
-      datasets: [
-        {
-          data: [70, 100, 400, 180, 100, 300, 500],
-          smooth: true,
-          showPoints: true,
-          fill: true,
-          className: "curve1",
-        },
-      ],
-
+      totalUser : 0,
       labels: {
         xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         yLabels: 5,
         yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
       },
+      datasets: [],
+      payloadMonth: {
+        startAt: 6,
+        endAt: 9,
+      },
+      payloadYear: {
+        startAt: 2019,
+        endAt: 2021,
+      },
     };
   },
+  mounted() {
+    this.handleFetchUser();
+  },
   methods: {
+    ...mapActions({
+      fetchStatisticsData: "dashboard/fetchStatisticsData",
+    }),
     changeSort(params) {
       this.label = params;
-			if(params === 'Monthly'  ) {
-				const type = this.label.toLowerCase();
-				const payload = {
-					type,
-					params: { ...this.payloadMonth },
-				};
-      	return this.fetchApi(payload);
-			}
-			if(params === 'Yearly') {
-				const type = this.label.toLowerCase();
-				const payload = {
-					type,
-					params: { ...this.payloadYear },
-				};
-      	return this.fetchApi(payload);
-			}
-      if(params === 'Daily') {
-        const type = this.label.toLowerCase();
-				const payload = {
-					type,
-					params: { ...this.payloadDate },
-				};
-      	return this.fetchApi(payload);
+      const type = params.toLowerCase();
+      switch (params) {
+        case "Daily":
+          return this.getDailyData(type);
+        case "Monthly":
+          return this.getMontylyData(type);
+        case "Yearly" :
+          return this.getYearlyData(type);
       }
     },
-    ...mapActions({
-      fetchStatisticsUser: "dashboard/fetchStatisticsUser",
-    }),
+    getDailyData(type) {
+      const payload = {
+        type,
+        data: "user-registers",
+        params: { ...this.payloadDate },
+      };
+      return this.fetchApi(payload);
+    },
+    getMontylyData(type) {
+      const payload = {
+        type,
+        data: "user-registers",
+        params: { ...this.payloadMonth },
+      };
+      return this.fetchApi(payload);
+    },
+    getYearlyData(type) {
+      const payload = {
+        type,
+        data: "user-registers",
+        params: { ...this.payloadYear },
+      };
+      return this.fetchApi(payload);
+    },
+    getPayloadDate(payload) {
+      this.payloadDate = { ...payload };
+      return this.handleFetchUser();
+    },
+    getPayloadMonth(payload) {
+      this.payloadMonth = { ...payload };
+      const type = this.label.toLowerCase();
+      const d = {
+        type,
+        data: "user-registers",
+        params: { ...payload },
+      };
+      return this.fetchApi(d);
+    },
+    getPayloadYear(payload) {
+      this.payloadYear = { ...payload };
+      const type = this.label.toLowerCase();
+      const d = {
+        type,
+        data: "user-registers",
+        params: { ...payload },
+      };
+      return this.fetchApi(d);
+    },
+    handleFetchUser() {
+      const type = this.label.toLowerCase();
+      const payload = {
+        type,
+        params: { ...this.payloadDate },
+        data: "user-registers",
+      };
+      return this.fetchApi(payload);
+    },
     fetchApi(payload) {
-      return this.fetchStatisticsUser(payload)
+      return this.fetchStatisticsData(payload)
         .then((response) => {
+          console.log("===> response", response)
           const xLabels = response.xlabels;
           const data = response.datasets;
           const totalUser = data[0].totalUser;
@@ -130,71 +163,9 @@ export default {
           console.log(err.response);
         });
     },
-    handleFetchUser() {
-      const type = this.label.toLowerCase();
-      const payload = {
-        type,
-        params: { ...this.payloadDate },
-      };
-      return this.fetchApi(payload);
-    },
-    getPayloadDate(payload) {
-      this.payloadDate = { ...payload };
-      return this.handleFetchUser();
-    },
-		getPayloadMonth(payload) {
-			this.payloadMonth = { ...payload }
-			const type = this.label.toLowerCase();
-				const data = {
-					type,
-					params: { ...payload },
-				};
-      	return this.fetchApi(data);
-		},
-		getPayloadYear(data) {
-			this.payloadYear = {...data}
-			const type = this.label.toLowerCase()
-			const payload = {
-				type ,
-				params : {...data}
-			}
-			return this.fetchApi(payload)
-		}
-  },
-  mounted() {
-    this.handleFetchUser();
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.action {
-  &__ctr {
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-between;
-  }
-}
-.total {
-  &__ctr {
-    padding: 16px;
-    border: 2px solid #1890ff;
-    box-sizing: border-box;
-    border-radius: 8px;
-    width: 77px;
-  }
-  &__label {
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    color: #777777;
-  }
-  &__count {
-    color: #1890ff;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-  }
-}
+<style src="../style.scss" lang="scss" scoped>
 </style>
-

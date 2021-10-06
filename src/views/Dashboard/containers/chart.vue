@@ -22,9 +22,10 @@
       :class="{ 'is-active': tooltipData }"
     >
       <div class="tooltip-container" v-if="tooltipData">
+        
         <strong>{{ labels.xLabels[tooltipData.index] }}</strong>
-        <div class="tooltip-data">
-          <div class="tooltip-data-item tooltip-data-item--1">
+        <div  class="tooltip-data">
+          <div :class="`tooltip-data-item tooltip-data-item--${pointClass}`">
             {{ tooltipData.data[0] }}
           </div>
         </div>
@@ -37,6 +38,14 @@
 import { createPopper } from "@popperjs/core";
 export default {
   props: {
+    tooltipClass : {
+      type : String,
+      default : '1'
+    },
+    pointClass : {
+      type : String,
+      default : 'secondary'
+    },
     datasets: {
       type: Array,
       default() {
@@ -121,6 +130,16 @@ export default {
   .point.is-active {
     stroke-width: 5;
   }
+  .curve2 {
+    .stroke {
+      stroke: #52C41A;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #52C41A;
+      stroke: #52C41A;
+    }
+  }
   .curve1 {
     .stroke {
       stroke: #1890ff;
@@ -129,6 +148,26 @@ export default {
     .point {
       fill: #1890ff;
       stroke: #1890ff;
+    }
+  }
+  .curve3{
+    .stroke {
+      stroke: #F47500;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #F47500;
+      stroke: #F47500;
+    }
+  }
+  .curve-cancel {
+    .stroke {
+      stroke: #FF5252;
+      stroke-width: 2;
+    }
+    .point {
+      fill: #FF5252;
+      stroke: #FF5252;
     }
   }
   .tooltip {
@@ -154,8 +193,14 @@ export default {
           height: 15px;
           margin-right: 5px;
         }
-        &--1:before {
+        &--secondary:before {
           background: #1890ff;
+        }
+        &--kellygreen:before{
+          background: #52C41A;
+        }
+        &--primary:before{
+          background: #F47500;
         }
       }
     }
