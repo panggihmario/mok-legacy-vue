@@ -10,6 +10,17 @@ export default [
   // 	]
   // },
   {
+    action : "mdi-cog",
+    title : 'Dashboard',
+    items : [
+      {
+        title : 'Dashboard',
+        path : '/dashboard',
+        role: ["ROLE_ADMIN"],
+      }
+    ]
+  },
+  {
     action: "mdi-cog",
     title: "Manage Account",
     items: [

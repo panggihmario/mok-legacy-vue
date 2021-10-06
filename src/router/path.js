@@ -277,9 +277,11 @@ const routes = [
           page : 'product'
         }
       },
-
-
-
+      {
+        path : "dashboard",
+        component : () => import('../views/Dashboard'),
+        name : 'dashboard',
+      },
       {
         path: "/category",
         name: "category",
