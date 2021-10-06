@@ -141,14 +141,11 @@ export default {
       };
       return this.fetchApi(payload);
     },
-    fetchApi(payload) {
-      return this.fetchStatisticsData(payload)
-        .then((response) => {
-          const xLabels = response.xlabels;
-          const data = response.datasets;
-          const totalUser = data[0].totalSeleb;
-          this.totalUser = totalUser;
-          const formatDataset = data.map((d,idx)=> {
+    printError () {
+      return
+    },
+    printSuccess(data, xLabels) {
+      const formatDataset = data.map((d,idx)=> {
             if(d.legend === "order_cancelled") {
               return {
                 data: d.data,
@@ -175,6 +172,17 @@ export default {
           };
           this.labels = label;
           this.datasets = formatDataset;
+    },
+    fetchApi(payload) {
+      return this.fetchStatisticsData(payload)
+        .then((response) => {
+          const xLabels = response.xlabels;
+          const data = response.datasets;
+          if(xLabels.length > 0) {
+            return this.printSuccess(data, xLabels)
+          }else{
+            return this.printError()
+          }
         })
         .catch((err) => {
           console.log(err.response);

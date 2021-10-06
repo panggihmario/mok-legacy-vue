@@ -66,7 +66,7 @@ export default {
           return this.getDailyData(type);
         case "Monthly":
           return this.getMontylyData(type);
-        case "Yearly" :
+        case "Yearly":
           return this.getYearlyData(type);
       }
     },
@@ -127,34 +127,42 @@ export default {
       };
       return this.fetchApi(payload);
     },
+    printError() {
+      return;
+    },
+    printSuccess(data, xLabels) {
+      const formatDataset = data.map((d) => {
+        return {
+          data: d.data,
+          smooth: true,
+          showPoints: true,
+          className: "curve1",
+        };
+      });
+      const label = {
+        xLabels,
+        yLabels: 6,
+        yLabelsTextFormatter: (val) => {
+          const c = Math.round(val * 10) / 10;
+          return c;
+        },
+      };
+      this.labels = label;
+      this.datasets = formatDataset;
+    },
     fetchApi(payload) {
       return this.fetchStatisticsData(payload)
         .then((response) => {
           const xLabels = response.xlabels;
           const data = response.datasets;
-          const totalUser = data[0].totalSeleb;
-          this.totalUser = totalUser;
-          const formatDataset = data.map((d) => {
-            return {
-              data: d.data,
-              smooth: true,
-              showPoints: true,
-              className: "curve1",
-            };
-          });
-          const label = {
-            xLabels,
-            yLabels: 6,
-            yLabelsTextFormatter: (val) => {
-              const c = Math.round(val * 10) / 10;
-              return c;
-            },
-          };
-          this.labels = label;
-          this.datasets = formatDataset;
+          if (xLabels.length > 0) {
+            return this.printSuccess(data, xLabels);
+          } else {
+            return this.printError();
+          }
         })
         .catch((err) => {
-          console.log(err.response);
+          return this.printError();
         });
     },
   },
