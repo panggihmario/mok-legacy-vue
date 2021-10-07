@@ -139,12 +139,11 @@ export default {
       };
       return this.fetchApi(payload);
     },
-    fetchApi(payload) {
-      return this.fetchStatisticsData(payload)
-        .then((response) => {
-          const xLabels = response.xlabels;
-          const data = response.datasets;
-          const totalSeleb = data[0].totalSeleb;
+    printError() {
+      return
+    },
+    printSuccess(data, xLabels) {
+      const totalSeleb = data[0].totalSeleb;
           this.totalSeleb = totalSeleb;
           const formatDataset = data.map((d) => {
             return {
@@ -164,9 +163,20 @@ export default {
           };
           this.labels = label;
           this.datasets = formatDataset;
+    },
+    fetchApi(payload) {
+      return this.fetchStatisticsData(payload)
+        .then((response) => {
+          const xLabels = response.xlabels;
+          const data = response.datasets;
+          if(xLabels.length > 0) {
+            return this.printSuccess(data, xLabels)
+          }else{
+            return this.printError()
+          }
         })
         .catch((err) => {
-          console.log(err.response);
+          return this.printError()
         });
     },
   },

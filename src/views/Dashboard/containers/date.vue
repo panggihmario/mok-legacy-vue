@@ -23,6 +23,7 @@
         v-model="date"
         color="secondary"
         @input="pickDate"
+        :max="limitDate"
       ></v-date-picker>
     </v-menu>
   </div>
@@ -33,11 +34,16 @@ import moment from "moment"
 export default {
   mounted () {
     this.pickDate()
+    const testDate = moment().add(7, 'hours').format('YYYY-MM-DD')
+    console.log("==date", testDate)
   },
   data () {
     return {
       menu2 : false,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      limitDate : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
     }
