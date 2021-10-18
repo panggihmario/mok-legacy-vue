@@ -1,7 +1,12 @@
 <template>
   <div class="date__ctr">
     <div class="date__sublabel-passive">From</div>
-    <input v-model="startYear" readonly type="text" class="date__input-passive"  />
+    <input
+      v-model="startYear"
+      readonly
+      type="text"
+      class="date__input-passive"
+    />
     <div class="date__sublabel-passive">Until</div>
     <v-menu bottom left>
       <template v-slot:activator="{ on, attrs }">
@@ -15,9 +20,10 @@
       </template>
 
       <v-list>
-        <v-list-item 
-          link 
-          v-for="(item, i) in years" :key="i"
+        <v-list-item
+          link
+          v-for="(item, i) in years"
+          :key="i"
           @click="onClick(item)"
         >
           <v-list-item-title>{{ item }}</v-list-item-title>
@@ -29,28 +35,33 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      years : [
-        2019,
-        2020,
-        2021,
-      ],
-      startYear : 2019,
-      endYear : 2021
-    }
+      years: [],
+      startYear: 2019,
+      endYear: 2021,
+    };
   },
-  methods : {
-    onClick (params) {
-      this.endYear = params
+  mounted () {
+    this.getListYears(2)
+  },
+  methods: {
+    onClick(params) {
+      this.endYear = params;
       const payload = {
-        startAt : 2019,
-        endAt : params
-      }
-      this.$emit('getPayloadYear', payload)
-    }
-  }
-}
+        startAt: 2019,
+        endAt: params,
+      };
+      this.$emit("getPayloadYear", payload);
+    },
+    getListYears(back) {
+      const year = new Date().getFullYear();
+      const list = Array.from({ length: back }, (v, i) => year - back  + i + 1);
+      this.endYear = year
+      this.years = list
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -67,7 +78,7 @@ export default {
     outline: none !important;
   }
   &__input-passive {
-    background: #FAFAFA;
+    background: #fafafa;
     border-radius: 4px;
     box-sizing: border-box;
     padding: 9px 9px 9px 10px;
@@ -83,7 +94,7 @@ export default {
     align-items: center;
   }
   &__sublabel-passive {
-    color: #777777 ;
+    color: #777777;
     font-size: 12px;
     font-weight: 500;
     margin-right: 8px;

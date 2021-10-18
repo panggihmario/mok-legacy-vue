@@ -28,11 +28,12 @@
 </template>
 
 <script>
+import moment from "moment"
 export default {
   methods : {
     onClick (params) {
       const currentMonth = params.value
-      let valueMonth = currentMonth - 7
+      let valueMonth = currentMonth - 3
 
       this.endMonth = params.label
       if(valueMonth <= 0) {
@@ -46,7 +47,16 @@ export default {
         endAt : currentMonth
       }
       this.$emit('getPayloadMonth', payload)
+    },
+    getMonths () {
+      const currentMonth = moment().format("MMMM")
+      const startMonth = moment().subtract(2, 'months').format('MMMM')
+      this.endMonth = currentMonth
+      this.startMonth = startMonth
     }
+  },
+  mounted() {
+    this.getMonths()
   },
   data() {
     return {
