@@ -3,7 +3,10 @@
     <div class="action__container">
       <Menu @changeSort="changeSort" />
       <div v-if="label === 'Daily'">
-        <Date @getPayloadDate="getPayloadDate" />
+        <Date 
+          @getPayloadDate="getPayloadDate" 
+          :firstDate="firstDate"
+        />
       </div>
       <div v-if="label === 'Monthly'">
         <Month @getPayloadMonth="getPayloadMonth" />
@@ -12,15 +15,22 @@
         <Year @getPayloadYear="getPayloadYear" />
       </div>
     </div>
-    <Chart classChart="chart-feed" :labels="labels" :datasets="datasets" />
-    <div class="total__container">
-      <div class="total__label">Total User</div>
-      <div class="total__count">{{totalUser}}</div>
+    <Chart classChart="chart-user" :labels="labels" :datasets="datasets" />
+    <div class="footer">
+      <div class="total__container">
+        <div class="total__label">Total User</div>
+        <div class="total__count">{{totalUser}}</div>
+      </div>
+      <div v-if="isError" class="footer__error">
+        {{errorMessage}}
+      </div>
     </div>
+    
   </div>
 </template>
 
 <script>
+import moment from "moment"
 import Menu from "../containers/menu.vue";
 import Date from "../containers/date.vue";
 import Chart from "../containers/chart.vue";
@@ -35,10 +45,14 @@ export default {
     Month,
     Year,
   },
+  props : ['payloadMonth', 'payloadYear'],
   data() {
     return {
       label: "Daily",
+      errorMessage : '',
+      isError : false,
       payloadDate: {},
+      firstDate : '',
       totalUser : 0,
       labels: {
         xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -46,14 +60,6 @@ export default {
         yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
       },
       datasets: [],
-      payloadMonth: {
-        startAt: 6,
-        endAt: 9,
-      },
-      payloadYear: {
-        startAt: 2019,
-        endAt: 2021,
-      },
     };
   },
   mounted() {
@@ -97,6 +103,7 @@ export default {
         data: "user-registers",
         params: { ...this.payloadYear },
       };
+      console.log("====", payload)
       return this.fetchApi(payload);
     },
     getPayloadDate(payload) {
@@ -104,7 +111,6 @@ export default {
       return this.handleFetchUser();
     },
     getPayloadMonth(payload) {
-      this.payloadMonth = { ...payload };
       const type = this.label.toLowerCase();
       const d = {
         type,
@@ -114,7 +120,6 @@ export default {
       return this.fetchApi(d);
     },
     getPayloadYear(payload) {
-      this.payloadYear = { ...payload };
       const type = this.label.toLowerCase();
       const d = {
         type,
@@ -132,7 +137,17 @@ export default {
       };
       return this.fetchApi(payload);
     },
-    printError() {
+    printError(payload) {
+      if(payload.type === 'monthly'){
+        const startMonth = moment().month(payload.params.startAt -1 ).format("MMMM")
+        const endMonth = moment().month(payload.params.endAt - 1).format("MMMM")
+        this.isError = true
+        this.errorMessage = `there are no data from ${startMonth} until ${endMonth}`
+        setTimeout(() => {
+          this.isError = false
+          this.errorMessage = ''
+        },3000)
+      }
       return
     },
     printSuccess(data, xLabels) {
@@ -146,9 +161,22 @@ export default {
               className: "curve1",
             };
           });
+      const arrayData = data[0].data
+      const highestData = Math.max(...arrayData)
+      let totalYLabel
+      if(highestData > 5) {
+        totalYLabel = 6
+      }else{
+        
+        if(highestData === 0) {
+          totalYLabel = 2
+        }else{
+          totalYLabel = highestData + 1
+        }
+      }
           const label = {
             xLabels,
-            yLabels: 6,
+            yLabels: totalYLabel,
             yLabelsTextFormatter: (val) => {
               const c = Math.round(val * 10) / 10;
               return c;
@@ -160,12 +188,17 @@ export default {
     fetchApi(payload) {
       return this.fetchStatisticsData(payload)
         .then((response) => {
+          const epochDate = response.firstDate
+          const startDate = moment(epochDate).format('YYYY-MM-DD')
+          const limitDate = moment(startDate).add(8,'days').format('YYYY-MM-DD')
+          this.firstDate = limitDate
           const xLabels = response.xlabels;
           const data = response.datasets;
+          console.log("===",response)
           if(xLabels.length > 0) {
             return this.printSuccess(data, xLabels)
           }else{
-            return this.printError()
+            return this.printError(payload)
           }
         })
         .catch((err) => {

@@ -4,7 +4,10 @@
 
     <div class="chart__label">Perkembangan Jumlah User</div>
     <div class="chart__container">
-      <ChartUser />
+      <ChartUser
+        :payloadMonth="payloadMonth"
+        :payloadYear="payloadYear"
+       />
     </div>
     <div class="chart__label">Perkembangan Jumlah Seleb</div>
     <div class="chart__container">
@@ -47,7 +50,35 @@ export default {
           disabled: true,
         },
       ],
+      payloadMonth : {},
+      payloadYear : {}
     };
+  },
+  mounted() {
+    this.getListCurrentDate()
+  },
+  methods : {
+    getListCurrentDate() {
+      const currentDate = new Date()
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+      let startAt
+      if(currentMonth - 2 <= 0 ) {
+        startAt = 1
+      }else{
+        startAt = currentMonth
+      }
+      const monthsParam = {
+        startAt : startAt,
+        endAt : currentMonth + 1
+      }
+      const yearParam = {
+        startAt : currentYear -2,
+        endAt : currentYear
+      }
+      this.payloadMonth = monthsParam
+      this.payloadYear = yearParam
+    }
   },
   components: {
     HeaderContent,

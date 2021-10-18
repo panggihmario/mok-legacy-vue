@@ -3,7 +3,10 @@
     <div class="action__container">
       <Menu @changeSort="changeSort" />
       <div v-if="label === 'Daily'">
-        <Date @getPayloadDate="getPayloadDate" />
+        <Date 
+          @getPayloadDate="getPayloadDate" 
+          :firstDate="firstDate"
+        />
       </div>
       <div v-if="label === 'Monthly'">
         <Month @getPayloadMonth="getPayloadMonth" />
@@ -23,6 +26,7 @@ import Chart from "../containers/chart.vue";
 import Month from "../containers/month.vue";
 import Year from "../containers/year.vue";
 import { mapActions } from "vuex";
+import moment from 'moment';
 export default {
   components: {
     Menu,
@@ -35,6 +39,7 @@ export default {
     return {
       label: "Daily",
       payloadDate: {},
+      firstDate : '',
       labels: {
         xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         yLabels: 5,
@@ -139,9 +144,17 @@ export default {
           className: "curve1",
         };
       });
+      const arrayData = data[0].data
+      const highestData = Math.max(...arrayData)
+      let totalYLabel
+      if(highestData > 5) {
+        totalYLabel = 6
+      }else{
+        totalYLabel = highestData + 1
+      }
       const label = {
         xLabels,
-        yLabels: 6,
+        yLabels: totalYLabel,
         yLabelsTextFormatter: (val) => {
           const c = Math.round(val * 10) / 10;
           return c;
@@ -153,6 +166,10 @@ export default {
     fetchApi(payload) {
       return this.fetchStatisticsData(payload)
         .then((response) => {
+          const epochDate = response.firstDate
+          const startDate = moment(epochDate).format('YYYY-MM-DD')
+          const limitDate = moment(startDate).add(8,'days').format('YYYY-MM-DD')
+          this.firstDate = limitDate
           const xLabels = response.xlabels;
           const data = response.datasets;
           if (xLabels.length > 0) {

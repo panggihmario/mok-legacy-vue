@@ -5,7 +5,7 @@
     <div class="date__sublabel">Until</div>
     <v-menu
       v-model="menu2"
-      :nudge-right="30"
+      :nudge-left="50"
       transition="slide-x-transition"
       min-width="auto"
       bottom
@@ -24,6 +24,7 @@
         color="secondary"
         @input="pickDate"
         :max="limitDate"
+        :min="firstDate"
       ></v-date-picker>
     </v-menu>
   </div>
@@ -32,10 +33,9 @@
 <script>
 import moment from "moment"
 export default {
+  props : ['firstDate'],
   mounted () {
     this.pickDate()
-    const testDate = moment().add(7, 'hours').format('YYYY-MM-DD')
-    console.log("==date", testDate)
   },
   data () {
     return {
