@@ -44,7 +44,7 @@ export default {
       try {
         response = await this._vm
           .$httpWithToken()
-          .delete(`member/feeds/${payload}`);
+          .delete(`/feeds/${payload}`);
         return response;
       } catch (error) {
         return error;

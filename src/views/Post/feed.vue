@@ -120,7 +120,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "190",
+          width: "150",
         },
         {
           text: "Deskripsi Feed/Product",
@@ -135,6 +135,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
+          width : '100'
         },
         {
           text: "Channel",
