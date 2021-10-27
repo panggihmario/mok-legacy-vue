@@ -154,6 +154,11 @@ const routes = [
         component: ChannelEdit,
       },
       {
+        path : "/hashtag",
+        name : 'trendingHashtag',
+        component : () => import('../views/Manager/Hashtag'),
+      },
+      {
         path: "/donation",
         name: "donation",
         component: Donation,
