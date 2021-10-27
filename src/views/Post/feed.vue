@@ -137,6 +137,13 @@ export default {
           filterable: false,
         },
         {
+          text: "Channel",
+          value: "channel",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+        },
+        {
           value: "action",
           class: "whitesnow",
           align: "center",
@@ -185,12 +192,13 @@ export default {
       const id = this.idUser;
       const response = await this.deletePost(id);
       if (response.status === 200) {
+        console.log({response : response.status})
         this.handleListFeed();
-        this.dialog = false;
+        this.dialogDelete = false;
         this.idUser = "";
         this.loading = false;
       } else {
-        this.dialog = false;
+        this.dialogDelete = false;
         this.idUser = "";
         this.loading = false;
       }
@@ -216,7 +224,8 @@ export default {
 							description : c.post.description,
 							id : c.id,
 							type : c.typePost,
-							media : c.post.medias
+							media : c.post.medias,
+              channel : c.post.channel.code
 						}
           });
           this.items = formatingContent;

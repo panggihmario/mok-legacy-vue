@@ -21,7 +21,8 @@ export default [
     ]
   },
   {
-    action: "mdi-cog",
+    // action: "mdi-cog",
+    action : "fa-user-cog",
     title: "Manage Account",
     items: [
       {
@@ -40,6 +41,11 @@ export default [
     action: "desktop_windows",
     title: "Manager Socmed",
     items: [
+      {
+        title : 'Trending Hashtag',
+        path : '/hashtag',
+        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
       {
         title: "List Channel",
         path: "/",
@@ -78,8 +84,8 @@ export default [
     ],
   },
   {
-    action: "text_fields",
-    title: "News",
+    action: "fa-newspaper",
+    title: "Publikasi",
     path: "/publisher",
     items: [
       {
