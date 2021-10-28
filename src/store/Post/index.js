@@ -23,8 +23,6 @@ export default {
           `member/${state.pathPost}/profile?page=${payload.page}`,
           { root: true }
         );
-        // response = await this._vm.$httpWithToken().get(`member/${state.pathPost}/profile/${payload.id}?page=${payload.page}`)
-        // ?size=10&page=0&direction=DESC&sort=createAt
         return response;
       } catch (error) {
         return error;
@@ -46,7 +44,7 @@ export default {
       try {
         response = await this._vm
           .$httpWithToken()
-          .delete(`member/feeds/${payload}`);
+          .delete(`/feeds/${payload}`);
         return response;
       } catch (error) {
         return error;
