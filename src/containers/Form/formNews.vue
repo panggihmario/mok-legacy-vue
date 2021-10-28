@@ -237,9 +237,7 @@ export default {
     },
     setSchedule() {
       let schedule = `${this.scheduleDate} ${this.scheduleTime}`;
-      // const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").unix();
       const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").add(7, 'hours').unix()
-      // console.log({test})
       const [year, month, date] = this.scheduleDate.split("-");
       const f = `${date}/${month}/${year}`;
       const miliEpoch = epochDate * 1000;

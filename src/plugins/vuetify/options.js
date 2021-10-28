@@ -60,6 +60,6 @@ export default {
 				component : 'icon-thumb-up'
 			}
 		},
-		iconfont : 'mdi' || 'md'
+		iconfont : 'mdi' || 'md' || 'fa'
 	}
 }

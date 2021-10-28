@@ -46,7 +46,13 @@ const exportFile = (token = getToken()) => axios.create({
 	},
 });
 
+const getWithToken = (payload) => serviceWithToken().get(payload.url, {
+  params : payload.params
+})
+
 Vue.prototype.$http = serviceWithoutToken
 Vue.prototype.$httpWithToken = serviceWithToken
 Vue.prototype.$httpUpload = serviceUpload
 Vue.prototype.$httpDownload = exportFile
+
+Vue.prototype.$fetchWithToken = getWithToken
