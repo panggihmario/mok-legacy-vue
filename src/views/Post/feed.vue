@@ -120,7 +120,7 @@ export default {
           class: "whitesnow",
           sortable: false,
           filterable: false,
-          width: "190",
+          width: "150",
         },
         {
           text: "Deskripsi Feed/Product",
@@ -132,6 +132,14 @@ export default {
         {
           text: "Type Post",
           value: "type",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width : '100'
+        },
+        {
+          text: "Channel",
+          value: "channel",
           class: "whitesnow",
           sortable: false,
           filterable: false,
@@ -185,12 +193,13 @@ export default {
       const id = this.idUser;
       const response = await this.deletePost(id);
       if (response.status === 200) {
+        console.log({response : response.status})
         this.handleListFeed();
-        this.dialog = false;
+        this.dialogDelete = false;
         this.idUser = "";
         this.loading = false;
       } else {
-        this.dialog = false;
+        this.dialogDelete = false;
         this.idUser = "";
         this.loading = false;
       }
@@ -216,7 +225,8 @@ export default {
 							description : c.post.description,
 							id : c.id,
 							type : c.typePost,
-							media : c.post.medias
+							media : c.post.medias,
+              channel : c.post.channel.code
 						}
           });
           this.items = formatingContent;
