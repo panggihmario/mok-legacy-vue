@@ -10,7 +10,7 @@ function getListAgregratorSite({state, commit}) {
           return d
         }
       })
-      commit('setListSites', filterSites)
+      commit('setListSites', responseData)
       return responseData
     })
     .catch(err => { throw err })
