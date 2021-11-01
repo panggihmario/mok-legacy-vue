@@ -123,6 +123,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
   data() {
@@ -254,6 +255,7 @@ export default {
     },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
+      const cek = moment.unix(rawDate).format('DD/MM/YYYY')
       const day = newDt.getDate();
       const month = newDt.getMonth() + 1;
       const year = newDt.getFullYear();
@@ -299,6 +301,7 @@ export default {
       };
       return this.getAllNewsAgregrator(payload)
         .then((response) => {
+          console.log("===> response", response)
           const totalPages = response.totalPages;
           this.totalPages = totalPages;
           this.selected = [];

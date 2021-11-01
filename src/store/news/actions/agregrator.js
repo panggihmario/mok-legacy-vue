@@ -5,11 +5,11 @@ function getListAgregratorSite({state, commit}) {
   return this._vm.$httpWithToken().get(`${state.pathNews}/aggregators`)
     .then(response => {
       const responseData = response.data.data
-      const filterSites = responseData.filter(d => {
-        if(d === 'CUMICUMI') {
-          return d
-        }
-      })
+      // const filterSites = responseData.filter(d => {
+      //   if(d === 'CUMICUMI') {
+      //     return d
+      //   }
+      // })
       commit('setListSites', responseData)
       return responseData
     })
@@ -32,7 +32,6 @@ function  getAllNewsAgregrator({state, commit}, payload) {
       return data
     })
     .catch(error => {
-      console.log("=",err.response)
       commit('setNewsAgregator', [])
       throw error
     })
