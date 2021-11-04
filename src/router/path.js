@@ -238,6 +238,11 @@ const routes = [
         }
       },
       {
+        path : "/publisher/:type/:sites/:page",
+        name : "agregratorPage",
+        component : () => import('../views/Article/Publisher/pagingList/agregator.vue')
+      },
+      {
         path: "/editor",
         name: "editor",
         component: Editor,
