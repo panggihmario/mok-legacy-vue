@@ -59,8 +59,7 @@ function searchNewsAgregrator({state, commit}, payload) {
     }
   })
     .then(response => {
-      const responseData = response.data.data
-      console.log(responseData)
+      const responseData = response.data.data.content
       commit('setNewsAgregator', responseData)
       return responseData
     })

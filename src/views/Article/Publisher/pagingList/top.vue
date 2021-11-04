@@ -72,6 +72,9 @@ export default {
   },
   methods: {
     changeActive(tab) {
+      this.$router.push({
+        name : 'publisher'
+      })
       // this.tabPosition = tab.position;
       // const newTabList = this.tabList.map((t) => {
       //   if (t.position === tab.position) {

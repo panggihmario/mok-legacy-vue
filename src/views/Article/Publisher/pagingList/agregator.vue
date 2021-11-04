@@ -190,6 +190,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$route.meta.page)
     this.handleNewsAgregator();
     this.handleGetMapping();
     // this.handleGetSiteAgregrator()
@@ -199,6 +200,7 @@ export default {
     '$route' : function () {
       const params = this.$route.params
       const page = params.page
+      this.page = page
       const payload = {
         size: 10,
         page: page - 1,
@@ -268,7 +270,15 @@ export default {
     },
 
     filterBySite() {
-      return this.handleNewsAgregator();
+      // return this.handleNewsAgregator();
+      this.$router.push({
+        name : 'agregratorPage',
+        params : {
+          type : 'agregrator',
+          page : 1,
+          sites : this.site
+        }
+      })
     },
     isEnabled(slot) {
       return this.enabled === slot;

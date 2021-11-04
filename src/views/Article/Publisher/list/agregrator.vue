@@ -234,7 +234,13 @@ export default {
         },
         params: this.site,
       };
-      return this.searchNewsAgregrator(payload);
+      return this.searchNewsAgregrator(payload)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
     },
 
     filterBySite() {
