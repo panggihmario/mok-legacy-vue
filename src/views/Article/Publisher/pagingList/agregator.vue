@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between">
+    <Top/>
+    <div class="d-flex justify-space-between mt-4">
       <div class="d-flex">
         <div class="mt-2 mr-2 agg__filter">Filter</div>
         <custom-select
@@ -98,7 +99,6 @@
         </tbody>
       </template>
     </v-data-table>
-
     <v-pagination
       v-model="page"
       :length="totalPages"
@@ -113,9 +113,18 @@
 </template>
 
 <script>
-import moment from 'moment'
+import Top from "./top.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
+  components : {
+    Top
+  },
+  created() {
+    const sites = this.$route.params.sites
+    const page = this.$route.params.page
+    this.setSite(sites)
+    this.page = Number(page)
+  },
   data() {
     return {
       errorMessage: "",
@@ -186,6 +195,27 @@ export default {
     // this.handleGetSiteAgregrator()
     this.fetchListAgregratorSites();
   },
+  watch : {
+    '$route' : function () {
+      const params = this.$route.params
+      const page = params.page
+      const payload = {
+        size: 10,
+        page: page - 1,
+      };
+      return this.getAllNewsAgregrator(payload)
+        .then((response) => {
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.selected = [];
+          this.statusLoading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          // this.statusLoading = false
+        });
+    }
+  },
   methods: {
     handlePublish(payload) {
       const params = { ...payload };
@@ -245,7 +275,6 @@ export default {
     },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
-      const cek = moment.unix(rawDate).format('DD/MM/YYYY')
       const day = newDt.getDate();
       const month = newDt.getMonth() + 1;
       const year = newDt.getFullYear();
@@ -285,13 +314,13 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
+      const page = this.$route.params.page
       const payload = {
         size: 10,
-        page: 0,
+        page: page - 1,
       };
       return this.getAllNewsAgregrator(payload)
         .then((response) => {
-          console.log("===> response", response)
           const totalPages = response.totalPages;
           this.totalPages = totalPages;
           this.selected = [];
