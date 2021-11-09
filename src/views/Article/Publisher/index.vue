@@ -147,7 +147,6 @@ export default {
       };
       const response = await this.searchNews(payload);
       if (response.status === 200) {
-        console.log(response)
         const responseData = response.data.data
         this.listNews = responseData
       } else {
@@ -179,7 +178,6 @@ export default {
       const response = await this.getNews(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
-        console.log(responseData)
         this.listNews = responseData;
          this.totalPages = response.data.data.totalPages;
       } else {

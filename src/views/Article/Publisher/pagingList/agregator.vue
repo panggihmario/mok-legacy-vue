@@ -1,27 +1,11 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between">
-      <div class="d-flex">
-        <div class="mt-2 mr-2 agg__filter">Filter</div>
-        <custom-select
-          :items="sites"
-          placeholder="Agregrator Sites"
-          dense
-          item-text="name"
-          v-model="selectedSite"
-          @change="filterBySite"
-          @click:clear="handleNewsAgregator"
-          class="mr-4"
-        />
-      </div>
-      <custom-input
-        placeholder="Search"
-        v-model="searchNewsAg"
-        size="small"
-        dense
-        @keyup.enter="getSearchNews"
-      />
-    </div>
+    <Header/>
+    <Tabs
+      position="agregrator"
+      class="mb-4"
+    />
+  
     <v-data-table
       :headers="headers"
       :items="newsAgregrator"
@@ -98,7 +82,6 @@
         </tbody>
       </template>
     </v-data-table>
-
     <v-pagination
       v-model="page"
       :length="totalPages"
@@ -113,9 +96,20 @@
 </template>
 
 <script>
-import moment from 'moment'
+import Header from "../containers/header.vue"
+import Tabs from "../containers/tabs.vue"
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
+  components : {
+    Header,
+    Tabs
+  },
+  created() {
+    const sites = this.$route.params.sites
+    const page = this.$route.params.page
+    this.setSite(sites)
+    this.page = Number(page)
+  },
   data() {
     return {
       errorMessage: "",
@@ -181,10 +175,33 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$route.meta.page)
     this.handleNewsAgregator();
     this.handleGetMapping();
     // this.handleGetSiteAgregrator()
     this.fetchListAgregratorSites();
+  },
+  watch : {
+    '$route' : function () {
+      const params = this.$route.params
+      const page = params.page
+      this.page = page
+      const payload = {
+        size: 10,
+        page: page - 1,
+      };
+      return this.getAllNewsAgregrator(payload)
+        .then((response) => {
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.selected = [];
+          this.statusLoading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          // this.statusLoading = false
+        });
+    }
   },
   methods: {
     handlePublish(payload) {
@@ -234,24 +251,25 @@ export default {
         },
         params: this.site,
       };
-      return this.searchNewsAgregrator(payload)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
+      return this.searchNewsAgregrator(payload);
     },
 
     filterBySite() {
-      return this.handleNewsAgregator();
+      // return this.handleNewsAgregator();
+      this.$router.push({
+        name : 'agregratorPage',
+        params : {
+          type : 'agregrator',
+          page : 1,
+          sites : this.site
+        }
+      })
     },
     isEnabled(slot) {
       return this.enabled === slot;
     },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
-      const cek = moment.unix(rawDate).format('DD/MM/YYYY')
       const day = newDt.getDate();
       const month = newDt.getMonth() + 1;
       const year = newDt.getFullYear();
@@ -291,13 +309,13 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
+      const page = this.$route.params.page
       const payload = {
         size: 10,
-        page: 0,
+        page: page - 1,
       };
       return this.getAllNewsAgregrator(payload)
         .then((response) => {
-          console.log("===> response", response)
           const totalPages = response.totalPages;
           this.totalPages = totalPages;
           this.selected = [];
