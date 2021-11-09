@@ -33,6 +33,8 @@
       :categoryNews="categoryNews"
       :schedule="true"
       @getEpochDate="getEpochDate"
+      @fillAuthor="fillAuthor"
+      @fillEditor="fillEditor"
     />
     <PreviewDialog
       :dialogPreview="dialogPreview"
@@ -73,6 +75,8 @@ export default {
         media: [],
         metaKeyword: "",
         newsTagString: "",
+        author : '',
+        editor : ''
       },
       propsImage: "",
       propsThumbnail: "",
@@ -110,6 +114,12 @@ export default {
       getCategoryNews: "news/getCategoryNews",
       scheduleNews: "news/scheduleNews",
     }),
+    fillAuthor(payload) {
+      this.payloadNews.author = payload
+    },
+    fillEditor(payload) {
+      this.payloadNews.editor = payload
+    },
     openPreview() {
       this.dialogPreview = true;
       console.log(this.payloadNews);
@@ -185,7 +195,13 @@ export default {
         this.alertSuccess = true;
         this.successMessage = "Publish Success";
         setTimeout(() => {
-          this.$router.push("/publisher");
+          const page = this.$route.params.page
+          this.$router.push({
+            name : 'listNewsPublisher',
+            params : {
+              page
+            }
+          });
           this.alertSuccess = false;
         }, 1500);
       } else {
@@ -222,8 +238,14 @@ export default {
         this.loading = false;
         this.alertSuccess = true;
         this.successMessage = "Reject Success";
+        const page = this.$route.params.page
         setTimeout(() => {
-          this.$router.push("/publisher");
+          this.$router.push({
+            name : 'listNewsPublisher',
+            params : {
+              page
+            }
+          });
           this.alertSuccess = false;
         }, 1500);
       } else {
