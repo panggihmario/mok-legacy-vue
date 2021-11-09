@@ -22,6 +22,8 @@
       :categoryNews="categoryNews"
       @getImageUpload="getImageUpload"
       @getThumbnail="getThumbnail"
+      @fillAuthor="fillAuthor"
+      @fillEditor="fillEditor"
     />
 		<v-snackbar top v-model="alertSuccess"  color="success" >
 			Create News Success
@@ -65,6 +67,12 @@ export default {
       createDraft: "news/createDraft",
       getCategoryNews : 'news/getCategoryNews',
     }),
+    fillAuthor(payload) {
+      this.payloadNews.author = payload
+    },
+    fillEditor(payload) {
+      this.payloadNews.editor = payload
+    },
     getImageUpload(payload) {
       const tempImage = []
       tempImage.splice(0,1, payload)
@@ -168,7 +176,9 @@ export default {
         isScheduled : false,
         scheduledTime : null,
         metaKeyword : '',
-        newsTagString : ''
+        newsTagString : '',
+        editor : '',
+        author : ''
       },
       dialog: false
     };

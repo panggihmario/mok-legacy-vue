@@ -145,18 +145,24 @@ export default {
         id: this.$route.params.id,
         data: this.payloadNews,
       };
+      const page = this.$route.params.page
       this.loadingPublish = true;
-      const response = await this.publishNews(params);
-      console.log("======", response)
+      const response = await this.publishNews(params)
       if (response.status === 200) {
         this.loadingPublish = false;
         this.alertSuccess = true;
         this.successMessage = "Publish Success";
         setTimeout(() => {
-          this.$router.push("/publisher");
+           this.$router.push({
+            name : 'listNewsPublisher',
+            params : {
+              page : page
+            }
+          })
           this.alertSuccess = false;
         }, 1500);
       } else {
+        console.log("masuk else")
         this.loadingPublish = false;
         this.alertFailed = true;
         this.failedMessage = "Publish Failed";

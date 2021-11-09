@@ -1,8 +1,13 @@
 <template>
   <div>
-    <v-data-table
+    <Header/>
+    <Tabs
+      :isList="true"
+      position="list"
+    />
+     <v-data-table
       :headers="headers"
-      :items="news"
+      :items="contents"
       hide-default-footer
       disable-filtering
       disable-sort
@@ -48,18 +53,19 @@
         </div>
       </template>
     </v-data-table>
-    <v-pagination
-      :length="listNews.totalPages"
+
+     <v-pagination
+      :length="totalPages"
       prev-icon="mdi-menu-left"
       next-icon="mdi-menu-right"
       v-model="pageNews"
       @input="getNewsBaseOnPage"
       :total-visible="6"
     />
-    <DialogDelete
+     <DialogDelete
       title="Yakin menghapus news ini"
       description="News yang kamu hapus tidak akan tampil di halaman news"
-      :dialog="dialog"
+      :dialog="dialogDelete"
       @closeDialog="closeDialog"
       @handleDelete="handleDelete"
     />
@@ -79,8 +85,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-snackbar top right v-model="alertSuccess" color="success">
+     <v-snackbar top right v-model="alertSuccess" color="success">
       Delete Success
     </v-snackbar>
     <v-snackbar top right v-model="alertFailed" color="error">
@@ -96,14 +101,17 @@
 </template>
 
 <script>
+import Header from "./containers/header.vue"
+import Tabs from "./containers/tabs.vue"
 import { mapActions } from "vuex";
+import moment from 'moment';
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
-
 export default {
-  components: {
-    DialogDelete,
+  components : {
+    Header,
+    Tabs,
+    DialogDelete
   },
-  props: ["listNews"],
   computed: {
     news() {
       const list = this.listNews.content;
@@ -112,18 +120,21 @@ export default {
       }
     },
   },
-  data() {
+  
+  data () {
     return {
-      dialog: false,
+      contents : [],
+      pageNews :1,
+      idNews : '',
+      totalPages : 0,
       loadingPush : false,
-      dialogPush: false,
-      pageNews: 1,
-      alertSuccess: false,
-      alertFailed: false,
-      alertSuccessPush: false,
-      alertFailedPush: false,
-      idNews: "",
-      headers: [
+      dialogDelete : false,
+      dialogPush : false,
+      alertSuccess : false,
+      alertFailed : false,
+      alertSuccessPush : false,
+      alertFailedPush : false,
+       headers: [
         {
           text: "Tanggal",
           value: "date",
@@ -150,22 +161,41 @@ export default {
           align: "end",
         },
       ],
-    };
+    }
   },
-  computed: {
-    news() {
-      const list = this.listNews.content;
-      if (list) {
-        return list
+  mounted () {
+    this.fetchListNews()
+    const params = this.$route.params
+    this.pageNews = Number(params.page)
+  },
+  watch : {
+    '$route' : function ()  {
+      const params = this.$route.params
+      const nextPage = Number(params.page)
+      this.pageNews = nextPage
+      const payload = {
+        page : nextPage - 1,
+        tab : 'list'
       }
-    },
+      return this.handleGetNews(payload)
+    }
   },
-  methods: {
+  methods : {
     ...mapActions({
+      getNews: "news/getListNews",
       deleteNews: "news/deleteDraft",
       pushNotificationById: "news/pushNotificationById",
     }),
-    getColor(status) {
+    getNewsBaseOnPage(p) {
+      const nextPage = p
+      this.$router.push({
+        name : 'listNewsPublisher',
+        params : {
+          page : nextPage
+        }
+      })
+    },
+     getColor(status) {
       switch (status) {
         case "Approved":
           return "kellygreen--text";
@@ -175,30 +205,11 @@ export default {
           return "grey--text";
       }
     },
-    formatingDate(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const year = newDt.getFullYear();
-      const newFormat = `${day}/${month}/${year}`;
-      return newFormat;
+    openDialogPush (id) {
+      this.idNews = id;
+      this.dialogPush = true;
     },
-    getNewsBaseOnPage(p) {
-      const params = {
-        page: p,
-        tab: "list",
-      };
-      this.$emit("getNewsBaseOnPage", params);
-    },
-    moveToReview(id) {
-      this.$router.push({
-        name: "reviewPublisher",
-        params: {
-          id,
-        },
-      });
-    },
-    moveToEdit(item) {
+    moveToEdit (item) {
       const page = this.pageNews
       this.$router.push({
         name: "editPublisher",
@@ -210,61 +221,86 @@ export default {
     },
     openDialog(id) {
       this.idNews = id;
-      this.dialog = true;
-    },
-    openDialogPush(id) {
-      this.idNews = id;
-      this.dialogPush = true;
+      this.dialogDelete = true;
     },
     closeDialog() {
-      this.dialog = false;
+      this.dialogDelete = false;
       this.dialogPush = false;
       this.idNews = "";
     },
-    async handleDelete() {
-      const response = await this.deleteNews(this.idNews);
-      if (response.status === 200) {
-        this.dialog = false;
-        this.alertSuccess = true;
-        setTimeout(() => {
-          this.alertSuccess = false;
-        }, 2000);
-        this.$emit("reloadDataNews");
-      } else {
-        this.dialog = false;
-        this.alertFailed = true;
-        setTimeout(() => {
+    handleDelete () {
+      const idNews = this.idNews
+      return this.deleteNews(idNews)
+        .then( () => {
+          this.dialogDelete = false
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.fetchListNews()
+          },2000)
+        })
+        .catch(() => {
+          this.dialogDelete = false
+          this.alertFailed = true;
+          setTimeout(() => {
           this.alertFailed = false;
         }, 2000);
-      }
+        })
+
     },
-    async handlePushNotificationById() {
-      this.loadingPush = true
-      const response = await this.pushNotificationById(this.idNews);
-      if (response.status === 200) {
-        this.dialogPush = false;
-        this.alertSuccessPush = true;
-        setTimeout(() => {
-          this.alertSuccessPush = false;
-          this.loadingPush = false
-        }, 2000);
-        this.$emit("reloadDataNews");
-      } else if (response.status === 204) {
-        this.dialogPush = false;
-        this.alertFailedPush = true;
-        setTimeout(() => {
-          this.alertFailedPush = false;
-          this.loadingPush = false
-        }, 2000);
-      } else {
-        this.dialogPush = false;
-        this.alertFailedPush = true;
-        setTimeout(() => {
-          this.alertFailedPush = false;
-          this.loadingPush = false
-        }, 2000);
+    moveToReview (id) {
+      const page = this.pageNews
+      this.$router.push({
+        name: "reviewPublisher",
+        params: {
+          id,
+          page
+        },
+      });
+    },
+    formatingDate (rawDate) {
+      const humanDate = moment(rawDate).format('DD/MM/YYY')
+      return humanDate
+    },
+    handleGetNews(payload) {
+      return this.getNews(payload)
+        .then(response => {
+          const responseData = response.data.data
+          this.totalPages = responseData.totalPages
+          const content = responseData.content
+          this.contents = content
+        })
+    },
+    fetchListNews(){
+      const page = this.$route.params.page
+      const payload = {
+        page : page - 1,
+        tab : 'list'
       }
+      return this.handleGetNews(payload)
+    },
+    handlePushNotificationById() {
+      this.loadingPush = true
+      const idNews = this.idNews
+      return this.pushNotificationById(idNews)
+        .then(() => {
+          this.dialogPush = false
+          this.alertSuccessPush = true
+          setTimeout(() => {
+            this.alertSuccessPush = false;
+            this.loadingPush = false
+          }, 2000)
+          this.fetchListNews()
+        })
+        .catch(() => {
+          this.dialogPush = false;
+          this.alertFailedPush = true;
+          setTimeout(() => {
+            this.alertFailedPush = false;
+            this.loadingPush = false
+          }, 2000);
+        })
     },
   },
-};
+}
 </script>

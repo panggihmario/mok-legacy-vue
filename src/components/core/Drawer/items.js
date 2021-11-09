@@ -90,7 +90,7 @@ export default [
     items: [
       {
         title: "Penyunting",
-        path: "/publisher",
+        path: "/publisher/list/1",
         role: ["ROLE_EDITOR", "ROLE_ADMIN"],
       },
       {
