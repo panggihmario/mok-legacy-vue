@@ -135,6 +135,35 @@
             :value="humanDate"
             readonly
           />
+          <custom-input
+            label="Penyunting"
+            v-model="payloadNews.editor"
+            :value="payloadNews.editor"
+            rules="required"
+            name="Editor"
+          />
+           <v-checkbox
+            v-model="isEditor"
+            @click="autoFillEditor"
+            :disabled="editorRole"
+            dense
+            style="margin-top : -10px"
+            :label="`Jadikan saya sebagai penyunting`"
+          />
+          <custom-input
+            label="Penulis"
+            v-model="payloadNews.author"
+            :value="payloadNews.author"
+            rules="required"
+            name="Author"
+          />
+          <v-checkbox
+            v-model="isAuthor"
+            @click="autoFillAuthor"
+            dense
+            style="margin-top : -10px"
+            :label="`Jadikan saya sebagai penulis`"
+          />
 
           <v-dialog persistent v-model="dialogDate" max-width="650">
             <v-card>
@@ -177,6 +206,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex"
 export default {
   props: {
     payloadNews: {
@@ -200,6 +230,10 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      user : (state) => state.authentication.user,
+      role : (state) => state.authentication.role
+    }),
     status() {
       if (this.payloadNews.medias.length > 1) {
         return true;
@@ -220,6 +254,10 @@ export default {
   data() {
     return {
       dialog: false,
+      editorRole : true,
+      author : '',
+      isEditor : false,
+      isAuthor : false,
       image: "",
       visible: false,
       thumbnailImage: "",
@@ -231,7 +269,35 @@ export default {
       humanDate: "",
     };
   },
+  mounted () {
+    this.checkRole()
+  },
   methods: {
+    autoFillAuthor() {
+      const isAuthor = this.isAuthor
+      if(isAuthor) {
+        this.author = this.user
+        this.$emit('fillAuthor', this.user)
+      }else{
+        this.$emit('fillAuthor', '')
+      }
+    },
+    checkRole   () {
+      const role = this.role
+      if(this.role === 'ROLE_EDITOR' ){
+        this.editorRole = false
+      }else {
+        this.editorRole = true
+      } 
+    },
+    autoFillEditor() {
+      const isEditor = this.isEditor
+      if(isEditor) {
+        this.$emit('fillEditor', this.user)
+      }else{
+        this.$emit('fillEditor', '')
+      }
+    },
     uploadImage(id) {
       document.getElementById(id).click();
     },

@@ -28,6 +28,8 @@
       :categoryNews="categoryNews"
       @getThumbnail="getThumbnail"
       @getImageUpload="getImageUpload"
+      @fillAuthor="fillAuthor"
+      @fillEditor="fillEditor"
     />
     <v-snackbar top v-model="alertSuccess" color="success">
       Edit News Success
@@ -67,7 +69,9 @@ export default {
         newsCategory : {},
         thumbnailUrl : '',
         metaKeyword : '',
-        newsTagString : ''
+        newsTagString : '',
+        author : '',
+        editor : ''
       },
       propsImage: "",
       propsThumbnail : ''
@@ -81,6 +85,12 @@ export default {
       updateNews: "news/updateNews",
       getCategoryNews : 'news/getCategoryNews',
     }),
+     fillAuthor(payload) {
+      this.payloadNews.author = payload
+    },
+    fillEditor(payload) {
+      this.payloadNews.editor = payload
+    },
     async handleCategoryNews () {
       const response = await this.getCategoryNews()
       if(response.status === 200) {

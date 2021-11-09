@@ -1,28 +1,11 @@
 <template>
   <div>
-    <Top/>
-    <div class="d-flex justify-space-between mt-4">
-      <div class="d-flex">
-        <div class="mt-2 mr-2 agg__filter">Filter</div>
-        <custom-select
-          :items="sites"
-          placeholder="Agregrator Sites"
-          dense
-          item-text="name"
-          v-model="selectedSite"
-          @change="filterBySite"
-          @click:clear="handleNewsAgregator"
-          class="mr-4"
-        />
-      </div>
-      <custom-input
-        placeholder="Search"
-        v-model="searchNewsAg"
-        size="small"
-        dense
-        @keyup.enter="getSearchNews"
-      />
-    </div>
+    <Header/>
+    <Tabs
+      position="agregrator"
+      class="mb-4"
+    />
+  
     <v-data-table
       :headers="headers"
       :items="newsAgregrator"
@@ -113,11 +96,13 @@
 </template>
 
 <script>
-import Top from "./top.vue";
+import Header from "../containers/header.vue"
+import Tabs from "../containers/tabs.vue"
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
   components : {
-    Top
+    Header,
+    Tabs
   },
   created() {
     const sites = this.$route.params.sites

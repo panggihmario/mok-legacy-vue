@@ -214,6 +214,30 @@ const routes = [
         component: OrderDetail,
       },
       {
+        path : '/publisher/list/:page',
+        name : 'listNewsPublisher',
+        component : () => import('../views/Article/Publisher/listNews.vue'),
+        meta : {
+          page : 'news'
+        }
+      },
+      {
+        path : '/publisher/draft/:page',
+        name : 'draftNewsPublisher',
+        component : () => import('../views/Article/Publisher/draftNews.vue'),
+        meta : {
+          page : 'news'
+        }
+      },
+      {
+        path : '/publisher/scheduled/:page',
+        name : 'scheduledNewsPublisher',
+        component : () => import('../views/Article/Publisher/scheduledNews.vue'),
+        meta : {
+          page : 'news'
+        }
+      },
+      {
         path: "/publisher",
         name: "publisher",
         component: Publisher,
@@ -222,7 +246,7 @@ const routes = [
         }
       },
       {
-        path: "/pubisher/review/:id",
+        path: "/pubisher/review/:id/:page",
         name: "reviewPublisher",
         component: ReviewPublisher,
         meta : {
@@ -230,7 +254,7 @@ const routes = [
         }
       },
       {
-        path: "/publisher/:id",
+        path: "/publisher/list/:page/:id",
         name: "editPublisher",
         component: EditPublisher,
         meta : {
@@ -238,7 +262,7 @@ const routes = [
         }
       },
       {
-        path : "/publisher/:type/:sites/:page",
+        path : "/publisher/agregrator/:sites/:page",
         name : "agregratorPage",
         component : () => import('../views/Article/Publisher/pagingList/agregator.vue'),
         meta : {
