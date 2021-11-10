@@ -144,7 +144,7 @@
           />
            <v-checkbox
             v-model="isEditor"
-            @click="autoFillEditor"
+            @click.native="autoFillEditor"
             :disabled="editorRole"
             dense
             style="margin-top : -10px"
@@ -159,7 +159,7 @@
           />
           <v-checkbox
             v-model="isAuthor"
-            @click="autoFillAuthor"
+            @click.native="autoFillAuthor"
             dense
             style="margin-top : -10px"
             :label="`Jadikan saya sebagai penulis`"

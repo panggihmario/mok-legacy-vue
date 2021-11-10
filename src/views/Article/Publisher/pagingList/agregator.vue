@@ -5,7 +5,29 @@
       position="agregrator"
       class="mb-4"
     />
-  
+
+    <div class="d-flex justify-space-between">
+      <div class="d-flex">
+        <div class="mt-2 mr-2 agg__filter">Filter</div>
+        <custom-select
+          :items="sites"
+          placeholder="Agregrator Sites"
+          dense
+          item-text="name"
+          v-model="selectedSite"
+          @change="filterBySite"
+          @click:clear="handleNewsAgregator"
+          class="mr-4"
+        />
+      </div>
+      <custom-input
+        placeholder="Search"
+        v-model="searchNewsAg"
+        size="small"
+        dense
+        @keyup.enter="getSearchNews"
+      />
+    </div>
     <v-data-table
       :headers="headers"
       :items="newsAgregrator"
@@ -113,6 +135,7 @@ export default {
   data() {
     return {
       errorMessage: "",
+      searchNewsAg: "",
       page: 1,
       totalPages: 0,
       alertError: false,

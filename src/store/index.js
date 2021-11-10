@@ -13,6 +13,7 @@ import product from "./product";
 import finance from "./finance";
 import order from "./order";
 import dashboard from "./dashboard";
+import trending from "./trending";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     product,
     finance,
     order,
-    dashboard
+    dashboard,
+    trending
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
