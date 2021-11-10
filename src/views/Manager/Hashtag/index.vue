@@ -9,11 +9,13 @@
       <custom-input
         label="Hashtag"
         placeholder="contoh : #trending"
+        v-model="hashtag"
       />
       <div class="charcoal--text hash__desc ">Hanya postingan yang menggunakan hashtag yang baru saja dibuat yang akan masuk ke list trending di kipaskipas</div>
       <custom-button
         color="secondary"
         size="small"
+        @click="onSubmit"
       >
         Jadikan Trending
       </custom-button>
@@ -23,10 +25,26 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import { mapActions } from "vuex"
 export default {
   components: {
     HeaderContent,
   },
+  data() {
+    return {
+      hashtag : ''
+    }
+  },
+  methods : {
+    ...mapActions({
+      checkHashtag : 'trending/checkHashtag'
+    }),
+    onSubmit() {
+      const payload = this.hashtag
+      return this.checkHashtag(payload)
+    }
+    
+  }
 };
 </script>
 
