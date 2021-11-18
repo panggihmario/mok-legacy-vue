@@ -73,7 +73,6 @@ export default {
       }
     },
     async reportDelete({ state }, payload) {
-      console.log("store", payload);
       let response;
       try {
         response = await this._vm
