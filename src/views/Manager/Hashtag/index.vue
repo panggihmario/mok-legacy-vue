@@ -69,6 +69,12 @@ export default {
             throw message
           }
         })
+        .then(() => {
+          this.alertSuccess = true
+           setTimeout(() => {
+            this.alertSuccess = false
+          },2000)
+        })
         .catch(err => {
           this.errorMessage = err
           this.hashtag = ''
