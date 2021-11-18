@@ -51,11 +51,13 @@ export default new Vuex.Store({
     changeStatusViewNews({commit}, params) {
       commit('setViewNews', params)
     },
-    getWithToken(ctx, params) {
-      return this._vm.$httpWithToken().get(params);
+    getWithToken(ctx, data) {
+      return this._vm.$httpWithToken().get(data.url,{
+        params : {...data.params}
+      })
     },
     postWithToken(ctx, params) {
-      return this._vm.$httpWithToken().post(params.url, params.data);
+      return this._vm.$httpWithToken().post(params.url, params.data)
     },
     putWithToken(ctx, params) {
       return this._vm.$httpWithToken().put(params.url, params.data);

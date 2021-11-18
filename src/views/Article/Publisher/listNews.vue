@@ -234,10 +234,10 @@ export default {
         .then( () => {
           this.dialogDelete = false
           this.alertSuccess = true
+          this.fetchListNews()
           setTimeout(() => {
             this.alertSuccess = false
-            this.fetchListNews()
-          },2000)
+          },2000)   
         })
         .catch(() => {
           this.dialogDelete = false
