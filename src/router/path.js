@@ -119,6 +119,11 @@ const routes = [
         component: User,
       },
       {
+        path : '/user/feed/:id/:name',
+        name : 'feedUser',
+        component : () => import('../views/AccountManage/User/Feeds/index.vue')
+      },
+      {
         path: "/user/create",
         name: "UserCreate",
         component: UserCreate,

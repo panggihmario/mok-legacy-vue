@@ -63,7 +63,7 @@ export default new Vuex.Store({
       return this._vm.$httpWithToken().put(params.url, params.data);
     },
     deleteWithToken(ctx, params) {
-      return this._vm.$httpWithToken().delete(params);
+      return this._vm.$httpWithToken().delete(params.url);
     },
   },
 });

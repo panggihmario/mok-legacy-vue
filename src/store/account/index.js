@@ -1,9 +1,19 @@
+import methods from "./actions"
 export default {
   namespaced: true,
   state: {
     pathAccount: "admin/accounts",
+    pathFeed : "profile/post"
   },
   actions: {
+    ...methods,
+    printSuccess(ctx, response) {
+      const responseData = response.data.data
+      return responseData
+    },
+    printError(ctx, err) {
+      throw err
+    },
     async getListRespone({ state }, payload) {
       let response;
       try {
