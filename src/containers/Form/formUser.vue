@@ -100,9 +100,10 @@
               ></v-checkbox>
             </div>
           </div>
+          <div @click="openDialog" :class="form['remove-label']">Remove Account </div>
           <custom-button
             :loading="loading"
-            color="primary"
+            color="success"
             class="white--text"
             type="submit"
           >
@@ -112,14 +113,24 @@
         <v-col cols="6"></v-col>
       </v-row>
     </div>
+    <Dialog-Delete
+        title="Yakin menghapus user ini?"
+        description="User yang kamu hapus tidak akan tampil di halaman user lagi"
+        :dialog="dialog"
+        @closeDialog="closeDialog"
+        @handleDelete="handleDelete"
+        :loading="loadingDelete"
+    ></Dialog-Delete>
   </custom-form>
 </template>
 
 <script>
 import Label from "../../components/material/Input/label";
+import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
   components: {
     Label,
+    DialogDelete
   },
   props: {
     loading: {
@@ -137,9 +148,24 @@ export default {
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",
       errorPassword: "",
+      dialog : false,
+      loadingDelete : false
     };
   },
   methods: {
+    closeDialog() {
+      this.dialog = false
+    },
+    handleDelete() {
+      this.loadingDelete = true
+      setTimeout(() => {
+        this.$emit('deleteUser')
+        this.loadingDelete = false
+      }, 1500)
+    },
+    openDialog() {
+      this.dialog = true
+    },
     handleSubmit() {
       let payload;
       if (this.confirmPassword != "") {
@@ -170,6 +196,16 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" module="form">
+.remove-label {
+  color: #E70000;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+</style>
 
 <style lang="sass" scoped>
 .account-edit

@@ -17,7 +17,6 @@ function getListAgregratorSite({state, commit}) {
 }
 
 function  getAllNewsAgregrator({state, commit}, payload) {
-  commit('setNewsAgregator', [])
   const site = state.site
   return this._vm.$httpWithToken().get(`${state.pathNews}/aggregator/${site}/preview`,{
     params : {

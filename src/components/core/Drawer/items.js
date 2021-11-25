@@ -1,14 +1,4 @@
 export default [
-  // {
-  // 	action: 'mdi-folder',
-  // 	title: 'Dashboard',
-  // 	items: [
-  // 		{
-  // 			title: 'default',
-  // 			path: '/'
-  // 		}
-  // 	]
-  // },
   {
     action : "mdi-cog",
     title : 'Dashboard',
@@ -21,7 +11,6 @@ export default [
     ]
   },
   {
-    // action: "mdi-cog",
     action : "fa-user-cog",
     title: "Manage Account",
     items: [
@@ -33,7 +22,7 @@ export default [
       {
         title: "List User",
         path: "/user",
-        role: ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN" , "ROLE_ADMIN_SOCIAL"],
       },
     ],
   },
