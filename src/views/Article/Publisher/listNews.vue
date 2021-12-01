@@ -259,7 +259,7 @@ export default {
       });
     },
     formatingDate (rawDate) {
-      const humanDate = moment(rawDate).format('DD/MM/YYY')
+      const humanDate = moment(rawDate).format('DD/MM/YYYY')
       return humanDate
     },
     handleGetNews(payload) {
