@@ -242,7 +242,7 @@ export default {
         typePost: "seleb",
         page: 0,
       };
-      this.getResponseFeed(payload);
+      this.getResponseFeed(payload)
     },
   },
 };

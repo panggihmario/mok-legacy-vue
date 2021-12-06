@@ -17,16 +17,17 @@ export default {
     },
     async getListFeed({ state, dispatch }, payload) {
       let response;
-      try {
-        response = await dispatch(
-          "getWithToken",
-          `member/${state.pathPost}/profile?page=${payload.page}`,
-          { root: true }
-        );
-        return response;
-      } catch (error) {
-        return error;
+      const data = {
+        url : `member/${state.pathPost}/profile?page=${payload.page}`
       }
+      return dispatch('getWithToken', data, {root : true})
+        .then(response => {
+          return response
+        })
+        .catch(err => {
+          throw err
+        })
+      
     },
     async postProduct({ state }, payload) {
       let response;
