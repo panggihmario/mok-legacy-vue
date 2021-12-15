@@ -1,27 +1,10 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="List Feed">
-      <custom-button
-        color="primary"
-        @click="moveToPostProduct"
-        class="white--text mr-6"
-        >Post Product</custom-button
-      >
-      <custom-button color="primary" class="white--text" @click="moveToCreate"
-        >Post Feed</custom-button
-      >
-    </HeaderContent>
+
     <v-data-table :headers="headers" hide-default-footer :items="items" class="grey--text">
       <template v-slot:[`item.image`]="{ item }">
-        <custom-button
-          color="carmine"
-          class="white--text"
-          @click="showMedia(item)"
-          size="small"
-          >Show Media</custom-button
-        >
+        <div :class="feed['tb__link']" @click="showMedia(item)" >Lihat Post</div>
       </template>
-
       <template v-slot:[`item.action`]="{ item }">
         <custom-button @click="openModalDelete(item.id)" size="small">
           <v-icon small color="carmine">delete</v-icon>
@@ -73,6 +56,7 @@ export default {
   data() {
     return {
       accountId: "",
+      position : null,
       idUser: "",
       page: 1,
       totalPage: 0,
@@ -107,6 +91,14 @@ export default {
       ],
       headers: [
         {
+          text: "Media",
+          value: "image",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          width: "100",
+        },
+        {
           text: "Tanggal",
           value: "date",
           class: "whitesnow",
@@ -114,14 +106,7 @@ export default {
           filterable: false,
           width: "100",
         },
-        {
-          text: "Photo Feed/Product",
-          value: "image",
-          class: "whitesnow",
-          sortable: false,
-          filterable: false,
-          width: "150",
-        },
+        
         {
           text: "Deskripsi Feed/Product",
           value: "description",
@@ -157,12 +142,20 @@ export default {
   },
   mounted() {
     this.handleListFeed();
+    this.handleFetching()
   },
   methods: {
     ...mapActions({
       getListFeed: "post/getListFeed",
       deletePost: "post/deletePost",
+      fetchFeeds : 'post/fetchFeeds'
     }),
+    handleFetching () {
+      const payload = {
+        tab : 'draft'
+      }
+      return this.fetchFeeds(payload)
+    },  
     showMedia(payload) {
       this.dialog = true;
       this.dialogMedia = payload.media[0];
@@ -247,3 +240,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" module="feed">
+.tb {
+  &__link {
+    color: #1890FF;
+    text-decoration: underline;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+</style>

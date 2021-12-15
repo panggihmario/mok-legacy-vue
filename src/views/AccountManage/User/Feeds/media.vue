@@ -47,7 +47,7 @@
 import MediaImage from "./image.vue";
 import Content from "./content.vue";
 export default {
-  props: ["content"],
+  props: ["content", "index"],
   components : {
     MediaImage,
     Content
@@ -60,7 +60,11 @@ export default {
   methods: {
     deletePost (id) {
       this.dialog = false
-      this.$emit('deletePost' , id)
+      const payload = {
+        idx : this.index,
+        id
+      }
+      this.$emit('deletePost' , payload)
     },
     closeDialog() {
       const isImage = this.content.post.medias[0].type
