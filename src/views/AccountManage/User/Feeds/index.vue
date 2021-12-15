@@ -19,6 +19,7 @@
         >
           <Media
             :content="c"
+            :index="idx"
             @deletePost="deletePost"
           />
         </v-col>
@@ -73,10 +74,10 @@ export default {
       fetchFeedByUserId: "account/fetchFeedByUserId",
       deleteFeed : "account/deleteFeed"
     }),
-    deletePost(id) {
-      return this.deleteFeed(id)
+    deletePost(payload) {
+      return this.deleteFeed(payload.id)
         .then(() => {
-          return this.handleFetchDataFeeds()
+          this.contents.splice(payload.idx, 1)
         })
     },
     backRoute() {
@@ -95,7 +96,6 @@ export default {
         },
       };
       return this.fetchFeedByUserId(data).then((response) => {
-        console.log(response)
         this.totalPost = response.totalElements;
         this.contents = response.content;
       });

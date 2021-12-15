@@ -10,7 +10,7 @@
       :length="listNews.totalPages"
       prev-icon="mdi-menu-left"
       next-icon="mdi-menu-right"
-      v-model="pageNews"
+      v-model="page"
       @input="getNewsBaseOnPage"
       :total-visible="6"
     />
@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      pageNews: 1,
+      page : 1,
       headers: [
         {
           text: "Penyunting",

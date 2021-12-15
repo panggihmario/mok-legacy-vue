@@ -166,9 +166,9 @@ export default [
     action: "post_add",
     items: [
       {
-        title: "Feed",
-        path: "/post",
-        role: ["ROLE_SELEB", "ROLE_ADMIN"],
+        title: "Post Feed",
+        path: "/post/1",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       // {
       // 	title : 'Product',

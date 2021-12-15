@@ -1,0 +1,31 @@
+<template>
+  <div>
+    <AdminView/>
+    <!-- <SelebView v-if="isSeleb" /> -->
+  </div>
+</template>
+
+<script>
+import AdminView from "./adminView/index.vue"
+import { mapState } from "vuex"
+export default {
+  components : {
+    AdminView
+  },
+  computed : {
+    ...mapState({
+      role : (state) => state.authentication.role
+    }),
+    isAdmin () {
+      if(this.role === 'ROLE_ADMIN' || this.role === 'ROLE_ADMIN_SOCIAL') {
+        return true
+      }
+    },
+    isSeleb() {
+      if(this.role ===  'ROLE_SELEB'){
+        return true
+      }
+    }
+  }
+}
+</script>
