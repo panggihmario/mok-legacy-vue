@@ -74,13 +74,14 @@ export default {
       searchFeed : 'post/searchFeed'
     }),
     handleSearch() {
+      const routerName = this.$route.name
       if(this.keyword) {
         const payload = {
-        keyword : this.keyword
-      }
+          keyword : this.keyword,
+          tab : routerName
+        }
         return this.searchFeed(payload)
       }else{
-        const routerName = this.$route.name
         const payload = {
           tab : routerName,
           size : 15
