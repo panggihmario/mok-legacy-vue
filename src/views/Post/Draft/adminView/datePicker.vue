@@ -72,10 +72,11 @@ export default {
       const format = `${f} ${this.scheduledTime}`;
       this.humanDate = format;
       this.menudate = false;
-      this.convertEpoch(this.scheduleDate, this.scheduleTime);
+      this.convertEpoch(this.scheduleDate, this.scheduledTime);
     },
     convertEpoch(scheduleDate, scheduleTime) {
       let schedule = `${scheduleDate} ${scheduleTime}`;
+      console.log(schedule)
       const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
         .unix();
@@ -84,7 +85,7 @@ export default {
         index: this.item.index,
         time: miliEpoch,
       };
-      // this.$emit('setEpochPublish', payload)
+      console.log(miliEpoch)
       this.setEpochFeed(payload);
     },
   },

@@ -29,6 +29,7 @@ export default {
           ...payload
         }
       }
+      commit('setFeeds', [])
       return dispatch('getWithToken', data , {root : true})
         .then(response => {
           const responseData = response.data.data
