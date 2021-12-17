@@ -43,12 +43,15 @@
                     <v-btn text color="primary" @click="menu = false">
                       Cancel
                     </v-btn>
-                    <v-btn text color="primary" @click="setDate">
-                      OK
-                    </v-btn>
+                    <v-btn text color="primary" @click="setDate"> OK </v-btn>
                   </v-card>
                 </v-menu>
-                <custom-button :loading="loading" @click="publishFeed" class="ml-4" size="small" color="secondary"
+                <custom-button
+                  :loading="loading"
+                  @click="publishFeed"
+                  class="ml-4"
+                  size="small"
+                  color="secondary"
                   >Post Content Sekarang</custom-button
                 >
               </div>
@@ -71,7 +74,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from "moment";
 import { mapActions } from "vuex";
 export default {
   props: ["item"],
@@ -81,9 +84,9 @@ export default {
       date: "",
       menu: false,
       timeSchedule: "",
-      humanDate : '',
-      tempItem : null,
-      loading : false
+      humanDate: "",
+      tempItem: null,
+      loading: false,
     };
   },
   computed: {
@@ -95,62 +98,63 @@ export default {
   },
   methods: {
     ...mapActions({
-      updatePostFeed : 'post/updatePostFeed'
+      updatePostFeed: "post/updatePostFeed",
     }),
     openMedia() {
       this.dialog = true;
     },
-    setDate( ) {
-      const d = this.date
-      const t = this.timeSchedule
+    setDate() {
+      const d = this.date;
+      const t = this.timeSchedule;
       const [year, month, date] = d.split("-");
       const f = `${date}/${month}/${year}`;
-      const format = `${f} ${t}` 
-      this.humanDate = format
-      this.convertEpoch(d, t)
-      this.menu = false
+      const format = `${f} ${t}`;
+      this.humanDate = format;
+      this.convertEpoch(d, t);
+      this.menu = false;
     },
-    convertEpoch(scheduleDate,scheduleTime) {
+    convertEpoch(scheduleDate, scheduleTime) {
       let schedule = `${scheduleDate} ${scheduleTime}`;
-      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm").add(7, 'hours').unix()
-      const miliEpoch = epochDate * 1000
-      const item = this.item
+      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
+        .add(7, "hours")
+        .unix();
+      const miliEpoch = epochDate * 1000;
+      const item = this.item;
       const temp = {
         ...item,
-        isScheduled : true,
-        scheduledTime : miliEpoch
-      }
-      this.tempItem = temp
+        isScheduled: true,
+        scheduledTime: miliEpoch,
+      };
+      this.tempItem = temp;
     },
     publishFeed() {
-      this.loading = true
-      let data 
-      if(this.humanDate) {
-        data = this.tempItem
-      }else{
-        console.log(this.item)
-        const item = this.item
-        data = item
+      this.loading = true;
+      let data;
+      if (this.humanDate) {
+        data = this.tempItem;
+      } else {
+        console.log(this.item);
+        const item = this.item;
+        data = item;
       }
       const payload = {
-          id : data.id,
-          type : 'scheduled',
-          params : {
-            ...data,
-          }
-      }
+        id: data.id,
+        type: "schedule",
+        params: {
+          ...data,
+        },
+      };
       return this.updatePostFeed(payload)
-        .then(response => {
-          this.loading = false
-          this.dialog = false
-          this.$emit('refreshDataFeed')
-          console.log(response)
+        .then((response) => {
+          this.loading = false;
+          this.dialog = false;
+          this.$emit("refreshDataFeed");
         })
-        .catch(err => {
-          this.loading = false
-          console.log(err.response)
-        })
-    }
+        .catch((err) => {
+          this.loading = false;
+          console.log(err.response);
+        });
+    },
   },
 };
 </script>

@@ -71,6 +71,18 @@ export default {
 		...mapActions({
 			login : 'authentication/login'
 		}),
+		checkRole(role) {
+			if(role === 'ROLE_SELEB') {
+				this.$router.push({
+					name : 'draft',
+					params : {
+						page : 1
+					}
+				})
+			}else{
+				this.$router.push("/")
+			}
+		},
     async onSubmit() {
 			this.loading = true
 			const opts = {
@@ -78,11 +90,12 @@ export default {
         password: this.password
 			};
 			const response = await this.login(opts)
+			const role = response.data.role
 			if(response.status === 200){
 				this.alertSuccess = true
 				this.loading = false
 				setTimeout(() => {
-					this.$router.push('/')
+					this.checkRole(role)
 					this.alertSuccess = false
 				},500)
 			}else{
