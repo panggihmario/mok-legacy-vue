@@ -69,11 +69,13 @@ export default {
       const payload = {
         tab : 'schedule',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'scheduledTime',
+        direction : 'ASC'
       }
       return this.fetchFeeds(payload)
         .then(response => {
-          console.log(response)
+          console.log(response.content)
         })
     },
     onPagination(page) {
@@ -140,7 +142,7 @@ export default {
           value : 'user'
         },
         {
-          text : 'Dijadwalkan PAda',
+          text : 'Dijadwalkan Pada',
           class : 'whitesnow',
           sortable: false,
           filterable: false,
