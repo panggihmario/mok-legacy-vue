@@ -10,7 +10,7 @@
         <LinkDialog  :item="item" />
       </template>
       <template v-slot:[`item.description`]="{ item }" >
-        <div  :class="ad['dg__desc']" > {{item.description}}  </div>
+        <div  :class="ad['tb__caption']" > {{item.description}}  </div>
       </template>
       <template v-slot:[`item.channel`]="{ item }" >
         <div :class="ad['dg__desc']"  > {{item.channel.name}}  </div>
@@ -80,9 +80,14 @@ export default {
       const payload = {
         tab : 'list',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'scheduledTime',
+        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
+        .then(response => {
+          console.log(response.content)
+        })
     },
     onPagination(page) {
       const code = this.channelCode

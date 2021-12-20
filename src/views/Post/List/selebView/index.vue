@@ -127,7 +127,7 @@ export default {
           
         },
         {
-          text : 'Dipublish PAda',
+          text : 'Dipublish Pada',
           class : 'whitesnow',
           sortable: false,
           filterable: false,

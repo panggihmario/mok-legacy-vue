@@ -130,7 +130,7 @@ export default {
           
         },
         {
-          text : 'Dijadwalkan PAda',
+          text : 'Dijadwalkan Pada',
           class : 'whitesnow',
           sortable: false,
           filterable: false,
