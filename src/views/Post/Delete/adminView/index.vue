@@ -78,13 +78,8 @@ export default {
         tab : 'reject',
         size : 15,
         page : page - 1,
-        sort : 'deletedAt',
-        direction : 'ASC'
       }
       return this.fetchFeeds(payload)
-        .then(response => {
-          console.log(response)
-        })
     },
     onPagination(page) {
       const code = this.channelCode

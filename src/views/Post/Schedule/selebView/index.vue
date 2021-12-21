@@ -69,9 +69,6 @@ export default {
         page : page - 1
       }
       return this.fetchFeeds(payload)
-        .then(response => {
-          console.log(response)
-        })
     },
     onPagination(page) {
       const code = this.channelCode
