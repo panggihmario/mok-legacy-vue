@@ -81,13 +81,8 @@ export default {
         tab : 'list',
         size : 15,
         page : page - 1,
-        sort : 'scheduledTime',
-        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
-        .then(response => {
-          console.log(response.content)
-        })
     },
     onPagination(page) {
       const code = this.channelCode
@@ -115,12 +110,6 @@ export default {
         }
       })
       return this.fetchFeeds(tempPayload)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
     }
   },
   data () {
