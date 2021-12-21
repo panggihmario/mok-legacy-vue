@@ -64,8 +64,7 @@ export default {
         tab : 'draft',
         size : 15,
         page : page -1,
-        sort : 'createAt',
-        direction : 'DESC'
+        sort : 'createAt,DESC',
       }
       return this.fetchFeeds(payload)
        .then(response => {
@@ -81,8 +80,7 @@ export default {
         tab : 'draft',
         size : 15,
         page : page - 1,
-        sort : 'createAt',
-        direction : 'DESC'
+        sort : 'createAt,DESC',
       }
       this.$router.push({
         name : 'draft',
@@ -91,9 +89,6 @@ export default {
         }
       })
       return this.fetchFeeds(payload)
-        .then(response => {
-          this.totalPage = response.totalPages
-        })
     }
   },
   data () {

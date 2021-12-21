@@ -70,8 +70,7 @@ export default {
         tab : 'schedule',
         size : 15,
         page : page - 1,
-        sort : 'scheduledTime',
-        direction : 'DESC'
+        sort : 'scheduledTime,DESC',
       }
       return this.fetchFeeds(payload)
     },
@@ -81,8 +80,7 @@ export default {
           tab : 'schedule',
           size : 15,
           page : page - 1,
-          sort : 'scheduledTime',
-          direction : 'DESC'
+          sort : 'scheduledTime,DESC',
         }
       let tempPayload = {}
       if(code) {
