@@ -46,11 +46,21 @@ export default {
       errorMessage : ''
     }
   },
+  created () {
+    this.fetchHashtag()
+  },
   methods : {
     ...mapActions({
       checkHashtag : 'trending/checkHashtag',
-      createHashtag : 'trending/createHashtag'
+      createHashtag : 'trending/createHashtag',
+      getHashtag : 'trending/getHashtag'
     }),
+    fetchHashtag () {
+      return this.getHashtag()
+        .then(response => {
+          this.hashtag = response.value
+        })
+    },
     onSubmit() {
       const payload = {
         value : this.hashtag
@@ -73,11 +83,12 @@ export default {
           this.alertSuccess = true
            setTimeout(() => {
             this.alertSuccess = false
+            this.fetchHashtag()
           },2000)
         })
         .catch(err => {
           this.errorMessage = err
-          this.hashtag = ''
+          // this.hashtag = ''
           this.alertError = true
           setTimeout(() => {
             this.alertError = false

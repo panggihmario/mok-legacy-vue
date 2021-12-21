@@ -77,7 +77,9 @@ export default {
       const payload = {
         tab : 'reject',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'deletedAt',
+        direction : 'ASC'
       }
       return this.fetchFeeds(payload)
         .then(response => {
@@ -87,7 +89,7 @@ export default {
     onPagination(page) {
       const code = this.channelCode
       const payload = {
-          tab : 'rect',
+          tab : 'reject',
           size : 15,
           page : page - 1,
           channelCode : code
