@@ -19,6 +19,17 @@ export default {
         })
         .catch(err => { throw err })
     },
+    getHashtag({state, dispatch}) {
+      const data = {
+        url : `${state.pathTrending}`
+      }
+      return dispatch('getWithToken', data, { root : true} )
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(err => { throw err })
+    },
     createHashtag ({state, dispatch}, payload) {
       const params = {
         url : `${state.pathTrending}/`,

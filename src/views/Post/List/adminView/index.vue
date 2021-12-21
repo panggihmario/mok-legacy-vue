@@ -115,6 +115,12 @@ export default {
         }
       })
       return this.fetchFeeds(tempPayload)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
     }
   },
   data () {
