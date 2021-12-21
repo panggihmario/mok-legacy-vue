@@ -66,7 +66,9 @@ export default {
       const payload = {
         tab : 'schedule',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'scheduledTime',
+        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
     },
@@ -76,7 +78,9 @@ export default {
           tab : 'schedule',
           size : 15,
           page : page - 1,
-          channelCode : code
+          // channelCode : code,
+          sort : 'scheduledTime',
+          direction : 'DESC'
         }
       let tempPayload = {}
       if(code) {

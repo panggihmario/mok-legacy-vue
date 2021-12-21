@@ -71,7 +71,7 @@ export default {
         size : 15,
         page : page - 1,
         sort : 'scheduledTime',
-        direction : 'ASC'
+        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
     },
@@ -81,7 +81,8 @@ export default {
           tab : 'schedule',
           size : 15,
           page : page - 1,
-          channelCode : code
+          sort : 'scheduledTime',
+          direction : 'DESC'
         }
       let tempPayload = {}
       if(code) {

@@ -63,7 +63,9 @@ export default {
       const payload = {
         tab : 'draft',
         size : 15,
-        page : page -1
+        page : page -1,
+        sort : 'createAt',
+        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
        .then(response => {
@@ -78,7 +80,9 @@ export default {
       const payload = {
         tab : 'draft',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'createAt',
+        direction : 'DESC'
       }
       this.$router.push({
         name : 'draft',

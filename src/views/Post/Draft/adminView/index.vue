@@ -90,7 +90,9 @@ export default {
       const payload = {
         tab : 'draft',
         size : 15,
-        page : page - 1
+        page : page - 1,
+        sort : 'createAt',
+        direction : 'DESC'
       }
       return this.fetchFeeds(payload)
     },
@@ -100,7 +102,8 @@ export default {
           tab : 'draft',
           size : 15,
           page : page - 1,
-          channelCode : code
+          sort : 'createAt',
+          direction : 'DESC'
         }
       let tempPayload = {}
       if(code) {
