@@ -60,9 +60,6 @@ export default {
     Actions,
     LinkDialog
   },
-  created() {
-    this.handleFetchingData()
-  },
   mounted () {
     const page = this.$route.params.page
     this.page = Number(page)
@@ -85,23 +82,13 @@ export default {
     refreshDataFeed() {
       this.handleFetchingData()
     },
-    handleFetchingData () {
-      const page = this.$route.params.page
-      const payload = {
-        tab : 'draft',
-        size : 15,
-        page : page - 1,
-        sort : 'createAt,DESC',
-      }
-      return this.fetchFeeds(payload)
-    },
     onPagination(page) {
+      this.$emit('onPagination')
       const code = this.channelCode
       const payload = {
           tab : 'draft',
           size : 15,
           page : page - 1,
-          // channelCode : code,
           sort : 'createAt,DESC',
         }
       let tempPayload = {}
