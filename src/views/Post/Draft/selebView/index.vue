@@ -10,10 +10,10 @@
         <LinkDialog  :item="item" />
       </template>
       <template v-slot:[`item.description`]="{ item }" >
-        <div  :class="ad['dg__desc']" > {{item.description}}  </div>
+        <div  :class="ad['tb__caption']" > {{item.description}}  </div>
       </template>
       <template v-slot:[`item.channel`]="{ item }" >
-        <div :class="ad['dg__desc']"  > {{item.channel.name}}  </div>
+        <div :class="ad['tb__caption']"  > {{item.channel.name}}  </div>
       </template>
       <template v-slot:[`item.date`]="{ item }">
         <div :class="ad['dg__desc']"> {{formatingDate(item.createAt)}} </div>
