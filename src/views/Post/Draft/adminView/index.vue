@@ -13,7 +13,7 @@
         <div :class="feed['tb__caption']"  > {{item.description}}  </div>
       </template>
       <template v-slot:[`item.channel`]="{ item }" >
-        <div :class="feed.fonts"  > {{item.channel.name}}  </div>
+        <div :class="feed['tb__caption']"  > {{item.channel.name}}  </div>
       </template>
       <template v-slot:[`item.date`]="{item}">
         <div :class="ad['dg__desc']"> {{formatingDate(item.submittedAt)}} </div>
