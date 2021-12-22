@@ -1,10 +1,7 @@
 <template>
   <div>
-    <Header/>
-    <Tabs
-      position="agregrator"
-      class="mb-4"
-    />
+    <Header />
+    <Tabs position="agregrator" class="mb-4" />
 
     <div class="d-flex justify-space-between">
       <div class="d-flex">
@@ -41,7 +38,7 @@
       no-data-text="no data"
     >
       <template v-slot:[`item.action`]>
-        <custom-button
+        <!-- <custom-button
           color="primary"
           v-if="!viewNews"
           size="medium"
@@ -49,7 +46,7 @@
           width="101"
         >
           Publish
-        </custom-button>
+        </custom-button> -->
       </template>
       <template v-slot:[`header.action`]>
         <custom-button
@@ -59,6 +56,7 @@
           class="my-3"
           width="101"
           @click="handlePublishAll"
+          :loading="loadingPublishAll"
         >
           Publish All
         </custom-button>
@@ -89,16 +87,12 @@
               {{ item.postNewsDto.title }}
             </td>
             <td>
-              <custom-button
-                color="primary"
-                v-if="!viewNews"
-                size="medium"
-                class="my-3"
-                width="101"
-                @click="handlePublish(item)"
-              >
-                Publish
-              </custom-button>
+              <ButtonPublish
+                :viewNews="viewNews"
+                @successPublish="successPublish"
+                @errorPublish="errorPublish"
+                :item="item"
+              />
             </td>
           </tr>
         </tbody>
@@ -118,25 +112,28 @@
 </template>
 
 <script>
-import Header from "../containers/header.vue"
-import Tabs from "../containers/tabs.vue"
+import Header from "../containers/header.vue";
+import Tabs from "../containers/tabs.vue";
+import ButtonPublish from "./buttonPublish.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
-  components : {
+  components: {
     Header,
-    Tabs
+    Tabs,
+    ButtonPublish,
   },
   created() {
-    const sites = this.$route.params.sites
-    const page = this.$route.params.page
-    this.setSite(sites)
-    this.page = Number(page)
+    const sites = this.$route.params.sites;
+    const page = this.$route.params.page;
+    this.setSite(sites);
+    this.page = Number(page);
   },
   data() {
     return {
       errorMessage: "",
       searchNewsAg: "",
       page: 1,
+      loadingPublishAll: false,
       totalPages: 0,
       alertError: false,
       singleSelect: false,
@@ -198,17 +195,15 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$route.meta.page)
     this.handleNewsAgregator();
     this.handleGetMapping();
-    // this.handleGetSiteAgregrator()
     this.fetchListAgregratorSites();
   },
-  watch : {
-    '$route' : function () {
-      const params = this.$route.params
-      const page = params.page
-      this.page = page
+  watch: {
+    $route: function () {
+      const params = this.$route.params;
+      const page = params.page;
+      this.page = page;
       const payload = {
         size: 10,
         page: page - 1,
@@ -224,21 +219,32 @@ export default {
           console.log(err);
           // this.statusLoading = false
         });
-    }
+    },
   },
   methods: {
-    handlePublish(payload) {
-      const params = { ...payload };
-      this.statusLoading = true;
-      return this.publishNewsAgregator(params)
+    errorPublish(err) {
+      const message = err.response.data.message;
+      if (message) {
+        this.alertError = true;
+        this.errorMessage = message;
+      }
+      setTimeout(() => {
+        (this.alertError = false), (this.errorMessage = "");
+      }, 2000);
+    },
+    successPublish() {
+      return this.handleNewsAgregator().then(() => {
+        return this.setSelectedToPublish([]);
+      });
+    },
+    postPublishAll(selectedNews) {
+      return this.publishAllNewsAgregator(selectedNews)
         .then((response) => {
+          this.loadingPublishAll = false
           return this.handleNewsAgregator();
         })
-        .then(() => {
-          this.statusLoading = false;
-          return this.setSelectedToPublish([]);
-        })
         .catch((err) => {
+          this.loadingPublishAll = false
           const message = err.response.data.message;
           if (message) {
             this.alertError = true;
@@ -247,25 +253,15 @@ export default {
           setTimeout(() => {
             (this.alertError = false), (this.errorMessage = "");
           }, 2000);
-          this.statusLoading = false;
         });
     },
     handlePublishAll() {
       const selectedNews = this.selected;
-      return this.publishAllNewsAgregator(selectedNews)
-        .then((response) => {
-          return this.handleNewsAgregator();
-        })
-        .catch((err) => {
-          const message = err.response.data.message;
-          if (message) {
-            this.alertError = true;
-            this.errorMessage = message;
-          }
-          setTimeout(() => {
-            (this.alertError = false), (this.errorMessage = "");
-          }, 2000);
-        });
+      this.loadingPublishAll = true
+      setTimeout(() => {
+        this.postPublishAll(selectedNews)
+      },2000)
+      
     },
     getSearchNews() {
       const payload = {
@@ -280,13 +276,13 @@ export default {
     filterBySite() {
       // return this.handleNewsAgregator();
       this.$router.push({
-        name : 'agregratorPage',
-        params : {
-          type : 'agregrator',
-          page : 1,
-          sites : this.site
-        }
-      })
+        name: "agregratorPage",
+        params: {
+          type: "agregrator",
+          page: 1,
+          sites: this.site,
+        },
+      });
     },
     isEnabled(slot) {
       return this.enabled === slot;
@@ -323,7 +319,7 @@ export default {
       setSite: "news/setSite",
     }),
     fetchListAgregratorSites() {
-      return this.getListAgregratorSite()
+      return this.getListAgregratorSite();
     },
     handleGetMapping() {
       return this.getMappingCategory().then((response) => {
@@ -332,7 +328,7 @@ export default {
     },
     handleNewsAgregator() {
       this.statusLoading = true;
-      const page = this.$route.params.page
+      const page = this.$route.params.page;
       const payload = {
         size: 10,
         page: page - 1,
@@ -351,26 +347,13 @@ export default {
     },
     getNewsByPage(value) {
       this.$router.push({
-        name : 'agregratorPage',
-        params : {
-          page : value,
-          sites : this.selectedSite,
-          type : 'agregrator'
-
-        }
-      })
-      // const payload = {
-      //   size: 10,
-      //   page: value - 1,
-      // };
-      // return this.getAllNewsAgregrator(payload)
-      //   .then((response) => {
-      //     this.selected = [];
-      //     this.statusLoading = false;
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+        name: "agregratorPage",
+        params: {
+          page: value,
+          sites: this.selectedSite,
+          type: "agregrator",
+        },
+      });
     },
     openSideViewNews(data, idx) {
       this.selectedRow = idx;

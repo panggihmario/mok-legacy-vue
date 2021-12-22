@@ -9,16 +9,11 @@
         {{ $t("button.userCreate") }}
       </custom-button>
     </HeaderContent>
-
     <v-row dense class="mt-8">
       <v-col cols="6" class="d-flex">
         <div class="d-flex align-center mr-12">
           <span>Total User&nbsp;:&nbsp;{{ totalUser }}</span>
         </div>
-        <!-- <div class="d-flex align-center font-weight-medium">
-          <span class="mr-4">Filter</span>
-          <custom-select hideDetails :items="filter" />
-        </div>-->
       </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
@@ -48,7 +43,12 @@
                 <v-avatar v-if="item.photo" size="35" class="mr-2">
                   <img :src="item.photo" />
                 </v-avatar>
-                <v-avatar v-else size="35" class="mr-2" color="gainsboro"></v-avatar>
+                <v-avatar
+                  v-else
+                  size="35"
+                  class="mr-2"
+                  color="gainsboro"
+                ></v-avatar>
                 <span class="font-weight-medium">{{ item.user }}</span>
               </div>
             </td>
@@ -67,12 +67,24 @@
             </td>
             <td class="item__data">
               <div class="d-flex justify-space-between align-center">
-                <v-btn icon @click="moveToEdit(item.id)">
+                <!-- <v-btn icon @click="moveToEdit(item.id)">
                   <v-icon x-small>$edit</v-icon>
+                </v-btn> -->
+                <v-btn @click="openFeeds(item)" elevation="0" color="whitesnow" x-small>
+                  <v-icon left x-small >
+                    far fa-image
+                  </v-icon>
+                  <div class="text-capitalize text--charcoal">List Post</div>
                 </v-btn>
-                <v-btn @click="openDialog(item.id)" icon>
+                <v-btn :disabled="role === 'ROLE_ADMIN' ? false : true " @click="moveToEdit(item.id)" elevation="0" color="whitesnow" x-small>
+                  <v-icon left x-small>
+                    fas fa-edit
+                  </v-icon>
+                  <div class="text-capitalize text--charcoal">Edit User Info</div>
+                </v-btn>
+                <!-- <v-btn @click="openDialog(item.id)" icon>
                   <v-icon x-small>$delete</v-icon>
-                </v-btn>
+                </v-btn> -->
               </div>
             </td>
           </tr>
@@ -105,8 +117,13 @@
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
-import { mapACtions, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
+  computed : {
+    ...mapState({
+      role : (state) => state.authentication.role
+    })
+  },
   components: {
     HeaderContent,
     DialogDelete,
@@ -171,7 +188,7 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: 140,
+          width: 240,
         },
       ],
       data: [],
@@ -183,6 +200,16 @@ export default {
       searchAccount: "account/searchAccount",
       deleteUser: "account/deleteUser",
     }),
+    openFeeds(item) {
+      const name = item.user
+      this.$router.push({
+        name : 'feedUser',
+        params : {
+          id : item.id,
+          name
+        }
+      })
+    },
     openDialog(id) {
       this.dialog = true;
       this.idUser = id;

@@ -1,0 +1,49 @@
+.fonts {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tb {
+  &__link {
+    color: $secondary;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration-line: underline;
+    cursor: pointer;
+  }
+  &__caption {
+    white-space: nowrap!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
+    max-width: 150px;
+    font-size: 12px;
+    font-weight: 500;
+    color: $greys;
+  }
+}
+
+.dg {
+  &__img-container {
+    height: 456px;
+    display: flex;
+    align-items: center;
+  }
+  &__left{
+    padding: 28px 24px 24px 28px;
+  }
+  &__right {
+    padding: 12px 12px 12px 0;
+  }
+  &__icon {
+    text-align: right;
+  }
+  &__desc {
+    font-size: 12px;
+    color:$black;
+  }
+  &__user {
+    font-size: 12px;
+    color:  $black;
+    font-weight: bold;
+  }
+}
