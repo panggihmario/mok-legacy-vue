@@ -17,6 +17,7 @@
           :key="idx"
           :to="{ name: tab.name, params: { page: 1 } }"
           exact
+          @click="resetFeeds"
         >
           <div class="text-capitalize">{{ tab.label }}</div>
         </v-tab>
@@ -73,6 +74,9 @@ export default {
       fetchFeeds : 'post/fetchFeeds',
       searchFeed : 'post/searchFeed'
     }),
+    resetFeeds() {
+      this.setFeeds([])
+    },
     handleSearch() {
       const routerName = this.$route.name
       if(this.keyword) {
@@ -91,7 +95,8 @@ export default {
       
     },
     ...mapMutations({
-      setChannelCode : 'post/setChannelCode'
+      setChannelCode : 'post/setChannelCode',
+      setFeeds : 'post/setFeeds'
     }),
     moveToCreatePost() {
       this.$router.push({
