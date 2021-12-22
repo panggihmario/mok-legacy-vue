@@ -16,7 +16,7 @@
         <div :class="ad['tb__caption']"  > {{item.channel.name}}  </div>
       </template>
       <template v-slot:[`item.date`]="{ item }">
-        <div :class="ad['dg__desc']"> {{formatingDate(item.createAt)}} </div>
+        <div :class="ad['dg__desc']"> {{formatingDate(item.submittedAt)}} </div>
       </template>
       <template v-slot:[`item.action`]="">
        <custom-button size="small" disabled >Submitted</custom-button>

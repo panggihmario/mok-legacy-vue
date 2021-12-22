@@ -8,13 +8,34 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 import AdminView from "./adminView/index.vue"
 import SelebView from "./selebView/index.vue"
 export default {
   components : {
     AdminView,
     SelebView
+  },
+  created() {
+    this.handleFetchingData()
+  },
+  methods : {
+    ...mapActions ({
+      fetchFeeds : 'post/fetchFeeds'
+    }),
+    handleFetchingData () {
+      const page = this.$route.params.page
+      return this.fetchApi(page)
+    },
+    fetchApi (page) {
+      const payload = {
+        tab : 'draft',
+        size : 15,
+        page : page - 1,
+        sort : 'createAt,DESC',
+      }
+      return this.fetchFeeds(payload)
+    }
   },
   computed : {
     ...mapState({
