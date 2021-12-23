@@ -1,18 +1,27 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog v-model="dialog" width="850">
+    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog" >
       <v-card>
         <v-row no-gutters>
           <v-col cols="6">
             <div :class="d.left">
               <div :class="d['container-image']">
+                <video
+                  v-if="isVideo"
+                  :src="srcVideo"
+                  autoplay
+                  controls
+                  id="videodialog"
+                />
                 <v-img
+                  v-else
                   :src="srcImage"
                   contain
                   aspect-ratio="1"
                   max-height="456"
                 />
+                <!-- <Carousel/> -->
               </div>
               <div class="d-flex">
                 <v-menu
@@ -60,10 +69,10 @@
           <v-col cols="6">
             <div :class="d.right">
               <div :class="d.icon">
-                <v-icon size="18px">fas fa-times</v-icon>
+                <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
               </div>
               <div :class="d.desc">
-                {{ item.description }}
+                <span :class="d.user">{{item.createBy}}</span> {{ item.description }}
               </div>
             </div>
           </v-col>
@@ -76,7 +85,11 @@
 <script>
 import moment from "moment";
 import { mapActions } from "vuex";
+import Carousel from "./carousel.vue"
 export default {
+  components : {
+    Carousel
+  },
   props: ["item"],
   data() {
     return {
@@ -95,12 +108,39 @@ export default {
         return this.item.medias[0].thumbnail.medium;
       }
     },
+    srcVideo() {
+      if (this.item.medias) {
+        return this.item.medias[0].url;
+      }
+    },
+    isVideo () {
+      if(this.item.medias) {
+        const type = this.item.medias[0].type
+        if(type === 'video'  ){
+          return true
+        }else {
+          return false
+        }
+      }
+    }
   },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
     }),
+    closeDialog(){
+      const idVideo = document.getElementById('videodialog')
+      if(idVideo){
+        idVideo.pause()
+        idVideo.currentTime = 0
+      }
+      this.dialog = false
+    },
     openMedia() {
+      // const idVideo = document.getElementById('videodialog')
+      // if(idVideo){
+      //   idVideo.play()
+      // }
       this.dialog = true;
     },
     setDate() {
@@ -133,7 +173,6 @@ export default {
       if (this.humanDate) {
         data = this.tempItem;
       } else {
-        console.log(this.item);
         const item = this.item;
         data = item;
       }
@@ -160,6 +199,11 @@ export default {
 </script>
 
 <style lang="scss" module="d">
+.user {
+  font-size: 12px;
+  color:  $black;
+  font-weight: bold;
+}
 .link {
   color: #1890ff;
   text-decoration: underline;
@@ -180,6 +224,7 @@ export default {
 }
 .icon {
   text-align: right;
+  cursor: pointer;
 }
 .desc {
   font-size: 12px;
