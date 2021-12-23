@@ -83,28 +83,46 @@ export default {
 				this.$router.push("/")
 			}
 		},
-    async onSubmit() {
+    onSubmit() {
 			this.loading = true
 			const opts = {
 				username: this.username,
         password: this.password
 			};
-			const response = await this.login(opts)
-			const role = response.data.role
-			if(response.status === 200){
-				this.alertSuccess = true
-				this.loading = false
-				setTimeout(() => {
-					this.checkRole(role)
-					this.alertSuccess = false
-				},500)
-			}else{
-				this.alertError = true
-				this.loading = false
-				setTimeout(() => {
-					this.alertError = false
-				}, 3000)
-			}
+			return this.login(opts)
+				.then(response => {
+					const role = response.data.role
+					this.alertSuccess = true
+					this.loading = false
+					setTimeout(() => {
+						this.checkRole(role)
+						this.alertSuccess = false
+					},500)
+				})
+				.catch(err => {
+					this.alertError = true
+					this.loading = false
+					setTimeout(() => {
+						this.alertError = false
+					}, 3000)
+				})
+			// const response = await this.login(opts)
+			// const role = response.data.role
+			// if(response.status === 200){
+			// 	this.alertSuccess = true
+			// 	this.loading = false
+			// 	setTimeout(() => {
+			// 		this.checkRole(role)
+			// 		this.alertSuccess = false
+			// 	},500)
+			// }else{
+			// 	console.log("else error")
+			// 	this.alertError = true
+			// 	this.loading = false
+			// 	setTimeout(() => {
+			// 		this.alertError = false
+			// 	}, 3000)
+			// }
     }
   }
 };
