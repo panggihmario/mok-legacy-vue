@@ -1,7 +1,7 @@
 <template>
   <div>
     <div @click="openMedia" :class="d['tb__link']">Lihat Post</div>
-    <v-dialog v-model="dialogMedia" width="850" >
+    <v-dialog @click:outside="closeDialog" v-model="dialogMedia" width="850" >
       <v-card>
         <v-row no-gutters >
           <v-col cols="6">
@@ -12,6 +12,7 @@
                   :src="srcVideo"
                   autoplay
                   controls
+                  id="dialog"
                 />
                 <v-img
                   v-else
@@ -79,6 +80,11 @@ export default {
       this.dialogMedia = true
     },
     closeDialog() {
+      const idVideo = document.getElementById('dialog')
+      if(idVideo){
+        idVideo.pause()
+        idVideo.currentTime = 0
+      }
       this.dialogMedia = false
     }
     
