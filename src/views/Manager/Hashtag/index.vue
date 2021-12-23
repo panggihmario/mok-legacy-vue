@@ -6,6 +6,7 @@
       kipaskipas
     </div>
     <div class="hash__content">
+      <custom-form :onSubmit="onSubmit" >
       <custom-input
         label="Hashtag"
         placeholder="contoh : #trending"
@@ -15,10 +16,17 @@
       <custom-button
         color="secondary"
         size="small"
-        @click="onSubmit"
+        type="submit"
       >
         Jadikan Trending
       </custom-button>
+      </custom-form>
+      <v-alert class="trend__alert" :value="alertError"  type="error">
+        {{errorMessage}}
+    </v-alert>
+		<v-alert class="trend__alert" :value="alertSuccess"  type="success">
+        hashtag {{hashtag}} berhasil trending
+    </v-alert>
     </div>
   </div>
 </template>
@@ -32,16 +40,60 @@ export default {
   },
   data() {
     return {
-      hashtag : ''
+      hashtag : '',
+      alertError : false,
+      alertSuccess : false,
+      errorMessage : ''
     }
+  },
+  created () {
+    this.fetchHashtag()
   },
   methods : {
     ...mapActions({
-      checkHashtag : 'trending/checkHashtag'
+      checkHashtag : 'trending/checkHashtag',
+      createHashtag : 'trending/createHashtag',
+      getHashtag : 'trending/getHashtag'
     }),
+    fetchHashtag () {
+      return this.getHashtag()
+        .then(response => {
+          this.hashtag = response.value
+        })
+    },
     onSubmit() {
-      const payload = this.hashtag
+      const payload = {
+        value : this.hashtag
+      }
       return this.checkHashtag(payload)
+        .then(response => {
+          const isExists = response.isExists
+          const value = response.value
+          const d = {
+            value
+          }
+          if(!isExists) {
+            return this.createHashtag(d)
+          }else {
+            const message = 'hashtag sudah ada'
+            throw message
+          }
+        })
+        .then(() => {
+          this.alertSuccess = true
+           setTimeout(() => {
+            this.alertSuccess = false
+            this.fetchHashtag()
+          },2000)
+        })
+        .catch(err => {
+          this.errorMessage = err
+          // this.hashtag = ''
+          this.alertError = true
+          setTimeout(() => {
+            this.alertError = false
+          },2000)
+        })
     }
     
   }
@@ -65,6 +117,13 @@ export default {
     font-weight: 600;
     line-height: 14px;
     margin-bottom: 24px;
+  }
+}
+.trend {
+  &__alert {
+    position: absolute;
+    top: 20px;
+    right: 20px;
   }
 }
 </style>

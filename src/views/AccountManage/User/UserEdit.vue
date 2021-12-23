@@ -1,7 +1,12 @@
 <template>
   <div>
     <HeaderContent :list="items" label="Edit Management Account" />
-    <FormUser :data="data" :loading="loading" @onSubmit="onSubmit" />
+    <FormUser 
+      :data="data" 
+      :loading="loading" 
+      @onSubmit="onSubmit" 
+      @deleteUser="handleDelete"
+    />
     <v-snackbar top right v-model="alertError" color="error">
       Edit Failed
     </v-snackbar>
@@ -60,7 +65,15 @@ export default {
     ...mapActions({
       getAccountById: "account/getAccountById",
       updateAccount: "account/updateAccount",
+      deleteUser: "account/deleteUser",
     }),
+    handleDelete() {
+      const id = this.$route.params.id;
+      return this.deleteUser(id)
+        .then(() => {
+          this.$router.push("/user");
+        })
+    },
     async onSubmit(params) {
       const id = this.$route.params.id;
       const payload = {
@@ -113,6 +126,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style lang="sass" scoped>
 .account-edit

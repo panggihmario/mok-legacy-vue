@@ -21,7 +21,6 @@ import Editor from "../views/Article/Editor";
 import EditorArticle from "../views/Article/Editor/Article";
 import CategoryNews from "../views/Article/Category";
 import CategoryNewsEdit from "../views/Article/Category/edit.vue";
-import CreateProduct from "../views/Shop/Product/create/index.vue";
 import Category from "../views/Shop/Category";
 import Seller from "../views/Shop/Seller";
 import ReportedSeller from "../views/Shop/ReportedSeller";
@@ -32,9 +31,7 @@ import AdminDelete from "../views/AccountManage/AdminDelete";
 import User from "../views/AccountManage/User";
 import UserCreate from "../views/AccountManage/User/UserCreate";
 import UserEdit from "../views/AccountManage/User/UserEdit";
-import PostFeed from "../views/Post/feed.vue";
 import PostProduct from "../views/Post/product.vue";
-import CreateFeed from "../views/Post/createFeed.vue";
 import Complaint from "../views/Shop/Complaint";
 import ComplaintDetail from "../views/Shop/Complaint/detail";
 import CancelOrder from "../views/Order/cancelOrder.vue";
@@ -42,6 +39,7 @@ import Ads from "../views/Article/Advertisement";
 import Order from "../views/Shop/Order";
 import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
+import allpath from "./pathFolder/index.js";
 
 const routes = [
   // {
@@ -117,6 +115,11 @@ const routes = [
         path: "/user",
         name: "User",
         component: User,
+      },
+      {
+        path : '/user/feed/:id/:name',
+        name : 'feedUser',
+        component : () => import('../views/AccountManage/User/Feeds/index.vue')
       },
       {
         path: "/user/create",
@@ -230,7 +233,7 @@ const routes = [
         }
       },
       {
-        path : '/publisher/scheduled/:page',
+        path : '/publisher/scheduled',
         name : 'scheduledNewsPublisher',
         component : () => import('../views/Article/Publisher/scheduledNews.vue'),
         meta : {
@@ -339,16 +342,7 @@ const routes = [
         name: "detailReportedSeller",
         component: DetailReportedSeller,
       },
-      {
-        path: "/post",
-        name: "listFeed",
-        component: PostFeed,
-      },
-      {
-        path: "/post/create",
-        name: "createFeed",
-        component: CreateFeed,
-      },
+      ...allpath,
       {
         path: "/post/product",
         name: "postProduct",
