@@ -52,7 +52,7 @@
 import { mapActions, mapState } from "vuex"
 import Picker from "./datePicker.vue"
 import Actions from "./actions.vue"
-import LinkDialog from "./dialog.vue"
+import LinkDialog from "../../containers/dialog/index.vue"
 import moment from 'moment'
 export default {
   components : {

@@ -7,12 +7,20 @@
           <v-col cols="6">
             <div :class="d.left">
               <div :class="d['container-image']">
+                <video
+                  v-if="isVideo"
+                  :src="srcVideo"
+                  autoplay
+                  controls
+                />
                 <v-img
+                  v-else
                   :src="srcImage"
                   contain
                   aspect-ratio="1"
                   max-height="456"
                 />
+                <!-- <Carousel/> -->
               </div>
               <div class="d-flex">
                 <v-menu
@@ -76,7 +84,11 @@
 <script>
 import moment from "moment";
 import { mapActions } from "vuex";
+import Carousel from "./carousel.vue"
 export default {
+  components : {
+    Carousel
+  },
   props: ["item"],
   data() {
     return {
@@ -95,12 +107,28 @@ export default {
         return this.item.medias[0].thumbnail.medium;
       }
     },
+    srcVideo() {
+      if (this.item.medias) {
+        return this.item.medias[0].url;
+      }
+    },
+    isVideo () {
+      if(this.item.medias) {
+        const type = this.item.medias[0].type
+        if(type === 'video'  ){
+          return true
+        }else {
+          return false
+        }
+      }
+    }
   },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
     }),
     openMedia() {
+      console.log(this.item)
       this.dialog = true;
     },
     setDate() {
@@ -180,6 +208,7 @@ export default {
 }
 .icon {
   text-align: right;
+  cursor: pointer;
 }
 .desc {
   font-size: 12px;

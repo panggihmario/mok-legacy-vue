@@ -1,13 +1,20 @@
 <template>
   <div>
-    <div @click="openMedia" :class="d['tb__link']">Lihat Post  </div>
+    <div @click="openMedia" :class="d['tb__link']">Lihat Post</div>
     <v-dialog v-model="dialogMedia" width="850" >
       <v-card>
         <v-row no-gutters >
           <v-col cols="6">
             <div :class="d['dg__left']">
               <div :class="d['dg__img-container']">
+                <video
+                  v-if="isVideo"
+                  :src="srcVideo"
+                  autoplay
+                  controls
+                />
                 <v-img
+                  v-else
                   :src="srcImage"
                   contain
                   aspect-ratio="1"
@@ -51,6 +58,21 @@ export default {
         return this.item.medias[0].thumbnail.medium;
       }
     },
+     srcVideo() {
+      if (this.item.medias) {
+        return this.item.medias[0].url;
+      }
+    },
+    isVideo () {
+      if(this.item.medias) {
+        const type = this.item.medias[0].type
+        if(type === 'video'  ){
+          return true
+        }else {
+          return false
+        }
+      }
+    }
   },
   methods : {
     openMedia () {
