@@ -86,11 +86,7 @@ export default {
         }
         return this.searchFeed(payload)
       }else{
-        const payload = {
-          tab : routerName,
-          size : 15
-        }
-        return this.fetchFeeds(payload)
+        return this.handleFetchApiFeeds()
       } 
       
     },
@@ -128,11 +124,38 @@ export default {
     },
     removeChannel() {
       this.channel = null
+      this.handleFetchApiFeeds()
+    },
+    handleFetchApiFeeds() {
       const routerName = this.$route.name
-      const payload = {
+      const page = this.$route.params.page
+      const sort = this.typeOfSort(routerName)
+      let payload = {
         tab : routerName,
+        size : 15,
+        page : page - 1,
       }
-      return this.fetchFeeds(payload)
+      let tempPayload
+      if(sort) {
+        tempPayload = {
+          ...payload,
+          sort
+        }
+      }else{
+        tempPayload = {
+          ...payload
+        }
+      }
+      return this.fetchFeeds(tempPayload)
+    },
+    typeOfSort (tab) {
+      if(tab === 'draft') {
+        return 'createAt,DESC'
+      }else if (tab) {
+        return 'scheduledTime,ASC'
+      }else {
+        return null
+      }
     },
     fetchDataChannel() {
       return this.getListChannel()

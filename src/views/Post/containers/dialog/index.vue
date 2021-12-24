@@ -12,8 +12,16 @@
                   :src="srcVideo"
                   autoplay
                   controls
-                  id="videodialog"
+                  :id="`videodialog${item.id}`"
+                  :class="d.vid"
                 />
+                <!-- <iframe
+                   v-if="isVideo"
+                  :src="srcVideo"
+                  autoplay
+                  controls
+                  :id="`videodialog${item.id}`"
+                /> -->
                 <v-img
                   v-else
                   :src="srcImage"
@@ -129,7 +137,7 @@ export default {
       updatePostFeed: "post/updatePostFeed",
     }),
     closeDialog(){
-      const idVideo = document.getElementById('videodialog')
+      const idVideo = document.getElementById(`videodialog${this.item.id}`)
       if(idVideo){
         idVideo.pause()
         idVideo.currentTime = 0
@@ -137,10 +145,10 @@ export default {
       this.dialog = false
     },
     openMedia() {
-      // const idVideo = document.getElementById('videodialog')
-      // if(idVideo){
-      //   idVideo.play()
-      // }
+      const idVideo = document.getElementById(`videodialog${this.item.id}`)
+      if(idVideo){
+        idVideo.play()
+      }
       this.dialog = true;
     },
     setDate() {
@@ -215,9 +223,16 @@ export default {
   padding: 28px 24px 24px 28px;
 }
 .container-image {
-  height: 456px;
+  height: 446px;
   display: flex;
   align-items: center;
+  background-color: #000000;
+  margin-bottom: 10px;
+}
+.vid {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .right {
   padding: 12px 12px 12px 0;

@@ -16,10 +16,10 @@
         <div :class="feed['tb__caption']"  > {{item.channel.name}}  </div>
       </template>
       <template v-slot:[`item.date`]="{item}">
-        <div :class="ad['dg__desc']"> {{formatingDate(item.submittedAt)}} </div>
+        <div :class="feed['tb__caption']"> {{formatingDate(item.submittedAt)}} </div>
       </template>
       <template v-slot:[`item.user`]="{item}">
-        <div :class="ad['dg__desc']">{{item.createBy}}</div>
+        <div :class="feed['tb__caption']">{{item.createBy}}</div>
       </template>
      
       <template v-slot:[`item.schedule`]="{item}" >
@@ -42,6 +42,7 @@
         :length="totalPages"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
+        total-visible="10"
         @input="onPagination"
       />
     </div>
