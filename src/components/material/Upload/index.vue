@@ -53,6 +53,7 @@ export default {
   methods: {
     onLoad(e) {
       const file = e.target.files[0];
+      console.log(file)
       let form = new FormData();
       form.append("file", file);
       let result = {
@@ -64,6 +65,17 @@ export default {
         method: "post",
         data: form,
       };
+      // let widthMedia
+      // let reader = new FileReader();
+      // reader.readAsDataURL(file);
+      // reader.onload = evt => {
+      //   let img = new Image();
+      //   img.onload = () => {
+      //     widthMedia = img.width
+      //     console.log("woiii")
+      //   }
+      //   console.log("===>",widthMedia)
+      // }
       this.loadingUpload = true;
       this.$emit("response", result);
       this.$httpUpload()
