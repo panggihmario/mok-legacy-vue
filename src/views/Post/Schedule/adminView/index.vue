@@ -73,6 +73,9 @@ export default {
         sort : 'scheduledTime,ASC',
       }
       return this.fetchFeeds(payload)
+        .then(response => {
+          console.log(response)
+        })
     },
     onPagination(page) {
       const code = this.channelCode

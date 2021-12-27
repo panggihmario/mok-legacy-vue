@@ -23,17 +23,29 @@
       </template>
      
       <template v-slot:[`item.schedule`]="{item}" >
+        <!-- <div class="d-flex">
         <Picker 
           :item="item"
+          class="mr-4"
         ></Picker>
-      </template>
-
-      <template v-slot:[`item.action`]="{item}">
         <Actions 
           :item="item"  
           @refreshDataFeed="refreshDataFeed"
         />
+        </div> -->
+        <ActionsPicker 
+          :item="item" 
+          @refreshDataFeed="refreshDataFeed"
+        />
       </template>
+      <!-- <ActionsPicker/> -->
+
+      <!-- <template v-slot:[`item.action`]="{item}">
+        <Actions 
+          :item="item"  
+          @refreshDataFeed="refreshDataFeed"
+        />
+      </template> -->
       
     </v-data-table>
     <div  class="d-flex justify-end mt-4">
@@ -55,11 +67,13 @@ import Picker from "./datePicker.vue"
 import Actions from "./actions.vue"
 import LinkDialog from "../../containers/dialog/index.vue"
 import moment from 'moment'
+import ActionsPicker from "./actionsPicker.vue"
 export default {
   components : {
     Picker,
     Actions,
-    LinkDialog
+    LinkDialog,
+    ActionsPicker
   },
   mounted () {
     const page = this.$route.params.page
@@ -81,36 +95,19 @@ export default {
       return cek;
     },
     refreshDataFeed() {
-      this.handleFetchingData()
-    },
-    handleFetchingData () {
-      const page = this.$route.params.page
-      const payload = {
-        tab : 'draft',
-        size : 15,
-        page : page - 1,
-        sort : 'createAt,DESC',
-      }
-      return this.fetchFeeds(payload)
+      this.$emit('refreshDataFeed')
     },
     onPagination(page) {
-      // this.$emit('onPagination')
       const code = this.channelCode
-      const payload = {
-          tab : 'draft',
-          size : 15,
-          page : page - 1,
-          sort : 'createAt,DESC',
-        }
-      let tempPayload = {}
+      let payload
       if(code) {
-        tempPayload = {
-          ...payload,
-          channelCode : code
+        payload = {
+          page,
+          code
         }
-      }else{
-        tempPayload = {
-          ...payload
+      }else {
+        payload = {
+          page
         }
       }
       this.$router.push({
@@ -119,7 +116,7 @@ export default {
           page : page
         }
       })
-      return this.fetchFeeds(tempPayload)
+      this.$emit('onPagination', payload)
     }
   },
   data () {
@@ -170,17 +167,17 @@ export default {
           sortable: false,
           filterable: false,
           value : 'schedule',
-          align : 'center',
+          align : 'left',
         },
-        {
-          text : 'Action',
-          class : 'whitesnow',
-          sortable: false,
-          filterable: false,
-          value : 'action',
-          align : 'center',
-          width : "200"
-        }
+        // {
+        //   text : 'Action',
+        //   class : 'whitesnow',
+        //   sortable: false,
+        //   filterable: false,
+        //   value : 'action',
+        //   align : 'center',
+        //   width : "200"
+        // }
       ]
     }
   }
