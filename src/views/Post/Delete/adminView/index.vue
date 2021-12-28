@@ -45,9 +45,6 @@ export default {
   components : {
     LinkDialog
   },
-  created() {
-    this.handleFetchingData()
-  },
   mounted () {
     const page = this.$route.params.page
     this.page = Number(page)
@@ -72,32 +69,17 @@ export default {
       }
       
     },
-    handleFetchingData () {
-      const page = this.$route.params.page
-      const payload = {
-        tab : 'reject',
-        size : 15,
-        page : page - 1,
-      }
-      return this.fetchFeeds(payload)
-    },
     onPagination(page) {
       const code = this.channelCode
-      const payload = {
-          tab : 'reject',
-          size : 15,
-          page : page - 1,
-          channelCode : code
-        }
-      let tempPayload = {}
+      let payload
       if(code) {
-        tempPayload = {
-          ...payload,
-          channelCode : code
+        payload = {
+          page,
+          code
         }
-      }else{
-        tempPayload = {
-          ...payload
+      }else {
+        payload = {
+          page
         }
       }
       this.$router.push({
@@ -106,7 +88,7 @@ export default {
           page : page
         }
       })
-      return this.fetchFeeds(tempPayload)
+      this.$emit('onPagination', payload)
     }
   },
   data () {

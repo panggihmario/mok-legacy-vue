@@ -1,6 +1,6 @@
 export default [
   {
-    action : "mdi-cog",
+    action : "fas fa-desktop",
     title : 'Dashboard',
     items : [
       {
@@ -11,7 +11,7 @@ export default [
     ]
   },
   {
-    action : "fa-user-cog",
+    action : "fas fa-sliders-h",
     title: "Manage Account",
     items: [
       {
@@ -27,7 +27,7 @@ export default [
     ],
   },
   {
-    action: "desktop_windows",
+    action: "fas fa-user-cog",
     title: "Manager Socmed",
     items: [
       {
@@ -114,7 +114,18 @@ export default [
   // 	]
   // },
   {
-    action: "local_mall",
+    title: "Kontent Feed",
+    action: "fas fa-pen",
+    items: [
+      {
+        title: "Post Feed",
+        path: "/post/1",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+    ],
+  },
+  {
+    action: "fas fa-shopping-basket",
     title: "Shop",
     items: [
       {
@@ -159,21 +170,6 @@ export default [
         role : ["ROLE_ADMIN" , "ROLE_ADMIN_FINANCE"],
       },
      
-    ],
-  },
-  {
-    title: "Post",
-    action: "post_add",
-    items: [
-      {
-        title: "Post Feed",
-        path: "/post/1",
-        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
-      },
-      // {
-      // 	title : 'Product',
-      // 	path : '/post/product'
-      // }
     ],
   },
   {
