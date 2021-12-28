@@ -37,7 +37,7 @@
 <script>
 import { mapActions, mapState } from "vuex"
 import moment from 'moment'
-import LinkDialog from "../../containers/linkDialog.vue"
+import LinkDialog from "../../containers/dialog/index.vue"
 export default {
   components : {
     LinkDialog
@@ -73,6 +73,9 @@ export default {
         sort : 'scheduledTime,ASC',
       }
       return this.fetchFeeds(payload)
+        .then(response => {
+          console.log(response)
+        })
     },
     onPagination(page) {
       const code = this.channelCode

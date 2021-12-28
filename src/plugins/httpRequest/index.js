@@ -4,12 +4,10 @@ import store from '../../store'
 
 const BASE_URL = process.env.VUE_APP_BASE_URL
 // const BASE_URL = 'https://api-main.kipaskipas.com/api/v1/'
-// const BASE_URL = 'https://stg-api-main.kipaskipas.com/api/v1/'
 const BASE_UPLOAD_URL = process.env.VUE_APP_UPLOAD
 const getToken = () => {
 	const token = store.state.authentication.token
 	return token
-  // return window.localStorage.getItem("persada_token");
 }
 
 export const serviceWithoutToken = () => axios.create({

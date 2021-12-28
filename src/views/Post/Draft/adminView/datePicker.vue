@@ -76,7 +76,6 @@ export default {
     },
     convertEpoch(scheduleDate, scheduleTime) {
       let schedule = `${scheduleDate} ${scheduleTime}`;
-      console.log(schedule)
       const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
         .unix();
@@ -85,8 +84,8 @@ export default {
         index: this.item.index,
         time: miliEpoch,
       };
-      console.log(miliEpoch)
-      this.setEpochFeed(payload);
+      this.$emit('setEpochDate', miliEpoch)
+      // this.setEpochFeed(payload);
     },
   },
 };

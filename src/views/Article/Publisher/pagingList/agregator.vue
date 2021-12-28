@@ -2,7 +2,6 @@
   <div>
     <Header />
     <Tabs position="agregrator" class="mb-4" />
-
     <div class="d-flex justify-space-between">
       <div class="d-flex">
         <div class="mt-2 mr-2 agg__filter">Filter</div>
@@ -240,11 +239,11 @@ export default {
     postPublishAll(selectedNews) {
       return this.publishAllNewsAgregator(selectedNews)
         .then((response) => {
-          this.loadingPublishAll = false
+          this.loadingPublishAll = false;
           return this.handleNewsAgregator();
         })
         .catch((err) => {
-          this.loadingPublishAll = false
+          this.loadingPublishAll = false;
           const message = err.response.data.message;
           if (message) {
             this.alertError = true;
@@ -257,20 +256,23 @@ export default {
     },
     handlePublishAll() {
       const selectedNews = this.selected;
-      this.loadingPublishAll = true
+      this.loadingPublishAll = true;
       setTimeout(() => {
-        this.postPublishAll(selectedNews)
-      },2000)
-      
+        this.postPublishAll(selectedNews);
+      }, 2000);
     },
     getSearchNews() {
-      const payload = {
-        data: {
-          search: this.searchNewsAg,
-        },
-        params: this.site,
-      };
-      return this.searchNewsAgregrator(payload);
+      if (this.searchNewsAg) {
+        const payload = {
+          data: {
+            search: this.searchNewsAg,
+          },
+          params: this.site,
+        };
+        return this.searchNewsAgregrator(payload);
+      } else {
+        return this.handleNewsAgregator();
+      }
     },
 
     filterBySite() {

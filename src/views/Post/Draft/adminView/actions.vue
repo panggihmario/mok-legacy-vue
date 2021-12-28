@@ -23,7 +23,7 @@
 <script>
 import { mapActions } from "vuex"
 export default {
-  props : ['item'],
+  props : ['item', 'epochDate'],
   data() {
     return {
       loadingPublish : false,
@@ -34,8 +34,8 @@ export default {
     ...mapActions({
       updatePostFeed : 'post/updatePostFeed'
     }),
-    checkIsSchedule(item) {
-      if(item.scheduledTime){
+    checkIsSchedule() {
+      if(this.epochDate){
         return true
       }else{
         return false
@@ -63,7 +63,7 @@ export default {
     publishFeed (){
       this.loadingPublish = true
       const item = this.item
-      const isScheduled = this.checkIsSchedule(item)
+      const isScheduled = this.checkIsSchedule()
       let payload
       if(isScheduled) {
         payload = {
@@ -71,7 +71,8 @@ export default {
           type : 'schedule',
           params : {
             ...item,
-            isScheduled : true
+            isScheduled : true,
+            scheduledTime: this.epochDate
           }
         }
       }else{
@@ -84,12 +85,13 @@ export default {
         }
       }
       return this.updatePostFeed(payload)
-        .then(response => {
-          this.$emit('refreshDataFeed')
-          this.loadingPublish = false
+        .then(() => {
+          setTimeout(() => {
+            this.$emit('refreshDataFeed')
+            this.loadingPublish = false
+          }, 1000)
         })
         .catch((err) => {
-          console.log(err.response)
           this.loadingPublish = false
         })
     }
