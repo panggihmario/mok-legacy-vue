@@ -172,15 +172,15 @@ export default [
      
     ],
   },
-  {
-    title: "Order",
-    action: "post_add",
-    items: [
-      {
-        title: "Order",
-        path: "/order/cancel",
-        role: ["ROLE_ADMIN"],
-      },
-    ],
-  },
+  // {
+  //   title: "Order",
+  //   action: "post_add",
+  //   items: [
+  //     {
+  //       title: "Order",
+  //       path: "/order/cancel",
+  //       role: ["ROLE_ADMIN"],
+  //     },
+  //   ],
+  // },
 ];
