@@ -169,7 +169,6 @@ export default {
     },
     slideLeft() {
       const slide = this.slidePosition
-      console.log(slide)
       const idVideo = document.getElementById(`videodialog-${slide}`)
       if (idVideo) {
         console.log(idVideo)
@@ -301,6 +300,7 @@ export default {
 .desc {
   font-size: 12px;
   color: #000000;
+  padding-right: 46px;
 }
 .schedule {
   background: #ffffff;

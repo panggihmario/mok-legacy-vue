@@ -5,7 +5,11 @@
       @refreshDataFeed="refreshDataFeed"
       @onPagination="onPagination"
     />
-    <SelebView  v-if="isSeleb" />
+    <SelebView 
+      
+      v-if="isSeleb"
+      @onPagination="onPagination"
+      />
   </div>
 </template>
 
@@ -43,7 +47,7 @@ export default {
     getPayload (page, code) {
       const payload = {
         tab : 'draft',
-        size : 15,
+        size : 10,
         page : page - 1,
         sort : 'createAt,DESC',
       }

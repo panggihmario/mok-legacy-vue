@@ -32,15 +32,12 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
+import { mapState } from "vuex"
 import moment from 'moment'
 import LinkDialog from "../../containers/dialog/index.vue"
 export default {
   components : {
     LinkDialog
-  },
-  created() {
-    this.handleFetchingData()
   },
   mounted () {
     const page = this.$route.params.page
@@ -54,39 +51,21 @@ export default {
     })
   },
   methods : {
-    ...mapActions({
-      fetchFeeds : 'post/fetchFeeds'
-    }),
     formatingDate(rawDate) {
       const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
       return cek;
     },
-    handleFetchingData () {
-      const page = this.$route.params.page
-      const payload = {
-        tab : 'list',
-        size : 15,
-        page : page - 1
-      }
-      return this.fetchFeeds(payload)
-    },
     onPagination(page) {
       const code = this.channelCode
-      const payload = {
-          tab : 'list',
-          size : 15,
-          page : page - 1,
-          channelCode : code
-        }
-      let tempPayload = {}
+      let payload
       if(code) {
-        tempPayload = {
-          ...payload,
-          channelCode : code
+        payload = {
+          page,
+          code
         }
-      }else{
-        tempPayload = {
-          ...payload
+      }else {
+        payload = {
+          page
         }
       }
       this.$router.push({
@@ -95,7 +74,7 @@ export default {
           page : page
         }
       })
-      return this.fetchFeeds(tempPayload)
+      this.$emit('onPagination', payload)
     }
   },
   data () {
