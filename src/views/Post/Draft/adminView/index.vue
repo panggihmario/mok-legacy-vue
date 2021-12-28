@@ -7,7 +7,11 @@
       :items="feeds"
     >
       <template v-slot:[`item.media`]="{item}" >
-        <LinkDialog :item="item" @refreshDataFeed="refreshDataFeed" />
+        <LinkDialog 
+          :item="item" 
+          @refreshDataFeed="refreshDataFeed" 
+          :isAdmin="true"
+        />
       </template>
       <template v-slot:[`item.description`]="{ item }" >
         <div :class="feed['tb__caption']"  > {{item.description}}  </div>
@@ -23,30 +27,11 @@
       </template>
      
       <template v-slot:[`item.schedule`]="{item}" >
-        <!-- <div class="d-flex">
-        <Picker 
-          :item="item"
-          class="mr-4"
-        ></Picker>
-        <Actions 
-          :item="item"  
-          @refreshDataFeed="refreshDataFeed"
-        />
-        </div> -->
         <ActionsPicker 
           :item="item" 
           @refreshDataFeed="refreshDataFeed"
         />
       </template>
-      <!-- <ActionsPicker/> -->
-
-      <!-- <template v-slot:[`item.action`]="{item}">
-        <Actions 
-          :item="item"  
-          @refreshDataFeed="refreshDataFeed"
-        />
-      </template> -->
-      
     </v-data-table>
     <div  class="d-flex justify-end mt-4">
       <v-pagination

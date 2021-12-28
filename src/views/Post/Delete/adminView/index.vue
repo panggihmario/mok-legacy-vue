@@ -40,7 +40,7 @@
 <script>
 import { mapActions, mapState } from "vuex"
 import moment from 'moment'
-import LinkDialog from "../../containers/linkDialog.vue"
+import LinkDialog from "../../containers/dialog/index.vue"
 export default {
   components : {
     LinkDialog

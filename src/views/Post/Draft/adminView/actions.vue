@@ -84,15 +84,14 @@ export default {
           }
         }
       }
-      console.log(payload)
-      // this.$emit('refreshDataFeed', payload)
       return this.updatePostFeed(payload)
         .then(() => {
-          this.$emit('refreshDataFeed')
-          this.loadingPublish = false
+          setTimeout(() => {
+            this.$emit('refreshDataFeed')
+            this.loadingPublish = false
+          }, 1000)
         })
         .catch((err) => {
-          console.log(err.response)
           this.loadingPublish = false
         })
     }

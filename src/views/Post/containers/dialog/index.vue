@@ -1,38 +1,61 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog" >
+    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog">
       <v-card>
         <v-row no-gutters>
           <v-col cols="6">
             <div :class="d.left">
-              <div :class="d['container-image']">
-                <video
-                  v-if="isVideo"
-                  :src="srcVideo"
-                  autoplay
-                  controls
-                  :id="`videodialog${item.id}`"
-                  :class="d.vid"
-                />
-                <!-- <iframe
-                   v-if="isVideo"
-                  :src="srcVideo"
-                  autoplay
-                  controls
-                  :id="`videodialog${item.id}`"
-                /> -->
-                <v-img
-                  v-else
-                  :src="srcImage"
-                  contain
-                  aspect-ratio="1"
-                  max-height="456"
-                />
-                <!-- <Carousel/> -->
-              </div>
+                <v-carousel
+                  height="456"
+                  v-model="slidePosition"
+                  hide-delimiters
+                  :show-arrows="false"
+                  class="mb-4"
+                >
+                  <v-carousel-item
+                    v-for="(item, i) in item.medias"
+                    hide-delimiters
+                    :key="i"
+                    reverse-transition="fade-transition"
+                    transition="fade-transition"
+                    @click="onSlide"
+                  >
+                  
+                    <video
+                      v-if="item.type === 'video'"
+                      controls
+                      :src="item.url"
+                      :id="`videodialog-${i}`"
+                      autoplay
+                      :class="d.vid"
+                    />
+                    <div :class="d['container-image']" v-else >
+                      <img 
+                        :class="d.img"
+                        :src="item.url" 
+                      />
+                    </div>
+                  </v-carousel-item> 
+                </v-carousel>
               <div class="d-flex">
+                <div class="d-flex" v-if="item.medias.length > 1">
+                  <v-btn 
+                    icon 
+                    @click="slideLeft"
+                  >
+                    <v-icon small>fas fa-chevron-left</v-icon>
+                  </v-btn>
+                  <v-btn
+                    class="mr-4"
+                    @click="slideRight"
+                    icon
+                  >
+                  <v-icon small>fas fa-chevron-right</v-icon>
+                  </v-btn>
+                </div>
                 <v-menu
+                  v-if="isAdmin"
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
@@ -64,6 +87,7 @@
                   </v-card>
                 </v-menu>
                 <custom-button
+                  v-if="isAdmin"
                   :loading="loading"
                   @click="publishFeed"
                   class="ml-4"
@@ -80,7 +104,8 @@
                 <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
               </div>
               <div :class="d.desc">
-                <span :class="d.user">{{item.createBy}}</span> {{ item.description }}
+                <span :class="d.user">{{ item.createBy }}</span>
+                {{ item.description }}
               </div>
             </div>
           </v-col>
@@ -93,12 +118,14 @@
 <script>
 import moment from "moment";
 import { mapActions } from "vuex";
-import Carousel from "./carousel.vue"
 export default {
-  components : {
-    Carousel
+  props: {
+    item : Object,
+    isAdmin : {
+      type : Boolean,
+      default : false
+    }
   },
-  props: ["item"],
   data() {
     return {
       dialog: false,
@@ -108,6 +135,7 @@ export default {
       humanDate: "",
       tempItem: null,
       loading: false,
+      slidePosition : 0
     };
   },
   computed: {
@@ -121,33 +149,58 @@ export default {
         return this.item.medias[0].url;
       }
     },
-    isVideo () {
-      if(this.item.medias) {
-        const type = this.item.medias[0].type
-        if(type === 'video'  ){
-          return true
-        }else {
-          return false
+    isVideo() {
+      if (this.item.medias) {
+        const type = this.item.medias[0].type;
+        if (type === "video") {
+          return true;
+        } else {
+          return false;
         }
       }
-    }
+    },
   },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
     }),
-    closeDialog(){
-      const idVideo = document.getElementById(`videodialog${this.item.id}`)
-      if(idVideo){
-        idVideo.pause()
-        idVideo.currentTime = 0
+    onSlide() {
+      console.log('onslide')
+    },
+    slideLeft() {
+      const slide = this.slidePosition
+      console.log(slide)
+      const idVideo = document.getElementById(`videodialog-${slide}`)
+      if (idVideo) {
+        console.log(idVideo)
+        idVideo.pause();
+        idVideo.currentTime = 0;
       }
-      this.dialog = false
+      this.slidePosition--
+    },
+    slideRight () {
+      const slide = this.slidePosition
+      const c = document.querySelectorAll('video')
+      const idVideo = document.getElementById(`videodialog-${slide}`)
+      if (idVideo) {
+        idVideo.pause();
+        idVideo.currentTime = 0;
+      }
+      this.slidePosition++
+    },
+    closeDialog() {
+      const slide = this.slidePosition
+      const idVideo = document.getElementById(`videodialog-${slide}`);
+      if (idVideo) {
+        idVideo.pause();
+        idVideo.currentTime = 0;
+      }
+      this.dialog = false;
     },
     openMedia() {
-      const idVideo = document.getElementById(`videodialog${this.item.id}`)
-      if(idVideo){
-        idVideo.play()
+      const idVideo = document.getElementById(`videodialog${this.item.id}`);
+      if (idVideo) {
+        idVideo.play();
       }
       this.dialog = true;
     },
@@ -209,7 +262,7 @@ export default {
 <style lang="scss" module="d">
 .user {
   font-size: 12px;
-  color:  $black;
+  color: $black;
   font-weight: bold;
 }
 .link {
@@ -223,15 +276,19 @@ export default {
   padding: 28px 24px 24px 28px;
 }
 .container-image {
-  height: 446px;
   display: flex;
   align-items: center;
   background-color: #000000;
-  margin-bottom: 10px;
+  height: 100%;
+  justify-content: center;
+}
+.img {
+  max-width: 100%;
+  max-height: 100%;
 }
 .vid {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   object-fit: cover;
 }
 .right {
