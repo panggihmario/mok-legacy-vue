@@ -22,6 +22,17 @@ export default {
     }
   },
   actions: {
+    fetchFeedById ({state, dispatch}, payload) {
+      const data = {
+        url : `${state.pathFeed}/${payload}`
+      }
+      return dispatch('getWithToken', data,  {root : true} )
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(err =>  { throw err })
+    },
     fetchFeeds ({state, dispatch, commit}, payload) {
       const data = {
         url : `${state.pathFeed}`,
