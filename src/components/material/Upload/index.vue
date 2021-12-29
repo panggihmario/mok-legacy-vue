@@ -23,16 +23,30 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
       loadingUpload: false,
+      media: {
+        size: "",
+        width: "",
+        height: "",
+      },
+      height : '',
+      result: {
+        status: "before upload",
+        response: null,
+        message: "ready to upload",
+      },
     };
   },
   props: {
     id: {
       type: [String, Number],
+    },
+    minVideoHeight: {
+      type: Number,
+      default: 200,
     },
     label: {
       type: String,
@@ -51,34 +65,93 @@ export default {
     },
   },
   methods: {
-    onLoad(e) {
+    dimensionVideo(file) {
+      return new Promise((resolve , reject) => {
+         const url = URL.createObjectURL(file);
+         const $video = document.createElement("video");
+          $video.src = url;
+          $video.addEventListener("loadedmetadata", function () {
+            const params = {
+              height : this.videoHeight,
+              width : this.videoWidth
+            }
+            resolve(params)
+          })
+      }
+      
+      
+      )},
+    dimensionImage(file) {
+      return new Promise((resolve , reject) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (evt) => {
+          let img = new Image();
+          img.onload = () => {
+            const params = {
+              height : img.height,
+              width : img.width,
+              // size : file.size
+            }
+            resolve(params)
+            this.media.width = img.width;
+            this.media.height = img.height;
+          };
+          img.src = evt.target.result;
+      }
+      })
+      
+    },
+    getDimension(typeMedia, file) {
+      if (typeMedia === "video") {
+        return this.dimensionVideo(file);
+      } else {
+        return this.dimensionImage(file)
+      }
+    },
+    async onLoad(e) {
       const file = e.target.files[0];
-      console.log(file)
       let form = new FormData();
       form.append("file", file);
       let result = {
         status: "loading",
         response: {},
       };
-      const payload = {
-        url: "upload?type=media",
-        method: "post",
-        data: form,
-      };
-      // let widthMedia
-      // let reader = new FileReader();
-      // reader.readAsDataURL(file);
-      // reader.onload = evt => {
-      //   let img = new Image();
-      //   img.onload = () => {
-      //     widthMedia = img.width
-      //     console.log("woiii")
-      //   }
-      //   console.log("===>",widthMedia)
-      // }
+      const type = file.type.split("/");
+      const typeMedia = type[0];
+      const dimensions = await this.getDimension(typeMedia, file);
       this.loadingUpload = true;
       this.$emit("response", result);
-      this.$httpUpload()
+      const isValid = this.validationMedia(typeMedia, dimensions);
+      if(isValid) {
+        return this.postApi(form, result)
+      }else{
+        const tempResult = this.printError(file)
+        this.$emit('response', tempResult)
+      }
+    },
+    printError (file) {
+      const result = {
+        status : 'failed',
+        message : `Minimum height ${file.type} is ${this.minVideoHeight}`
+      }
+      return result
+    },
+    validationMedia(typeMedia, dimensions) {
+        const minVideoHeight = this.minVideoHeight;
+        if (typeMedia === "video") {
+          const heightVideo = dimensions.height;
+          if (heightVideo < minVideoHeight) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return true;
+        }
+    },
+    postApi(form, result) {
+      return this.$httpUpload()
         .post(`${this.typeUpload}`, form)
         .then((response) => {
           result = {
@@ -105,11 +178,11 @@ export default {
 
 <style lang="sass" scoped>
 .upload
-	&__label
-		letter-spacing: 0 !important
-		font-size: 10px
-	&__button
-		border-radius: $border-radius-root
-	&__core
-		display: none
+  &__label
+    letter-spacing: 0 !important
+    font-size: 10px
+  &__button
+    border-radius: $border-radius-root
+  &__core
+    display: none
 </style>
