@@ -76,6 +76,7 @@ export default {
       searchFeed: "post/searchFeed",
     }),
     resetFeeds() {
+      this.channel = null
       this.setFeeds([]);
     },
     handleSearch() {
