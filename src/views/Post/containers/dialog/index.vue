@@ -14,12 +14,11 @@
                   class="mb-4"
                 >
                   <v-carousel-item
-                    v-for="(item, i) in item.medias"
+                    v-for="(item, i) in detailFeed.medias"
                     hide-delimiters
                     :key="i"
                     reverse-transition="fade-transition"
                     transition="fade-transition"
-                    @click="onSlide"
                   >
                   
                     <video
@@ -39,7 +38,7 @@
                   </v-carousel-item> 
                 </v-carousel>
               <div class="d-flex">
-                <div class="d-flex" v-if="item.medias.length > 1">
+                <div class="d-flex" v-if="detailFeed.medias.length > 1">
                   <v-btn 
                     icon 
                     @click="slideLeft"
@@ -129,6 +128,9 @@ export default {
   data() {
     return {
       dialog: false,
+      detailFeed : {
+        medias : [],
+      },
       date: "",
       menu: false,
       timeSchedule: "",
@@ -163,9 +165,16 @@ export default {
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
+      fetchFeedById : "post/fetchFeedById"
     }),
-    onSlide() {
-      console.log('onslide')
+    getFeedById(id) {
+      return this.fetchFeedById(id)
+        .then(response => {
+          this.detailFeed.medias = response.medias
+          this.$nextTick(() => {
+            this.dialog = true;
+          })
+        })
     },
     slideLeft() {
       const slide = this.slidePosition
@@ -201,7 +210,8 @@ export default {
       if (idVideo) {
         idVideo.play();
       }
-      this.dialog = true;
+      const id = this.item.id
+      return this.getFeedById(id)
     },
     setDate() {
       const d = this.date;
@@ -227,31 +237,45 @@ export default {
       };
       this.tempItem = temp;
     },
+    getPayload (humanDate) {
+      const item = this.item
+      const medias = this.detailFeed.medias
+      const itemWithSchedule = this.tempItem
+      let payload
+      if(humanDate) {
+        payload = {
+          id : item.id,
+          type : 'schedule',
+          params : {
+            ...itemWithSchedule,
+            medias : [...medias]
+          }
+        }
+      }else{
+        payload = {
+          id : item.id,
+          type : 'publish',
+          params : {
+            ...item,
+            medias : [...medias]
+          }
+        }
+      }
+      return payload
+    },
     publishFeed() {
       this.loading = true;
-      let data;
-      if (this.humanDate) {
-        data = this.tempItem;
-      } else {
-        const item = this.item;
-        data = item;
-      }
-      const payload = {
-        id: data.id,
-        type: "schedule",
-        params: {
-          ...data,
-        },
-      };
+      const payload = this.getPayload(this.humanDate)
       return this.updatePostFeed(payload)
         .then((response) => {
-          this.loading = false;
-          this.dialog = false;
-          this.$emit("refreshDataFeed");
+          setTimeout(() => {
+            this.loading = false;
+            this.dialog = false;
+            this.$emit("refreshDataFeed");
+          }, 1500)
         })
         .catch((err) => {
           this.loading = false;
-          console.log(err.response);
         });
     },
   },
