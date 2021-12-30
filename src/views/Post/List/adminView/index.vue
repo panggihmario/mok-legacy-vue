@@ -35,6 +35,7 @@
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
         @input="onPagination"
+        total-visible="10"
       />
     </div>
   </div>
