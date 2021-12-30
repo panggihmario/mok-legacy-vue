@@ -1,58 +1,52 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog  v-model="dialog" width="850" @click:outside="closeDialog">
+    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog">
       <!-- <v-dialog  v-model="dialog" fullscreen @click:outside="closeDialog"> -->
-      <v-card >
+      <v-card>
         <v-row no-gutters>
           <v-col cols="6">
             <div :class="d.left">
-                <v-carousel
-                  height="456"
-                  v-model="slidePosition"
+              <v-carousel
+                height="456"
+                v-model="slidePosition"
+                hide-delimiters
+                :show-arrows="false"
+                class="mb-4"
+              >
+                <v-carousel-item
+                  v-for="(item, i) in detailFeed.medias"
                   hide-delimiters
-                  :show-arrows="false"
-                  class="mb-4"
+                  :key="i"
+                  reverse-transition="fade-transition"
+                  transition="fade-transition"
                 >
-                  <v-carousel-item
-                    v-for="(item, i) in detailFeed.medias"
-                    hide-delimiters
-                    :key="i"
-                    reverse-transition="fade-transition"
-                    transition="fade-transition"
-                  >
-                  
-                    <video
-                      v-if="item.type === 'video'"
-                      controls
-                      :src="item.url"
-                      :id="`videodialog-${i}`"
-                      autoplay
-                      :class="d.vid"
-                    />
-                    <div :class="d['container-image']" v-else >
-                      <img 
-                        :class="d.img"
-                        :src="item.url" 
-                        :srcset="item.url"
-                      />
-                    </div>
-                  </v-carousel-item> 
-                </v-carousel>
+                  <video
+                    v-if="item.type === 'video'"
+                    controls
+                    :src="item.url"
+                    :id="`videodialog-${i}-${item.id}`"
+                    autoplay
+                    :class="d.vid"
+                  />
+                  <div :class="d['container-image']" v-else>
+                    <img :class="d.img" :src="item.url" :srcset="item.url" />
+                  </div>
+                </v-carousel-item>
+              </v-carousel>
               <div class="d-flex">
                 <div class="d-flex" v-if="detailFeed.medias.length > 1">
                   <v-btn 
                     icon 
                     @click="slideLeft"
+                    :disabled="slidePosition ===  0"
                   >
                     <v-icon small>fas fa-chevron-left</v-icon>
                   </v-btn>
-                  <v-btn
-                    class="mr-4"
-                    @click="slideRight"
-                    icon
-                  >
-                  <v-icon small>fas fa-chevron-right</v-icon>
+                  <v-btn 
+                    :disabled="slidePosition ===  detailFeed.medias.length - 1 "
+                    class="mr-4" @click="slideRight" icon>
+                    <v-icon small>fas fa-chevron-right</v-icon>
                   </v-btn>
                 </div>
                 <v-menu
@@ -121,17 +115,17 @@ import moment from "moment";
 import { mapActions } from "vuex";
 export default {
   props: {
-    item : Object,
-    isAdmin : {
-      type : Boolean,
-      default : false
-    }
+    item: Object,
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       dialog: false,
-      detailFeed : {
-        medias : [],
+      detailFeed: {
+        medias: [],
       },
       date: "",
       menu: false,
@@ -139,23 +133,23 @@ export default {
       humanDate: "",
       tempItem: null,
       loading: false,
-      slidePosition : 0
+      slidePosition: 0,
     };
   },
   computed: {
     srcImage() {
-      if (this.item.medias) {
-        return this.item.medias[0].thumbnail.medium;
+      if (this.detailFeed.medias) {
+        return this.detailFeed.medias[0].thumbnail.medium;
       }
     },
     srcVideo() {
-      if (this.item.medias) {
-        return this.item.medias[0].url;
+      if (this.detailFeed.medias) {
+        return this.detailFeed.medias[0].url;
       }
     },
     isVideo() {
-      if (this.item.medias) {
-        const type = this.item.medias[0].type;
+      if (this.detailFeed.medias) {
+        const type = this.detailFeed.medias[0].type;
         if (type === "video") {
           return true;
         } else {
@@ -167,54 +161,76 @@ export default {
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
-      fetchFeedById : "post/fetchFeedById"
+      fetchFeedById: "post/fetchFeedById",
     }),
     getFeedById(id) {
-      return this.fetchFeedById(id)
-        .then(response => {
-          this.detailFeed.medias = response.medias
-          this.$nextTick(() => {
-            // this.dialog = true;
-          })
-        })
+      return this.fetchFeedById(id).then((response) => {
+        const slide = this.slidePosition;
+        const medias = response.medias;
+        this.detailFeed.medias = medias;
+        let idVideo;
+        medias.forEach((m, idx) => {
+          if (m.type === "video") {
+            if (idx === slide) {
+              idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+            }
+          }
+        });
+        if (idVideo) {
+          idVideo.play();
+        }
+      });
     },
-    slideLeft() {
-      const slide = this.slidePosition
-      const idVideo = document.getElementById(`videodialog-${slide}`)
-      if (idVideo) {
-        console.log(idVideo)
-        idVideo.pause();
-        idVideo.currentTime = 0;
-      }
-      this.slidePosition--
-    },
-    slideRight () {
-      const slide = this.slidePosition
-      const c = document.querySelectorAll('video')
-      const idVideo = document.getElementById(`videodialog-${slide}`)
-      if (idVideo) {
-        idVideo.pause();
-        idVideo.currentTime = 0;
-      }
-      this.slidePosition++
-    },
-    closeDialog() {
-      const slide = this.slidePosition
-      const idVideo = document.getElementById(`videodialog-${slide}`);
+    stopVideo() {
+      const slide = this.slidePosition;
+      const medias = this.detailFeed.medias;
+      let idVideo;
+      medias.forEach((m, idx) => {
+        if (m.type === "video") {
+          if (idx === slide) {
+            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+          }
+        }
+      });
       if (idVideo) {
         idVideo.pause();
         idVideo.currentTime = 0;
       }
-      this.dialog = false;
     },
-    openMedia() {
-      this.dialog = true;
-      const idVideo = document.getElementById(`videodialog${this.item.id}`);
+    playVideo() {
+      const slide = this.slidePosition;
+      const medias = this.detailFeed.medias;
+      let idVideo;
+      medias.forEach((m, idx) => {
+        if (m.type === "video") {
+          if (idx === slide) {
+            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+          }
+        }
+      });
       if (idVideo) {
         idVideo.play();
       }
-      const id = this.item.id
-      return this.getFeedById(id)
+    },
+    slideLeft() {
+      this.stopVideo();
+      this.slidePosition--;
+      this.playVideo()
+    },
+    slideRight() {
+      this.stopVideo();
+      this.slidePosition++;
+      this.playVideo()
+    },
+    closeDialog() {
+      this.stopVideo();
+      this.dialog = false;
+      this.slidePosition = 0;
+    },
+    openMedia() {
+      this.dialog = true;
+      const id = this.item.id;
+      return this.getFeedById(id);
     },
     setDate() {
       const d = this.date;
@@ -240,42 +256,42 @@ export default {
       };
       this.tempItem = temp;
     },
-    getPayload (humanDate) {
-      const item = this.item
-      const medias = this.detailFeed.medias
-      const itemWithSchedule = this.tempItem
-      let payload
-      if(humanDate) {
+    getPayload(humanDate) {
+      const item = this.item;
+      const medias = this.detailFeed.medias;
+      const itemWithSchedule = this.tempItem;
+      let payload;
+      if (humanDate) {
         payload = {
-          id : item.id,
-          type : 'schedule',
-          params : {
+          id: item.id,
+          type: "schedule",
+          params: {
             ...itemWithSchedule,
-            medias : [...medias]
-          }
-        }
-      }else{
+            medias: [...medias],
+          },
+        };
+      } else {
         payload = {
-          id : item.id,
-          type : 'publish',
-          params : {
+          id: item.id,
+          type: "publish",
+          params: {
             ...item,
-            medias : [...medias]
-          }
-        }
+            medias: [...medias],
+          },
+        };
       }
-      return payload
+      return payload;
     },
     publishFeed() {
       this.loading = true;
-      const payload = this.getPayload(this.humanDate)
+      const payload = this.getPayload(this.humanDate);
       return this.updatePostFeed(payload)
         .then((response) => {
           setTimeout(() => {
             this.loading = false;
             this.dialog = false;
             this.$emit("refreshDataFeed");
-          }, 1500)
+          }, 1500);
         })
         .catch((err) => {
           this.loading = false;
