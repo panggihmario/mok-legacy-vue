@@ -53,6 +53,17 @@
     </div>
 
     <router-view />
+    <div  class="d-flex justify-end mt-4">
+      {{currentPage}}
+      <v-pagination
+        :length="totalPages"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        total-visible="10"
+        color="secondary"
+        v-model="currentPage"
+      />
+    </div>
     <v-alert :class="p.alert" :value="alertError" type="error">
       {{ errorMessage }}
     </v-alert>
@@ -61,13 +72,27 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   components: {
     HeaderContent,
   },
   mounted() {
     this.fetchDataChannel();
+  },
+  computed : {
+    ...mapState({
+      page : (state) => state.post.page,
+      totalPages : (state) => state.post.totalPages
+    }),
+    currentPage : {
+      get() {
+        return this.page
+      },
+      set(value) {
+        this.setPage = value
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -86,14 +111,24 @@ export default {
           keyword: this.keyword,
           tab: routerName,
         };
+        this.setKeyWord(this.keyword)
         return this.searchFeed(payload);
       } else {
+        this.setKeyWord('')
+        this.$router.push({
+          name : routerName,
+          params : {
+            page : 1
+          }
+        })
         return this.handleFetchApiFeeds();
       }
     },
     ...mapMutations({
       setChannelCode: "post/setChannelCode",
       setFeeds: "post/setFeeds",
+      setKeyWord : 'post/setKeyWord',
+      setPage : 'post/setPage'
     }),
     moveToCreatePost() {
       this.$router.push({

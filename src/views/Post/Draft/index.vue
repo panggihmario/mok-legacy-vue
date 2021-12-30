@@ -27,7 +27,8 @@ export default {
   },
   methods : {
     ...mapActions ({
-      fetchFeeds : 'post/fetchFeeds'
+      fetchFeeds : 'post/fetchFeeds',
+      searchFeed : 'post/searchFeed'
     }),
     ...mapMutations({
       setFeeds : 'post/setFeeds'
@@ -41,8 +42,20 @@ export default {
       this.fetchApi(page)
     },
     onPagination(payload) {
-      const params = this.getPayload(payload.page, payload.code)
-      return this.fetchFeeds(params)
+      const keyword = this.keywordSearch
+      const routerName = this.$route.name;
+      if(keyword) {
+        const params = {
+          keyword,
+          tab : routerName,
+          page : payload.page - 1,
+        }
+        return this.searchFeed(params)
+      }else {
+        const params = this.getPayload(payload.page, payload.code)
+        return this.fetchFeeds(params)
+      }
+      
     },
     getPayload (page, code) {
       const payload = {
@@ -73,6 +86,7 @@ export default {
     ...mapState({
       role : (state) => state.authentication.role,
       feeds : (state) => state.post.feeds,
+      keywordSearch : (state) => state.post.keywordSearch
     }),
     isAdmin () {
       if(this.role === 'ROLE_ADMIN' || this.role === 'ROLE_ADMIN_SOCIAL') {

@@ -5,9 +5,17 @@ export default {
     pathFeed : 'admin/social',
     feeds : [],
     channelCode : null,
-    totalPages : 0
+    totalPages : 0,
+    keywordSearch : '',
+    page : 1
   },
   mutations : {
+    setPage (state, payload) {
+      state.page = payload
+    },
+    setKeyWord (state, payload) {
+      state.keywordSearch = payload
+    },
     setFeeds(state, payload) {
       state.feeds = payload
     },
