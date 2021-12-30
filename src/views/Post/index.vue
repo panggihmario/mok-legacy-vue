@@ -33,11 +33,16 @@
             @change="changeChannel"
             v-model="channel"
             style="width: 190px"
-            :class="!channel && 'mr-6' "
+            :class="!channel && 'mr-6'"
           />
-          <v-btn 
+          <v-btn
             v-if="channel"
-            small icon class="mr-6 mb-6 ml-2" size="20px" @click="removeChannel">
+            small
+            icon
+            class="mr-6 mb-6 ml-2"
+            size="20px"
+            @click="removeChannel"
+          >
             <v-icon small> fas fa-times </v-icon>
           </v-btn>
 
@@ -76,7 +81,7 @@ export default {
       searchFeed: "post/searchFeed",
     }),
     resetFeeds() {
-      this.channel = null
+      this.channel = null;
       this.setFeeds([]);
     },
     handleSearch() {
@@ -108,6 +113,12 @@ export default {
         channelCode: code,
         size: 10,
       };
+      this.$router.push({
+        name: routerName,
+        params: {
+          page: 1,
+        },
+      });
       this.setChannelCode(code);
       return this.fetchFeeds(payload).catch((err) => {
         if (err.response) {
@@ -123,7 +134,14 @@ export default {
       });
     },
     removeChannel() {
-      this.setChannelCode(null)
+      const routerName = this.$route.name;
+      this.$router.push({
+        name: routerName,
+        params: {
+          page: 1,
+        },
+      });
+      this.setChannelCode(null);
       this.channel = null;
       this.handleFetchApiFeeds();
     },
@@ -133,7 +151,7 @@ export default {
       const sort = this.typeOfSort(routerName);
       let payload = {
         tab: routerName,
-        size: 15,
+        size: 10,
         page: page - 1,
       };
       let tempPayload;
