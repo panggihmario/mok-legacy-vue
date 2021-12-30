@@ -133,7 +133,7 @@ export default {
       const sort = this.typeOfSort(routerName);
       let payload = {
         tab: routerName,
-        size: 15,
+        size: 10,
         page: page - 1,
       };
       let tempPayload;
