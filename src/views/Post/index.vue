@@ -123,6 +123,7 @@ export default {
       });
     },
     removeChannel() {
+      this.setChannelCode(null)
       this.channel = null;
       this.handleFetchApiFeeds();
     },
