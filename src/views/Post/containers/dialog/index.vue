@@ -1,8 +1,9 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog">
-      <v-card>
+    <v-dialog  v-model="dialog" width="850" @click:outside="closeDialog">
+      <!-- <v-dialog  v-model="dialog" fullscreen @click:outside="closeDialog"> -->
+      <v-card >
         <v-row no-gutters>
           <v-col cols="6">
             <div :class="d.left">
@@ -33,6 +34,7 @@
                       <img 
                         :class="d.img"
                         :src="item.url" 
+                        :srcset="item.url"
                       />
                     </div>
                   </v-carousel-item> 
@@ -172,7 +174,7 @@ export default {
         .then(response => {
           this.detailFeed.medias = response.medias
           this.$nextTick(() => {
-            this.dialog = true;
+            // this.dialog = true;
           })
         })
     },
@@ -206,6 +208,7 @@ export default {
       this.dialog = false;
     },
     openMedia() {
+      this.dialog = true;
       const idVideo = document.getElementById(`videodialog${this.item.id}`);
       if (idVideo) {
         idVideo.play();

@@ -38,7 +38,7 @@ export default [
       {
         title: "List Channel",
         path: "/",
-        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Reported",
