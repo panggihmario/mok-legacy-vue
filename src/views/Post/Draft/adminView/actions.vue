@@ -1,14 +1,26 @@
 <template>
   <div>
-    <custom-button
-      class="mr-2"
-      size="small"
-      color="secondary"
-      :loading="loadingPublish"
-      @click="publishFeed(item)"
-    >
-      Publish
-    </custom-button>
+    <transition name="fade" mode="out-in">
+      <custom-button
+        class="mr-2"
+        size="small"
+        color="secondary"
+        :loading="loadingPublish"
+        @click="publishFeed(item)"
+        v-if="!isAlert"
+      >
+        Publish
+      </custom-button>
+      <v-chip
+        class="mr-2"
+        v-if="isAlert"
+        x-small
+        :color="colorAlert"
+        text-color="white"
+      >
+        {{ textAlert }}
+      </v-chip>
+    </transition>
     <custom-button
       size="small"
       color="primary"
@@ -28,7 +40,26 @@ export default {
     return {
       loadingPublish: false,
       loadingReject: false,
+      alertFailed: false,
+      alertSuccess: false,
+      isAlert: false,
     };
+  },
+  computed: {
+    colorAlert() {
+      if (this.alertFailed) {
+        return "red";
+      } else {
+        return "success";
+      }
+    },
+    textAlert() {
+      if (this.alertFailed) {
+        return "Failed";
+      } else {
+        return "Success";
+      }
+    },
   },
   methods: {
     ...mapActions({
@@ -45,19 +76,25 @@ export default {
     rejectFeed() {
       const item = this.item;
       this.loadingReject = true;
-      const payload = {
-        id: item.id,
-        type: "reject",
-        params: {
-          ...item,
-        },
-      };
-      return this.updatePostFeed(payload)
+
+      return this.getFeedById(item.id)
+        .then((medias) => {
+          const payload = {
+            id: item.id,
+            type: "reject",
+            params: {
+              ...item,
+              medias: [...medias],
+            },
+            
+          };
+          return this.updatePostFeed(payload)
+        })
         .then(() => {
           this.$emit("refreshDataFeed");
           this.loadingReject = false;
         })
-        .catch((err) => {
+         .catch((err) => {
           this.loadingReject = false;
         });
     },
@@ -96,19 +133,27 @@ export default {
     updateApi(payload) {
       return this.updatePostFeed(payload)
         .then(() => {
+          this.alertSuccess = true;
+          this.isAlert = true;
           setTimeout(() => {
             this.$emit("refreshDataFeed");
+            this.alertSuccess = false;
+            this.isAlert = true;
             this.loadingPublish = false;
           }, 1000);
         })
         .catch((err) => {
+          this.alertFailed = true;
+          this.isAlert = true;
           setTimeout(() => {
             this.loadingPublish = false;
+            this.alertFailed = false;
+            this.isAlert = false;
           }, 1000);
         });
     },
     publishFeed() {
-      this.loadingPublish = true
+      this.loadingPublish = true;
       const item = this.item;
       const id = item.id;
       return this.getFeedById(id)
@@ -117,7 +162,7 @@ export default {
           return this.getPayload(isScheduled, medias);
         })
         .then((payload) => {
-          return this.updateApi(payload)
+          return this.updateApi(payload);
         })
         .catch((err) => {
           this.loadingPublish = false;
