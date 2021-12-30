@@ -4,6 +4,7 @@
     <Tabs
       :isList="true"
       position="list"
+      @handleSearch="handleSearch"
     />
      <v-data-table
       :headers="headers"
@@ -185,7 +186,25 @@ export default {
       getNews: "news/getListNews",
       deleteNews: "news/deleteDraft",
       pushNotificationById: "news/pushNotificationById",
+      searchNews: "news/searchNews",
     }),
+    handleSearch(keyword) {
+      if(keyword) {
+        const payload = {
+        title : keyword
+      }
+      return this.searchNews(payload)
+        .then((response => {
+          const responseData = response.data.data
+          this.totalPages = responseData.totalPages
+          const content = responseData.content
+          this.contents = content
+        }))
+      }else{
+        return this.fetchListNews()
+      }
+      
+    },
     getNewsBaseOnPage(p) {
       const nextPage = p
       this.$router.push({

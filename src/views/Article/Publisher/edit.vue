@@ -18,6 +18,8 @@
       :propsThumbnail="propsThumbnail"
       @getImageUpload="getImageUpload"
       @getThumbnail="getThumbnail"
+      @fillAuthor="fillAuthor"
+      @fillEditor="fillEditor"
     />
     <v-snackbar top v-model="alertSuccess" color="success">
       {{ successMessage }}
@@ -84,6 +86,12 @@ export default {
       rejectNews: "news/rejectNews",
       getCategoryNews: "news/getCategoryNews",
     }),
+    fillAuthor(payload) {
+      this.payloadNews.author = payload
+    },
+    fillEditor(payload) {
+      this.payloadNews.editor = payload
+    },
     getThumbnail(params) {
       this.payloadNews.thumbnailUrl = params.url;
     },

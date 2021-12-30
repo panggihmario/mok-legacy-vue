@@ -4,7 +4,7 @@ const pathPost = [
   {
     path : '/post/create',
     name : 'createFeed',
-    component : () => import('../../views/Post/Create/index.vue')
+    component : () => import('../../views/Post/Create/index.vue'),
   },
   {
     path : '/post',
