@@ -24,26 +24,24 @@
     </v-data-table>
      <div  class="d-flex justify-end mt-4">
       <v-pagination
-        v-model="page"
+        v-model="currentPage"
         :length="totalPages"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
         @input="onPagination"
+        total-visible="10"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
+import { mapState } from "vuex"
 import moment from 'moment'
-import LinkDialog from "../../containers/linkDialog.vue"
+import LinkDialog from "../../containers/dialog/index.vue"
 export default {
   components : {
     LinkDialog
-  },
-  created() {
-    this.handleFetchingData()
   },
   mounted () {
     const page = this.$route.params.page
@@ -54,43 +52,29 @@ export default {
       feeds : (state) => state.post.feeds,
       totalPages : (state) => state.post.totalPages,
       channelCode : (state) => state.post.channelCode
-    })
+    }),
+    currentPage() {
+      const page = this.$route.params.page
+      const current = Number(page)
+      return current
+    }
   },
   methods : {
-    ...mapActions({
-      fetchFeeds : 'post/fetchFeeds'
-    }),
     formatingDate(rawDate) {
       const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
       return cek;
     },
-    handleFetchingData () {
-      const page = this.$route.params.page
-      const payload = {
-        tab : 'schedule',
-        size : 15,
-        page : page - 1,
-        sort : 'scheduledTime,ASC',
-      }
-      return this.fetchFeeds(payload)
-    },
     onPagination(page) {
       const code = this.channelCode
-      const payload = {
-          tab : 'schedule',
-          size : 15,
-          page : page - 1,
-          sort : 'scheduledTime,ASC',
-        }
-      let tempPayload = {}
+      let payload
       if(code) {
-        tempPayload = {
-          ...payload,
-          channelCode : code
+        payload = {
+          page,
+          code
         }
-      }else{
-        tempPayload = {
-          ...payload
+      }else {
+        payload = {
+          page
         }
       }
       this.$router.push({
@@ -99,7 +83,7 @@ export default {
           page : page
         }
       })
-      return this.fetchFeeds(tempPayload)
+      this.$emit('onPagination', payload)
     }
   },
   data () {

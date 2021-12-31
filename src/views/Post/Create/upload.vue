@@ -3,6 +3,7 @@
     <custom-upload 
       :id="id" style="display: none" 
       @response="getImage"
+      :minVideoHeight="720"
     />
     <div @click="uploadImage(id)" class="image-box">
       <v-img
@@ -29,6 +30,7 @@
         />
       </div>
     </div>
+    <div class="err-msg">{{errorMessage}}</div>
   </div>
 </template>
 
@@ -41,7 +43,8 @@ export default {
     return {
       thumbnail : '',
       visible : false,
-      image : ''
+      image : '',
+      errorMessage : ''
     }
   },
   methods : {
@@ -49,6 +52,7 @@ export default {
       document.getElementById(id).click();
     },
     getImage(payload) {
+      this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
       if(payload.status === 'success' ){
@@ -62,6 +66,10 @@ export default {
       }
       else if(payload.status === 'failed') {
         this.visible = false
+        this.errorMessage = payload.message
+        setTimeout(() => {
+          this.errorMessage = ''
+        },2000)
       }
       else {
         this.visible = true;
@@ -86,5 +94,11 @@ export default {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+}
+.err-msg {
+  width: 100px;
+  font-size: 10px;
+  color: red;
+  margin-top: 5px;
 }
 </style>

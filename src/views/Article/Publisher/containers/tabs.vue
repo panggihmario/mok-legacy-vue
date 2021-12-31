@@ -35,9 +35,12 @@ export default {
     this.setTrueByPage()
   },
   methods : {
+    handleSearch() {
+      const keyword = this.keyword
+      this.$emit('handleSearch', keyword)
+    },
     changeActive(tab) {
       if(tab.payload === 'agregrator') {
-        console.log("masuk if")
         this.$router.push({
           name : tab.pathName,
           params : {

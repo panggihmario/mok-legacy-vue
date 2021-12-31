@@ -72,7 +72,7 @@ export default {
 			login : 'authentication/login'
 		}),
 		checkRole(role) {
-			if(role === 'ROLE_SELEB') {
+			if(role === 'ROLE_SELEB' || role === 'ROLE_ADMIN_SOCIAL'  ) {
 				this.$router.push({
 					name : 'draft',
 					params : {
