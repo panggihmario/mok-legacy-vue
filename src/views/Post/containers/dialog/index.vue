@@ -1,30 +1,56 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog" >
+    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog">
+      <!-- <v-dialog  v-model="dialog" fullscreen @click:outside="closeDialog"> -->
       <v-card>
         <v-row no-gutters>
           <v-col cols="6">
             <div :class="d.left">
-              <div :class="d['container-image']">
-                <video
-                  v-if="isVideo"
-                  :src="srcVideo"
-                  autoplay
-                  controls
-                  id="videodialog"
-                />
-                <v-img
-                  v-else
-                  :src="srcImage"
-                  contain
-                  aspect-ratio="1"
-                  max-height="456"
-                />
-                <!-- <Carousel/> -->
-              </div>
+              <v-carousel
+                height="456"
+                v-model="slidePosition"
+                hide-delimiters
+                :show-arrows="false"
+                class="mb-4"
+              >
+                <v-carousel-item
+                  v-for="(item, i) in detailFeed.medias"
+                  hide-delimiters
+                  :key="i"
+                  reverse-transition="fade-transition"
+                  transition="fade-transition"
+                >
+                  <video
+                    v-if="item.type === 'video'"
+                    controls
+                    :src="item.url"
+                    :id="`videodialog-${i}-${item.id}`"
+                    autoplay
+                    :class="d.vid"
+                  />
+                  <div :class="d['container-image']" v-else>
+                    <img :class="d.img" :src="item.url" :srcset="item.url" />
+                  </div>
+                </v-carousel-item>
+              </v-carousel>
               <div class="d-flex">
+                <div class="d-flex" v-if="detailFeed.medias.length > 1">
+                  <v-btn 
+                    icon 
+                    @click="slideLeft"
+                    :disabled="slidePosition ===  0"
+                  >
+                    <v-icon small>fas fa-chevron-left</v-icon>
+                  </v-btn>
+                  <v-btn 
+                    :disabled="slidePosition ===  detailFeed.medias.length - 1 "
+                    class="mr-4" @click="slideRight" icon>
+                    <v-icon small>fas fa-chevron-right</v-icon>
+                  </v-btn>
+                </div>
                 <v-menu
+                  v-if="isAdmin"
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
@@ -56,6 +82,7 @@
                   </v-card>
                 </v-menu>
                 <custom-button
+                  v-if="isAdmin"
                   :loading="loading"
                   @click="publishFeed"
                   class="ml-4"
@@ -72,7 +99,8 @@
                 <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
               </div>
               <div :class="d.desc">
-                <span :class="d.user">{{item.createBy}}</span> {{ item.description }}
+                <span :class="d.user">{{ item.createBy }}</span>
+                {{ item.description }}
               </div>
             </div>
           </v-col>
@@ -85,63 +113,124 @@
 <script>
 import moment from "moment";
 import { mapActions } from "vuex";
-import Carousel from "./carousel.vue"
 export default {
-  components : {
-    Carousel
+  props: {
+    item: Object,
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
-  props: ["item"],
   data() {
     return {
       dialog: false,
+      detailFeed: {
+        medias: [],
+      },
       date: "",
       menu: false,
       timeSchedule: "",
       humanDate: "",
       tempItem: null,
       loading: false,
+      slidePosition: 0,
     };
   },
   computed: {
     srcImage() {
-      if (this.item.medias) {
-        return this.item.medias[0].thumbnail.medium;
+      if (this.detailFeed.medias) {
+        return this.detailFeed.medias[0].thumbnail.medium;
       }
     },
     srcVideo() {
-      if (this.item.medias) {
-        return this.item.medias[0].url;
+      if (this.detailFeed.medias) {
+        return this.detailFeed.medias[0].url;
       }
     },
-    isVideo () {
-      if(this.item.medias) {
-        const type = this.item.medias[0].type
-        if(type === 'video'  ){
-          return true
-        }else {
-          return false
+    isVideo() {
+      if (this.detailFeed.medias) {
+        const type = this.detailFeed.medias[0].type;
+        if (type === "video") {
+          return true;
+        } else {
+          return false;
         }
       }
-    }
+    },
   },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
+      fetchFeedById: "post/fetchFeedById",
     }),
-    closeDialog(){
-      const idVideo = document.getElementById('videodialog')
-      if(idVideo){
-        idVideo.pause()
-        idVideo.currentTime = 0
+    getFeedById(id) {
+      return this.fetchFeedById(id).then((response) => {
+        const slide = this.slidePosition;
+        const medias = response.medias;
+        this.detailFeed.medias = medias;
+        let idVideo;
+        medias.forEach((m, idx) => {
+          if (m.type === "video") {
+            if (idx === slide) {
+              idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+            }
+          }
+        });
+        if (idVideo) {
+          idVideo.play();
+        }
+      });
+    },
+    stopVideo() {
+      const slide = this.slidePosition;
+      const medias = this.detailFeed.medias;
+      let idVideo;
+      medias.forEach((m, idx) => {
+        if (m.type === "video") {
+          if (idx === slide) {
+            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+          }
+        }
+      });
+      if (idVideo) {
+        idVideo.pause();
+        idVideo.currentTime = 0;
       }
-      this.dialog = false
+    },
+    playVideo() {
+      const slide = this.slidePosition;
+      const medias = this.detailFeed.medias;
+      let idVideo;
+      medias.forEach((m, idx) => {
+        if (m.type === "video") {
+          if (idx === slide) {
+            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+          }
+        }
+      });
+      if (idVideo) {
+        idVideo.play();
+      }
+    },
+    slideLeft() {
+      this.stopVideo();
+      this.slidePosition--;
+      this.playVideo()
+    },
+    slideRight() {
+      this.stopVideo();
+      this.slidePosition++;
+      this.playVideo()
+    },
+    closeDialog() {
+      this.stopVideo();
+      this.dialog = false;
+      this.slidePosition = 0;
     },
     openMedia() {
-      // const idVideo = document.getElementById('videodialog')
-      // if(idVideo){
-      //   idVideo.play()
-      // }
       this.dialog = true;
+      const id = this.item.id;
+      return this.getFeedById(id);
     },
     setDate() {
       const d = this.date;
@@ -167,31 +256,45 @@ export default {
       };
       this.tempItem = temp;
     },
+    getPayload(humanDate) {
+      const item = this.item;
+      const medias = this.detailFeed.medias;
+      const itemWithSchedule = this.tempItem;
+      let payload;
+      if (humanDate) {
+        payload = {
+          id: item.id,
+          type: "schedule",
+          params: {
+            ...itemWithSchedule,
+            medias: [...medias],
+          },
+        };
+      } else {
+        payload = {
+          id: item.id,
+          type: "publish",
+          params: {
+            ...item,
+            medias: [...medias],
+          },
+        };
+      }
+      return payload;
+    },
     publishFeed() {
       this.loading = true;
-      let data;
-      if (this.humanDate) {
-        data = this.tempItem;
-      } else {
-        const item = this.item;
-        data = item;
-      }
-      const payload = {
-        id: data.id,
-        type: "schedule",
-        params: {
-          ...data,
-        },
-      };
+      const payload = this.getPayload(this.humanDate);
       return this.updatePostFeed(payload)
         .then((response) => {
-          this.loading = false;
-          this.dialog = false;
-          this.$emit("refreshDataFeed");
+          setTimeout(() => {
+            this.loading = false;
+            this.dialog = false;
+            this.$emit("refreshDataFeed");
+          }, 1500);
         })
         .catch((err) => {
           this.loading = false;
-          console.log(err.response);
         });
     },
   },
@@ -201,7 +304,7 @@ export default {
 <style lang="scss" module="d">
 .user {
   font-size: 12px;
-  color:  $black;
+  color: $black;
   font-weight: bold;
 }
 .link {
@@ -215,9 +318,20 @@ export default {
   padding: 28px 24px 24px 28px;
 }
 .container-image {
-  height: 456px;
   display: flex;
   align-items: center;
+  background-color: #000000;
+  height: 100%;
+  justify-content: center;
+}
+.img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.vid {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
 }
 .right {
   padding: 12px 12px 12px 0;
@@ -229,6 +343,7 @@ export default {
 .desc {
   font-size: 12px;
   color: #000000;
+  padding-right: 46px;
 }
 .schedule {
   background: #ffffff;

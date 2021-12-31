@@ -1,11 +1,13 @@
 <template>
   <div>
+    asd
     <v-data-table
       :headers="headers"
       :items="drafts.content"
       hide-default-footer
       disable-filtering
       disable-sort
+      :items-per-page="30"
     >
       <template v-slot:[`item.status`]="{ item }">
         <span :class="getColor(item.status)">{{ item.status }}</span>

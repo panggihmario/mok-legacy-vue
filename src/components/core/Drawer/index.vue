@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer color="white" app floating permanent width="230">
+  <v-navigation-drawer class="drawer__container" color="white" app floating permanent width="230">
     <div class="drawer__header">
       <div class="d-flex justify-center">
         <v-avatar size="62" color="grey">
@@ -27,7 +27,7 @@
         <template v-slot:activator>
           <v-list-item-content>
             <div class="d-flex align-center">
-              <v-icon size="20">{{ item.action }}</v-icon>
+              <v-icon small>{{ item.action }}</v-icon>
               <div class="drawer__label ml-3">{{ item.title }}</div>
             </div>
           </v-list-item-content>
@@ -148,4 +148,11 @@ export default {
 		display: flex
 		justify-content: center
 		width: 100%
+</style>
+<style lang="scss" scoped>
+.drawer {
+  &__container {
+    box-shadow: 2px 0px 6px rgba(0, 0, 0, 0.04);
+  }
+}
 </style>

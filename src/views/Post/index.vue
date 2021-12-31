@@ -24,26 +24,32 @@
       </v-tabs>
       <div>
         <div class="d-flex align-center">
-          <custom-select 
+          <custom-select
             :items="channels"
-            dense placeholder="Channel" 
+            dense
+            placeholder="Channel"
             return-object
             item-text="name"
             @change="changeChannel"
             v-model="channel"
+            style="width: 190px"
+            :class="!channel && 'mr-6'"
           />
-          <v-icon 
-            class="mr-6 mb-6 ml-2" 
-            style="cursor: pointer"
-            size="20px" 
+          <v-btn
+            v-if="channel"
+            small
+            icon
+            class="mr-6 mb-6 ml-2"
+            size="20px"
             @click="removeChannel"
           >
-            fas fa-times
-          </v-icon>
-          <custom-input  
-            dense 
-            placeholder="Search" 
-            style="width : 250px"
+            <v-icon small> fas fa-times </v-icon>
+          </v-btn>
+
+          <custom-input
+            dense
+            placeholder="Search"
+            style="width: 200px"
             v-model="keyword"
             @keyup.enter="handleSearch"
           />
@@ -52,51 +58,47 @@
     </div>
 
     <router-view />
-    <v-alert :class="p.alert" :value="alertError"  type="error">
-      {{errorMessage}}
+    <v-alert :class="p.alert" :value="alertError" type="error">
+      {{ errorMessage }}
     </v-alert>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions , mapMutations } from "vuex"
+import { mapActions, mapMutations } from "vuex";
 export default {
   components: {
     HeaderContent,
   },
   mounted() {
-    this.fetchDataChannel()
+    this.fetchDataChannel();
   },
   methods: {
     ...mapActions({
-      getListChannel : 'channel/getAllChannel',
-      fetchFeeds : 'post/fetchFeeds',
-      searchFeed : 'post/searchFeed'
+      getListChannel: "channel/getAllChannel",
+      fetchFeeds: "post/fetchFeeds",
+      searchFeed: "post/searchFeed",
     }),
     resetFeeds() {
-      this.setFeeds([])
+      this.channel = null;
+      this.setFeeds([]);
     },
     handleSearch() {
-      const routerName = this.$route.name
-      if(this.keyword) {
+      const routerName = this.$route.name;
+      if (this.keyword) {
         const payload = {
-          keyword : this.keyword,
-          tab : routerName
-        }
-        return this.searchFeed(payload)
-      }else{
-        const payload = {
-          tab : routerName,
-          size : 15
-        }
-        return this.fetchFeeds(payload)
-      } 
-      
+          keyword: this.keyword,
+          tab: routerName,
+        };
+        return this.searchFeed(payload);
+      } else {
+        return this.handleFetchApiFeeds();
+      }
     },
     ...mapMutations({
-      setChannelCode : 'post/setChannelCode',
-      setFeeds : 'post/setFeeds'
+      setChannelCode: "post/setChannelCode",
+      setFeeds: "post/setFeeds",
     }),
     moveToCreatePost() {
       this.$router.push({
@@ -104,51 +106,90 @@ export default {
       });
     },
     changeChannel(c) {
-      const routerName = this.$route.name
-      const code = c.code
+      const routerName = this.$route.name;
+      const code = c.code;
       const payload = {
-        tab : routerName,
-        channelCode : code,
-        size : 15
-      }
-      this.setChannelCode(code)
-      return this.fetchFeeds(payload)
-      .catch(err => {
-        if(err.response) {
-          this.alertError = true
-          const message = err.response.data.message
-          this.errorMessage = message
+        tab: routerName,
+        channelCode: code,
+        size: 10,
+      };
+      this.$router.push({
+        name: routerName,
+        params: {
+          page: 1,
+        },
+      });
+      this.setChannelCode(code);
+      return this.fetchFeeds(payload).catch((err) => {
+        if (err.response) {
+          this.alertError = true;
+          const message = err.response.data.message;
+          this.errorMessage = message;
           setTimeout(() => {
-            this.alertError = false
-            this.errorMessage = ''
-            this.channel = null
-          }, 2500)
+            this.alertError = false;
+            this.errorMessage = "";
+            this.channel = null;
+          }, 2500);
         }
-      })
+      });
     },
     removeChannel() {
-      this.channel = null
-      const routerName = this.$route.name
-      const payload = {
-        tab : routerName,
+      const routerName = this.$route.name;
+      this.$router.push({
+        name: routerName,
+        params: {
+          page: 1,
+        },
+      });
+      this.setChannelCode(null);
+      this.channel = null;
+      this.handleFetchApiFeeds();
+    },
+    handleFetchApiFeeds() {
+      const routerName = this.$route.name;
+      const page = this.$route.params.page;
+      const sort = this.typeOfSort(routerName);
+      let payload = {
+        tab: routerName,
+        size: 10,
+        page: page - 1,
+      };
+      let tempPayload;
+      if (sort) {
+        tempPayload = {
+          ...payload,
+          sort,
+        };
+      } else {
+        tempPayload = {
+          ...payload,
+        };
       }
-      return this.fetchFeeds(payload)
+      return this.fetchFeeds(tempPayload);
+    },
+    typeOfSort(tab) {
+      if (tab === "draft") {
+        return "createAt,DESC";
+      } else if (tab) {
+        return "scheduledTime,ASC";
+      } else {
+        return null;
+      }
     },
     fetchDataChannel() {
-      return this.getListChannel()
-        .then(response => {
-          const responseData = response.data.data
-          this.channels = responseData
-        })
-    }
+      return this.getListChannel().then((response) => {
+        const responseData = response.data.data;
+        this.channels = responseData;
+      });
+    },
   },
   data() {
     return {
       channels: [],
-      keyword : '',
-      channel : null,
-      alertError : false,
-      errorMessage : '',
+      keyword: "",
+      channel: null,
+      alertError: false,
+      errorMessage: "",
       list: [
         {
           text: "Konten Feed",
@@ -170,9 +211,9 @@ export default {
           label: "List Kontent",
         },
         {
-          name : 'reject',
-          label : 'Dihapus'
-        }
+          name: "reject",
+          label: "Dihapus",
+        },
       ],
     };
   },
