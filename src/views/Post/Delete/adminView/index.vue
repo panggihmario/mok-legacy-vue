@@ -27,7 +27,7 @@
     </v-data-table>
      <div  class="d-flex justify-end mt-4">
       <v-pagination
-        v-model="page"
+        v-model="currentPage"
         :length="totalPages"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
@@ -55,7 +55,12 @@ export default {
       feeds : (state) => state.post.feeds,
       totalPages : (state) => state.post.totalPages,
       channelCode : (state) => state.post.channelCode
-    })
+    }),
+    currentPage() {
+      const page = this.$route.params.page
+      const current = Number(page)
+      return current
+    }
   },
   methods : {
     ...mapActions({
