@@ -19,7 +19,7 @@
           exact
           @click="resetFeeds"
         >
-          <div class="text-capitalize">{{ tab.label }}</div>
+          <div style="letter-spacing : 0" class="text-capitalize">{{ tab.label }}</div>
         </v-tab>
       </v-tabs>
       <div>
@@ -58,6 +58,16 @@
     </div>
 
     <router-view />
+    <div  class="d-flex justify-end mt-4">
+      <v-pagination
+        :length="totalPages"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        total-visible="10"
+        color="primary"
+        v-model="currentPage"
+      />
+    </div>
     <v-alert :class="p.alert" :value="alertError" type="error">
       {{ errorMessage }}
     </v-alert>
@@ -66,13 +76,40 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   components: {
     HeaderContent,
   },
   mounted() {
     this.fetchDataChannel();
+  },
+  computed : {
+    ...mapState({
+      totalPages : (state) => state.post.totalPages,
+      channelCode : (state) => state.post.channelCode
+    }),
+    currentPage : {
+      get() {
+        const page = this.$route.params.page
+        const current = Number(page)
+        return current
+      },
+      set(value) {
+        const name = this.$route.name
+        this.$router.push({
+          name,
+          params : {
+            page : value
+          }
+        })
+        if(this.keyword) {
+          return this.fetchSearchApi(name)
+        }else{
+          return this.handleFetchApiFeeds()
+        }
+      }
+    }
   },
   methods: {
     ...mapActions({
@@ -82,23 +119,53 @@ export default {
     }),
     resetFeeds() {
       this.channel = null;
+      this.keyword = ''
       this.setFeeds([]);
+      this.setKeyWord('')
+    },
+    resetFields(routerName) {
+      this.setKeyWord('')
+      this.setChannelCode(null)
+      this.$router.push({
+        name : routerName,
+        params : {
+          page : 1
+        }
+      })
+    },
+    fetchSearchApi (routerName) {
+      const keyword = this.keyword
+      const page = this.$route.params.page
+      const payload = {
+        keyword: keyword,
+        tab: routerName,
+        page : page - 1
+      };
+      this.setKeyWord(keyword)
+      return this.searchFeed(payload);
     },
     handleSearch() {
       const routerName = this.$route.name;
-      if (this.keyword) {
-        const payload = {
-          keyword: this.keyword,
-          tab: routerName,
-        };
-        return this.searchFeed(payload);
+      const keyword = this.keyword
+      if (keyword) {
+        this.$router.push({
+          name : routerName,
+          params : {
+            page : 1
+          }
+        })
+        return this.fetchSearchApi(routerName)
       } else {
+        this.setKeyWord('')
+        this.resetFields(routerName)
         return this.handleFetchApiFeeds();
       }
     },
     ...mapMutations({
       setChannelCode: "post/setChannelCode",
       setFeeds: "post/setFeeds",
+      setKeyWord : 'post/setKeyWord',
+      setPage : 'post/setPage'
     }),
     moveToCreatePost() {
       this.$router.push({
@@ -108,11 +175,6 @@ export default {
     changeChannel(c) {
       const routerName = this.$route.name;
       const code = c.code;
-      const payload = {
-        tab: routerName,
-        channelCode: code,
-        size: 10,
-      };
       this.$router.push({
         name: routerName,
         params: {
@@ -120,18 +182,7 @@ export default {
         },
       });
       this.setChannelCode(code);
-      return this.fetchFeeds(payload).catch((err) => {
-        if (err.response) {
-          this.alertError = true;
-          const message = err.response.data.message;
-          this.errorMessage = message;
-          setTimeout(() => {
-            this.alertError = false;
-            this.errorMessage = "";
-            this.channel = null;
-          }, 2500);
-        }
-      });
+      this.handleFetchApiFeeds()
     },
     removeChannel() {
       const routerName = this.$route.name;
@@ -145,32 +196,32 @@ export default {
       this.channel = null;
       this.handleFetchApiFeeds();
     },
-    handleFetchApiFeeds() {
+    getParams() {
       const routerName = this.$route.name;
-      const page = this.$route.params.page;
       const sort = this.typeOfSort(routerName);
-      let payload = {
-        tab: routerName,
-        size: 10,
-        page: page - 1,
-      };
-      let tempPayload;
-      if (sort) {
-        tempPayload = {
-          ...payload,
-          sort,
-        };
-      } else {
-        tempPayload = {
-          ...payload,
-        };
+      const page = this.$route.params.page;
+      const code = this.channelCode
+      // const page = this.currentPage
+      const tempPayload = {
+        tab : routerName,
+        size : 10,
+        page : page -1
       }
-      return this.fetchFeeds(tempPayload);
+      const payload = {
+        ...tempPayload,
+        ...(code  && { channelCode: code }),
+        ...(sort &&  {sort : sort} )
+      }
+      return payload
+    },
+    handleFetchApiFeeds() {
+      const params = this.getParams()
+      return this.fetchFeeds(params);
     },
     typeOfSort(tab) {
       if (tab === "draft") {
         return "createAt,DESC";
-      } else if (tab) {
+      } else if (tab === 'schedule') {
         return "scheduledTime,ASC";
       } else {
         return null;

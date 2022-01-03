@@ -3,12 +3,9 @@
     <AdminView
       v-if="isAdmin"
       @refreshDataFeed="refreshDataFeed"
-      @onPagination="onPagination"
     />
     <SelebView 
-      
       v-if="isSeleb"
-      @onPagination="onPagination"
       />
   </div>
 </template>
@@ -27,7 +24,8 @@ export default {
   },
   methods : {
     ...mapActions ({
-      fetchFeeds : 'post/fetchFeeds'
+      fetchFeeds : 'post/fetchFeeds',
+      searchFeed : 'post/searchFeed'
     }),
     ...mapMutations({
       setFeeds : 'post/setFeeds'
@@ -37,12 +35,20 @@ export default {
       return this.fetchApi(page)
     },
     refreshDataFeed() {
+      const keyword = this.keywordSearch
       const page = this.$route.params.page
-      this.fetchApi(page)
-    },
-    onPagination(payload) {
-      const params = this.getPayload(payload.page, payload.code)
-      return this.fetchFeeds(params)
+      const routerName = this.$route.name
+      const code = this.channelCode
+      if(keyword) {
+        const payload = {
+          keyword: keyword,
+          tab: routerName,
+          page : page - 1
+        };
+        return this.searchFeed(payload)
+      }else{
+        this.fetchApi(page, code)
+      }
     },
     getPayload (page, code) {
       const payload = {
@@ -64,8 +70,8 @@ export default {
       }
       return tempPayload
     },
-    fetchApi (page) {
-      const payload = this.getPayload(page)
+    fetchApi (page, code) {
+      const payload = this.getPayload(page, code)
       return this.fetchFeeds(payload)
     }
   },
@@ -73,6 +79,8 @@ export default {
     ...mapState({
       role : (state) => state.authentication.role,
       feeds : (state) => state.post.feeds,
+      keywordSearch : (state) => state.post.keywordSearch,
+      channelCode : (state) => state.post.channelCode
     }),
     isAdmin () {
       if(this.role === 'ROLE_ADMIN' || this.role === 'ROLE_ADMIN_SOCIAL') {
