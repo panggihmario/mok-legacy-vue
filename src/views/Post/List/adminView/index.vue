@@ -28,17 +28,6 @@
         />
       </template>
     </v-data-table>
-    <!-- {{currentPage}} -->
-     <div  class="d-flex justify-end mt-4">
-      <v-pagination
-        v-model="currentPage"
-        :length="totalPages"
-        prev-icon="mdi-menu-left"
-        next-icon="mdi-menu-right"
-        @input="onPagination"
-        total-visible="10"
-      />
-    </div>
   </div>
 </template>
 
@@ -52,21 +41,11 @@ export default {
     LinkDialog,
     Action
   },
-  mounted () {
-    const page = this.$route.params.page
-    this.page = Number(page)
-  },
   computed : {
     ...mapState({
       feeds : (state) => state.post.feeds,
       totalPages : (state) => state.post.totalPages,
-      channelCode : (state) => state.post.channelCode
     }),
-    currentPage() {
-      const page = this.$route.params.page
-      const current = Number(page)
-      return current
-    }
   },
   methods : {
     successDelete() {
@@ -76,27 +55,6 @@ export default {
       const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
       return cek;
     },
-    onPagination(page) {
-      const code = this.channelCode
-      let payload
-      if(code) {
-        payload = {
-          page,
-          code
-        }
-      }else {
-        payload = {
-          page
-        }
-      }
-      this.$router.push({
-        name : 'list',
-        params : {
-          page : page
-        }
-      })
-      this.$emit('onPagination', payload)
-    }
   },
   data () {
     return {
