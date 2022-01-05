@@ -122,6 +122,7 @@ export default {
       this.keyword = ''
       this.setFeeds([]);
       this.setKeyWord('')
+      this.setChannelCode(null)
     },
     resetFields(routerName) {
       this.setKeyWord('')
