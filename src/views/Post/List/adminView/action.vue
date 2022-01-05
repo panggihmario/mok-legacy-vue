@@ -10,7 +10,7 @@
       <v-dialog width="475" v-model="dialogReject">
       <v-card>
         <div :class="d.container" >
-          <div class="d-flex justify-end">
+          <div :class="d.icon">
             <v-btn icon @click="closeDialogReject" small>
               <v-icon small>fas fa-times</v-icon>
             </v-btn>
@@ -85,18 +85,24 @@ export default {
 
 <style lang="scss" module="d">
 .container {
-  padding: 16px 16px 32px 32px;;
+  padding: 24px 16px 24px 24px;;
 }
 .title {
   color: $black;
   font-size: 14px;
   font-weight: 800;
 }
+.icon {
+  position: absolute;
+  top: 6px;
+  right: 6px
+}
 .content {
-  color: #4A4A4A;
+  color: $charcoal;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 23px;
   max-width: 346px;
+  margin-top: 8px;
 }
 </style>
