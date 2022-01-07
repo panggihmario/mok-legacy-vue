@@ -5,9 +5,17 @@ export default {
     pathFeed : 'admin/social',
     feeds : [],
     channelCode : null,
-    totalPages : 0
+    totalPages : 0,
+    keywordSearch : '',
+    page : 1
   },
   mutations : {
+    setPage (state, payload) {
+      state.page = payload
+    },
+    setKeyWord (state, payload) {
+      state.keywordSearch = payload
+    },
     setFeeds(state, payload) {
       state.feeds = payload
     },
@@ -40,7 +48,6 @@ export default {
           ...payload
         }
       }
-      // commit('setFeeds', [])
       return dispatch('getWithToken', data , {root : true})
         .then(response => {
           const responseData = response.data.data
@@ -113,41 +120,5 @@ export default {
       })
       .catch (err => { throw err })
     }
-    // async getListFeed({ state, dispatch }, payload) {
-    //   let response;
-    //   const data = {
-    //     url : `member/${state.pathPost}/profile?page=${payload.page}`
-    //   }
-    //   return dispatch('getWithToken', data, {root : true})
-    //     .then(response => {
-    //       return response
-    //     })
-    //     .catch(err => {
-    //       throw err
-    //     })
-      
-    // },
-    // async postProduct({ state }, payload) {
-    //   let response;
-    //   try {
-    //     response = await this._vm
-    //       .$httpWithToken()
-    //       .post(`${state.pathPost}/product`, payload);
-    //     return response;
-    //   } catch (error) {
-    //     return error;
-    //   }
-    // },
-    // async deletePost({ state }, payload) {
-    //   let response;
-    //   try {
-    //     response = await this._vm
-    //       .$httpWithToken()
-    //       .delete(`/feeds/${payload}`);
-    //     return response;
-    //   } catch (error) {
-    //     return error;
-    //   }
-    // },
   },
 };
