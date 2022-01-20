@@ -72,8 +72,8 @@
                     </div>
                   </template>
                   <v-card class="pa-2">
-                    <v-date-picker no-title v-model="date"> </v-date-picker>
-                    <v-time-picker no-title v-model="timeSchedule" />
+                    <v-date-picker  v-model="date" class="mr-2"> </v-date-picker>
+                    <v-time-picker  v-model="timeSchedule" />
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       Cancel
@@ -331,7 +331,7 @@ export default {
 .vid {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover;
+  object-fit: contain;
 }
 .right {
   padding: 12px 12px 12px 0;

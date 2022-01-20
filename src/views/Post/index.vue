@@ -24,7 +24,7 @@
       </v-tabs>
       <div>
         <div class="d-flex align-center">
-          <custom-select
+          <!-- <custom-select
             :items="channels"
             dense
             placeholder="Channel"
@@ -34,7 +34,18 @@
             v-model="channel"
             style="width: 190px"
             :class="!channel && 'mr-6'"
-          />
+          /> -->
+          <custom-autocomplete
+          :value="channel"
+          v-model="channel"
+          :items="channels"
+          item-text="name"
+          return-object
+           style="width: 190px"
+           @change="changeChannel"
+           dense
+           :class="!channel && 'mr-6'"
+        />
           <v-btn
             v-if="channel"
             small
