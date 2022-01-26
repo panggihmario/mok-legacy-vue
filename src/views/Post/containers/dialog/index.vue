@@ -72,8 +72,8 @@
                     </div>
                   </template>
                   <v-card class="pa-2">
-                    <v-date-picker no-title v-model="date"> </v-date-picker>
-                    <v-time-picker no-title v-model="timeSchedule" />
+                    <v-date-picker  v-model="date" class="mr-2"> </v-date-picker>
+                    <v-time-picker  v-model="timeSchedule" />
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       Cancel
@@ -98,7 +98,16 @@
               <div :class="d.icon">
                 <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
               </div>
-              <div :class="d.desc">
+              <div v-if="isAdmin" :class="d['desc-container']" >
+                <div>
+                  <div :class="d.label" >User</div>
+                  <div :class="d['label-user']" > @{{item.createBy}} </div>
+                </div>
+                <custom-textarea
+                  v-model="description"
+                />
+              </div>
+              <div v-else :class="d.desc">
                 <span :class="d.user">{{ item.createBy }}</span>
                 {{ item.description }}
               </div>
@@ -134,6 +143,7 @@ export default {
       tempItem: null,
       loading: false,
       slidePosition: 0,
+      description : ''
     };
   },
   computed: {
@@ -167,6 +177,7 @@ export default {
       return this.fetchFeedById(id).then((response) => {
         const slide = this.slidePosition;
         const medias = response.medias;
+        this.description = response.description
         this.detailFeed.medias = medias;
         let idVideo;
         medias.forEach((m, idx) => {
@@ -268,6 +279,7 @@ export default {
           params: {
             ...itemWithSchedule,
             medias: [...medias],
+            description : this.description
           },
         };
       } else {
@@ -277,6 +289,7 @@ export default {
           params: {
             ...item,
             medias: [...medias],
+            description : this.description
           },
         };
       }
@@ -302,6 +315,19 @@ export default {
 </script>
 
 <style lang="scss" module="d">
+.label {
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 11px;
+  color: #777777;
+}
+.label-user {
+  font-size:11px;
+  font-weight: 500;
+  color: #4A4A4A;
+  margin-bottom: 20px;
+  margin-top: 6px;
+}
 .user {
   font-size: 12px;
   color: $black;
@@ -331,7 +357,7 @@ export default {
 .vid {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover;
+  object-fit: contain;
 }
 .right {
   padding: 12px 12px 12px 0;
@@ -344,6 +370,9 @@ export default {
   font-size: 12px;
   color: #000000;
   padding-right: 46px;
+}
+.desc-container {
+  padding-right : 46px
 }
 .schedule {
   background: #ffffff;
