@@ -33,6 +33,7 @@
       v-model="page"
       :length="totalPages"
       class="d-flex justify-end"
+      total-visible="10"
     ></v-pagination>
 
     <Dialog-Detail

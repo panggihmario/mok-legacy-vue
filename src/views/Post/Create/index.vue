@@ -33,17 +33,14 @@
           rules="required|max:1000"
         />
       </div>
-
       <div style="width : 250px">
-        <custom-select
-          return-object
-          label="Channel"
+        <custom-autocomplete
+          :value="channel"
+          v-model="channel"
           :items="channels"
           item-text="name"
-          v-model="channel"
-          rules="required"
-          name="Channel"
-          :value="channel"
+          label="Channel"
+          return-object
         />
       </div>
       
