@@ -28,14 +28,13 @@
         </tr>
       </template>
     </v-data-table>
-
-    <v-pagination
-      v-model="page"
-      :length="totalPages"
-      class="d-flex justify-end pt-6"
-      total-visible="10"
-    ></v-pagination>
-
+    <div class="d-flex justify-end pt-6">
+      <v-pagination
+        v-model="page"
+        :length="totalPages"
+        total-visible="10"
+      ></v-pagination>
+    </div>
     <Dialog-Detail
       :dialog="dialog"
       :detailItems="detailItems"
@@ -100,7 +99,7 @@ export default {
     };
   },
   watch: {
-    page: function() {
+    page: function () {
       this.handleGetListOrderByType();
     },
   },
