@@ -42,28 +42,6 @@ import Finance from "../views/Shop/Finance";
 import allpath from "./pathFolder/index.js";
 
 const routes = [
-  // {
-  //   path : "/product",
-  //   component : () => import('../layouts/Product'),
-  //   children : [
-  //     {
-  //       path : '/product',
-  //       component : () => import('../views/Shop/Product'),
-  //       name : 'products'
-  //     },
-  //     {
-  //       path : 'banned',
-  //       component : () => import('../views/Shop/Banned'),
-  //       name : 'bannedProduct'
-  //     },
-  //     {
-  //       path : "search",
-  //       component  : () => import('../views/Shop/Product/search.vue'),
-  //       name : 'searchProduct',
-  //       props : route => {return route.query}
-  //     }
-  //   ]
-  // },
   {
     path: "/",
     component: () => import('../layouts/MainLayout'),

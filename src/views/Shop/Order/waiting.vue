@@ -35,7 +35,7 @@
       class="d-flex justify-end"
       total-visible="10"
     ></v-pagination> -->
-        <div class="d-flex justify-end pt-6">
+    <div class="d-flex justify-end pt-6">
       <v-pagination
         v-model="page"
         :length="totalPages"

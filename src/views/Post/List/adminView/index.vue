@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
+import { mapState } from "vuex"
 import moment from "moment"
 import LinkDialog from "../../containers/dialog/index.vue"
 import Action from "./action.vue"

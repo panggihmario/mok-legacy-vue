@@ -7,11 +7,23 @@ export default {
     channelCode : null,
     totalPages : 0,
     keywordSearch : '',
-    page : 1
+    paramsUsers : [],
+    paramsChannel : [],
+    paramsDate : [],
+    displayDate : ''
   },
   mutations : {
-    setPage (state, payload) {
-      state.page = payload
+    setParamsUsers (state, payload) {
+      state.paramsUsers = payload
+    },
+    setDisplayDate (state, payload) {
+      state.displayDate = payload
+    },
+    setParamsChannel (state, payload) {
+      state.paramsChannel = payload
+    },
+    setParamsDate (state, payload) {
+      state.paramsDate = payload
     },
     setKeyWord (state, payload) {
       state.keywordSearch = payload
@@ -119,6 +131,61 @@ export default {
         return responseData
       })
       .catch (err => { throw err })
+    },
+    filterFeed({state, dispatch, commit}, payload) {
+      const data = {
+        url : `${state.pathFeed}/filter`,
+        params : {
+          ...payload,
+          size : 10
+        }
+      }
+      return dispatch('getWithToken', data , {root : true})
+        .then(response => {
+          const responseData = response.data.data
+          const content = responseData.content
+          const totalPages = responseData.totalPages
+          const contentWithIndex = content.map((c, idx) => {
+            return {
+              ...c,
+              index : idx
+            }
+          })
+          commit('setFeeds', contentWithIndex)
+          commit('setTotalPages', totalPages)
+        })
+    },
+    fetchListAccounts ({state, dispatch}, payload) {
+      const data = {
+        url : `${state.pathFeed}/accounts`,
+        params : {
+          ...payload,
+          sort : 'createAt',
+          direction : 'ASC',
+          size : 10
+        }
+      }
+      return dispatch('getWithToken', data , {root : true})
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+    },
+    searchAccounts ({state, dispatch}, payload) {
+      const data = {
+        url : `${state.pathFeed}/account/username`,
+        params : {
+          sort : 'createAt',
+          direction : 'ASC',
+          ...payload
+        }
+      }
+      return dispatch('getWithToken', data, {root : true})
+        .then(response => {
+          const responseData = response.data.data
+          return responseData
+        })
+        .catch(err =>  {throw err})
     }
   },
 };
