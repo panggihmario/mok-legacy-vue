@@ -122,10 +122,12 @@ export default {
         if(this.keyword) {
           return this.fetchSearchApi(name)
         }else if(this.isParamsFilter) {
+          console.log('else if')
           const page = value - 1
           return this.onFilterByPage(page, name)
         }else{
-          return this.onInitiateFetchFeeds(name, value)
+          console.log('else')
+          return this.onInitiateFetchFeeds(name, value - 1)
         }
         
       }
@@ -199,7 +201,8 @@ export default {
     formatingParamsDate (date) {
       const [startDate, endDate] = date
       const epochStartDate = this.convertEpoch(startDate)
-      const epochEndDate = this.convertEpoch(endDate)
+      const end = moment(endDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
+      const epochEndDate = end * 1000
       const payload = {
         startAt : epochStartDate ?epochStartDate : '',
         endAt : epochEndDate ? epochEndDate : ''
@@ -219,13 +222,15 @@ export default {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
+        const sort = this.typeOfSort(routerName);
         const payload = {
           usernames : users,
           tab : routerName,
           channelCodes : channels,
-          ...date
+          ...date,
+          ...(sort &&  {sort : sort} )
         }
-        // console.log(payload)
+        console.log(payload)
         return this.filterFeed(payload)
           .then(() => {
             this.$router.push({
@@ -270,12 +275,14 @@ export default {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
+        const sort = this.typeOfSort(name);
         const payload = {
           usernames : users,
           tab : name,
           page : page,
           channelCodes : channels,
-          ...date
+          ...date,
+          ...(sort &&  {sort : sort} )
         }
         return this.filterFeed(payload)
     },
