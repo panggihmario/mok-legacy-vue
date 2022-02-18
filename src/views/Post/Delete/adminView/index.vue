@@ -15,11 +15,14 @@
        <template v-slot:[`item.channel`]="{ item }" >
         <div :class="ad['tb__caption']"  > {{item.channel.name}}  </div>
       </template>
+      <template v-slot:[`item.publisher`]="{ item }" >
+        <div :class="ad['tb__caption']"  > {{item.publishBy}}  </div>
+      </template>
+      <template v-slot:[`item.user`]="{ item }" >
+        <div :class="ad['tb__caption']"  > {{item.createBy}}  </div>
+      </template>
        <template v-slot:[`item.delete`]="{item}">
         <div :class="ad['tb__caption']">{{item.deletedBy}}</div>
-      </template>
-      <template v-slot:[`item.publish`]="{item}">
-        <div :class="ad['tb__caption']"> {{formatingDate(item.publishedAt)}} </div>
       </template>
        <template v-slot:[`item.date`]="{item}">
         <div :class="ad['tb__caption']"> {{formatingDate(item.deletedAt)}} </div>
@@ -83,15 +86,20 @@ export default {
           sortable: false,
           filterable: false,
           value : 'channel',
-          
         },
         {
-          text : 'Dipublish Pada',
+          text : 'Publisher',
           class : 'whitesnow',
           sortable: false,
           filterable: false,
-          value : 'publish',
-          align : 'center',
+          value : 'publisher',
+        },
+        {
+          text : 'User',
+          class : 'whitesnow',
+          sortable: false,
+          filterable: false,
+          value : 'user',
         },
         {
           text : 'Dihapus Oleh',

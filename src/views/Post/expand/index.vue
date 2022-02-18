@@ -8,7 +8,9 @@
           <SelectChannel
             :items="channels"
           />
-        <SelectDate/>
+        <SelectDate
+          v-if="$route.name  !== 'schedule'  "
+        />
       </div>
       <div class="d-flex">
         <custom-button 
