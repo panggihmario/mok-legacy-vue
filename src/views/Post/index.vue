@@ -35,7 +35,7 @@
           </custom-button>
           
           <custom-button 
-            v-if="!expand  && $route.name !== 'schedule'"
+            v-if="!expand"
             style="margin-bottom : 24px"
             class="mr-4"
             @click="expand = !expand"
@@ -153,11 +153,15 @@ export default {
     onInitiateFetchFeeds (tab = this.$route.name, page = 0) {
       const sort = this.typeOfSort(tab);
       const payload = {
+        size : 10,
         tab,
         page,
-         ...(sort &&  {sort : sort} )
+        ...(sort &&  {sort : sort} )
       }
       return this.fetchFeeds(payload)
+        // .then(response => {
+        //   console.log(response)
+        // })
     },
     changeTab(tab) {
       this.isFilter = false
@@ -203,7 +207,7 @@ export default {
       return payload
     },
     convertEpoch(d) {
-      const epochDate = moment(d, "YYYY-MM-DD").unix()
+      const epochDate = moment(d, "YYYY-MM-DD").add(7, 'hours').unix()
       const miliEpoch = epochDate * 1000
       return miliEpoch
     },
