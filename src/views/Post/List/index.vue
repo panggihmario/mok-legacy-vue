@@ -38,29 +38,13 @@ export default {
       }
     }
   },
-  created() {
-    this.handleFetchingData()
-  },
   methods : {
     ...mapActions ({
       fetchFeeds : 'post/fetchFeeds',
       searchFeed : 'post/searchFeed'
     }),
     refreshDataFeed() {
-      const keyword = this.keywordSearch
-      const page = this.$route.params.page
-      const routerName = this.$route.name
-      const code = this.channelCode
-      if(keyword) {
-        const payload = {
-          keyword: keyword,
-          tab: routerName,
-          page : page - 1
-        };
-        return this.searchFeed(payload)
-      }else{
-        this.fetchApi(page, code)
-      }
+      this.$emit('refreshDataFeed')
     },
     fetchApi (page, code) {
       const payload = this.getPayload(page, code)
@@ -69,10 +53,6 @@ export default {
     handleFetchingData () {
       const page = this.$route.params.page
       return this.fetchApi(page)
-    },
-    onPagination(payload) {
-      const params = this.getPayload(payload.page, payload.code)
-      return this.fetchFeeds(params)
     },
     getPayload (page, code) {
       const payload = {

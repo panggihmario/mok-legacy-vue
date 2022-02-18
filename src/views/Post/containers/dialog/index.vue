@@ -34,7 +34,7 @@
                   </div>
                 </v-carousel-item>
               </v-carousel>
-              <div class="d-flex">
+              <div class="d-flex align-center">
                 <div class="d-flex" v-if="detailFeed.medias.length > 1">
                   <v-btn 
                     icon 
@@ -88,30 +88,24 @@
                   class="ml-4"
                   size="small"
                   color="secondary"
-                  >Post Content Sekarang</custom-button
                 >
+                  Post Content Sekarang
+                </custom-button>
+                <div v-if="$route.name === 'reject' ">
+                  <DeletedBy :item="item" />
+                </div>
               </div>
             </div>
           </v-col>
           <v-col cols="6">
-            <div :class="d.right">
-              <div :class="d.icon">
-                <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
-              </div>
-              <div v-if="isAdmin" :class="d['desc-container']" >
-                <div>
-                  <div :class="d.label" >User</div>
-                  <div :class="d['label-user']" > @{{item.createBy}} </div>
-                </div>
-                <custom-textarea
-                  v-model="description"
-                />
-              </div>
-              <div v-else :class="d.desc">
-                <span :class="d.user">{{ item.createBy }}</span>
-                {{ item.description }}
-              </div>
-            </div>
+            <Description
+              :item="item"
+              v-model="description"
+              :description="description"
+              @closeDialog="closeDialog"
+              :isAdmin="isAdmin"
+              @saveCaption="saveCaption"
+            />
           </v-col>
         </v-row>
       </v-card>
@@ -121,8 +115,14 @@
 
 <script>
 import moment from "moment";
+import Description from "./description.vue"
+import DeletedBy from "./deletedBy.vue"
 import { mapActions } from "vuex";
 export default {
+  components : {
+    Description,
+    DeletedBy
+  },
   props: {
     item: Object,
     isAdmin: {
@@ -133,6 +133,7 @@ export default {
   data() {
     return {
       dialog: false,
+      isTyping : false,
       detailFeed: {
         medias: [],
       },
@@ -173,6 +174,25 @@ export default {
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
     }),
+    saveCaption() {
+      const id = this.item.id
+      const payload = {
+        id : id,
+        type : 'edit',
+        params : {
+          ...this.item,
+          description : this.description,
+          medias : this.detailFeed.medias
+        }
+      }
+      return this.updatePostFeed(payload)
+        .then(() => {
+          return  this.fetchFeedById(id)
+        })
+        .then(response => {
+           this.description = response.description
+        })
+    },
     getFeedById(id) {
       return this.fetchFeedById(id).then((response) => {
         const slide = this.slidePosition;
@@ -237,6 +257,7 @@ export default {
       this.stopVideo();
       this.dialog = false;
       this.slidePosition = 0;
+      this.$emit("refreshDataFeed");
     },
     openMedia() {
       this.dialog = true;
@@ -314,80 +335,6 @@ export default {
 };
 </script>
 
-<style lang="scss" module="d">
-.label {
-  font-size: 9px;
-  font-weight: 500;
-  line-height: 11px;
-  color: #777777;
-}
-.label-user {
-  font-size:11px;
-  font-weight: 500;
-  color: #4A4A4A;
-  margin-bottom: 20px;
-  margin-top: 6px;
-}
-.user {
-  font-size: 12px;
-  color: $black;
-  font-weight: bold;
-}
-.link {
-  color: #1890ff;
-  text-decoration: underline;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.left {
-  padding: 28px 24px 24px 28px;
-}
-.container-image {
-  display: flex;
-  align-items: center;
-  background-color: #000000;
-  height: 100%;
-  justify-content: center;
-}
-.img {
-  max-width: 100%;
-  max-height: 100%;
-}
-.vid {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain;
-}
-.right {
-  padding: 12px 12px 12px 0;
-}
-.icon {
-  text-align: right;
-  cursor: pointer;
-}
-.desc {
-  font-size: 12px;
-  color: #000000;
-  padding-right: 46px;
-}
-.desc-container {
-  padding-right : 46px
-}
-.schedule {
-  background: #ffffff;
-  border: 0.6px solid #bbbbbb;
-  border-radius: 4px;
-  box-sizing: border-box;
-  width: 138px;
-  height: 24px;
-  padding: 6px;
-  font-size: 10px;
-  cursor: pointer;
-}
-.icon-input {
-  position: absolute;
-  right: 15px;
-  bottom: 3px;
-}
+<style src="./style.scss" lang="scss" module="d">
+
 </style>

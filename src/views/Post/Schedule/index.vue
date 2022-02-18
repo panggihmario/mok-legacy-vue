@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    this.handleFetchingData()
+    // this.handleFetchingData()
   },
   methods : {
     ...mapActions ({
