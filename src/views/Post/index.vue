@@ -122,11 +122,9 @@ export default {
         if(this.keyword) {
           return this.fetchSearchApi(name)
         }else if(this.isParamsFilter) {
-          console.log('else if')
           const page = value - 1
           return this.onFilterByPage(page, name)
         }else{
-          console.log('else')
           return this.onInitiateFetchFeeds(name, value - 1)
         }
         
@@ -230,7 +228,6 @@ export default {
           ...date,
           ...(sort &&  {sort : sort} )
         }
-        console.log(payload)
         return this.filterFeed(payload)
           .then(() => {
             this.$router.push({
