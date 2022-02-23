@@ -199,8 +199,15 @@ export default {
     formatingParamsDate (date) {
       const [startDate, endDate] = date
       const epochStartDate = this.convertEpoch(startDate)
-      const end = moment(endDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
-      const epochEndDate = end * 1000
+      let end
+      let epochEndDate
+      if(endDate) {
+        end = moment(endDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
+        epochEndDate = end * 1000
+      }else{
+        end = moment(startDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
+        epochEndDate = end * 1000
+      }
       const payload = {
         startAt : epochStartDate ?epochStartDate : '',
         endAt : epochEndDate ? epochEndDate : ''
