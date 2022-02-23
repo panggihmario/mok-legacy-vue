@@ -14,7 +14,7 @@ export default {
     AdminView
   },
   created() {
-    this.handleFetchingData()
+    // this.handleFetchingData()
   },
   computed : {
     ...mapState({
