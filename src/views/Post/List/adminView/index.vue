@@ -18,6 +18,9 @@
       <template v-slot:[`item.user`]="{item}">
         <div :class="ad['dg__desc']">{{item.createBy}}</div>
       </template>
+      <template v-slot:[`item.publishBy`]="{item}">
+        <div :class="ad['dg__desc']">{{item.publishBy}}</div>
+      </template>
       <template v-slot:[`item.schedule`]="{ item }">
         <div :class="ad['dg__desc']"> {{formatingDate(item.publishedAt)}} </div>
       </template>
@@ -32,7 +35,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
+import { mapState } from "vuex"
 import moment from "moment"
 import LinkDialog from "../../containers/dialog/index.vue"
 import Action from "./action.vue"
@@ -89,6 +92,13 @@ export default {
           sortable: false,
           filterable: false,
           value : 'user'
+        },
+         {
+          text : 'Publisher',
+          class : 'whitesnow',
+          sortable: false,
+          filterable: false,
+          value : 'publishBy'
         },
         {
           text : 'Dipublish Pada',

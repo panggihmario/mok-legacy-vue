@@ -29,12 +29,20 @@
       </template>
     </v-data-table>
 
-    <v-pagination
+    <!-- <v-pagination
       v-model="page"
       :length="totalPages"
       class="d-flex justify-end"
       total-visible="10"
-    ></v-pagination>
+    ></v-pagination> -->
+        <div class="d-flex justify-end pt-6">
+      <v-pagination
+        v-model="page"
+        :length="totalPages"
+        total-visible="10"
+      ></v-pagination>
+    </div>
+
 
     <Dialog-Detail
       :dialog="dialog"

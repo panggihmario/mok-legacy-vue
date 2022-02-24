@@ -10,7 +10,9 @@
 			flat
 			class="field"
 			:background-color="background"
-    ></v-autocomplete>
+    >
+      <slot></slot>
+    </v-autocomplete>
   </div>
 </template>
 

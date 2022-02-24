@@ -53,7 +53,6 @@ export default {
   computed : {
     ...mapState({
       feeds : (state) => state.post.feeds,
-      totalPages : (state) => state.post.totalPages,
     }),
    },
   methods : {
@@ -67,7 +66,6 @@ export default {
   },
   data () {
     return {
-      page : 1,
       headers : [
         {
           text : 'Media',

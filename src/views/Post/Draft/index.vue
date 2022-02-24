@@ -19,9 +19,6 @@ export default {
     AdminView,
     SelebView
   },
-  created() {
-    this.handleFetchingData()
-  },
   methods : {
     ...mapActions ({
       fetchFeeds : 'post/fetchFeeds',
@@ -35,20 +32,7 @@ export default {
       return this.fetchApi(page)
     },
     refreshDataFeed() {
-      const keyword = this.keywordSearch
-      const page = this.$route.params.page
-      const routerName = this.$route.name
-      const code = this.channelCode
-      if(keyword) {
-        const payload = {
-          keyword: keyword,
-          tab: routerName,
-          page : page - 1
-        };
-        return this.searchFeed(payload)
-      }else{
-        this.fetchApi(page, code)
-      }
+      this.$emit('refreshDataFeed')
     },
     getPayload (page, code) {
       const payload = {

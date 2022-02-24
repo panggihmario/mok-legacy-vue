@@ -18,6 +18,9 @@
        <template v-slot:[`item.user`]="{item}">
         <div :class="ad['tb__caption']">{{item.createBy}}</div>
       </template>
+      <template v-slot:[`item.publisher`]="{ item }" >
+        <div :class="ad['tb__caption']"  > {{item.publishBy}}  </div>
+      </template>
        <template v-slot:[`item.date`]="{item}">
         <div :class="ad['tb__caption']"> {{formatingDate(item.scheduledTime)}} </div>
       </template>
@@ -79,6 +82,13 @@ export default {
           sortable: false,
           filterable: false,
           value : 'user'
+        },
+        {
+          text : 'Publisher',
+          class : 'whitesnow',
+          sortable: false,
+          filterable: false,
+          value : 'publisher',
         },
         {
           text : 'Dijadwalkan Pada',
