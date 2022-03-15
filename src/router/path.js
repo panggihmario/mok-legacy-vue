@@ -40,6 +40,7 @@ import Order from "../views/Shop/Order";
 import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
 import allpath from "./pathFolder/index.js";
+import RnD from "../views/RnD/index.vue"
 
 const routes = [
   {
@@ -341,6 +342,11 @@ const routes = [
         name: "finance",
         component: Finance,
       },
+      {
+        path : "/rnd",
+        name : 'rnd',
+        component : RnD
+      }
     ],
   },
   {
