@@ -60,6 +60,7 @@
               size="small"
               @click="onReset"
             >Reset Tanggal</custom-button>
+            <div class="warning-sign">{{showWarning}} </div>
           </v-col>
         </v-row>
       </v-card>
@@ -91,6 +92,18 @@ export default {
     endDate () {
       if(this.choosenDate.length > 1) {
         return this.formatter(this.choosenDate[1])
+      }
+    },
+    showWarning () {
+      const [from, end] = this.choosenDate
+      if(from && end) {
+        const mFrom = moment(from)
+        const mEnd = moment(end)
+        if(mFrom > mEnd) {
+          return 'wrong range date'
+        }else{
+          return
+        }
       }
     },
     currentDate () {
@@ -142,5 +155,10 @@ export default {
     padding: 16px;
     background-color: $whitesnow;
   }
+}
+.warning-sign {
+  font-size: 12px;
+  font-weight: 500;
+  color: #777777;
 }
 </style>
