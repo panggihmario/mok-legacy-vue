@@ -40,7 +40,7 @@
         </v-btn>
       </div>
       <v-menu
-        v-if="isAdmin"
+        v-if="isAdmin && !isPublish "
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
@@ -70,14 +70,22 @@
         </v-card>
       </v-menu>
       <custom-button
-        v-if="isAdmin"
+        v-if="isAdmin && !isPublish"
         :loading="loading"
         @click="publishFeed"
         class="ml-4"
         size="small"
-        color="secondary"
+        color='secondary'
       >
-        Post Content Sekarang
+       Post Content Sekarang
+      </custom-button>
+      <custom-button
+        v-if="isAdmin && isPublish"
+        class="ml-4"
+        size="small"
+        color="success"
+      >
+        Success
       </custom-button>
       <div v-if="$route.name === 'reject'">
         <DeletedBy :item="feed" />
@@ -103,6 +111,7 @@ export default {
       menu: false,
       date: "",
       tempFeed: null,
+      isPublish : false
     };
   },
   props: {
@@ -128,16 +137,17 @@ export default {
         .then((response) => {
           setTimeout(() => {
             this.loading = false;
+            this.isPublish = true
             this.$emit('triggerNextAction')
           }, 1500);
         })
         .catch((err) => {
           this.loading = false;
+          this.isPublish = false
         });
     },
     getPayload(humanDate) {
       const item = this.feed;
-      console.log(this.feed);
       const medias = this.feed.medias;
       const itemWithSchedule = this.tempFeed;
       let payload;
