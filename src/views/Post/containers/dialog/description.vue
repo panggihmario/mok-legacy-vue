@@ -2,7 +2,11 @@
   <div :class="d.right">
     <div>
       <div :class="d.icon">
-        <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
+        <v-icon 
+          color="black" 
+          @click="closeDialog" 
+          class="cursor-pointer"
+          size="18px">fas fa-times</v-icon>
       </div>
       <div v-if="isAdmin" :class="d['desc-container']">
         <div>
