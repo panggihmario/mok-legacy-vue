@@ -11,6 +11,7 @@
           :item="item" 
           @refreshDataFeed="refreshDataFeed" 
           :isAdmin="true"
+          :feeds="feeds" 
         />
       </template>
       <template v-slot:[`item.description`]="{ item }" >
