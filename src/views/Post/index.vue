@@ -68,12 +68,17 @@
       
     <router-view @refreshDataFeed="refreshDataFeed" ></router-view>
 
-    <div  class="d-flex justify-end mt-4">
+    <div  class="d-flex justify-space-between align-center mt-4">
+      <div class="d-flex">
+        <div :class="p.label" >Total Post : </div>
+        <div :class="p.sublabel"> {{totalElements}} </div>
+      </div>
       <v-pagination
+        v-if="totalPages > 1"
         :length="totalPages"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
-        total-visible="10"
+        total-visible="5"
         color="primary"
         v-model="currentPage"
       />
@@ -100,6 +105,7 @@ export default {
   computed : {
     ...mapState({
       totalPages : (state) => state.post.totalPages,
+      totalElements : (state) => state.post.totalElements,
       channelCode : (state) => state.post.channelCode,
       paramsUsers : (state) => state.post.paramsUsers,
       paramsChannel : (state) => state.post.paramsChannel,
@@ -159,9 +165,6 @@ export default {
         ...(sort &&  {sort : sort} )
       }
       return this.fetchFeeds(payload)
-        // .then(response => {
-        //   console.log(response)
-        // })
     },
     changeTab(tab) {
       this.isFilter = false
@@ -415,6 +418,19 @@ export default {
 </script>
 
 <style lang="scss" module="p">
+.font-content {
+  font-size: 12px;
+  font-weight: 500;
+}
+.label {
+  color: #BBBBBB;
+  @extend .font-content;
+}
+.sublabel {
+  color: black;
+  @extend .font-content;
+  margin-left: 2px;
+}
 .alert {
   position: absolute;
   top: 20px;

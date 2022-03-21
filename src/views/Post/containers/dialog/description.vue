@@ -2,14 +2,21 @@
   <div :class="d.right">
     <div>
       <div :class="d.icon">
-        <v-icon @click="closeDialog" size="18px">fas fa-times</v-icon>
+        <v-icon 
+          color="black" 
+          @click="closeDialog" 
+          class="cursor-pointer"
+          size="18px">fas fa-times</v-icon>
       </div>
       <div v-if="isAdmin" :class="d['desc-container']">
         <div>
           <div :class="d.label">User</div>
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
-        <custom-textarea v-model="modelDescription" />
+        <textarea
+          :class="d['dg__text-area']"
+          v-model="modelDescription"
+        />
       </div>
       <div v-else :class="d.desc">
         <span :class="d.user">{{ item.createBy }}</span>

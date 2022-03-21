@@ -174,7 +174,14 @@ export default [
   },
   // {
   //   title : 'RnD new feature',
-  //   action
+  //   action: "post_add",
+  //   items : [
+  //     {
+  //       title : 'RnD',
+  //       path : '/rnd',
+  //       role : ["ROLE_ADMIN"],
+  //     }
+  //   ]
   // }
   // {
   //   title: "Order",

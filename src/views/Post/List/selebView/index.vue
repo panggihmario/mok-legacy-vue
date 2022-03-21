@@ -7,7 +7,10 @@
       :items="feeds"
     >
       <template v-slot:[`item.media`]="{item}" >
-        <LinkDialog  :item="item" />
+        <LinkDialog  
+          :item="item"
+          :feeds="feeds" 
+        />
       </template>
       <template v-slot:[`item.description`]="{ item }" >
         <div :class="ad['tb__caption']"  > {{item.description}}  </div>
@@ -17,6 +20,9 @@
       </template>
        <template v-slot:[`item.date`]="{item}">
         <div :class="ad['tb__caption']"> {{formatingDate(item.publishedAt)}} </div>
+      </template>
+      <template v-slot:[`body.append`]>
+        <tr></tr>
       </template>
     </v-data-table>
   </div>
