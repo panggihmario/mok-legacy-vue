@@ -150,6 +150,7 @@ export default {
         .then(response => {
           const responseData = response.data.data
           const content = responseData.content
+          const totalElements = responseData.totalElements
           const totalPages = responseData.totalPages
           const contentWithIndex = content.map((c, idx) => {
             return {
@@ -159,6 +160,7 @@ export default {
           })
           commit('setFeeds', contentWithIndex)
           commit('setTotalPages', totalPages)
+          commit('setTotalElements', totalElements)
         })
     },
     fetchListAccounts ({state, dispatch}, payload) {
