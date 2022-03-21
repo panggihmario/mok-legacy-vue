@@ -1,3 +1,4 @@
+import moment from "moment"
 export default {
   data() {
     return {
@@ -39,15 +40,8 @@ export default {
       return newFormat;
     },
     formatingDateTracking(rawDate) {
-      const newDt = new Date(rawDate);
-      const day = newDt.getDate();
-      const month = newDt.getMonth() + 1;
-      const hours = newDt.getHours();
-      const minutes = newDt.getMinutes();
-      const newFormat = `${day} ${this.listMonths[month]} ${hours}:${
-        minutes >= 10 ? minutes : `0${minutes}`
-      } ${hours > 12 ? "PM" : "AM"}`;
-      return newFormat;
+      const formatted = moment(rawDate).format('DD MMM hh:mm A')
+      return formatted
     },
     formatPrice(value) {
       let val = (value / 1).toFixed(0).replace(".", ",");
