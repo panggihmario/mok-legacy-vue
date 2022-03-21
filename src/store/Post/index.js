@@ -6,6 +6,7 @@ export default {
     feeds : [],
     channelCode : null,
     totalPages : 0,
+    totalElements : 0,
     keywordSearch : '',
     paramsUsers : [],
     paramsChannel : [],
@@ -37,6 +38,9 @@ export default {
     setTotalPages (state, payload) {
       state.totalPages = payload
     },
+    setTotalElements (state, payload) {
+      state.totalElements = payload
+    },
     setEpochFeed(state, params) {
       state.feeds[params.index].scheduledTime = params.time
     }
@@ -65,6 +69,7 @@ export default {
           const responseData = response.data.data
           const content = responseData.content
           const totalPages = responseData.totalPages
+          const totalData = responseData.totalElements
           const contentWithIndex = content.map((c, idx) => {
             return {
               ...c,
@@ -73,6 +78,7 @@ export default {
           })
           commit('setFeeds', contentWithIndex)
           commit('setTotalPages', totalPages)
+          commit('setTotalElements', totalData)
           return responseData
         })
         .catch (err => { throw err })

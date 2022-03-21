@@ -21,6 +21,9 @@
        <template v-slot:[`item.date`]="{item}">
         <div :class="ad['tb__caption']"> {{formatingDate(item.scheduledTime)}} </div>
       </template>
+      <template v-slot:[`body.append`]>
+        <tr></tr>
+      </template>
     </v-data-table>
   </div>
 </template>
