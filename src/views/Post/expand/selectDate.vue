@@ -65,7 +65,7 @@
               >Reset Tanggal</custom-button>
               <div class="warning-sign">{{showWarning}} </div> -->
               <div class="d-flex justify-end">
-                <v-btn @click="onReset" text color="warning"> 
+                <v-btn class="mr-4"  small @click="onReset" text color="warning"> 
                   <div class="dt__text-button">Reset</div>
                 </v-btn>
                 <v-btn @click="closeMenu" small  color="secondary"> 
