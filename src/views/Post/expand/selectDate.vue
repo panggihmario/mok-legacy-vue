@@ -22,45 +22,57 @@
       <v-card class="dt__card" flat>
         <v-row>
           <v-col cols="6">
-            <v-date-picker 
+            <v-date-picker
               width="250"
-              v-model="choosenDate" 
+              v-model="choosenDate"
               no-title
               range
               :max="currentDate"
-            > 
+            >
             </v-date-picker>
           </v-col>
-          <v-col> 
-            <custom-input
-              outlined 
-              dense
-              color="secondary"
-              label="Dari Tanggal"
-              readonly
-              v-model="fromDate"
-              hide-details
-              append-icon="mdi-calendar"
-            />
-              
-            <div class="mb-2"></div>
-            <custom-input
-              outlined 
-              dense
-              color="secondary"
-              label="Sampai Tanggal"
-              readonly
-              v-model="endDate"
-              hide-details
-              append-icon="mdi-calendar"
-            />
-            <div class="mb-2"></div>
-            <custom-button
-              color="warning"
-              size="small"
-              @click="onReset"
-            >Reset Tanggal</custom-button>
-            <div class="warning-sign">{{showWarning}} </div>
+          <v-col class="dt__box-right">
+            <div>
+              <custom-input
+                outlined
+                dense
+                color="secondary"
+                label="Dari Tanggal"
+                readonly
+                v-model="fromDate"
+                hide-details
+                append-icon="mdi-calendar"
+              />
+
+              <div class="mb-2"></div>
+              <custom-input
+                outlined
+                dense
+                color="secondary"
+                label="Sampai Tanggal"
+                readonly
+                v-model="endDate"
+                hide-details
+                append-icon="mdi-calendar"
+              />
+            </div>
+            <!-- <div class="mb-2"></div> -->
+            <div>
+              <!-- <custom-button
+                color="warning"
+                size="small"
+                @click="onReset"
+              >Reset Tanggal</custom-button>
+              <div class="warning-sign">{{showWarning}} </div> -->
+              <div class="d-flex justify-end">
+                <v-btn class="mr-4"  small @click="onReset" text color="warning"> 
+                  <div class="dt__text-button">Reset</div>
+                </v-btn>
+                <v-btn @click="closeMenu" small  color="secondary"> 
+                   <div class="dt__text-button">OK</div>
+                </v-btn>
+              </div>
+            </div>
           </v-col>
         </v-row>
       </v-card>
@@ -69,83 +81,106 @@
 </template>
 
 <script>
-import moment from "moment"
-import { mapMutations, mapState } from "vuex"
+import moment from "moment";
+import { mapMutations, mapState } from "vuex";
 export default {
   data: () => ({
     fav: true,
     menu: false,
     message: false,
     hints: true,
-    selectedDate : ''
+    selectedDate: "",
   }),
-  computed : {
-    ...mapState ({
-      paramsDate : (state) => state.post.paramsDate,
-      displayDate : (state) => state.post.displayDate
+  computed: {
+    ...mapState({
+      paramsDate: (state) => state.post.paramsDate,
+      displayDate: (state) => state.post.displayDate,
     }),
-    fromDate () {
-      if(this.choosenDate.length > 0) {
-        return this.formatter(this.choosenDate[0])
+    fromDate() {
+      if (this.choosenDate.length > 0) {
+        return this.formatter(this.choosenDate[0]);
       }
     },
-    endDate () {
-      if(this.choosenDate.length > 1) {
-        return this.formatter(this.choosenDate[1])
+    endDate() {
+      if (this.choosenDate.length > 1) {
+        return this.formatter(this.choosenDate[1]);
       }
     },
-    showWarning () {
-      const [from, end] = this.choosenDate
-      if(from && end) {
-        const mFrom = moment(from)
-        const mEnd = moment(end)
-        if(mFrom > mEnd) {
-          return 'wrong range date'
-        }else{
-          return
+    showWarning() {
+      const [from, end] = this.choosenDate;
+      if (from && end) {
+        const mFrom = moment(from);
+        const mEnd = moment(end);
+        if (mFrom > mEnd) {
+          return "wrong range date";
+        } else {
+          return;
         }
       }
     },
-    currentDate () {
-      const d = moment().format('YYYY-MM-DD')
-      return d
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
     },
     choosenDate: {
       get() {
-        return this.paramsDate
+        return this.paramsDate;
       },
       set(value) {
-        this.setParamsDate(value)
-      }
-    }
-
-  },
-  methods : {
-    ...mapMutations({
-      setParamsDate : 'post/setParamsDate',
-      setDisplayDate : 'post/setDisplayDate'
-    }),
-    onReset() {
-      this.choosenDate = []
-      this.setDisplayDate('')
+        const after = this.checkRangeDate(value)
+        if(after[1]) {
+          this.setParamsDate(after)
+        }else{
+          this.setParamsDate(value);
+        }
+      },
     },
-    formatter (value) {
-      const v = moment(value).format('DD/MM/YYYY')
-      return v
+  },
+  methods: {
+    ...mapMutations({
+      setParamsDate: "post/setParamsDate",
+      setDisplayDate: "post/setDisplayDate",
+    }),
+    checkRangeDate(value) {
+      const [first, second] = value
+      const mFirst = moment(first);
+      const mSecond = moment(second);
+      if (mFirst > mSecond) {
+          return [second , first]
+      } else {
+        return [first, second]
+      }
+    },
+    onReset() {
+      this.choosenDate = [];
+      this.setDisplayDate("");
+    },
+    formatter(value) {
+      const v = moment(value).format("DD/MM/YYYY");
+      return v;
+    },
+    closeMenu() {
+      this.menu = false
+      this.onClick()
     },
     onClick() {
-      if(this.choosenDate.length > 0) {
-        const d = this.choosenDate
-        const from = this.formatter(d[0])
-        this.setDisplayDate(from)
-        if(this.choosenDate.length > 1) {
-          const end = this.formatter(d[1])
-          const fullDate = `${from} - ${end}`
-          this.setDisplayDate(fullDate)
+      if (this.choosenDate.length > 0) {
+        const d = this.choosenDate;
+        const from = this.formatter(d[0]);
+        this.setDisplayDate(from);
+        if (this.choosenDate.length > 1) {
+          // const end = this.formatter(d[1]);
+          // const fullDate = `${from} - ${end}`;
+          const afterCheckRangeDate = this.checkRangeDate(this.choosenDate)
+          const start = this.formatter(afterCheckRangeDate[0])
+          const end = this.formatter(afterCheckRangeDate[1])
+          const fullDate = `${start} - ${end}`;
+          this.setDisplayDate(fullDate);
+          this.setParamsDate(afterCheckRangeDate)
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -154,6 +189,15 @@ export default {
   &__card {
     padding: 16px;
     background-color: $whitesnow;
+  }
+  &__box-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__text-button {
+    font-size: 9px;
+    font-weight: 500;
   }
 }
 .warning-sign {

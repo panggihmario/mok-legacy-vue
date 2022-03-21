@@ -148,7 +148,7 @@
           class="mt-3"
         >
           <v-col cols="2" class="d-flex justify-space-between align-center">
-            <span class="font-weight-medium">{{
+            <span style="width : 68px"  class="font-weight-medium">{{
               formatingDateTracking(hist.shipmentDate)
             }}</span>
             <v-avatar
