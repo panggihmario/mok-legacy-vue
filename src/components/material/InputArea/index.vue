@@ -5,10 +5,10 @@
       solo
       flat
       v-bind="$attrs"
-      :background-color="color"
       class="field-area"
       v-on="inputListeners"
       :error-messages="errors"
+      :background-color="color"
     />
   </ValidationProvider>
 </template>

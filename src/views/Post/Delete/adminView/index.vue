@@ -6,122 +6,125 @@
       class="grey--text"
       :items="feeds"
     >
-      <template v-slot:[`item.media`]="{item}" >
-        <LinkDialog  :item="item" />
+      <template v-slot:[`item.media`]="{ item }">
+        <LinkDialog :item="item" :feeds="feeds" />
       </template>
-      <template v-slot:[`item.description`]="{ item }" >
-        <div :class="ad['tb__caption']"  > {{item.description}}  </div>
+      <template v-slot:[`item.description`]="{ item }">
+        <div :class="ad['tb__caption']">{{ item.description }}</div>
       </template>
-       <template v-slot:[`item.channel`]="{ item }" >
-        <div :class="ad['tb__caption']"  > {{item.channel.name}}  </div>
+      <template v-slot:[`item.channel`]="{ item }">
+        <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
       </template>
-      <template v-slot:[`item.publisher`]="{ item }" >
-        <div :class="ad['tb__caption']"  > {{item.publishBy}}  </div>
+      <template v-slot:[`item.publisher`]="{ item }">
+        <div :class="ad['tb__caption']">{{ item.publishBy }}</div>
       </template>
-      <template v-slot:[`item.user`]="{ item }" >
-        <div :class="ad['tb__caption']"  > {{item.createBy}}  </div>
+      <template v-slot:[`item.user`]="{ item }">
+        <div :class="ad['tb__caption']">{{ item.createBy }}</div>
       </template>
-       <template v-slot:[`item.delete`]="{item}">
-        <div :class="ad['tb__caption']">{{item.deletedBy}}</div>
+      <template v-slot:[`item.delete`]="{ item }">
+        <div :class="ad['tb__caption']">{{ item.deletedBy }}</div>
       </template>
-       <template v-slot:[`item.date`]="{item}">
-        <div :class="ad['tb__caption']"> {{formatingDate(item.deletedAt)}} </div>
+      <template v-slot:[`item.date`]="{ item }">
+        <div :class="ad['tb__caption']">
+          {{ formatingDate(item.deletedAt) }}
+        </div>
+      </template>
+      <template v-slot:[`body.append`]>
+        <tr></tr>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex"
-import moment from 'moment'
-import LinkDialog from "../../containers/dialog/index.vue"
+import { mapState } from "vuex";
+import moment from "moment";
+import LinkDialog from "../../containers/dialog/index.vue";
 export default {
-  components : {
-    LinkDialog
+  components: {
+    LinkDialog,
   },
-  mounted () {
-    const page = this.$route.params.page
-    this.page = Number(page)
+  mounted() {
+    const page = this.$route.params.page;
+    this.page = Number(page);
   },
-  computed : {
+  computed: {
     ...mapState({
-      feeds : (state) => state.post.feeds,
-      totalPages : (state) => state.post.totalPages,
+      feeds: (state) => state.post.feeds,
+      totalPages: (state) => state.post.totalPages,
     }),
   },
-  methods : {
+  methods: {
     formatingDate(rawDate) {
-      if(rawDate){
-        const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
+      if (rawDate) {
+        const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
         return cek;
-      }else{
-        return 'Rejected'
+      } else {
+        return "Rejected";
       }
-      
     },
   },
-  data () {
+  data() {
     return {
-      page : 1,
-      headers : [
+      page: 1,
+      headers: [
         {
-          text : 'Media',
-          class : 'whitesnow',
+          text: "Media",
+          class: "whitesnow",
           sortable: false,
-          value : 'media',
+          value: "media",
           filterable: false,
-          width : "90"
-        },
-        {
-          text : 'Caption',
-          class : 'whitesnow',
-          value : 'description',
-          sortable: false,
-          filterable: false,
-          width : "260"
+          width: "90",
         },
         {
-          text : 'Channel',
-          class : 'whitesnow',
+          text: "Caption",
+          class: "whitesnow",
+          value: "description",
           sortable: false,
           filterable: false,
-          value : 'channel',
+          width: "260",
         },
         {
-          text : 'Publisher',
-          class : 'whitesnow',
+          text: "Channel",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'publisher',
+          value: "channel",
         },
         {
-          text : 'User',
-          class : 'whitesnow',
+          text: "Publisher",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'user',
+          value: "publisher",
         },
         {
-          text : 'Dihapus Oleh',
-          class : 'whitesnow',
+          text: "User",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'delete'
+          value: "user",
         },
-         {
-          text : 'Dihapus Pada',
-          class : 'whitesnow',
+        {
+          text: "Dihapus Oleh",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'date',
-          align : 'center',
+          value: "delete",
         },
-      ]
-    }
-  }
-}
+        {
+          text: "Dihapus Pada",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+          value: "date",
+          align: "center",
+        },
+      ],
+    };
+  },
+};
 </script>
 
 <style src="../../style.scss" lang="scss" module="ad">
-
 </style>

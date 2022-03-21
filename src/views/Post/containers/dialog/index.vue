@@ -1,127 +1,81 @@
 <template>
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
-    <v-dialog v-model="dialog" width="850" @click:outside="closeDialog">
-      <!-- <v-dialog  v-model="dialog" fullscreen @click:outside="closeDialog"> -->
-      <v-card>
-        <v-row no-gutters>
-          <v-col cols="6">
-            <div :class="d.left">
-              <v-carousel
-                height="456"
-                v-model="slidePosition"
-                hide-delimiters
-                :show-arrows="false"
-                class="mb-4"
-              >
-                <v-carousel-item
-                  v-for="(item, i) in detailFeed.medias"
-                  hide-delimiters
-                  :key="i"
-                  reverse-transition="fade-transition"
-                  transition="fade-transition"
-                >
-                  <video
-                    v-if="item.type === 'video'"
-                    controls
-                    :src="item.url"
-                    :id="`videodialog-${i}-${item.id}`"
-                    autoplay
-                    :class="d.vid"
-                  />
-                  <div :class="d['container-image']" v-else>
-                    <img :class="d.img" :src="item.url" :srcset="item.url" />
+    <v-dialog v-model="dialog" width="850px"  @click:outside="closeDialog">
+      <div :class="d['dg__btn-left']">
+        <v-btn
+          @click="slideLeft"
+          style="background: rgba(0, 0, 0, 0.5)"
+          fab
+          dark
+          small
+        >
+          <v-icon small>fas fa-arrow-left</v-icon>
+        </v-btn>
+      </div>
+      <v-card width="850px">
+        <v-carousel
+          height="552"
+          hide-delimiter-background
+          hide-delimiters
+          :show-arrows="false"
+          v-model="feedPosition"
+        >
+          <v-carousel-item v-for="(feed, i) in feeds" :key="i">
+            <div color="white"  height="552px" width="850px">
+              <v-row no-gutters>
+                <v-col cols="6">
+                  <div :class="d.left">
+                    <CarouselMedia 
+                      :feed="detailFeed"
+                      ref="carouselMedia"
+                      :isAdmin="isAdmin"
+                      @triggerNextAction="triggerNextAction"
+                      :description="description"
+                    />
                   </div>
-                </v-carousel-item>
-              </v-carousel>
-              <div class="d-flex align-center">
-                <div class="d-flex" v-if="detailFeed.medias.length > 1">
-                  <v-btn 
-                    icon 
-                    @click="slideLeft"
-                    :disabled="slidePosition ===  0"
-                  >
-                    <v-icon small>fas fa-chevron-left</v-icon>
-                  </v-btn>
-                  <v-btn 
-                    :disabled="slidePosition ===  detailFeed.medias.length - 1 "
-                    class="mr-4" @click="slideRight" icon>
-                    <v-icon small>fas fa-chevron-right</v-icon>
-                  </v-btn>
-                </div>
-                <v-menu
-                  v-if="isAdmin"
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <div style="position: relative">
-                      <input
-                        :class="d.schedule"
-                        placeholder="DD/MM/YYYY  HH:MM"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                        v-model="humanDate"
-                      />
-                    </div>
-                  </template>
-                  <v-card class="pa-2">
-                    <v-date-picker  v-model="date" class="mr-2"> </v-date-picker>
-                    <v-time-picker  v-model="timeSchedule" />
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn text color="primary" @click="setDate"> OK </v-btn>
-                  </v-card>
-                </v-menu>
-                <custom-button
-                  v-if="isAdmin"
-                  :loading="loading"
-                  @click="publishFeed"
-                  class="ml-4"
-                  size="small"
-                  color="secondary"
-                >
-                  Post Content Sekarang
-                </custom-button>
-                <div v-if="$route.name === 'reject' ">
-                  <DeletedBy :item="item" />
-                </div>
-              </div>
+                </v-col>
+                <v-col cols="6">
+                  <Description
+                    :item="feeds[feedPosition]"
+                    v-model="description"
+                    :description="description"
+                    @closeDialog="closeDialog"
+                    :isAdmin="isAdmin"
+                    @saveCaption="saveCaption"
+                  />
+                </v-col>
+              </v-row>
             </div>
-          </v-col>
-          <v-col cols="6">
-            <Description
-              :item="item"
-              v-model="description"
-              :description="description"
-              @closeDialog="closeDialog"
-              :isAdmin="isAdmin"
-              @saveCaption="saveCaption"
-            />
-          </v-col>
-        </v-row>
+          </v-carousel-item>
+        </v-carousel>
       </v-card>
+      <div :class="d['dg__btn-right']">
+        <v-btn
+          @click="slideRight"
+          style="background: rgba(0, 0, 0, 0.5)"
+          fab
+          dark
+          small
+        >
+          <v-icon small>fas fa-arrow-right</v-icon>
+        </v-btn>
+      </div>
     </v-dialog>
   </div>
 </template>
 
 <script>
 import moment from "moment";
-import Description from "./description.vue"
-import DeletedBy from "./deletedBy.vue"
+import Description from "./description.vue";
+import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
+import CarouselMedia from "./carouselMedia.vue";
 export default {
-  components : {
+  components: {
     Description,
-    DeletedBy
+    DeletedBy,
+    CarouselMedia,
   },
   props: {
     item: Object,
@@ -129,11 +83,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    feeds: {
+      type: Array,
+    },
   },
   data() {
     return {
       dialog: false,
-      isTyping : false,
+      isTyping: false,
+      feedPosition: 0,
       detailFeed: {
         medias: [],
       },
@@ -144,61 +102,60 @@ export default {
       tempItem: null,
       loading: false,
       slidePosition: 0,
-      description : ''
+      description: "",
     };
   },
-  computed: {
-    srcImage() {
-      if (this.detailFeed.medias) {
-        return this.detailFeed.medias[0].thumbnail.medium;
-      }
-    },
-    srcVideo() {
-      if (this.detailFeed.medias) {
-        return this.detailFeed.medias[0].url;
-      }
-    },
-    isVideo() {
-      if (this.detailFeed.medias) {
-        const type = this.detailFeed.medias[0].type;
-        if (type === "video") {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    },
+  watch : {
+    feedPosition (prev) {
+      const id = this.feeds[prev].id
+      return this.getFeedById(id)
+    }
   },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
     }),
-    saveCaption() {
-      const id = this.item.id
-      const payload = {
-        id : id,
-        type : 'edit',
-        params : {
-          ...this.item,
-          description : this.description,
-          medias : this.detailFeed.medias
-        }
+    slideRight() {
+      if (this.feeds.length - 1 === this.feedPosition) {
+        this.feedPosition = 0;
+      } else {
+        this.feedPosition++;
       }
+    },
+    slideLeft() {
+      if (this.feedPosition === 0) {
+        this.feedPosition = this.feeds.length - 1;
+      } else {
+        this.feedPosition--;
+      }
+    },
+    saveCaption() {
+      const id = this.item.id;
+      const payload = {
+        id: id,
+        type: "edit",
+        params: {
+          ...this.item,
+          description: this.description,
+          medias: this.detailFeed.medias,
+        },
+      };
       return this.updatePostFeed(payload)
         .then(() => {
-          return  this.fetchFeedById(id)
+          return this.fetchFeedById(id);
         })
-        .then(response => {
-           this.description = response.description
-        })
+        .then((response) => {
+          this.description = response.description;
+        });
     },
     getFeedById(id) {
+      this.detailFeed.medias = []
       return this.fetchFeedById(id).then((response) => {
         const slide = this.slidePosition;
         const medias = response.medias;
-        this.description = response.description
-        this.detailFeed.medias = medias;
+        this.description = response.description;
+        this.detailFeed = response
         let idVideo;
         medias.forEach((m, idx) => {
           if (m.type === "video") {
@@ -212,129 +169,25 @@ export default {
         }
       });
     },
-    stopVideo() {
-      const slide = this.slidePosition;
-      const medias = this.detailFeed.medias;
-      let idVideo;
-      medias.forEach((m, idx) => {
-        if (m.type === "video") {
-          if (idx === slide) {
-            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
-          }
-        }
-      });
-      if (idVideo) {
-        idVideo.pause();
-        idVideo.currentTime = 0;
-      }
-    },
-    playVideo() {
-      const slide = this.slidePosition;
-      const medias = this.detailFeed.medias;
-      let idVideo;
-      medias.forEach((m, idx) => {
-        if (m.type === "video") {
-          if (idx === slide) {
-            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
-          }
-        }
-      });
-      if (idVideo) {
-        idVideo.play();
-      }
-    },
-    slideLeft() {
-      this.stopVideo();
-      this.slidePosition--;
-      this.playVideo()
-    },
-    slideRight() {
-      this.stopVideo();
-      this.slidePosition++;
-      this.playVideo()
+    triggerNextAction() {
+      this.slideRight()
+      this.$refs.carouselMedia[0].stopVideo()
     },
     closeDialog() {
-      this.stopVideo();
+      this.$refs.carouselMedia[0].stopVideo()
       this.dialog = false;
       this.slidePosition = 0;
       this.$emit("refreshDataFeed");
     },
     openMedia() {
       this.dialog = true;
+      this.feedPosition = this.item.index
       const id = this.item.id;
       return this.getFeedById(id);
-    },
-    setDate() {
-      const d = this.date;
-      const t = this.timeSchedule;
-      const [year, month, date] = d.split("-");
-      const f = `${date}/${month}/${year}`;
-      const format = `${f} ${t}`;
-      this.humanDate = format;
-      this.convertEpoch(d, t);
-      this.menu = false;
-    },
-    convertEpoch(scheduleDate, scheduleTime) {
-      let schedule = `${scheduleDate} ${scheduleTime}`;
-      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
-        .add(7, "hours")
-        .unix();
-      const miliEpoch = epochDate * 1000;
-      const item = this.item;
-      const temp = {
-        ...item,
-        isScheduled: true,
-        scheduledTime: miliEpoch,
-      };
-      this.tempItem = temp;
-    },
-    getPayload(humanDate) {
-      const item = this.item;
-      const medias = this.detailFeed.medias;
-      const itemWithSchedule = this.tempItem;
-      let payload;
-      if (humanDate) {
-        payload = {
-          id: item.id,
-          type: "schedule",
-          params: {
-            ...itemWithSchedule,
-            medias: [...medias],
-            description : this.description
-          },
-        };
-      } else {
-        payload = {
-          id: item.id,
-          type: "publish",
-          params: {
-            ...item,
-            medias: [...medias],
-            description : this.description
-          },
-        };
-      }
-      return payload;
-    },
-    publishFeed() {
-      this.loading = true;
-      const payload = this.getPayload(this.humanDate);
-      return this.updatePostFeed(payload)
-        .then((response) => {
-          setTimeout(() => {
-            this.loading = false;
-            this.dialog = false;
-            this.$emit("refreshDataFeed");
-          }, 1500);
-        })
-        .catch((err) => {
-          this.loading = false;
-        });
     },
   },
 };
 </script>
 
 <style src="./style.scss" lang="scss" module="d">
-
 </style>
