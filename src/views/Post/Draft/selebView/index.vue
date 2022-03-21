@@ -24,6 +24,9 @@
       <template v-slot:[`item.action`]="">
        <custom-button size="small" disabled >Submitted</custom-button>
       </template>
+      <template v-slot:[`body.append`]>
+        <tr></tr>
+      </template>
     </v-data-table>
   </div>
 </template>

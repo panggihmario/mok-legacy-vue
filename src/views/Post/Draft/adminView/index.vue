@@ -26,12 +26,14 @@
       <template v-slot:[`item.user`]="{item}">
         <div :class="feed['tb__caption']">{{item.createBy}}</div>
       </template>
-     
       <template v-slot:[`item.schedule`]="{item}" >
         <ActionsPicker 
           :item="item" 
           @refreshDataFeed="refreshDataFeed"
         />
+      </template>
+      <template v-slot:[`body.append`]>
+        <tr></tr>
       </template>
     </v-data-table>
   </div>
