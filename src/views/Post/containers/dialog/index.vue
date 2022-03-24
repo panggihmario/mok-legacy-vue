@@ -131,16 +131,16 @@ export default {
       }
     },
     saveCaption() {
-      const id = this.item.id;
+      const id = this.detailFeed.id;
       const payload = {
         id: id,
         type: "edit",
         params: {
-          ...this.item,
+          ...this.detailFeed,
           description: this.description,
           medias: this.detailFeed.medias,
         },
-      };
+      }
       return this.updatePostFeed(payload)
         .then(() => {
           return this.fetchFeedById(id);
