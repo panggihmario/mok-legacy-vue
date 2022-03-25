@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="crumbs" label="List Post"> </HeaderContent>
-    <div class="d-flex align-center mb-6">
+    <div class="d-flex align-center">
       <v-btn @click="backRoute" elevation="0" color="secondarylowtint" small>
         <div class="text-capitalize secondary--text feed__label-button">
           Back
@@ -17,13 +17,17 @@
           class="d-flex child-flex"
           cols="3"
         >
-          <Media
-            :content="c"
-            :index="idx"
-            @deletePost="deletePost"
-          />
+          <Media :content="c" :index="idx" @deletePost="deletePost" />
         </v-col>
+        <v-card v-intersect="handleNextDataFeeds"></v-card>
       </v-row>
+    </div>
+    <div class="text-center">
+      <v-progress-circular
+        v-if="isLoading"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
     </div>
   </div>
 </template>
@@ -35,11 +39,13 @@ import HeaderContent from "@/containers/HeaderContent/index.vue";
 export default {
   components: {
     HeaderContent,
-    Media
+    Media,
   },
   data() {
     return {
       totalPost: 0,
+      currentPage: 1,
+      isLoading : false,
       contents: [],
       crumbs: [
         {
@@ -67,24 +73,22 @@ export default {
     };
     tempCrumbs.push(newObj);
     this.crumbs = tempCrumbs;
-    this.handleNextDataFeeds()
   },
   methods: {
     ...mapActions({
       fetchFeedByUserId: "account/fetchFeedByUserId",
-      deleteFeed : "account/deleteFeed"
+      deleteFeed: "account/deleteFeed",
     }),
     deletePost(payload) {
-      return this.deleteFeed(payload.id)
-        .then(() => {
-          this.contents.splice(payload.idx, 1)
-        })
+      return this.deleteFeed(payload.id).then(() => {
+        this.contents.splice(payload.idx, 1);
+      });
     },
     backRoute() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     openDetail(c) {
-      console.log(c)
+      console.log(c);
     },
     handleFetchDataFeeds() {
       const id = this.$route.params.id;
@@ -101,31 +105,29 @@ export default {
       });
     },
     handleNextDataFeeds() {
-      let currentPage = 1
-      window.onscroll = () => {
-        let bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight;
-        if (bottomOfWindow) {
-          const id = this.$route.params.id;
-          const data = {
-            id,
-            params: {
-              page: currentPage,
-              size: 12,
-            },
-          };
-          return this.fetchFeedByUserId(data).then((response) => {
-            currentPage++
-            const responseContents = response.content
-            const tempContents = [...this.contents]
-            responseContents.forEach(temp => {
-              tempContents.push(temp)
-            })
-            this.contents = tempContents
-          });
-        }
+      const id = this.$route.params.id;
+      const data = {
+        id,
+        params: {
+          page: this.currentPage,
+          size: 12,
+        },
       };
+      this.isLoading = true
+      setTimeout(() => {
+        return this.fetchFeedByUserId(data)
+          .then((response) => {
+            this.currentPage++;
+            const responseContents = response.content;
+            const tempContents = [...this.contents];
+            responseContents.forEach((temp) => {
+              tempContents.push(temp);
+            });
+            this.contents = tempContents;
+            this.isLoading = false
+          })
+          .catch(() => {this.isLoading = false})
+      }, 500);
     },
   },
 };
