@@ -111,6 +111,7 @@ export default {
     },
     async onLoad(e) {
       const file = e.target.files[0];
+      console.log({file});
       let form = new FormData();
       form.append("file", file);
       let result = {
