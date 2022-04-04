@@ -32,12 +32,12 @@
     </v-carousel>
     <div class="d-flex align-center black--text">
       <div class="d-flex" v-if="feed.medias.length > 1">
-        <v-btn icon color="black" @click="slideLeft">
-          <v-icon>fas fa-chevron-left</v-icon>
-        </v-btn>
-        <v-btn icon color="black" @click="slideRight">
-          <v-icon>fas fa-chevron-right</v-icon>
-        </v-btn>
+        <div :class="d['box-icon']" @click="slideLeft">
+          <v-icon color="silver" x-small>fas fa-chevron-left</v-icon>
+        </div>
+        <div :class="d['box-icon']" @click="slideRight">
+          <v-icon color="silver" x-small >fas fa-chevron-right</v-icon>
+        </div>
       </div>
       <v-menu
         v-if="isAdmin && !isPublish "
@@ -124,7 +124,10 @@ export default {
     },
     description : {
       type : String
-    }
+    },
+    item : {
+      type : Object
+    },
   },
   methods: {
     ...mapActions({
@@ -133,6 +136,7 @@ export default {
     publishFeed() {
       this.loading = true;
       const payload = this.getPayload(this.humanDate);
+      // console.log(payload)
       return this.updatePostFeed(payload)
         .then((response) => {
           setTimeout(() => {
@@ -158,7 +162,8 @@ export default {
           params: {
             ...itemWithSchedule,
             medias: [...medias],
-            description : this.description
+            description : this.description,
+            channel : this.item.channel
           },
         };
       } else {
@@ -168,7 +173,8 @@ export default {
           params: {
             ...item,
             medias: [...medias],
-            description : this.description
+            description : this.description,
+            channel : this.item.channel
           },
         };
       }
