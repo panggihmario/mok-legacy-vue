@@ -22,7 +22,7 @@
           v-model="feedPosition"
         >
           <v-carousel-item v-for="(feed, i) in feeds" :key="i">
-            <div color="white"  height="552px" width="850px">
+            <div   height="552px" width="850px">
               <v-row no-gutters>
                 <v-col cols="6">
                   <div :class="d.left">
@@ -32,6 +32,7 @@
                       :isAdmin="isAdmin"
                       @triggerNextAction="triggerNextAction"
                       :description="description"
+                      :item="feeds[feedPosition]"
                     />
                   </div>
                 </v-col>
@@ -141,6 +142,7 @@ export default {
           medias: this.detailFeed.medias,
         },
       }
+      console.log(payload)
       return this.updatePostFeed(payload)
         .then(() => {
           return this.fetchFeedById(id);
