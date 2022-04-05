@@ -27,7 +27,7 @@
               v-model="choosenDate"
               no-title
               range
-              :max="currentDate"
+              :max="maxDate"
             >
             </v-date-picker>
           </v-col>
@@ -121,6 +121,14 @@ export default {
     currentDate() {
       const d = moment().format("YYYY-MM-DD");
       return d;
+    },
+    maxDate () {
+      // v-if="$route.name  !== 'schedule'  "
+      if(this.$route.name === 'schedule') {
+        return null
+      }else{
+        return this.currentDate
+      }
     },
     choosenDate: {
       get() {
