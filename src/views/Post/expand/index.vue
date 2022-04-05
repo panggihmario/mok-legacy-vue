@@ -9,7 +9,7 @@
             :items="channels"
           />
         <SelectDate
-          v-if="$route.name  !== 'schedule'  "
+          
         />
       </div>
       <div class="d-flex">
