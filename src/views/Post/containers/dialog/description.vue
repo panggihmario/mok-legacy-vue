@@ -36,7 +36,7 @@
       </div>
     </div>
     <!-- <v-expand-x-transition> -->
-    <div v-if="isTyping">
+    <div v-if="isChanging">
        
       <custom-button
         size="small" 
@@ -63,7 +63,6 @@ import { mapActions } from "vuex";
 export default {
   data () {
     return {
-      isTyping : false,
       loading : false,
       channels : []
     }
@@ -79,6 +78,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isChanging : {
+      type : Boolean,
+      default : false
+    }
   },
   mounted () {
     this.getResponseChannel();
@@ -89,7 +92,7 @@ export default {
         return this.description
       },
       set(value) {
-        this.isTyping = true
+        this.$emit('setChange', true)
         this.$emit('input', value)
       }
     },
@@ -98,7 +101,7 @@ export default {
         return this.item.channel
       },
       set(value) {
-        this.isTyping = true
+        this.$emit('setChange', true)
         this.item.channel = value
       }
     }
@@ -110,9 +113,9 @@ export default {
     saveCaption() {
       this.loading = true
       setTimeout(() => {
-        this.isTyping = false
         this.$emit('saveCaption' , this.channelValue)
         this.loading = false
+        this.$emit('setChange', false)
       },1500)
     },
     closeDialog () {

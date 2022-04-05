@@ -33,6 +33,7 @@
                       @triggerNextAction="triggerNextAction"
                       :description="description"
                       :item="feeds[feedPosition]"
+                      @setChange="setChange"
                     />
                   </div>
                 </v-col>
@@ -44,6 +45,8 @@
                     @closeDialog="closeDialog"
                     :isAdmin="isAdmin"
                     @saveCaption="saveCaption"
+                    @setChange="setChange"
+                    :isChanging="isChanging"
                   />
                 </v-col>
               </v-row>
@@ -91,7 +94,7 @@ export default {
   data() {
     return {
       dialog: false,
-      isTyping: false,
+      isChanging: false,
       feedPosition: 0,
       detailFeed: {
         medias: [],
@@ -117,6 +120,9 @@ export default {
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
     }),
+    setChange(value) {
+      this.isChanging = value
+    },
     slideRight() {
       if (this.feeds.length - 1 === this.feedPosition) {
         this.feedPosition = 0;

@@ -136,13 +136,13 @@ export default {
     publishFeed() {
       this.loading = true;
       const payload = this.getPayload(this.humanDate);
-      // console.log(payload)
       return this.updatePostFeed(payload)
         .then((response) => {
           setTimeout(() => {
             this.loading = false;
             this.isPublish = true
             this.$emit('triggerNextAction')
+            this.$emit('setChange', false)
           }, 1500);
         })
         .catch((err) => {
