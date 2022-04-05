@@ -131,7 +131,7 @@ export default {
         this.feedPosition--;
       }
     },
-    saveCaption() {
+    saveCaption(channelValue) {
       const id = this.detailFeed.id;
       const payload = {
         id: id,
@@ -140,9 +140,9 @@ export default {
           ...this.detailFeed,
           description: this.description,
           medias: this.detailFeed.medias,
+          channel : channelValue
         },
       }
-      console.log(payload)
       return this.updatePostFeed(payload)
         .then(() => {
           return this.fetchFeedById(id);

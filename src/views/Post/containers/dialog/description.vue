@@ -81,7 +81,6 @@ export default {
     },
   },
   mounted () {
-    console.log(this.item)
     this.getResponseChannel();
   },
   computed : {
@@ -112,7 +111,7 @@ export default {
       this.loading = true
       setTimeout(() => {
         this.isTyping = false
-        this.$emit('saveCaption')
+        this.$emit('saveCaption' , this.channelValue)
         this.loading = false
       },1500)
     },
