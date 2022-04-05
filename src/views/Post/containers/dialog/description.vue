@@ -122,13 +122,7 @@ export default {
       const response = await this.getAllChannel();
       if (response.status === 200) {
         const responseData = response.data.data;
-        const formatResponse = responseData.map((d) => {
-          return {
-            name: d.name,
-            id: d.id,
-          };
-        });
-        this.channels = formatResponse;
+        this.channels = responseData;
       } else {
         return response;
       }
