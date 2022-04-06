@@ -38,6 +38,7 @@
                   </div>
                 </v-col>
                 <v-col cols="6">
+                  <!-- <div class="red--text" >{{isPublish}}</div> -->
                   <Description
                     :item="feeds[feedPosition]"
                     v-model="description"
@@ -49,6 +50,7 @@
                     :isChanging="isChanging"
                     :isPublish="isPublish[feedPosition]"
                   />
+                  
                 </v-col>
               </v-row>
             </div>
@@ -189,6 +191,7 @@ export default {
       this.dialog = false;
       this.slidePosition = 0;
       this.$emit("refreshDataFeed");
+      this.isPublish = []
     },
     openMedia() {
       this.dialog = true;
