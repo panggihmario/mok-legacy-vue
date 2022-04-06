@@ -47,7 +47,9 @@
                     @saveCaption="saveCaption"
                     @setChange="setChange"
                     :isChanging="isChanging"
+                    :isPublish="isPublish[feedPosition + 1 ]"
                   />
+                  
                 </v-col>
               </v-row>
             </div>
@@ -95,6 +97,7 @@ export default {
     return {
       dialog: false,
       isChanging: false,
+      isPublish : [],
       feedPosition: 0,
       detailFeed: {
         medias: [],
@@ -122,6 +125,7 @@ export default {
     }),
     setChange(value) {
       this.isChanging = value
+      this.isPublish[this.feedPosition] = true
     },
     slideRight() {
       if (this.feeds.length - 1 === this.feedPosition) {
@@ -186,6 +190,7 @@ export default {
       this.dialog = false;
       this.slidePosition = 0;
       this.$emit("refreshDataFeed");
+      this.isPublish = []
     },
     openMedia() {
       this.dialog = true;

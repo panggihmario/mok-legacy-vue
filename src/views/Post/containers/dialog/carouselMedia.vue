@@ -134,6 +134,10 @@ export default {
       updatePostFeed: "post/updatePostFeed",
     }),
     publishFeed() {
+      // this.$emit('setChange', false)
+      //        this.loading = false;
+      //       this.isPublish = true
+      //                  this.$emit('triggerNextAction')
       this.loading = true;
       const payload = this.getPayload(this.humanDate);
       return this.updatePostFeed(payload)
