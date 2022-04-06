@@ -38,7 +38,6 @@
                   </div>
                 </v-col>
                 <v-col cols="6">
-                  <!-- <div class="red--text" >{{isPublish}}</div> -->
                   <Description
                     :item="feeds[feedPosition]"
                     v-model="description"
@@ -48,7 +47,7 @@
                     @saveCaption="saveCaption"
                     @setChange="setChange"
                     :isChanging="isChanging"
-                    :isPublish="isPublish[feedPosition]"
+                    :isPublish="isPublish[feedPosition + 1 ]"
                   />
                   
                 </v-col>
