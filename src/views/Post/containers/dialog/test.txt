@@ -27,14 +27,47 @@
         >
           <v-carousel-item v-for="(feed, i) in feeds" :key="i">
             <Items
+              :feed="detailFeed"
               :isAdmin="isAdmin"
               :item="feeds[feedPosition]"
               ref="items"
               @triggerNextAction="triggerNextAction"
               @closeDialog="closeDialog"
+              :description="description"
               :feedPosition="feedPosition"
               :feeds="feeds"
             />
+            <!-- <div   height="552px" width="850px">
+              <v-row no-gutters>
+                <v-col cols="6">
+                  <div :class="d.left">
+                    <CarouselMedia 
+                      :feed="detailFeed"
+                      ref="carouselMedia"
+                      :isAdmin="isAdmin"
+                      @triggerNextAction="triggerNextAction"
+                      :description="description"
+                      :item="feeds[feedPosition]"
+                      @setChange="setChange"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="6">
+                  <Description
+                    :item="feeds[feedPosition]"
+                    v-model="description"
+                    :description="description"
+                    @closeDialog="closeDialog"
+                    :isAdmin="isAdmin"
+                    @saveCaption="saveCaption"
+                    @setChange="setChange"
+                    :isChanging="isChanging"
+                    :isPublish="isPublish[feedPosition + 1 ]"
+                  />
+                  
+                </v-col>
+              </v-row>
+            </div> -->
           </v-carousel-item>
         </v-carousel>
       </v-card>
@@ -79,9 +112,22 @@ export default {
   data() {
     return {
       dialog: false,
+      isChanging: false,
+      isPublish : [],
       feedPosition: 0,
+      detailFeed: {
+        medias: [],
+      },
+      slidePosition: 0,
+      description: "",
     };
   },
+  // watch : {
+  //   feedPosition (prev) {
+  //     const id = this.feeds[prev].id
+  //     return this.getFeedById(id)
+  //   }
+  // },
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
@@ -105,22 +151,44 @@ export default {
         this.feedPosition--;
       }
     },
+    // getFeedById(id) {
+    //   this.detailFeed.medias = []
+    //   return this.fetchFeedById(id).then((response) => {
+    //     const slide = this.slidePosition;
+    //     const medias = response.medias;
+    //     this.description = response.description;
+    //     this.detailFeed = response
+    //     let idVideo;
+    //     medias.forEach((m, idx) => {
+    //       if (m.type === "video") {
+    //         if (idx === slide) {
+    //           idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+    //         }
+    //       }
+    //     });
+    //     if (idVideo) {
+    //       idVideo.play();
+    //     }
+    //   });
+    // },
     triggerNextAction() {
       this.slideRight()
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
       this.$refs.items[0].stopVideo()
-      this.$refs.items.forEach((c, idx) => {
-        this.$refs.items[idx].stopVideo()
-      })
+      console.log(this.$refs.items)
       this.dialog = false;
+      this.slidePosition = 0;
       this.$emit("refreshDataFeed");
       this.isPublish = []
     },
     openMedia() {
       this.dialog = true;
       this.feedPosition = this.item.index
+      // const id = this.item.id;
+      // this.$refs.items.getFeed()
+      // return this.getFeedById(id);
     },
   },
 };
