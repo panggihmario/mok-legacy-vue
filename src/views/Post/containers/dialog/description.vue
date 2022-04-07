@@ -15,7 +15,11 @@
           <div :class="d.label">User</div>
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
-        <textarea :class="d['dg__text-area']" v-model="modelDescription" />
+        <textarea 
+          :class="d['dg__text-area']" 
+          v-model="modelDescription" 
+          :readonly="isPublish"
+        />
         <div style="width: 250px">
           <custom-input 
             v-if="isPublish" 
