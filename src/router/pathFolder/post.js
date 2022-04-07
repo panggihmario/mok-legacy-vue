@@ -7,6 +7,11 @@ const pathPost = [
     component : () => import('../../views/Post/Create/index.vue'),
   },
   {
+    path : '/post/tiktok',
+    name : 'listTiktok',
+    component : () => import('../../views/Post/Tiktok'),
+  },
+  {
     path : '/post',
     name : 'listFeed',
     component : () => import('@/views/Post/index.vue'),
