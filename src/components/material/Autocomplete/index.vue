@@ -44,8 +44,13 @@ export default {
 };
 </script>
 
+
+
+
+
 <style lang="sass" scoped>
 .field
-	border-radius: $border-radius-root
-	font-size: $font-size-root
+  border-radius: $border-radius-root
+  font-size: $font-size-root
+  color: black
 </style>

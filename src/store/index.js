@@ -14,6 +14,7 @@ import finance from "./finance";
 import order from "./order";
 import dashboard from "./dashboard";
 import trending from "./trending";
+import tiktok from "./tiktok";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -31,16 +32,17 @@ export default new Vuex.Store({
     finance,
     order,
     dashboard,
-    trending
+    trending,
+    tiktok,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
-    viewNews : false
+    viewNews: false,
   },
-  mutations : {
-    setViewNews (state, payload) {
-      state.viewNews = payload
-    }
+  mutations: {
+    setViewNews(state, payload) {
+      state.viewNews = payload;
+    },
   },
   getters: {
     appVersion: (state) => {
@@ -48,16 +50,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    changeStatusViewNews({commit}, params) {
-      commit('setViewNews', params)
+    changeStatusViewNews({ commit }, params) {
+      commit("setViewNews", params);
     },
     getWithToken(ctx, data) {
-      return this._vm.$httpWithToken().get(data.url,{
-        params : {...data.params}
-      })
+      return this._vm.$httpWithToken().get(data.url, {
+        params: { ...data.params },
+      });
     },
     postWithToken(ctx, params) {
-      return this._vm.$httpWithToken().post(params.url, params.data)
+      return this._vm.$httpWithToken().post(params.url, params.data);
     },
     putWithToken(ctx, params) {
       return this._vm.$httpWithToken().put(params.url, params.data);
