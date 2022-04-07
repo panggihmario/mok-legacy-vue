@@ -3,11 +3,8 @@ import Vue from "vue";
 import store from "../../store";
 
 const BASE_URL = process.env.VUE_APP_BASE_URL;
-// const BASE_URL = 'https://api-main.kipaskipas.com/api/v1/'
 const BASE_UPLOAD_URL = process.env.VUE_APP_UPLOAD;
-const BASE_TIKTOK_URL = "http://localhost:3000";
-const BASE_TIKTOK_NO_WATERMARK_URL =
-  "https://tiktok-download-video-no-watermark.p.rapidapi.com";
+const BASE_TIKTOK_URL = process.env.VUE_APP_BASE_TIKTOK_URL;
 
 const getToken = () => {
   const token = store.state.authentication.token;
@@ -44,18 +41,6 @@ const serviceTiktokWithoutTokenWithBlob = () => {
   });
 };
 
-const serviceTiktokDownloadWithoutWatermark = () => {
-  return axios.create({
-    baseURL: BASE_TIKTOK_NO_WATERMARK_URL,
-    timeout: 60 * 4 * 1000,
-    headers: {
-      "Content-Type": `application/json`,
-      "X-RapidAPI-Host": "tiktok-download-video-no-watermark.p.rapidapi.com",
-      "X-RapidAPI-Key": "5cda19a5eemsh647f0ee4baabbdcp152048jsn1853aed6d5f7",
-    },
-  });
-};
-
 const getTiktokWithoutToken = (payload) => {
   return serviceTiktokWithoutToken().get(payload.url, {
     params: payload.params,
@@ -64,12 +49,6 @@ const getTiktokWithoutToken = (payload) => {
 
 const downloadTiktokWithoutToken = (payload) => {
   return serviceTiktokWithoutTokenWithBlob().get(payload.url, {
-    params: payload.params,
-  });
-};
-
-const downloadTiktokWithoutWatermark = (payload) => {
-  return serviceTiktokDownloadWithoutWatermark().get(payload.url, {
     params: payload.params,
   });
 };
@@ -118,5 +97,3 @@ Vue.prototype.$fetchWithToken = getWithToken;
 
 Vue.prototype.$fetchTiktokWithoutToken = getTiktokWithoutToken;
 Vue.prototype.$fetchDownloadTiktokWithoutToken = downloadTiktokWithoutToken;
-
-Vue.prototype.$fetchDownloadTiktokWithoutWatermark = downloadTiktokWithoutWatermark;

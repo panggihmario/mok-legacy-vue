@@ -14,22 +14,32 @@
           {{ item }}
         </div>
       </div>
-      <v-text-field
-        v-if="tab == 2 || tab == 3"
-        rounded
-        outlined
-        dense
-        clearable
-        hide-details="auto"
-        append-icon="search"
-        v-model="keyword"
-        :label="`Search ${tabSearch}`"
-        @keypress.enter="
-          tabSearch == 'Username'
-            ? actionGetUserDetail()
-            : actionGetFeedByHashtag()
-        "
-      ></v-text-field>
+      <div v-if="tab == 2 || tab == 3">
+        <v-text-field
+          v-if="tabSearch == 'Username'"
+          rounded
+          outlined
+          dense
+          clearable
+          hide-details="auto"
+          append-icon="search"
+          v-model="keywordUsername"
+          :label="`Search ${tabSearch}`"
+          @keypress.enter="actionGetUserDetail()"
+        ></v-text-field>
+        <v-text-field
+          v-if="tabSearch == 'Hashtag'"
+          rounded
+          outlined
+          dense
+          clearable
+          hide-details="auto"
+          append-icon="search"
+          v-model="keywordHashtag"
+          :label="`Search ${tabSearch}`"
+          @keypress.enter="actionGetFeedByHashtag()"
+        ></v-text-field>
+      </div>
 
       <div v-else v-show="!loading">
         <v-tooltip bottom color="green">
@@ -158,7 +168,8 @@ export default {
       alertSuccess: false,
       alertFailed: false,
       alertRules: false,
-      keyword: "",
+      keywordUsername: "",
+      keywordHashtag: "",
       channels: null,
       userInfo: null,
       userFeed: null,
@@ -187,7 +198,6 @@ export default {
         this.tabSearch = "Hashtag";
       }
       this.focusIndex = null;
-      this.keyword = "";
       this.selectedItem = null;
     },
     userInfo() {
@@ -212,7 +222,6 @@ export default {
       postFeed: "post/postFeed",
     }),
     moveTab(i) {
-      this.keyword = "";
       this.tab = i;
     },
     movePageDraft() {
@@ -236,10 +245,12 @@ export default {
     },
     actionGetUserDetail() {
       this.loadingUsername = true;
-      return this.getUserDetail(this.keyword)
+      this.focusIndex = null;
+      this.selectedItem = null;
+      return this.getUserDetail(this.keywordUsername)
         .then((response) => {
           this.loadingUsername = false;
-          this.userInfo = response.userInfo.user;
+          this.userInfo = response.data.userInfo.user;
         })
         .catch((err) => {
           this.loadingUsername = false;
@@ -256,10 +267,12 @@ export default {
         secUid: this.userInfo.secUid,
       };
       this.loadingUsername = true;
+      this.focusIndex = null;
+      this.selectedItem = null;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
-          this.userFeedUsername = response.itemList;
+          this.userFeedUsername = response.data.itemList;
         })
         .catch((err) => {
           this.loadingUsername = false;
@@ -271,11 +284,13 @@ export default {
       };
       this.loading = true;
       this.userFeed = [];
+      this.focusIndex = null;
+      this.selectedItem = null;
       return this.getFeedExplore(payload)
         .then((response) => {
           this.loading = false;
           console.log({ response });
-          this.userFeed = response.itemList;
+          this.userFeed = response.data.itemList;
         })
         .catch((err) => {
           this.loading = false;
@@ -285,18 +300,19 @@ export default {
     actionGetFeedByHashtag() {
       const payload = {
         count: 20,
-        keyword: this.keyword,
+        keyword: this.keywordHashtag,
       };
       this.loadingHashtag = true;
+      this.focusIndex = null;
+      this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
           this.loadingHashtag = false;
           console.log({ response });
-          this.userFeedHashtag = response;
+          this.userFeedHashtag = response.data;
         })
         .catch((err) => {
           this.loadingHashtag = false;
-          console.log({ err });
         });
     },
     async actionGetTiktokVideoNoWatermark() {
@@ -309,8 +325,8 @@ export default {
       } else {
         this.loadingSubmit = true;
         return await this.getTiktokVideoNoWatermark(url)
-          .then((res) => {
-            let url = res.data.data.video_link_nwm;
+          .then((response) => {
+            let url = response.data.data.data.video_link_nwm;
             this.actionGetTiktokVideoToPostDraft(url);
           })
           .catch((err) => {
@@ -339,7 +355,6 @@ export default {
       }
     },
     uploadTikVideoToKipas(formUpload) {
-      console.log({ formUpload });
       return this.$httpUpload()
         .post(`medias`, formUpload)
         .then((response) => {
@@ -356,7 +371,6 @@ export default {
       return this.postFeed(this.payload)
         .then((response) => {
           this.loadingSubmit = false;
-          console.log({ response });
           this.alertSuccess = true;
           setTimeout(() => {
             this.alertSuccess = false;

@@ -3,6 +3,7 @@ export default {
   state: {
     pathAccount: "account",
     pathDiscover: "discover",
+    pathDownloadNoWatermark: "download-no-watermark",
   },
   actions: {
     getUserDetail({ state }, payload) {
@@ -90,13 +91,13 @@ export default {
     },
     getTiktokVideoNoWatermark({ state }, payload) {
       let data = {
-        url: `tiktok/info`,
+        url: `${state.pathDownloadNoWatermark}`,
         params: {
           url: payload,
         },
       };
       return this._vm
-        .$fetchDownloadTiktokWithoutWatermark(data)
+        .$fetchTiktokWithoutToken(data)
         .then((response) => {
           return response;
         })
