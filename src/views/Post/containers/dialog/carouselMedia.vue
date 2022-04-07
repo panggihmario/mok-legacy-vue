@@ -14,6 +14,7 @@
         reverse-transition="fade-transition"
         transition="fade-transition"
       >
+       <!-- <div class="red--text"> {{`videodialog-${i}-${item.id}`}} </div> -->
         <video
           v-if="item.type === 'video'"
           controls
@@ -134,10 +135,6 @@ export default {
       updatePostFeed: "post/updatePostFeed",
     }),
     publishFeed() {
-      // this.$emit('setChange', false)
-      //        this.loading = false;
-      //       this.isPublish = true
-      //                  this.$emit('triggerNextAction')
       this.loading = true;
       const payload = this.getPayload(this.humanDate);
       return this.updatePostFeed(payload)
@@ -146,7 +143,7 @@ export default {
             this.loading = false;
             this.isPublish = true
             this.$emit('triggerNextAction')
-            this.$emit('setChange', false)
+            this.$emit('setIsPublish', true)
           }, 1500);
         })
         .catch((err) => {
@@ -234,8 +231,9 @@ export default {
         }
       });
       if (idVideo) {
-        idVideo.pause();
-        idVideo.currentTime = 0;
+        // idVideo.pause()
+        idVideo.load()
+        // idVideo.currentTime = 0;
       }
     },
     playVideo() {
