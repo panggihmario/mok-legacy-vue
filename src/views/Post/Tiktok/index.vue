@@ -41,7 +41,7 @@
         ></v-text-field>
       </div>
 
-      <div v-else v-show="!loading">
+      <!-- <div v-else v-show="!loading">
         <v-tooltip bottom color="green">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -56,7 +56,7 @@
           </template>
           <span class="font-10">Refresh FYP</span>
         </v-tooltip>
-      </div>
+      </div> -->
     </div>
 
     <div v-if="tab == 1">
