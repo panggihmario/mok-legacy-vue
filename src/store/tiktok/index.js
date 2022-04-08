@@ -29,23 +29,7 @@ export default {
         params: {
           count: payload.count,
           secUid: payload.secUid,
-        },
-      };
-      return this._vm
-        .$fetchTiktokWithoutToken(data)
-        .then((response) => {
-          const responseData = response.data;
-          return responseData;
-        })
-        .catch((err) => {
-          throw err;
-        });
-    },
-    getFeedExplore({ state }, payload) {
-      const data = {
-        url: `${state.pathDiscover}/explore`,
-        params: {
-          country: payload.country,
+          cursor: payload.cursor,
         },
       };
       return this._vm
@@ -64,6 +48,24 @@ export default {
         params: {
           count: payload.count,
           keyword: payload.keyword,
+          cursor: payload.cursor,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getFeedExplore({ state }, payload) {
+      const data = {
+        url: `${state.pathDiscover}/explore`,
+        params: {
+          country: payload.country,
         },
       };
       return this._vm
