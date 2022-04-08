@@ -1,4 +1,4 @@
-import moment from "moment"
+import moment from "moment";
 export default {
   data() {
     return {
@@ -40,12 +40,27 @@ export default {
       return newFormat;
     },
     formatingDateTracking(rawDate) {
-      const formatted = moment(rawDate).format('DD MMM hh:mm A')
-      return formatted
+      const formatted = moment(rawDate).format("DD MMM hh:mm A");
+      return formatted;
     },
     formatPrice(value) {
       let val = (value / 1).toFixed(0).replace(".", ",");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
+    formatThousandToKMB(value) {
+      let val;
+      let kmb;
+      if (value > 1000000000) {
+        val = value / 1000000000;
+        kmb = "B";
+      } else if (value > 1000000) {
+        val = value / 1000000;
+        kmb = "M";
+      } else if (value > 1000) {
+        val = value / 1000;
+        kmb = "K";
+      }
+      return val + kmb;
     },
   },
 };

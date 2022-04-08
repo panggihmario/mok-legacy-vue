@@ -2,89 +2,152 @@
   <div :class="d.right">
     <div>
       <div :class="d.icon">
-        <v-icon 
-          color="black" 
-          @click="closeDialog" 
+        <v-icon
+          color="black"
+          @click="closeDialog"
           class="cursor-pointer"
-          size="18px">fas fa-times</v-icon>
+          size="18px"
+          >fas fa-times</v-icon
+        >
       </div>
       <div v-if="isAdmin" :class="d['desc-container']">
         <div>
           <div :class="d.label">User</div>
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
-        <textarea
-          :class="d['dg__text-area']"
-          v-model="modelDescription"
+        <textarea 
+          :class="d['dg__text-area']" 
+          v-model="modelDescription" 
+          :readonly="isPublish"
         />
+        <div style="width: 250px">
+          <custom-input 
+            v-if="isPublish" 
+            v-model="item.channel.name" 
+            light 
+            label="Channel"
+            readonly
+          />
+          <custom-autocomplete
+            v-else
+            :items="channels"
+            item-text="name"
+            label="Channel"
+            return-object
+            v-model="channelValue"
+            outline
+            light
+          />
+        </div>
       </div>
       <div v-else :class="d.desc">
         <span :class="d.user">{{ item.createBy }}</span>
         {{ item.description }}
       </div>
     </div>
-    <div v-if="isTyping" class="d-flex align-center">
+    <!-- <v-expand-x-transition> -->
+    <div v-if="isChanging">
       <custom-button
-        size="small" 
+        size="small"
         color="kellygreen"
         @click="saveCaption"
         :loading="loading"
       >
         <div class="white--text">Simpan Perubahan</div>
       </custom-button>
-      <div :class="d['hint-save']">Klik tombol “Simpan Perubahan” agar caption terbaru dapat terpublish!</div>
+      <div class="d-flex align-center mt-2">
+        <div :class="d['warning-box']">
+          <v-icon size="5px" color="white">fas fa-exclamation </v-icon>
+        </div>
+        <div :class="d['hint-save']">
+          Klik tombol “Simpan Perubahan” agar caption terbaru dapat terpublish!
+        </div>
+      </div>
     </div>
+    <!-- </v-expand-x-transition> -->
   </div>
 </template>
 
 
 <script>
+import { mapActions } from "vuex";
 export default {
-  data () {
+  data() {
     return {
-      isTyping : false,
-      loading : false
-    }
+      loading: false,
+      channels: [],
+    };
   },
-  props : {
-    item : {
-      type : Object
+  props: {
+    item: {
+      type: Object,
     },
-    description : {
-      type : String
+    description: {
+      type: String,
     },
     isAdmin: {
       type: Boolean,
       default: false,
     },
+    isChanging: {
+      type: Boolean,
+      default: false,
+    },
+    isPublish: {
+      type: Boolean,
+      default: false,
+    },
   },
-  computed : {
-    modelDescription : {
-      get () {
-        return this.description
+  mounted() {
+    this.getResponseChannel();
+  },
+  computed: {
+    modelDescription: {
+      get() {
+        return this.description;
       },
       set(value) {
-        this.isTyping = true
-        this.$emit('input', value)
-      }
-    }
-  },
-  methods : {
-    saveCaption() {
-      this.loading = true
-      setTimeout(() => {
-        this.isTyping = false
-        this.$emit('saveCaption')
-        this.loading = false
-      },1500)
+        this.$emit("setChange", true);
+        this.$emit("input", value);
+      },
     },
-    closeDialog () {
-      this.$emit('closeDialog')
-    }
-  }
-}
+    channelValue: {
+      get() {
+        return this.item.channel;
+      },
+      set(value) {
+        this.$emit("setChange", true);
+        this.item.channel = value;
+      },
+    },
+  },
+  methods: {
+    ...mapActions({
+      getAllChannel: "channel/getAllChannel",
+    }),
+    saveCaption() {
+      this.loading = true;
+      setTimeout(() => {
+        this.$emit("saveCaption", this.channelValue);
+        this.loading = false;
+        this.$emit("setChange", false);
+      }, 1500);
+    },
+    closeDialog() {
+      this.$emit("closeDialog");
+    },
+    async getResponseChannel() {
+      const response = await this.getAllChannel();
+      if (response.status === 200) {
+        const responseData = response.data.data;
+        this.channels = responseData;
+      } else {
+        return response;
+      }
+    },
+  },
+};
 </script>
 
 <style src="./style.scss"  lang="scss" module="d">
-
 </style>

@@ -14,6 +14,7 @@
         reverse-transition="fade-transition"
         transition="fade-transition"
       >
+       <!-- <div class="red--text"> {{`videodialog-${i}-${item.id}`}} </div> -->
         <video
           v-if="item.type === 'video'"
           controls
@@ -32,12 +33,12 @@
     </v-carousel>
     <div class="d-flex align-center black--text">
       <div class="d-flex" v-if="feed.medias.length > 1">
-        <v-btn icon color="black" @click="slideLeft">
-          <v-icon>fas fa-chevron-left</v-icon>
-        </v-btn>
-        <v-btn icon color="black" @click="slideRight">
-          <v-icon>fas fa-chevron-right</v-icon>
-        </v-btn>
+        <div :class="d['box-icon']" @click="slideLeft">
+          <v-icon color="silver" x-small>fas fa-chevron-left</v-icon>
+        </div>
+        <div :class="d['box-icon']" @click="slideRight">
+          <v-icon color="silver" x-small >fas fa-chevron-right</v-icon>
+        </div>
       </div>
       <v-menu
         v-if="isAdmin && !isPublish "
@@ -124,7 +125,10 @@ export default {
     },
     description : {
       type : String
-    }
+    },
+    item : {
+      type : Object
+    },
   },
   methods: {
     ...mapActions({
@@ -139,6 +143,7 @@ export default {
             this.loading = false;
             this.isPublish = true
             this.$emit('triggerNextAction')
+            this.$emit('setIsPublish', true)
           }, 1500);
         })
         .catch((err) => {
@@ -158,7 +163,8 @@ export default {
           params: {
             ...itemWithSchedule,
             medias: [...medias],
-            description : this.description
+            description : this.description,
+            channel : this.item.channel
           },
         };
       } else {
@@ -168,7 +174,8 @@ export default {
           params: {
             ...item,
             medias: [...medias],
-            description : this.description
+            description : this.description,
+            channel : this.item.channel
           },
         };
       }
@@ -224,8 +231,9 @@ export default {
         }
       });
       if (idVideo) {
-        idVideo.pause();
-        idVideo.currentTime = 0;
+        // idVideo.pause()
+        idVideo.load()
+        // idVideo.currentTime = 0;
       }
     },
     playVideo() {
