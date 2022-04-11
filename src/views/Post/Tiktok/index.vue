@@ -480,6 +480,13 @@ export default {
       this.focusIndex = null;
       return this.postFeed(this.payload)
         .then((response) => {
+          this.payload = {
+            medias: [],
+            description: "",
+            channel: null,
+            product: null,
+            type: "social",
+          };
           this.loadingSubmit = false;
           this.alertSuccess = true;
           setTimeout(() => {
