@@ -102,7 +102,7 @@
           :payload="payload"
           @selectFocus="selectFocus"
           @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
-          @actionLoadMoreFeed="actionGetFeedByUsername"
+          @actionLoadMoreFeed="loadMoreGetFeedByUsername"
         ></List-Item>
       </div>
     </div>
@@ -126,7 +126,7 @@
           :payload="payload"
           @selectFocus="selectFocus"
           @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
-          @actionLoadMoreFeed="actionGetFeedByHashtag"
+          @actionLoadMoreFeed="loadMoreGetFeedByHashtag"
         ></List-Item>
       </div>
     </div>
@@ -273,24 +273,20 @@ export default {
         });
     },
     actionGetFeedByUsername() {
-      let cursor =
-        this.userFeedUsername.length != 0
-          ? `${
-              this.userFeedUsername[this.userFeedUsername.length - 1].createTime
-            }000`
-          : this.cursorFirst;
       const payload = {
         count: 30,
         secUid: this.userInfo.secUid,
-        cursor: cursor,
+        cursor: 0,
       };
       if (this.userFeedUsername.length == 0) {
         this.loadingUsername = true;
       } else {
         this.loadingLoadmoreUsername = true;
       }
-      // this.focusIndex = null;
-      // this.selectedItem = null;
+      this.userFeedUsername = [];
+      this.focusIndex = null;
+      this.selectedItem = null;
+      this.loadingUsername = true;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
@@ -306,24 +302,20 @@ export default {
         });
     },
     actionGetFeedByHashtag() {
-      let cursor =
-        this.userFeedHashtag.length != 0
-          ? `${
-              this.userFeedHashtag[this.userFeedHashtag.length - 1].createTime
-            }000`
-          : this.cursorFirst;
       const payload = {
         count: 10,
         keyword: this.keywordHashtag,
-        cursor: cursor,
+        cursor: 0,
       };
       if (this.userFeedHashtag.length == 0) {
         this.loadingHashtag = true;
       } else {
         this.loadingLoadmoreHashtag = true;
       }
-      // this.focusIndex = null;
-      // this.selectedItem = null;
+      this.userFeedHashtag = [];
+      this.loadingHashtag = true;
+      this.focusIndex = null;
+      this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
           this.loadingHashtag = false;
@@ -364,6 +356,73 @@ export default {
           this.loading = false;
           this.loadingLoadmore = false;
           console.log({ err });
+        });
+    },
+    loadMoreGetFeedByUsername() {
+      let cursor =
+        this.userFeedUsername.length != 0
+          ? `${
+              this.userFeedUsername[this.userFeedUsername.length - 1].createTime
+            }000`
+          : 0;
+      const payload = {
+        count: 30,
+        secUid: this.userInfo.secUid,
+        cursor: cursor,
+      };
+      if (this.userFeedUsername.length == 0) {
+        this.loadingUsername = true;
+      } else {
+        this.loadingLoadmoreUsername = true;
+      }
+      // this.focusIndex = null;
+      // this.selectedItem = null;
+      return this.getUserFeed(payload)
+        .then((response) => {
+          this.loadingUsername = false;
+          this.loadingLoadmoreUsername = false;
+          for (let i = 0; i < response.data.itemList.length; i++) {
+            const element = response.data.itemList[i];
+            this.userFeedUsername.push(element);
+          }
+        })
+        .catch((err) => {
+          this.loadingUsername = false;
+          this.loadingLoadmoreUsername = false;
+        });
+    },
+    loadMoreGetFeedByHashtag() {
+      let cursor =
+        this.userFeedHashtag.length != 0
+          ? `${
+              this.userFeedHashtag[this.userFeedHashtag.length - 1].createTime
+            }000`
+          : 0;
+      const payload = {
+        count: 10,
+        keyword: this.keywordHashtag,
+        cursor: cursor,
+      };
+      if (this.userFeedHashtag.length == 0) {
+        this.loadingHashtag = true;
+      } else {
+        this.loadingLoadmoreHashtag = true;
+      }
+      // this.focusIndex = null;
+      // this.selectedItem = null;
+      return this.getFeedByHashtag(payload)
+        .then((response) => {
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+          // this.userFeedHashtag = response.data;
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
+            this.userFeedHashtag.push(element);
+          }
+        })
+        .catch((err) => {
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
         });
     },
     async actionGetTiktokVideoNoWatermark() {
@@ -452,7 +511,7 @@ export default {
       d.setMonth(d.getMonth());
       if (d.getMonth() == m) d.setDate(0);
       d.setHours(0, 0, 0, 0);
-      this.cursorFirst = `${d / 1}`;
+      this.cursorFirst = `0`;
     },
   },
 };
