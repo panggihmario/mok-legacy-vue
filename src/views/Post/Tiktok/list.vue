@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="userFeed == undefined" class="text-center font-12 mt-8">
+    <div v-if="userFeed.length == 0" class="text-center font-12 mt-8">
       Tidak Ada Video
     </div>
     <div v-else class="d-flex justify-space-between">
@@ -98,11 +98,28 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- <div v-for="(item, idx) in userFeedHashtag" :key="idx">
-        {{ item.challenge.title }}
-        {{ item.itemList.length }}
-      </div> -->
+    <div v-if="userFeed.length != 0" class="whitesmoke">
+      <div v-if="loadingLoadmore" class="d-flex justify-center py-12">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
+      <div
+        v-else
+        class="d-flex justify-center align-center"
+        style="height: 80px"
+      >
+        <v-btn
+          depressed
+          rounded
+          color="text-capitalize primary font-12"
+          @click="actionLoadMoreFeed"
+          >Load More</v-btn
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -115,6 +132,7 @@ export default {
   props: [
     "userFeed",
     "channels",
+    "loadingLoadmore",
     "loadingSubmit",
     "focusIndex",
     "selectedItem",
@@ -127,6 +145,9 @@ export default {
     },
     actionGetTiktokVideoNoWatermark() {
       this.$emit("actionGetTiktokVideoNoWatermark");
+    },
+    actionLoadMoreFeed() {
+      this.$emit("actionLoadMoreFeed");
     },
   },
 };

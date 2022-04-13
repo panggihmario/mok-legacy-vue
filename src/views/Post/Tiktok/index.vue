@@ -41,7 +41,7 @@
         ></v-text-field>
       </div>
 
-      <div v-else v-show="!loading">
+      <!-- <div v-else v-show="!loading">
         <v-tooltip bottom color="green">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -56,7 +56,7 @@
           </template>
           <span class="font-10">Refresh FYP</span>
         </v-tooltip>
-      </div>
+      </div> -->
     </div>
 
     <div v-if="tab == 1">
@@ -71,12 +71,14 @@
         <List-Item
           :userFeed="userFeed"
           :channels="channels"
+          :loadingLoadmore="loadingLoadmore"
           :loadingSubmit="loadingSubmit"
           :focusIndex="focusIndex"
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
           @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
+          @actionLoadMoreFeed="actionGetFeedExplore"
         ></List-Item>
       </div>
     </div>
@@ -93,12 +95,14 @@
         <List-Item
           :userFeed="userFeedUsername"
           :channels="channels"
+          :loadingLoadmore="loadingLoadmoreUsername"
           :loadingSubmit="loadingSubmit"
           :focusIndex="focusIndex"
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
           @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
+          @actionLoadMoreFeed="loadMoreGetFeedByUsername"
         ></List-Item>
       </div>
     </div>
@@ -115,12 +119,14 @@
         <List-Item
           :userFeed="userFeedHashtag"
           :channels="channels"
+          :loadingLoadmore="loadingLoadmoreHashtag"
           :loadingSubmit="loadingSubmit"
           :focusIndex="focusIndex"
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
           @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
+          @actionLoadMoreFeed="loadMoreGetFeedByHashtag"
         ></List-Item>
       </div>
     </div>
@@ -164,6 +170,9 @@ export default {
       loading: false,
       loadingUsername: false,
       loadingHashtag: false,
+      loadingLoadmore: false,
+      loadingLoadmoreUsername: false,
+      loadingLoadmoreHashtag: false,
       loadingSubmit: false,
       alertSuccess: false,
       alertFailed: false,
@@ -172,10 +181,11 @@ export default {
       keywordHashtag: "",
       channels: null,
       userInfo: null,
-      userFeed: null,
-      userFeedUsername: null,
-      userFeedHashtag: null,
+      userFeed: [],
+      userFeedUsername: [],
+      userFeedHashtag: [],
       selectedItem: null,
+      cursorFirst: null,
       payload: {
         medias: [],
         description: "",
@@ -202,13 +212,14 @@ export default {
     },
     userInfo() {
       if (this.userInfo.secUid) {
-        this.actionGetUserFeed();
+        this.actionGetFeedByUsername();
       }
     },
   },
   mounted() {
     this.actionGetFeedExplore();
     this.getResponseChannel();
+    this.getCursorFirst();
   },
   methods: {
     ...mapActions({
@@ -261,58 +272,157 @@ export default {
           }, 3000);
         });
     },
-    actionGetUserFeed() {
+    actionGetFeedByUsername() {
       const payload = {
-        count: 20,
+        count: 30,
         secUid: this.userInfo.secUid,
+        cursor: 0,
       };
-      this.loadingUsername = true;
+      if (this.userFeedUsername.length == 0) {
+        this.loadingUsername = true;
+      } else {
+        this.loadingLoadmoreUsername = true;
+      }
+      this.userFeedUsername = [];
       this.focusIndex = null;
       this.selectedItem = null;
+      this.loadingUsername = true;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
-          this.userFeedUsername = response.data.itemList;
+          this.loadingLoadmoreUsername = false;
+          for (let i = 0; i < response.data.itemList.length; i++) {
+            const element = response.data.itemList[i];
+            this.userFeedUsername.push(element);
+          }
         })
         .catch((err) => {
           this.loadingUsername = false;
-        });
-    },
-    actionGetFeedExplore() {
-      const payload = {
-        country: "id",
-      };
-      this.loading = true;
-      this.userFeed = [];
-      this.focusIndex = null;
-      this.selectedItem = null;
-      return this.getFeedExplore(payload)
-        .then((response) => {
-          this.loading = false;
-          console.log({ response });
-          this.userFeed = response.data.itemList;
-        })
-        .catch((err) => {
-          this.loading = false;
-          console.log({ err });
+          this.loadingLoadmoreUsername = false;
         });
     },
     actionGetFeedByHashtag() {
       const payload = {
-        count: 20,
+        count: 10,
         keyword: this.keywordHashtag,
+        cursor: 0,
       };
+      if (this.userFeedHashtag.length == 0) {
+        this.loadingHashtag = true;
+      } else {
+        this.loadingLoadmoreHashtag = true;
+      }
+      this.userFeedHashtag = [];
       this.loadingHashtag = true;
       this.focusIndex = null;
       this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
           this.loadingHashtag = false;
-          console.log({ response });
-          this.userFeedHashtag = response.data;
+          this.loadingLoadmoreHashtag = false;
+          // this.userFeedHashtag = response.data;
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
+            this.userFeedHashtag.push(element);
+          }
         })
         .catch((err) => {
           this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+        });
+    },
+    actionGetFeedExplore() {
+      const payload = {
+        country: "id",
+      };
+      if (this.userFeed.length == 0) {
+        this.loading = true;
+      } else {
+        this.loadingLoadmore = true;
+      }
+      // this.userFeed = [];
+      // this.focusIndex = null;
+      // this.selectedItem = null;
+      return this.getFeedExplore(payload)
+        .then((response) => {
+          this.loading = false;
+          this.loadingLoadmore = false;
+          for (let i = 0; i < response.data.itemList.length; i++) {
+            const element = response.data.itemList[i];
+            this.userFeed.push(element);
+          }
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.loadingLoadmore = false;
+          console.log({ err });
+        });
+    },
+    loadMoreGetFeedByUsername() {
+      let cursor =
+        this.userFeedUsername.length != 0
+          ? `${
+              this.userFeedUsername[this.userFeedUsername.length - 1].createTime
+            }000`
+          : 0;
+      const payload = {
+        count: 30,
+        secUid: this.userInfo.secUid,
+        cursor: cursor,
+      };
+      if (this.userFeedUsername.length == 0) {
+        this.loadingUsername = true;
+      } else {
+        this.loadingLoadmoreUsername = true;
+      }
+      // this.focusIndex = null;
+      // this.selectedItem = null;
+      return this.getUserFeed(payload)
+        .then((response) => {
+          this.loadingUsername = false;
+          this.loadingLoadmoreUsername = false;
+          for (let i = 0; i < response.data.itemList.length; i++) {
+            const element = response.data.itemList[i];
+            this.userFeedUsername.push(element);
+          }
+        })
+        .catch((err) => {
+          this.loadingUsername = false;
+          this.loadingLoadmoreUsername = false;
+        });
+    },
+    loadMoreGetFeedByHashtag() {
+      let cursor =
+        this.userFeedHashtag.length != 0
+          ? `${
+              this.userFeedHashtag[this.userFeedHashtag.length - 1].createTime
+            }000`
+          : 0;
+      const payload = {
+        count: 10,
+        keyword: this.keywordHashtag,
+        cursor: cursor,
+      };
+      if (this.userFeedHashtag.length == 0) {
+        this.loadingHashtag = true;
+      } else {
+        this.loadingLoadmoreHashtag = true;
+      }
+      // this.focusIndex = null;
+      // this.selectedItem = null;
+      return this.getFeedByHashtag(payload)
+        .then((response) => {
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+          // this.userFeedHashtag = response.data;
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
+            this.userFeedHashtag.push(element);
+          }
+        })
+        .catch((err) => {
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
         });
     },
     async actionGetTiktokVideoNoWatermark() {
@@ -370,6 +480,13 @@ export default {
       this.focusIndex = null;
       return this.postFeed(this.payload)
         .then((response) => {
+          this.payload = {
+            medias: [],
+            description: "",
+            channel: null,
+            product: null,
+            type: "social",
+          };
           this.loadingSubmit = false;
           this.alertSuccess = true;
           setTimeout(() => {
@@ -394,6 +511,14 @@ export default {
       } else {
         return response;
       }
+    },
+    getCursorFirst() {
+      var d = new Date();
+      var m = d.getMonth();
+      d.setMonth(d.getMonth());
+      if (d.getMonth() == m) d.setDate(0);
+      d.setHours(0, 0, 0, 0);
+      this.cursorFirst = `0`;
     },
   },
 };
