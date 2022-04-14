@@ -78,19 +78,6 @@ export default {
           throw err;
         });
     },
-    getTiktokVideo({ state }, payload) {
-      let data = {
-        url: `${payload}`,
-      };
-      return this._vm
-        .$fetchDownloadTiktokWithoutToken(data)
-        .then((response) => {
-          return response;
-        })
-        .catch((error) => {
-          throw error;
-        });
-    },
     getTiktokVideoNoWatermark({ state }, payload) {
       let data = {
         url: `${state.pathDownloadNoWatermark}`,

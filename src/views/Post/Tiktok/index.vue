@@ -132,10 +132,8 @@
     </div>
 
     <v-snackbar v-model="alertSuccess" top right color="success">
-      <div class="d-flex justify-space-between align-center">
-        Success Post
-        <v-btn outlined @click="movePageDraft">See Draft</v-btn>
-      </div>
+      <span>Success Post</span>
+      <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
     </v-snackbar>
     <v-snackbar v-model="alertFailed" top right color="error">
       Error: {{ payloadError.message }}
@@ -320,7 +318,6 @@ export default {
         .then((response) => {
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
-          // this.userFeedHashtag = response.data;
           for (let i = 0; i < response.data.length; i++) {
             const element = response.data[i];
             this.userFeedHashtag.push(element);
@@ -340,9 +337,6 @@ export default {
       } else {
         this.loadingLoadmore = true;
       }
-      // this.userFeed = [];
-      // this.focusIndex = null;
-      // this.selectedItem = null;
       return this.getFeedExplore(payload)
         .then((response) => {
           this.loading = false;
@@ -375,8 +369,6 @@ export default {
       } else {
         this.loadingLoadmoreUsername = true;
       }
-      // this.focusIndex = null;
-      // this.selectedItem = null;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
@@ -425,7 +417,7 @@ export default {
           this.loadingLoadmoreHashtag = false;
         });
     },
-    async actionGetTiktokVideoNoWatermark() {
+    actionGetTiktokVideoNoWatermark() {
       const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
       if (this.payload.channel == null) {
         this.alertRules = true;
@@ -434,47 +426,15 @@ export default {
         }, 3000);
       } else {
         this.loadingSubmit = true;
-        return await this.getTiktokVideoNoWatermark(url)
+        return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
-            let url = response.data.data.data.video_link_nwm;
-            this.actionGetTiktokVideoToPostDraft(url);
+            this.payload.medias.push(response.data.data);
+            this.actionPostToDraft();
           })
           .catch((err) => {
             this.loadingSubmit = false;
           });
       }
-    },
-    async actionGetTiktokVideoToPostDraft(url) {
-      if (this.payload.channel == null) {
-        this.alertRules = true;
-        setTimeout(() => {
-          this.alertRules = false;
-        }, 3000);
-      } else {
-        this.loadingSubmit = true;
-        return await this.getTiktokVideo(url)
-          .then((res) => {
-            let file = new File([res.data], "video.mp4", { type: "video/mp4" });
-            let form = new FormData();
-            form.append("file", file);
-            this.uploadTikVideoToKipas(form);
-          })
-          .catch((err) => {
-            this.loadingSubmit = false;
-          });
-      }
-    },
-    uploadTikVideoToKipas(formUpload) {
-      return this.$httpUpload()
-        .post(`medias`, formUpload)
-        .then((response) => {
-          this.payload.medias.push(response.data);
-          this.actionPostToDraft();
-        })
-        .catch((err) => {
-          console.log(err);
-          this.loadingSubmit = false;
-        });
     },
     actionPostToDraft() {
       this.focusIndex = null;
