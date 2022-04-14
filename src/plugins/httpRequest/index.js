@@ -20,6 +20,16 @@ export const serviceWithoutToken = () =>
     },
   });
 
+const serviceWithToken = (token = getToken()) =>
+  axios.create({
+    baseURL: BASE_URL,
+    timeout: 60 * 4 * 1000,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": `application/json`,
+    },
+  });
+
 const serviceTiktokWithoutToken = () => {
   return axios.create({
     baseURL: BASE_TIKTOK_URL,
@@ -30,38 +40,11 @@ const serviceTiktokWithoutToken = () => {
   });
 };
 
-const serviceTiktokWithoutTokenWithBlob = () => {
-  return axios.create({
-    baseURL: BASE_TIKTOK_URL,
-    timeout: 60 * 4 * 1000,
-    headers: {
-      "Content-Type": `application/json`,
-    },
-    responseType: "blob",
-  });
-};
-
 const getTiktokWithoutToken = (payload) => {
   return serviceTiktokWithoutToken().get(payload.url, {
     params: payload.params,
   });
 };
-
-const downloadTiktokWithoutToken = (payload) => {
-  return serviceTiktokWithoutTokenWithBlob().get(payload.url, {
-    params: payload.params,
-  });
-};
-
-const serviceWithToken = (token = getToken()) =>
-  axios.create({
-    baseURL: BASE_URL,
-    timeout: 60 * 4 * 1000,
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": `application/json`,
-    },
-  });
 
 const serviceUpload = () =>
   axios.create({
@@ -96,4 +79,3 @@ Vue.prototype.$httpDownload = exportFile;
 Vue.prototype.$fetchWithToken = getWithToken;
 
 Vue.prototype.$fetchTiktokWithoutToken = getTiktokWithoutToken;
-Vue.prototype.$fetchDownloadTiktokWithoutToken = downloadTiktokWithoutToken;
