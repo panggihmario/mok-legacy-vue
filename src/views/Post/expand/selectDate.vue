@@ -30,6 +30,7 @@
               :max="maxDate"
             >
             </v-date-picker>
+
           </v-col>
           <v-col class="dt__box-right">
             <div>
@@ -65,11 +66,11 @@
               >Reset Tanggal</custom-button>
               <div class="warning-sign">{{showWarning}} </div> -->
               <div class="d-flex justify-end">
-                <v-btn class="mr-4"  small @click="onReset" text color="warning"> 
+                <v-btn class="mr-4" small @click="onReset" text color="warning">
                   <div class="dt__text-button">Reset</div>
                 </v-btn>
-                <v-btn @click="closeMenu" small  color="secondary"> 
-                   <div class="dt__text-button">OK</div>
+                <v-btn @click="closeMenu" small color="secondary">
+                  <div class="dt__text-button">OK</div>
                 </v-btn>
               </div>
             </div>
@@ -90,6 +91,7 @@ export default {
     message: false,
     hints: true,
     selectedDate: "",
+    dates: [],
   }),
   computed: {
     ...mapState({
@@ -122,12 +124,12 @@ export default {
       const d = moment().format("YYYY-MM-DD");
       return d;
     },
-    maxDate () {
+    maxDate() {
       // v-if="$route.name  !== 'schedule'  "
-      if(this.$route.name === 'schedule') {
-        return null
-      }else{
-        return this.currentDate
+      if (this.$route.name === "schedule") {
+        return null;
+      } else {
+        return this.currentDate;
       }
     },
     choosenDate: {
@@ -135,10 +137,11 @@ export default {
         return this.paramsDate;
       },
       set(value) {
-        const after = this.checkRangeDate(value)
-        if(after[1]) {
-          this.setParamsDate(after)
-        }else{
+        this.setParamsDate(value)
+        const after = this.checkRangeDate(value);
+        if (after[1] && after[0]) {
+          this.setParamsDate(after);
+        } else {
           this.setParamsDate(value);
         }
       },
@@ -150,13 +153,13 @@ export default {
       setDisplayDate: "post/setDisplayDate",
     }),
     checkRangeDate(value) {
-      const [first, second] = value
+      const [first, second] = value;
       const mFirst = moment(first);
       const mSecond = moment(second);
       if (mFirst > mSecond) {
-          return [second , first]
+        return [second, first];
       } else {
-        return [first, second]
+        return [first, second];
       }
     },
     onReset() {
@@ -168,8 +171,8 @@ export default {
       return v;
     },
     closeMenu() {
-      this.menu = false
-      this.onClick()
+      this.menu = false;
+      this.onClick();
     },
     onClick() {
       if (this.choosenDate.length > 0) {
@@ -179,12 +182,12 @@ export default {
         if (this.choosenDate.length > 1) {
           // const end = this.formatter(d[1]);
           // const fullDate = `${from} - ${end}`;
-          const afterCheckRangeDate = this.checkRangeDate(this.choosenDate)
-          const start = this.formatter(afterCheckRangeDate[0])
-          const end = this.formatter(afterCheckRangeDate[1])
+          const afterCheckRangeDate = this.checkRangeDate(this.choosenDate);
+          const start = this.formatter(afterCheckRangeDate[0]);
+          const end = this.formatter(afterCheckRangeDate[1]);
           const fullDate = `${start} - ${end}`;
           this.setDisplayDate(fullDate);
-          this.setParamsDate(afterCheckRangeDate)
+          this.setParamsDate(afterCheckRangeDate);
         }
       }
     },

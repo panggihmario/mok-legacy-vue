@@ -29,6 +29,26 @@ export default {
         params: {
           count: payload.count,
           secUid: payload.secUid,
+          cursor: payload.cursor,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getFeedByHashtag({ state }, payload) {
+      const data = {
+        url: `${state.pathDiscover}/hashtag`,
+        params: {
+          count: payload.count,
+          keyword: payload.keyword,
+          cursor: payload.cursor,
         },
       };
       return this._vm
@@ -56,37 +76,6 @@ export default {
         })
         .catch((err) => {
           throw err;
-        });
-    },
-    getFeedByHashtag({ state }, payload) {
-      const data = {
-        url: `${state.pathDiscover}/hashtag`,
-        params: {
-          count: payload.count,
-          keyword: payload.keyword,
-        },
-      };
-      return this._vm
-        .$fetchTiktokWithoutToken(data)
-        .then((response) => {
-          const responseData = response.data;
-          return responseData;
-        })
-        .catch((err) => {
-          throw err;
-        });
-    },
-    getTiktokVideo({ state }, payload) {
-      let data = {
-        url: `${payload}`,
-      };
-      return this._vm
-        .$fetchDownloadTiktokWithoutToken(data)
-        .then((response) => {
-          return response;
-        })
-        .catch((error) => {
-          throw error;
         });
     },
     getTiktokVideoNoWatermark({ state }, payload) {
