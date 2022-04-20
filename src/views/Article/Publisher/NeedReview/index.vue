@@ -4,7 +4,12 @@
     <Tabs
       position="review"
     />
-    <List :dataReview="dataReview" class="mt-4"  />
+    <List 
+      :dataReview="dataReview" 
+      class="mt-4"  
+      :totalPages="totalPages"
+      @getNewsBaseOnPage="getNewsBaseOnPage"
+    />
   </div>
 </template>
 
@@ -21,7 +26,8 @@ export default {
   },
   data () {
     return {
-      dataReview : []
+      dataReview : [],
+      totalPages : 0
     }
   },
   mounted () {
@@ -31,6 +37,15 @@ export default {
     ...mapActions({
       getNews : 'news/getListNews'
     }),
+    getNewsBaseOnPage(params) {
+      return this.getNews(params)
+       .then(response=>{
+          const responseData = response.data.data
+          this.dataReview = responseData.content
+          this.totalPages = responseData.totalPages
+
+        })
+    },
     fetchDataReview () {
       const page = this.$route.params.page
       const payload = {
@@ -41,7 +56,8 @@ export default {
         .then(response=>{
           const responseData = response.data.data
           this.dataReview = responseData.content
-          console.log(responseData)
+          this.totalPages = responseData.totalPages
+
         })
     }
   }
