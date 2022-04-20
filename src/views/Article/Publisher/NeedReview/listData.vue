@@ -8,15 +8,15 @@
       disable-sort
     >
       <template v-slot:[`item.date`]="{ item }">
-       <div class="review__date"> {{ formatingDate(item.createAt) }} </div>
+        <div class="review__date">{{ formatingDate(item.createAt) }}</div>
       </template>
       <template v-slot:[`item.status`]="{ item }">
-        <div class="review__status"> {{item.status}} </div>
+        <div class="review__status">{{ item.status }}</div>
       </template>
-      <template v-slot:[`item.headline`] ="{item}">
-        <div class="review__headline"> {{item.headline}} </div>
+      <template v-slot:[`item.headline`]="{ item }">
+        <div class="review__headline">{{ item.headline }}</div>
       </template>
-      <template v-slot:[`item.action`]="{item}">
+      <template v-slot:[`item.action`]="{ item }">
         <custom-button
           color="primary"
           size="medium"
@@ -28,12 +28,21 @@
         </custom-button>
       </template>
     </v-data-table>
+    <v-pagination
+      :length="totalPages"
+      prev-icon="mdi-menu-left"
+      next-icon="mdi-menu-right"
+      v-model="page"
+      :total-visible="6"
+      @input="getNewsBaseOnPage"
+    >
+    </v-pagination>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["dataReview"],
+  props: ["dataReview", "totalPages"],
   methods: {
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
@@ -51,9 +60,17 @@ export default {
         },
       });
     },
+    getNewsBaseOnPage(p) {
+      const params = {
+        page : p,
+        tab : 'review'
+      }
+      this.$emit('getNewsBaseOnPage', params)
+    }
   },
   data() {
     return {
+      page: 1,
       headers: [
         {
           text: "Tanggal",
@@ -99,7 +116,7 @@ export default {
     font-weight: 500;
   }
   &__headline {
-    color: #4A4A4A;
+    color: #4a4a4a;
     font-size: 12px;
     font-weight: 500;
   }
