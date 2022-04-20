@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import Header from "./containers/header.vue"
-import Tabs from "./containers/tabs.vue"
-import ScheduledNews from "./list/scheduled.vue"
+import Header from "../containers/header.vue"
+import Tabs from "../containers/tabs.vue"
+import ScheduledNews from "./listData.vue"
 import { mapActions } from "vuex"
 export default {
   components : {

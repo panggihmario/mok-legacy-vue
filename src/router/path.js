@@ -14,9 +14,6 @@ import ReportedPost from "../views/Manager/Reported/Post";
 import ReportedComment from "../views/Manager/Reported/Comment";
 import ReportedStory from "../views/Manager/Reported/Story";
 import ReportedAccount from "../views/Manager/Reported/Account";
-import Publisher from "../views/Article/Publisher";
-import ReviewPublisher from "../views/Article/Publisher/review.vue";
-import EditPublisher from "../views/Article/Publisher/edit.vue";
 import Editor from "../views/Article/Editor";
 import EditorArticle from "../views/Article/Editor/Article";
 import CategoryNews from "../views/Article/Category";
@@ -194,62 +191,6 @@ const routes = [
         path: "/order/detail/:id",
         name: "ordertDetail",
         component: OrderDetail,
-      },
-      {
-        path : '/publisher/list/:page',
-        name : 'listNewsPublisher',
-        component : () => import('../views/Article/Publisher/listNews.vue'),
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path : '/publisher/draft/:page',
-        name : 'draftNewsPublisher',
-        component : () => import('../views/Article/Publisher/draftNews.vue'),
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path : '/publisher/scheduled',
-        name : 'scheduledNewsPublisher',
-        component : () => import('../views/Article/Publisher/scheduledNews.vue'),
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path: "/publisher",
-        name: "publisher",
-        component: Publisher,
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path: "/pubisher/review/:id/:page",
-        name: "reviewPublisher",
-        component: ReviewPublisher,
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path: "/publisher/list/:page/:id",
-        name: "editPublisher",
-        component: EditPublisher,
-        meta : {
-          page : 'news'
-        }
-      },
-      {
-        path : "/publisher/agregrator/:sites/:page",
-        name : "agregratorPage",
-        component : () => import('../views/Article/Publisher/pagingList/agregator.vue'),
-        meta : {
-          page : 'news'
-        }
       },
       {
         path: "/editor",
