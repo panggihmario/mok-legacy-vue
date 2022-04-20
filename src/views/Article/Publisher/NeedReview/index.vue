@@ -2,48 +2,46 @@
   <div>
     <Header/>
     <Tabs
-      position="draft"
+      position="review"
     />
-    <Draft
-      :drafts="drafts" 
-      class="mt-4"
-    />
+    <List :dataReview="dataReview" class="mt-4"  />
   </div>
 </template>
 
 <script>
-import Header from "./containers/header.vue"
-import Tabs from "./containers/tabs.vue"
-import Draft from "./list/draft.vue"
+import Header from "../containers/header.vue"
+import Tabs from "../containers/tabs.vue"
+import List from "./listData.vue"
 import { mapActions } from "vuex"
 export default {
   components : {
     Header,
     Tabs,
-    Draft
+    List
   },
   data () {
     return {
-      drafts : []
+      dataReview : []
     }
   },
   mounted () {
-    this.fetchDraftNews()
+    this.fetchDataReview()
   },
   methods : {
     ...mapActions({
-      getNews: "news/getListNews",
+      getNews : 'news/getListNews'
     }),
-    fetchDraftNews(){
+    fetchDataReview () {
       const page = this.$route.params.page
       const payload = {
         page : page - 1,
-        tab : 'draft'
+        tab : 'review'
       }
       return this.getNews(payload)
-        .then(response => {
+        .then(response=>{
           const responseData = response.data.data
-          this.drafts = responseData
+          this.dataReview = responseData.content
+          console.log(responseData)
         })
     }
   }
