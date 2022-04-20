@@ -82,23 +82,30 @@ export default {
       afterTab : [],
       tabList: [
         {
+          label : 'Need Review',
+          active : false, 
+          position : 1,
+          payload : 'review',
+          pathName : 'listReviewPublisher'
+        },
+        {
           label: "List News",
           active: false,
-          position: 1,
+          position: 2,
           payload: "list",
           pathName : 'listNewsPublisher'
         },
         {
           label: "Draft",
           active: false,
-          position: 2,
+          position: 3,
           payload: "draft",
           pathName : 'draftNewsPublisher'
         },
         {
           label: "Terjadwal",
           active: false,
-          position: 3,
+          position: 4,
           payload: "scheduled",
           pathName : 'scheduledNewsPublisher'
         },
@@ -137,8 +144,8 @@ export default {
     background-color: #FAFAFA
     color: #777777
   &__active
-    background-color: #FFF3E7
-    color: #FF8717
+    background-color: #FFEBEF
+    color: #FF4265
 </style>
 
 <style scoped>
