@@ -81,6 +81,13 @@ export default {
       keyword : '',
       afterTab : [],
       tabList: [
+        // {
+        //   label : 'Need Review',
+        //   active : false, 
+        //   position : 1,
+        //   payload : 'review',
+        //   pathName : 'listReviewPublisher'
+        // },
         {
           label: "List News",
           active: false,
@@ -137,8 +144,8 @@ export default {
     background-color: #FAFAFA
     color: #777777
   &__active
-    background-color: #FFF3E7
-    color: #FF8717
+    background-color: #FFEBEF
+    color: #FF4265
 </style>
 
 <style scoped>

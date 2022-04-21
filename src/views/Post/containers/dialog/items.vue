@@ -53,7 +53,8 @@ export default {
     },
     feeds : {
       type : Array
-    }
+    },
+    
   },
   watch : {
     feedPosition (prev) {

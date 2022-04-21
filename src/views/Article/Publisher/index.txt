@@ -1,6 +1,5 @@
 <template>
   <div>
-    asd
     <v-data-table
       :headers="headers"
       :items="drafts.content"
