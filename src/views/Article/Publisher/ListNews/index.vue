@@ -102,8 +102,8 @@
 </template>
 
 <script>
-import Header from "./containers/header.vue"
-import Tabs from "./containers/tabs.vue"
+import Header from "../containers/header.vue"
+import Tabs from "../containers/tabs.vue"
 import { mapActions } from "vuex";
 import moment from 'moment';
 import DialogDelete from "@/components/material/Dialog/DialogDelete";
