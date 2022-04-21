@@ -81,31 +81,31 @@ export default {
       keyword : '',
       afterTab : [],
       tabList: [
-        {
-          label : 'Need Review',
-          active : false, 
-          position : 1,
-          payload : 'review',
-          pathName : 'listReviewPublisher'
-        },
+        // {
+        //   label : 'Need Review',
+        //   active : false, 
+        //   position : 1,
+        //   payload : 'review',
+        //   pathName : 'listReviewPublisher'
+        // },
         {
           label: "List News",
           active: false,
-          position: 2,
+          position: 1,
           payload: "list",
           pathName : 'listNewsPublisher'
         },
         {
           label: "Draft",
           active: false,
-          position: 3,
+          position: 2,
           payload: "draft",
           pathName : 'draftNewsPublisher'
         },
         {
           label: "Terjadwal",
           active: false,
-          position: 4,
+          position: 3,
           payload: "scheduled",
           pathName : 'scheduledNewsPublisher'
         },
