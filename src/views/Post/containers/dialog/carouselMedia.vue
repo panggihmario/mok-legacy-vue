@@ -34,10 +34,10 @@
     <div class="d-flex align-center black--text">
       <div class="d-flex" v-if="feed.medias.length > 1">
         <div :class="d['box-icon']" @click="slideLeft">
-          <v-icon color="silver" x-small>fas fa-chevron-left</v-icon>
+          <v-icon color="charcoal" x-small>fas fa-chevron-left</v-icon>
         </div>
         <div :class="d['box-icon']" @click="slideRight">
-          <v-icon color="silver" x-small >fas fa-chevron-right</v-icon>
+          <v-icon color="charcoal" x-small >fas fa-chevron-right</v-icon>
         </div>
       </div>
       <v-menu
