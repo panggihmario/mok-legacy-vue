@@ -33,7 +33,10 @@
             v-else-if="payloadFilter.timeline == 'YEAR'"
           ></Year-Picker>
         </div>
-        <Hour-Picker></Hour-Picker>
+        <Hour-Picker class="mr-2"></Hour-Picker>
+        <v-btn class="text-capitalize" depressed color="secondary"
+          >Show Chart</v-btn
+        >
       </div>
     </div>
     <div class="bitcoin-price mt-6">
