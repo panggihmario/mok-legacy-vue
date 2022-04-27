@@ -8,11 +8,11 @@ export default [
         path: "/dashboard",
         role: ["ROLE_ADMIN"],
       },
-      // {
-      //   title: "Dashboard Sosmed",
-      //   path: "/dashboard-sosmed",
-      //   role: ["ROLE_ADMIN"],
-      // },
+      {
+        title: "Dashboard Sosmed",
+        path: "/dashboard-sosmed",
+        role: ["ROLE_ADMIN"],
+      },
     ],
   },
   {
