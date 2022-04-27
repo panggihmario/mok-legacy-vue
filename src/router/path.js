@@ -37,12 +37,13 @@ import Order from "../views/Shop/Order";
 import OrderDetail from "../views/Shop/Order/detail";
 import Finance from "../views/Shop/Finance";
 import allpath from "./pathFolder/index.js";
-import RnD from "../views/RnD/index.vue"
+import RnD from "../views/RnD/index.vue";
+import DashboardSosmed from "../views/Dashboard/ChartSosmed";
 
 const routes = [
   {
     path: "/",
-    component: () => import('../layouts/MainLayout'),
+    component: () => import("../layouts/MainLayout"),
     meta: {
       requireAuth: true,
     },
@@ -93,9 +94,9 @@ const routes = [
         component: User,
       },
       {
-        path : '/user/feed/:id/:name',
-        name : 'feedUser',
-        component : () => import('../views/AccountManage/User/Feeds/index.vue')
+        path: "/user/feed/:id/:name",
+        name: "feedUser",
+        component: () => import("../views/AccountManage/User/Feeds/index.vue"),
       },
       {
         path: "/user/create",
@@ -133,9 +134,9 @@ const routes = [
         component: ChannelEdit,
       },
       {
-        path : "/hashtag",
-        name : 'trendingHashtag',
-        component : () => import('../views/Manager/Hashtag'),
+        path: "/hashtag",
+        name: "trendingHashtag",
+        component: () => import("../views/Manager/Hashtag"),
       },
       {
         path: "/donation",
@@ -214,33 +215,33 @@ const routes = [
       },
 
       {
-        path : '/product',
-        component : () => import('../views/Shop/Product'),
-        name : 'products',
-        meta : {
-          page : 'product'
-        }
+        path: "/product",
+        component: () => import("../views/Shop/Product"),
+        name: "products",
+        meta: {
+          page: "product",
+        },
       },
       {
-        path : '/banned',
-        component : () => import('../views/Shop/Banned'),
-        name : 'bannedProduct',
-        meta : {
-          page : 'product'
-        }
+        path: "/banned",
+        component: () => import("../views/Shop/Banned"),
+        name: "bannedProduct",
+        meta: {
+          page: "product",
+        },
       },
       {
-        path : "search",
-        component  : () => import('../views/Shop/Product/search.vue'),
-        name : 'searchProduct',
-        meta : {
-          page : 'product'
-        }
+        path: "search",
+        component: () => import("../views/Shop/Product/search.vue"),
+        name: "searchProduct",
+        meta: {
+          page: "product",
+        },
       },
       {
-        path : "dashboard",
-        component : () => import('../views/Dashboard'),
-        name : 'dashboard',
+        path: "dashboard",
+        component: () => import("../views/Dashboard"),
+        name: "dashboard",
       },
       {
         path: "/category",
@@ -284,10 +285,15 @@ const routes = [
         component: Finance,
       },
       {
-        path : "/rnd",
-        name : 'rnd',
-        component : RnD
-      }
+        path: "/rnd",
+        name: "rnd",
+        component: RnD,
+      },
+      {
+        path: "/dashboard-sosmed",
+        name: "dashboardSosmed",
+        component: DashboardSosmed,
+      },
     ],
   },
   {
