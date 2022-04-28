@@ -1,17 +1,22 @@
 export default [
   {
-    action : "fas fa-desktop",
-    title : 'Dashboard',
-    items : [
+    action: "fas fa-desktop",
+    title: "Dashboard",
+    items: [
       {
-        title : 'Dashboard',
-        path : '/dashboard',
+        title: "Dashboard",
+        path: "/dashboard",
         role: ["ROLE_ADMIN"],
-      }
-    ]
+      },
+      // {
+      //   title: "Dashboard Sosmed",
+      //   path: "/dashboard-sosmed",
+      //   role: ["ROLE_ADMIN"],
+      // },
+    ],
   },
   {
-    action : "fas fa-sliders-h",
+    action: "fas fa-sliders-h",
     title: "Manage Account",
     items: [
       {
@@ -22,7 +27,7 @@ export default [
       {
         title: "List User",
         path: "/user",
-        role: ["ROLE_ADMIN" , "ROLE_ADMIN_SOCIAL"],
+        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
     ],
   },
@@ -31,8 +36,8 @@ export default [
     title: "Manager Socmed",
     items: [
       {
-        title : 'Trending Hashtag',
-        path : '/hashtag',
+        title: "Trending Hashtag",
+        path: "/hashtag",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
@@ -90,12 +95,12 @@ export default [
       {
         title: "Category",
         path: "/categorynews",
-        role : ["ROLE_ADMIN" , "ROLE_EDITOR"]  ,
+        role: ["ROLE_ADMIN", "ROLE_EDITOR"],
       },
       {
         title: "Iklan",
         path: "/ads",
-        role : ["ROLE_ADMIN" , "ROLE_EDITOR"],
+        role: ["ROLE_ADMIN", "ROLE_EDITOR"],
       },
     ],
   },
@@ -136,45 +141,43 @@ export default [
       {
         title: "Order",
         path: "/order",
-        role : ["ROLE_ADMIN" , "ROLE_SPV_COMPLAINT"],
-        
+        role: ["ROLE_ADMIN", "ROLE_SPV_COMPLAINT"],
       },
       {
         title: "Product",
         path: "/product",
-        role : ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN"],
       },
       {
-        title : 'Banned Product',
-        path : '/banned',
-        role : ["ROLE_ADMIN"],
+        title: "Banned Product",
+        path: "/banned",
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Category",
         path: "/category",
-        role : ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Seller",
         path: "/seller",
-        role : ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Report",
         path: "/reported-seller",
-        role : ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Komplain",
         path: "/complaint",
-        role : ["ROLE_ADMIN", "ROLE_CS_COMPLAINT" , "ROLE_SPV_COMPLAINT"],
+        role: ["ROLE_ADMIN", "ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT"],
       },
       {
         title: "Finance",
         path: "/finance",
-        role : ["ROLE_ADMIN" , "ROLE_ADMIN_FINANCE"],
+        role: ["ROLE_ADMIN", "ROLE_ADMIN_FINANCE"],
       },
-     
     ],
   },
   // {
@@ -199,5 +202,4 @@ export default [
   //     },
   //   ],
   // },
-
 ];
