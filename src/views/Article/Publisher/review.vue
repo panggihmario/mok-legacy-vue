@@ -197,7 +197,7 @@ export default {
         setTimeout(() => {
           const page = this.$route.params.page
           this.$router.push({
-            name : 'listNewsPublisher',
+            name : 'listReviewPublisher',
             params : {
               page
             }
