@@ -62,7 +62,7 @@ export default {
     },
     getNewsBaseOnPage(p) {
       const params = {
-        page : p,
+        page : p - 1,
         tab : 'review'
       }
       this.$emit('getNewsBaseOnPage', params)
