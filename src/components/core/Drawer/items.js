@@ -128,7 +128,7 @@ export default [
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
-        title: "Post TIktok",
+        title: "Post Tiktok",
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
