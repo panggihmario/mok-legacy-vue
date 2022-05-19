@@ -140,6 +140,15 @@
 
 <script>
 export default {
+  props: {
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+  },
   data: () => ({
     fav: true,
     menu: false,
@@ -175,6 +184,22 @@ export default {
       "Des",
     ],
   }),
+  watch: {
+    startDate() {
+      this.payloadData.startDateAt = this.startDate;
+    },
+    endDate() {
+      this.payloadData.endDateAt = this.endDate;
+    },
+    tab() {
+      this.startDate = null;
+      this.endDate = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+  },
   mounted() {
     this.getToday();
     // this.getFirstDayLastDay();
@@ -245,12 +270,12 @@ export default {
       }
     },
     setStartDate(m) {
-      this.startDate = `${m < 10 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
+      this.startDate = `${m < 9 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
       this.dStart = parseInt(`${this.payload.year}${m < 10 ? `0${m}` : m}`);
       this.keyFocusStart = `${this.payload.year}${m}`;
     },
     setEndDate(m) {
-      this.endDate = `${m < 10 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
+      this.endDate = `${m < 9 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
       this.dEnd = parseInt(`${this.payload.year}${m < 10 ? `0${m}` : m}`);
       this.keyFocusEnd = `${this.payload.year}${m}`;
     },
