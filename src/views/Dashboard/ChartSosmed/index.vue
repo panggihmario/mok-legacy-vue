@@ -303,7 +303,7 @@ export default {
         })
         .catch((err) => {
           this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response}`;
+          this.alertFailedMessage = `Error: ${err.response.message}`;
           setTimeout(() => {
             this.alertFailed = false;
             this.alertFailedMessage = "";
@@ -319,7 +319,7 @@ export default {
         })
         .catch((err) => {
           this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response}`;
+          this.alertFailedMessage = `Error: ${err.response.message}`;
           setTimeout(() => {
             this.alertFailed = false;
             this.alertFailedMessage = "";
