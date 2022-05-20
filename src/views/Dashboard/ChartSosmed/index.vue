@@ -71,6 +71,20 @@
         >
       </div>
     </div>
+
+    <div class="mt-4">
+      <span>
+        Rata-rata : <b>{{ meanData }}</b> Post dilihat pada
+        <b>{{
+          startDateAtShow == endDateAtShow
+            ? `${endDateAtShow}`
+            : `${startDateAtShow} - ${endDateAtShow}`
+        }}</b>
+        ketika jam
+        <b>{{ `${startHourAtShow} - ${endHourAtShow}` }}</b>
+      </span>
+    </div>
+
     <div class="bitcoin-price mt-6">
       <svg
         style="width:0; height:0; position:absolute;"
@@ -153,6 +167,12 @@ export default {
           stroke: true,
         },
       ],
+      totalData: 0,
+      meanData: 0,
+      startDateAtShow: "",
+      endDateAtShow: "",
+      startHourAtShow: "",
+      endHourAtShow: "",
       months: [
         "Jan",
         "Feb",
@@ -180,45 +200,56 @@ export default {
     },
   },
   mounted() {
-    this.handleGetDataChart();
+    this.handleGetDataChartFirstMounted();
   },
   methods: {
     ...mapActions({
       fetchStatisticsUserSeen: "dashboard/fetchStatisticsUserSeen",
       searchUser: "account/searchUser",
     }),
-    handleGetDataChart() {
-      let dataChart = {
-        firstDate: "677789879",
-        datasets: [
-          {
-            data: [0, 20],
-            legend: "user_seen",
-            total: 20,
-          },
-        ],
-        xLabels: ["14 Jan", "15 jan"],
+    handleGetDataChartFirstMounted() {
+      let year = new Date().getFullYear();
+      let month = new Date().getMonth();
+      let date = new Date().getDate() - 1;
+      let today = new Date(`${year}/${month + 1}/${date}`).getTime();
+      let payload = {
+        filterBy: this.payloadFilter.timeline.toLowerCase(),
+        params: {
+          startHourAt: "00",
+          startMinuteAt: "00",
+          endHourAt: "23",
+          endMinuteAt: "59",
+          username: null,
+          startDateAt: today,
+          endDateAt: today,
+        },
       };
-
-      this.labelChart.xLabels = dataChart.xLabels;
-      this.datasets[0].data = dataChart.datasets[0].data;
+      this.handleFetchUserSeen(payload);
     },
     actionSubmitGetDataChart() {
       let startDateAt =
         this.payloadData.startDateAt != null
-          ? this.payloadData.startDateAt.split(":")
+          ? this.payloadFilter.timeline == "YEAR"
+            ? this.payloadData.startDateAt
+            : this.payloadData.startDateAt.split("/")
           : null;
       let endDateAt =
         this.payloadData.endDateAt != null
-          ? this.payloadData.endDateAt.split(":")
+          ? this.payloadFilter.timeline == "YEAR"
+            ? this.payloadData.endDateAt
+            : this.payloadData.endDateAt.split("/")
           : null;
       let toEpochStart =
         startDateAt != null
-          ? `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
+          ? this.payloadFilter.timeline == "YEAR"
+            ? this.payloadData.startDateAt
+            : `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
           : null;
       let toEpochEnd =
         endDateAt != null
-          ? `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
+          ? this.payloadFilter.timeline == "YEAR"
+            ? this.payloadData.endDateAt
+            : `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
           : null;
       let epochStart = new Date(toEpochStart).getTime();
       let epochEnd = new Date(toEpochEnd).getTime();
@@ -250,7 +281,7 @@ export default {
                 ? epochStart
                 : null
               : this.payloadFilter.timeline == "MONTH"
-              ? this.payloadData.startDateAt.split(":")[0]
+              ? this.payloadData.startDateAt.split("/")[0]
               : this.payloadData.startDateAt,
           endDateAt:
             this.payloadFilter.timeline == "HOUR" ||
@@ -259,7 +290,7 @@ export default {
                 ? epochEnd
                 : null
               : this.payloadFilter.timeline == "MONTH"
-              ? this.payloadData.endDateAt.split(":")[0]
+              ? this.payloadData.endDateAt.split("/")[0]
               : this.payloadData.endDateAt,
         },
       };
@@ -290,20 +321,89 @@ export default {
     handleFetchUserSeen(payload) {
       return this.fetchStatisticsUserSeen(payload)
         .then((res) => {
-          console.log({ res });
-          this.labelChart.xLabels = res.xlabels;
-          this.datasets[0].data = res.datasets[0].data;
-          let startIfNull = this.payloadData.startDateAt.split(":");
-          if (res.datasets[0].data.length <= 1) {
-            this.datasets[0].data.unshift(0);
-            this.labelChart.xLabels.unshift(
-              `${this.months[startIfNull[0] - 1]} ${startIfNull[1]}`
-            );
+          if (res.xlabels.length > 0) {
+            this.labelChart.xLabels = [];
+            if (this.payloadFilter.timeline == "HOUR") {
+              for (let i = 0; i < res.xlabels.length; i++) {
+                const e =
+                  res.xlabels[i] < 10 ? `0${res.xlabels[i]}` : res.xlabels[i];
+                this.labelChart.xLabels.push(`${e}:00`);
+              }
+            } else {
+              this.labelChart.xLabels = res.xlabels;
+            }
+
+            this.datasets[0].data = res.datasets[0].data;
+            this.totalData = res.datasets[0].totalPost;
+            this.meanData = this.totalData / res.datasets[0].data.length;
+            if (this.payloadFilter.timeline == "MONTH") {
+              let dMonthStart = parseInt(payload.params.startDateAt);
+              let dMonthEnd = parseInt(payload.params.endDateAt);
+              let year = new Date().getFullYear();
+              this.startDateAtShow = `${
+                this.months[dMonthStart]
+              } ${year}`;
+              this.endDateAtShow = `${
+                this.months[dMonthEnd]
+              } ${year}`;
+            } else if (this.payloadFilter.timeline == "YEAR") {
+              this.startDateAtShow = `${payload.params.startDateAt}`;
+              this.endDateAtShow = `${payload.params.endDateAt}`;
+            } else {
+              let dStart = new Date(payload.params.startDateAt);
+              let dEnd = new Date(payload.params.endDateAt);
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              } ${dStart.getFullYear()}`;
+              this.endDateAtShow = `${dEnd.getDate()} ${
+                this.months[dEnd.getMonth()]
+              } ${dEnd.getFullYear()}`;
+            }
+            this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
+            this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
+
+            if (res.datasets[0].data.length <= 1) {
+              this.datasets[0].data.unshift(0);
+              if (this.payloadFilter.timeline == "HOUR") {
+                this.labelChart.xLabels.unshift(this.payloadData.startHourAt);
+              } else if (this.payloadFilter.timeline == "YEAR") {
+                this.labelChart.xLabels.unshift(this.payloadData.startDateAt);
+              } else if (this.payloadFilter.timeline == "DAY") {
+                let startIfNull = this.payloadData.startDateAt.split("/");
+                this.labelChart.xLabels.unshift(
+                  `${startIfNull[0]} ${this.months[startIfNull[1] - 1]}`
+                );
+              } else {
+                let startIfNull = this.payloadData.startDateAt.split("/");
+                this.labelChart.xLabels.unshift(
+                  `${this.months[startIfNull[0] - 1]} ${startIfNull[1]}`
+                );
+              }
+            }
+          } else {
+            this.alertFailed = true;
+            this.alertFailedMessage = `Data Kosong`;
+            setTimeout(() => {
+              this.alertFailed = false;
+              this.alertFailedMessage = "";
+            }, 3000);
+            if (this.payloadFilter.timeline == "HOUR") {
+              this.labelChart.xLabels = [
+                `${this.payloadData.startHourAt}`,
+                `${this.payloadData.endHourAt}`,
+              ];
+            } else {
+              this.labelChart.xLabels = [
+                `${this.payloadData.startDateAt}`,
+                `${this.payloadData.endDateAt}`,
+              ];
+            }
+            this.datasets[0].data = [0, 0];
           }
         })
         .catch((err) => {
           this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response.message}`;
+          this.alertFailedMessage = `Error: ${err.response.data.message}`;
           setTimeout(() => {
             this.alertFailed = false;
             this.alertFailedMessage = "";
@@ -319,7 +419,7 @@ export default {
         })
         .catch((err) => {
           this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response.message}`;
+          this.alertFailedMessage = `Error: ${err.response.data.message}`;
           setTimeout(() => {
             this.alertFailed = false;
             this.alertFailedMessage = "";

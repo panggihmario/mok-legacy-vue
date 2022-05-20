@@ -121,7 +121,6 @@
                     v-model="payload.hourEnd"
                     full-width
                     no-title
-                    :min="payload.hourEnd"
                     @click:minute="$refs.menu3.save(payload.hourEnd)"
                   ></v-time-picker>
                 </v-menu>
