@@ -22,8 +22,8 @@
               endDate == null
                 ? "Date"
                 : startDate == endDate
-                ? `${startDate}`
-                : `${startDate} - ${endDate}`
+                ? `${startDateShow}`
+                : `${startDateShow} - ${endDateShow}`
             }}
             <v-icon>mdi-chevron-down</v-icon>
           </v-btn>
@@ -178,7 +178,7 @@
                       startDate
                     }}</span>
                     <span v-else class="font-weight-medium font-12 grey--text"
-                      >DD:MM:YY</span
+                      >DD/MM/YY</span
                     >
                   </div>
                 </div>
@@ -189,7 +189,7 @@
                       endDate
                     }}</span>
                     <span v-else class="font-weight-medium font-12 grey--text"
-                      >DD:MM:YY</span
+                      >DD/MM/YY</span
                     >
                   </div>
                 </div>
@@ -248,6 +248,8 @@ export default {
     lastDay: null,
     startDate: null,
     endDate: null,
+    startDateShow: null,
+    endDateShow: null,
     payload: {
       year: "",
       month: "",
@@ -280,6 +282,8 @@ export default {
     tab() {
       this.startDate = null;
       this.endDate = null;
+      this.startDateShow = null;
+      this.endDateShow = null;
       this.dStart = null;
       this.dEnd = null;
       this.keyFocusStart = null;
@@ -289,6 +293,8 @@ export default {
       if (this.isReset) {
         this.startDate = null;
         this.endDate = null;
+        this.startDateShow = null;
+        this.endDateShow = null;
         this.dStart = null;
         this.dEnd = null;
         this.keyFocusStart = null;
@@ -389,11 +395,14 @@ export default {
       }
     },
     setStartDate(d) {
-      this.startDate = `${d < 10 ? `0${d}` : d}:${
+      this.startDate = `${d < 10 ? `0${d}` : d}/${
         this.payload.month < 10
           ? `0${this.payload.month + 1}`
           : this.payload.month
-      }:${this.payload.year}`;
+      }/${this.payload.year}`;
+      this.startDateShow = `${d < 10 ? `0${d}` : d} ${
+        this.months[this.payload.month]
+      }`;
       this.dStart = parseInt(
         `${this.payload.year}${
           this.payload.month < 10
@@ -404,11 +413,14 @@ export default {
       this.keyFocusStart = `${this.payload.year}${this.payload.month}${d}`;
     },
     setEndDate(d) {
-      this.endDate = `${d < 10 ? `0${d}` : d}:${
+      this.endDate = `${d < 10 ? `0${d}` : d}/${
         this.payload.month < 10
           ? `0${this.payload.month + 1}`
           : this.payload.month
-      }:${this.payload.year}`;
+      }/${this.payload.year}`;
+      this.endDateShow = `${d < 10 ? `0${d}` : d} ${
+        this.months[this.payload.month]
+      }`;
       this.dEnd = parseInt(
         `${this.payload.year}${
           this.payload.month < 10
