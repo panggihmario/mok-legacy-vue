@@ -1,18 +1,19 @@
-import methods from "./actions"
+import methods from "./actions";
 export default {
   namespaced: true,
   state: {
     pathAccount: "admin/accounts",
-    pathFeed : "profile/post"
+    pathFeed: "profile/post",
+    pathAccountSearch: "search/account",
   },
   actions: {
     ...methods,
     printSuccess(ctx, response) {
-      const responseData = response.data.data
-      return responseData
+      const responseData = response.data.data;
+      return responseData;
     },
     printError(ctx, err) {
-      throw err
+      throw err;
     },
     async getListRespone({ state }, payload) {
       let response;
@@ -115,6 +116,17 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .delete(`${state.pathAccount}/${payload}/deleted`);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async searchUser({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .get(`${state.pathAccountSearch}/username?value=${payload}`);
         return response;
       } catch (error) {
         return error;

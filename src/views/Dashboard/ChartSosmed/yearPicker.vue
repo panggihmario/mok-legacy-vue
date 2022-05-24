@@ -102,6 +102,15 @@
 
 <script>
 export default {
+  props: {
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+  },
   data: () => ({
     fav: true,
     menu: false,
@@ -137,6 +146,22 @@ export default {
       "Des",
     ],
   }),
+  watch: {
+    startDate() {
+      this.payloadData.startDateAt = this.startDate;
+    },
+    endDate() {
+      this.payloadData.endDateAt = this.endDate;
+    },
+    tab() {
+      this.startDate = null;
+      this.endDate = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+  },
   mounted() {
     this.getToday();
     // this.getFirstDayLastDay();
