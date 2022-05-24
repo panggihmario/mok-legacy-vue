@@ -146,7 +146,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import ListItem from "./list.vue";
 
 export default {
@@ -213,14 +213,29 @@ export default {
         this.actionGetFeedByUsername();
       }
     },
+    previewTiktok() {
+      if (this.previewTiktok == false) {
+        this.focusIndex = null;
+        this.payload.channel = null;
+        this.setPreviewTiktokData({});
+      }
+    },
   },
   mounted() {
     this.actionGetFeedExplore();
     this.getResponseChannel();
     this.getCursorFirst();
+    this.setPreviewTiktokData({});
+    this.changeStatusPreviewTiktok(false);
+  },
+  computed: {
+    ...mapState({
+      previewTiktok: "previewTiktok",
+    }),
   },
   methods: {
     ...mapActions({
+      changeStatusPreviewTiktok: "changeStatusPreviewTiktok",
       getUserDetail: "tiktok/getUserDetail",
       getUserFeed: "tiktok/getUserFeed",
       getFeedExplore: "tiktok/getFeedExplore",
@@ -230,8 +245,13 @@ export default {
       getAllChannel: "channel/getAllChannel",
       postFeed: "post/postFeed",
     }),
+    ...mapMutations({
+      setPreviewTiktokData: "tiktok/setPreviewTiktokData",
+    }),
     moveTab(i) {
       this.tab = i;
+      this.setPreviewTiktokData({});
+      this.changeStatusPreviewTiktok(false);
     },
     movePageDraft() {
       this.$router.push({
@@ -240,16 +260,22 @@ export default {
           page: 1,
         },
       });
+      this.setPreviewTiktokData({});
+      this.changeStatusPreviewTiktok(false);
     },
     selectFocus(data) {
       if (this.focusIndex == data.idx) {
         this.focusIndex = null;
         this.payload.channel = null;
+        this.setPreviewTiktokData({});
+        this.changeStatusPreviewTiktok(false);
       } else {
         this.focusIndex = data.idx;
         this.payload.channel = null;
         this.selectedItem = data.item;
         this.payload.description = data.item.desc;
+        this.setPreviewTiktokData(data.item);
+        this.changeStatusPreviewTiktok(true);
       }
     },
     actionGetUserDetail() {

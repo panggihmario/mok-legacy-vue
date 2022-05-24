@@ -4,6 +4,12 @@ export default {
     pathAccount: "account",
     pathDiscover: "discover",
     pathDownloadNoWatermark: "download-no-watermark",
+    previewTiktokData: {},
+  },
+  mutations: {
+    setPreviewTiktokData(state, payload) {
+      state.previewTiktokData = payload;
+    },
   },
   actions: {
     getUserDetail({ state }, payload) {

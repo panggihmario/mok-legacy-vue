@@ -4,11 +4,7 @@
       Tidak Ada Video
     </div>
     <div v-else class="d-flex justify-space-between">
-      <div
-        class="d-flex flex-wrap whitesmoke"
-        no-gutters
-        :style="focusIndex == null ? 'width: 100%' : 'width: 60%'"
-      >
+      <div class="d-flex flex-wrap whitesmoke" no-gutters style="width: 100%">
         <div
           v-for="(item, idx) in userFeed"
           :key="idx"
@@ -39,62 +35,6 @@
                 formatThousandToKMB(item.stats.diggCount)
               }}</span>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <div
-        v-if="focusIndex != null"
-        class="sticky-div whitesmoke pt-4 pb-12 px-4"
-        style="width: 39%"
-      >
-        <h5>Konten Terpilih</h5>
-        <p class="font-12 mt-2">
-          Konten yang terpilih hanya akan terupload setelah kamu menekan tombol
-          “Submit Post”
-        </p>
-        <div>
-          <video
-            :src="selectedItem.video.playAddr"
-            controls
-            style="max-width: 100% !important; height: 100% !important"
-          ></video>
-
-          <div class="mt-8 font-12 text-break">
-            <v-textarea
-              v-model="payload.description"
-              label="Description"
-              outlined
-              background-color="white"
-              class="font-12"
-            ></v-textarea>
-            <custom-autocomplete
-              :value="payload.channel"
-              v-model="payload.channel"
-              :items="channels"
-              item-text="name"
-              placeholder="Select Channel"
-              return-object
-            />
-          </div>
-          <div class="d-flex">
-            <custom-button
-              color="white"
-              class="primary--text mr-4"
-              @click="selectFocus(focusIndex)"
-            >
-              Cancel
-            </custom-button>
-            <custom-button
-              color="primary"
-              class="white--text"
-              :loading="loadingSubmit"
-              @click="actionGetTiktokVideoNoWatermark"
-            >
-              Submit Post
-            </custom-button>
           </div>
         </div>
       </div>
@@ -142,9 +82,6 @@ export default {
     selectFocus(idx, item) {
       let data = { idx, item };
       this.$emit("selectFocus", data);
-    },
-    actionGetTiktokVideoNoWatermark() {
-      this.$emit("actionGetTiktokVideoNoWatermark");
     },
     actionLoadMoreFeed() {
       this.$emit("actionLoadMoreFeed");
