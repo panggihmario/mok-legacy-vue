@@ -24,6 +24,11 @@
             <div class="mt-2 font-12 text-break">
               {{ item.desc }}
             </div>
+            <div>
+              <span class="font-10 grey--text font-weight-medium">{{
+                formatDate(item.createTime)
+              }}</span>
+            </div>
 
             <div class="d-flex align-center mt-2">
               <v-avatar size="20px" class="mr-2">
@@ -66,6 +71,7 @@
 
 <script>
 import mixins from "@/mixins/global.js";
+import moment from "moment";
 
 export default {
   mixins: [mixins],
@@ -79,6 +85,11 @@ export default {
     "payload",
   ],
   methods: {
+    formatDate(rawDate) {
+      const secondRawDate = rawDate;
+      const newDate = moment.unix(secondRawDate).format("DD-MM-YYYY");
+      return newDate;
+    },
     selectFocus(idx, item) {
       let data = { idx, item };
       this.$emit("selectFocus", data);
@@ -91,6 +102,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.font-9
+	font-size: 9px
 .font-10
 	font-size: 10px
 .font-12

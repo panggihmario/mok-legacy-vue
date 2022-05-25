@@ -23,7 +23,7 @@
 
         <div class="mt-8 font-12 text-break">
           <v-textarea
-            v-model="payload.description"
+            v-model="previewTiktokData.desc"
             label="Description"
             outlined
             background-color="white"
