@@ -3,7 +3,10 @@
     <Header-Content label="Dashboard" :list="items" />
 
     <div class="d-flex justify-space-between align-center">
-      <h3>User Activity</h3>
+      <div>
+        <h3 style="margin-bottom: -8px">User Activity</h3>
+        <span class="font-12 font-weight-medium grey--text">Timezone = UTC±00:00</span>
+      </div>
       <div class="d-flex align-center">
         <v-btn
           text
@@ -77,7 +80,7 @@
         Rata-rata : <b>{{ meanData }}</b> Post dilihat pada
         <b>{{
           startDateAtShow == endDateAtShow
-            ? `${endDateAtShow}`
+            ? `${startDateAtShow}`
             : `${startDateAtShow} - ${endDateAtShow}`
         }}</b>
         ketika jam
@@ -215,13 +218,12 @@ export default {
       let payload = {
         filterBy: this.payloadFilter.timeline.toLowerCase(),
         params: {
-          startHourAt: "00",
+          startHourAt: this.timeUTCmin7adjustment("00"),
           startMinuteAt: "00",
-          endHourAt: "23",
+          endHourAt: this.timeUTCmin7adjustment("23"),
           endMinuteAt: "59",
           username: null,
           startDateAt: today,
-          endDateAt: today,
         },
       };
       this.handleFetchUserSeen(payload);
@@ -259,7 +261,9 @@ export default {
         params: {
           startHourAt:
             this.payloadData.startHourAt != null
-              ? this.payloadData.startHourAt.split(":")[0]
+              ? this.timeUTCmin7adjustment(
+                  this.payloadData.startHourAt.split(":")[0]
+                )
               : null,
           startMinuteAt:
             this.payloadData.startHourAt != null
@@ -267,7 +271,9 @@ export default {
               : null,
           endHourAt:
             this.payloadData.endHourAt != null
-              ? this.payloadData.endHourAt.split(":")[0]
+              ? this.timeUTCmin7adjustment(
+                  this.payloadData.endHourAt.split(":")[0]
+                )
               : null,
           endMinuteAt:
             this.payloadData.endHourAt != null
@@ -283,6 +289,11 @@ export default {
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.startDateAt.split("/")[0]
               : this.payloadData.startDateAt,
+        },
+      };
+      if (this.payloadData.startDateAt != this.payloadData.endDateAt) {
+        payload.params = {
+          ...payload.params,
           endDateAt:
             this.payloadFilter.timeline == "HOUR" ||
             this.payloadFilter.timeline == "DAY"
@@ -292,8 +303,8 @@ export default {
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.endDateAt.split("/")[0]
               : this.payloadData.endDateAt,
-        },
-      };
+        };
+      }
 
       let nullValue = 0;
       for (const [key, value] of Object.entries(payload.params)) {
@@ -321,93 +332,141 @@ export default {
     handleFetchUserSeen(payload) {
       return this.fetchStatisticsUserSeen(payload)
         .then((res) => {
-          if (res.xlabels.length > 0) {
-            this.labelChart.xLabels = [];
-            if (this.payloadFilter.timeline == "HOUR") {
-              for (let i = 0; i < res.xlabels.length; i++) {
-                const e =
-                  res.xlabels[i] < 10 ? `0${res.xlabels[i]}` : res.xlabels[i];
-                this.labelChart.xLabels.push(`${e}:00`);
-              }
-            } else {
-              this.labelChart.xLabels = res.xlabels;
-            }
-
-            this.datasets[0].data = res.datasets[0].data;
-            this.totalData = res.datasets[0].totalPost;
-            this.meanData = this.totalData / res.datasets[0].data.length;
-            if (this.payloadFilter.timeline == "MONTH") {
-              let dMonthStart = parseInt(payload.params.startDateAt);
-              let dMonthEnd = parseInt(payload.params.endDateAt);
-              let year = new Date().getFullYear();
-              this.startDateAtShow = `${
-                this.months[dMonthStart]
-              } ${year}`;
-              this.endDateAtShow = `${
-                this.months[dMonthEnd]
-              } ${year}`;
-            } else if (this.payloadFilter.timeline == "YEAR") {
-              this.startDateAtShow = `${payload.params.startDateAt}`;
-              this.endDateAtShow = `${payload.params.endDateAt}`;
-            } else {
-              let dStart = new Date(payload.params.startDateAt);
-              let dEnd = new Date(payload.params.endDateAt);
-              this.startDateAtShow = `${dStart.getDate()} ${
-                this.months[dStart.getMonth()]
-              } ${dStart.getFullYear()}`;
-              this.endDateAtShow = `${dEnd.getDate()} ${
-                this.months[dEnd.getMonth()]
-              } ${dEnd.getFullYear()}`;
-            }
-            this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
-            this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
-
-            if (res.datasets[0].data.length <= 1) {
-              this.datasets[0].data.unshift(0);
-              if (this.payloadFilter.timeline == "HOUR") {
-                this.labelChart.xLabels.unshift(this.payloadData.startHourAt);
-              } else if (this.payloadFilter.timeline == "YEAR") {
-                this.labelChart.xLabels.unshift(this.payloadData.startDateAt);
-              } else if (this.payloadFilter.timeline == "DAY") {
-                let startIfNull = this.payloadData.startDateAt.split("/");
-                this.labelChart.xLabels.unshift(
-                  `${startIfNull[0]} ${this.months[startIfNull[1] - 1]}`
-                );
-              } else {
-                let startIfNull = this.payloadData.startDateAt.split("/");
-                this.labelChart.xLabels.unshift(
-                  `${this.months[startIfNull[0] - 1]} ${startIfNull[1]}`
-                );
-              }
+          this.labelChart.xLabels = [];
+          if (this.payloadFilter.timeline == "HOUR") {
+            for (let i = 0; i < res.xlabels.length; i++) {
+              this.labelChart.xLabels.push(
+                `${this.timeUTCplus7adjustment(res.xlabels[i])}:00`
+              );
             }
           } else {
+            this.labelChart.xLabels = res.xlabels;
+          }
+
+          this.datasets[0].data = res.datasets[0].data;
+          this.totalData = res.datasets[0].totalPost;
+          this.meanData = Math.round(
+            ((this.totalData / res.datasets[0].data.length) * 100) / 100
+          );
+          if (this.payloadFilter.timeline == "MONTH") {
+            let dMonthStart = parseInt(payload.params.startDateAt);
+            let dMonthEnd = payload.params.endDateAt
+              ? parseInt(payload.params.endDateAt)
+              : dMonthStart;
+            let year = new Date().getFullYear();
+            this.startDateAtShow = `${this.months[dMonthStart]} ${year}`;
+            this.endDateAtShow = `${this.months[dMonthEnd]} ${year}`;
+          } else if (this.payloadFilter.timeline == "YEAR") {
+            this.startDateAtShow = `${payload.params.startDateAt}`;
+            this.endDateAtShow = `${payload.params.endDateAt}`;
+          } else {
+            let dStart = new Date(payload.params.startDateAt);
+            let dEnd = payload.params.endDateAt
+              ? new Date(payload.params.endDateAt)
+              : dStart;
+            this.startDateAtShow = `${dStart.getDate()} ${
+              this.months[dStart.getMonth()]
+            } ${dStart.getFullYear()}`;
+            this.endDateAtShow = `${dEnd.getDate()} ${
+              this.months[dEnd.getMonth()]
+            } ${dEnd.getFullYear()}`;
+          }
+          this.startHourAtShow = `${this.timeUTCplus7adjustment(
+            payload.params.startHourAt
+          )}:${payload.params.startMinuteAt}`;
+          this.endHourAtShow = `${this.timeUTCplus7adjustment(
+            payload.params.endHourAt
+          )}:${payload.params.endMinuteAt}`;
+
+          if (res.datasets[0].data.length <= 1) {
+            this.datasets[0].data.unshift(0);
+            if (this.payloadFilter.timeline == "HOUR") {
+              this.labelChart.xLabels.unshift(this.startHourAtShow);
+            } else if (this.payloadFilter.timeline == "YEAR") {
+              this.labelChart.xLabels.unshift(this.payloadData.startDateAt);
+            } else if (this.payloadFilter.timeline == "DAY") {
+              let startIfNull = this.payloadData.startDateAt.split("/");
+              this.labelChart.xLabels.unshift(
+                `${startIfNull[0]} ${this.months[startIfNull[1] - 1]}`
+              );
+            } else {
+              let startIfNull = this.payloadData.startDateAt.split("/");
+              this.labelChart.xLabels.unshift(
+                `${this.months[startIfNull[0] - 1]} ${startIfNull[1]}`
+              );
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response.status == 404) {
             this.alertFailed = true;
             this.alertFailedMessage = `Data Kosong`;
             setTimeout(() => {
               this.alertFailed = false;
               this.alertFailedMessage = "";
             }, 3000);
+
+            this.startDateAtShow = payload.params.startDateAt;
+            this.startHourAtShow = `${this.timeUTCplus7adjustment(
+              payload.params.startHourAt
+            )}:${payload.params.startMinuteAt}`;
+            this.endHourAtShow = `${this.timeUTCplus7adjustment(
+              payload.params.endHourAt
+            )}:${payload.params.endMinuteAt}`;
+
             if (this.payloadFilter.timeline == "HOUR") {
+              let dStart = new Date(payload.params.startDateAt);
               this.labelChart.xLabels = [
-                `${this.payloadData.startHourAt}`,
-                `${this.payloadData.endHourAt}`,
+                this.startHourAtShow,
+                this.endHourAtShow,
               ];
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              }`;
+              this.endDateAtShow = this.startDateAtShow;
+            } else if (this.payloadFilter.timeline == "DAY") {
+              let dStart = new Date(payload.params.startDateAt);
+              let dEnd = new Date(payload.params.endDateAt);
+              this.labelChart.xLabels = [
+                `${dStart.getDate()} ${this.months[dStart.getMonth()]}`,
+                `${dEnd.getDate()} ${this.months[dEnd.getMonth()]}`,
+              ];
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              }`;
+              this.endDateAtShow = payload.params.endDateAt
+                ? `${dEnd.getDate()} ${this.months[dEnd.getMonth()]}`
+                : this.startDateAtShow;
+            } else if (this.payloadFilter.timeline == "MONTH") {
+              this.labelChart.xLabels = [
+                `${this.months[parseInt(payload.params.startDateAt) - 1]}`,
+                `${this.months[parseInt(payload.params.endDateAt) - 1]}`,
+              ];
+              this.startDateAtShow = `${
+                this.months[parseInt(payload.params.startDateAt) - 1]
+              }`;
+              this.endDateAtShow = payload.params.endDateAt
+                ? `${this.months[parseInt(payload.params.endDateAt) - 1]}`
+                : this.startDateAtShow;
             } else {
               this.labelChart.xLabels = [
-                `${this.payloadData.startDateAt}`,
-                `${this.payloadData.endDateAt}`,
+                `${payload.params.startDateAt}`,
+                `${payload.params.endDateAt}`,
               ];
+              (this.startDateAtShow = `${payload.params.startDateAt}`),
+                (this.endDateAtShow = payload.params.endDateAt
+                  ? `${payload.params.endDateAt}`
+                  : this.startDateAtShow);
             }
             this.datasets[0].data = [0, 0];
+          } else {
+            this.alertFailed = true;
+            this.alertFailedMessage = `Error: ${err.response.data.message}`;
+            setTimeout(() => {
+              this.alertFailed = false;
+              this.alertFailedMessage = "";
+            }, 3000);
           }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response.data.message}`;
-          setTimeout(() => {
-            this.alertFailed = false;
-            this.alertFailedMessage = "";
-          }, 3000);
         });
     },
     handleGetUser(payload) {
@@ -431,11 +490,36 @@ export default {
       this.payloadFilter.timeline = "HOUR";
       this.isReset = true;
     },
+    timeUTCmin7adjustment(h) {
+      let hnum = parseInt(h);
+      let hmin7 = hnum - 7;
+      let datah = "";
+      if (hmin7 < 0) {
+        hmin7 += 24;
+      }
+      datah = hmin7 < 10 ? `0${hmin7}` : `${hmin7}`;
+      // return datah;
+      return h;
+    },
+    timeUTCplus7adjustment(h) {
+      let hnum = parseInt(h);
+      let hplus7 = hnum + 7;
+      let datah = "";
+      if (hplus7 > 23) {
+        hplus7 -= 24;
+      }
+      datah = hplus7 < 10 ? `0${hplus7}` : `${hplus7}`;
+      // return datah;
+      return h;
+    },
   },
 };
 </script>
 
 <style lang="scss">
+.font-12 {
+  font-size: 12px;
+}
 .bitcoin-price {
   .vtc {
     height: 250px;

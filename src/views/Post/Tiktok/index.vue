@@ -8,7 +8,7 @@
           v-for="(item, idx) in tabLabel"
           :key="idx"
           class="d-flex justify-center align-center font-12 box-tab mb-2 mr-3 py-2 px-4"
-          :class="{ 'primary white--text': tab == idx + 1 }"
+          :class="{ 'primary white--text font-weight-bold': tab == idx + 1 }"
           @click="moveTab(idx + 1)"
         >
           {{ item }}
