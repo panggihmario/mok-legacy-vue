@@ -5,7 +5,9 @@
     <div class="d-flex justify-space-between align-center">
       <div>
         <h3 style="margin-bottom: -8px">User Activity</h3>
-        <span class="font-12 font-weight-medium grey--text">Timezone = UTC±00:00</span>
+        <span class="font-12 font-weight-medium grey--text"
+          >Timezone = UTC±00:00</span
+        >
       </div>
       <div class="d-flex align-center">
         <v-btn
@@ -214,7 +216,7 @@ export default {
       let year = new Date().getFullYear();
       let month = new Date().getMonth();
       let date = new Date().getDate() - 1;
-      let today = new Date(`${year}/${month + 1}/${date}`).getTime();
+      let today = new Date(Date.UTC(year, month, date)).getTime();
       let payload = {
         filterBy: this.payloadFilter.timeline.toLowerCase(),
         params: {
@@ -245,14 +247,16 @@ export default {
         startDateAt != null
           ? this.payloadFilter.timeline == "YEAR"
             ? this.payloadData.startDateAt
-            : `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
-          : null;
+            : Date.UTC(startDateAt[2], startDateAt[1] - 1, startDateAt[0])
+          : // : `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
+            null;
       let toEpochEnd =
         endDateAt != null
           ? this.payloadFilter.timeline == "YEAR"
             ? this.payloadData.endDateAt
-            : `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
-          : null;
+            : Date.UTC(endDateAt[2], endDateAt[1] - 1, endDateAt[0])
+          : // : `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
+            null;
       let epochStart = new Date(toEpochStart).getTime();
       let epochEnd = new Date(toEpochEnd).getTime();
 
