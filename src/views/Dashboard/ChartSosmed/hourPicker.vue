@@ -121,7 +121,6 @@
                     v-model="payload.hourEnd"
                     full-width
                     no-title
-                    :min="payload.hourEnd"
                     @click:minute="$refs.menu3.save(payload.hourEnd)"
                   ></v-time-picker>
                 </v-menu>
@@ -151,6 +150,19 @@
 
 <script>
 export default {
+  props: {
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+    isReset: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     menu: false,
     menu2: false,
@@ -189,6 +201,35 @@ export default {
       "Des",
     ],
   }),
+  watch: {
+    "payload.hourStart"() {
+      this.payloadData.startHourAt = this.payload.hourStart;
+    },
+    "payload.hourEnd"() {
+      this.payloadData.endHourAt = this.payload.hourEnd;
+    },
+    tab() {
+      this.payload.hourStart = null;
+      this.payload.hourEnd = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+    isReset() {
+      if (this.isReset) {
+        this.payload.hourStart = null;
+        this.payload.hourEnd = null;
+        this.dStart = null;
+        this.dEnd = null;
+        this.keyFocusStart = null;
+        this.keyFocusEnd = null;
+      }
+      setTimeout(() => {
+        this.$emit("resetFalse");
+      }, 100);
+    },
+  },
   mounted() {
     this.getToday();
     // this.getFirstDayLastDay();
