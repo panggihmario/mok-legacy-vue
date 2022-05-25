@@ -3,7 +3,10 @@
     <Header-Content label="Dashboard" :list="items" />
 
     <div class="d-flex justify-space-between align-center">
-      <h3>User Activity</h3>
+      <div>
+        <h3 style="margin-bottom: -8px">User Activity</h3>
+        <span class="font-12 font-weight-medium grey--text">Timezone = UTC±00:00</span>
+      </div>
       <div class="d-flex align-center">
         <v-btn
           text
@@ -403,6 +406,7 @@ export default {
               this.alertFailedMessage = "";
             }, 3000);
 
+            this.startDateAtShow = payload.params.startDateAt;
             this.startHourAtShow = `${this.timeUTCplus7adjustment(
               payload.params.startHourAt
             )}:${payload.params.startMinuteAt}`;
@@ -411,10 +415,15 @@ export default {
             )}:${payload.params.endMinuteAt}`;
 
             if (this.payloadFilter.timeline == "HOUR") {
+              let dStart = new Date(payload.params.startDateAt);
               this.labelChart.xLabels = [
                 this.startHourAtShow,
                 this.endHourAtShow,
               ];
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              }`;
+              this.endDateAtShow = this.startDateAtShow;
             } else if (this.payloadFilter.timeline == "DAY") {
               let dStart = new Date(payload.params.startDateAt);
               let dEnd = new Date(payload.params.endDateAt);
@@ -489,7 +498,8 @@ export default {
         hmin7 += 24;
       }
       datah = hmin7 < 10 ? `0${hmin7}` : `${hmin7}`;
-      return datah;
+      // return datah;
+      return h;
     },
     timeUTCplus7adjustment(h) {
       let hnum = parseInt(h);
@@ -499,13 +509,17 @@ export default {
         hplus7 -= 24;
       }
       datah = hplus7 < 10 ? `0${hplus7}` : `${hplus7}`;
-      return datah;
+      // return datah;
+      return h;
     },
   },
 };
 </script>
 
 <style lang="scss">
+.font-12 {
+  font-size: 12px;
+}
 .bitcoin-price {
   .vtc {
     height: 250px;
