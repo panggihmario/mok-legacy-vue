@@ -6,7 +6,7 @@
       <div>
         <h3 style="margin-bottom: -8px">User Activity</h3>
         <span class="font-12 font-weight-medium grey--text"
-          >Timezone = UTC±00:00</span
+          >Timezone = UTC±07:00</span
         >
       </div>
       <div class="d-flex align-center">
@@ -513,8 +513,8 @@ export default {
         hplus7 -= 24;
       }
       datah = hplus7 < 10 ? `0${hplus7}` : `${hplus7}`;
-      // return datah;
-      return h;
+      return datah;
+      // return h;
     },
   },
 };
