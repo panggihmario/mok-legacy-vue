@@ -28,8 +28,13 @@
             label="Channel"
             readonly
           />
+          <div v-else>
+            <k-select
+              :items="channels"
+              item-text="name"
+              v-model="channelValue"
+            />
           <custom-autocomplete
-            v-else
             :items="channels"
             item-text="name"
             label="Channel"
@@ -38,6 +43,7 @@
             outline
             light
           />
+          </div>
         </div>
         <!-- <k-select/> -->
       </div>
