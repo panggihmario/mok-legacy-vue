@@ -19,7 +19,9 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ endDate == null ? "Month" : `${startDate} - ${endDate}` }}
+              {{
+                endDate == null ? "Month" : `${startDateShow} - ${endDateShow}`
+              }}
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
@@ -93,9 +95,9 @@
                     <span class="font-weight-medium font-12">Dari Bulan</span>
                     <div class="d-flex align-center box-month px-2">
                       <span
-                        v-if="startDate"
+                        v-if="startDateShow"
                         class="font-weight-medium font-12"
-                        >{{ startDate }}</span
+                        >{{ startDateShow }}</span
                       >
                       <span v-else class="font-weight-medium font-12 grey--text"
                         >MM:YY</span
@@ -105,9 +107,11 @@
                   <div class="mt-2">
                     <span class="font-weight-medium font-12">Sampai Bulan</span>
                     <div class="d-flex align-center box-month px-2">
-                      <span v-if="endDate" class="font-weight-medium font-12">{{
-                        endDate
-                      }}</span>
+                      <span
+                        v-if="endDateShow"
+                        class="font-weight-medium font-12"
+                        >{{ endDateShow }}</span
+                      >
                       <span v-else class="font-weight-medium font-12 grey--text"
                         >MM:YY</span
                       >
@@ -140,6 +144,15 @@
 
 <script>
 export default {
+  props: {
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+  },
   data: () => ({
     fav: true,
     menu: false,
@@ -154,6 +167,8 @@ export default {
     lastDay: null,
     startDate: null,
     endDate: null,
+    startDateShow: null,
+    endDateShow: null,
     payload: {
       year: "",
       month: "",
@@ -175,6 +190,24 @@ export default {
       "Des",
     ],
   }),
+  watch: {
+    startDate() {
+      this.payloadData.startDateAt = this.startDate;
+    },
+    endDate() {
+      this.payloadData.endDateAt = this.endDate;
+    },
+    tab() {
+      this.startDate = null;
+      this.endDate = null;
+      this.startDateShow = null;
+      this.endDateShow = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+  },
   mounted() {
     this.getToday();
     // this.getFirstDayLastDay();
@@ -245,12 +278,14 @@ export default {
       }
     },
     setStartDate(m) {
-      this.startDate = `${m < 10 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
+      this.startDate = `${m < 9 ? `0${m + 1}` : m + 1}/${this.payload.year}`;
+      this.startDateShow = `${this.months[m]}`;
       this.dStart = parseInt(`${this.payload.year}${m < 10 ? `0${m}` : m}`);
       this.keyFocusStart = `${this.payload.year}${m}`;
     },
     setEndDate(m) {
-      this.endDate = `${m < 10 ? `0${m + 1}` : m + 1}:${this.payload.year}`;
+      this.endDate = `${m < 9 ? `0${m + 1}` : m + 1}/${this.payload.year}`;
+      this.endDateShow = `${this.months[m]}`;
       this.dEnd = parseInt(`${this.payload.year}${m < 10 ? `0${m}` : m}`);
       this.keyFocusEnd = `${this.payload.year}${m}`;
     },

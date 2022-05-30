@@ -30,6 +30,9 @@
 
           <v-card>
             <div class="pa-4">
+              <span class="font-14 font-weight-medium"
+                >Filter Berdasarkan Timezone = UTC±00:00</span
+              >
               <div>
                 <span class="font-weight-medium font-12">Dari Jam</span>
                 <v-menu
@@ -121,7 +124,6 @@
                     v-model="payload.hourEnd"
                     full-width
                     no-title
-                    :min="payload.hourEnd"
                     @click:minute="$refs.menu3.save(payload.hourEnd)"
                   ></v-time-picker>
                 </v-menu>
@@ -151,6 +153,19 @@
 
 <script>
 export default {
+  props: {
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+    isReset: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     menu: false,
     menu2: false,
@@ -189,6 +204,35 @@ export default {
       "Des",
     ],
   }),
+  watch: {
+    "payload.hourStart"() {
+      this.payloadData.startHourAt = this.payload.hourStart;
+    },
+    "payload.hourEnd"() {
+      this.payloadData.endHourAt = this.payload.hourEnd;
+    },
+    tab() {
+      this.payload.hourStart = null;
+      this.payload.hourEnd = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+    isReset() {
+      if (this.isReset) {
+        this.payload.hourStart = null;
+        this.payload.hourEnd = null;
+        this.dStart = null;
+        this.dEnd = null;
+        this.keyFocusStart = null;
+        this.keyFocusEnd = null;
+      }
+      setTimeout(() => {
+        this.$emit("resetFalse");
+      }, 100);
+    },
+  },
   mounted() {
     this.getToday();
     // this.getFirstDayLastDay();
@@ -287,6 +331,8 @@ export default {
   font-size: 10px
 .font-12
   font-size: 12px
+.font-14
+  font-size: 14px
 .cursor-pointer
   cursor: pointer
 .box-selected

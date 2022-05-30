@@ -1,238 +1,255 @@
 <template>
   <div>
-    <template>
-      <div class="text-center">
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-width="200"
-          offset-y
-          max-width="430px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="whitesnow"
-              height="40px"
-              class="text-capitalize black--text"
-              depressed
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{ endDate == null ? "Date" : `${startDate} - ${endDate}` }}
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
-          </template>
+    <div class="text-center">
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-width="200"
+        offset-y
+        max-width="430px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="whitesnow"
+            height="40px"
+            class="text-capitalize black--text"
+            depressed
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            {{
+              endDate == null
+                ? "Date"
+                : startDate == endDate
+                ? `${startDateShow}`
+                : `${startDateShow} - ${endDateShow}`
+            }}
+            <v-icon>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
 
-          <v-card>
-            <div class="pa-4">
-              <v-row no-gutters>
-                <v-col cols="6">
-                  <div class="d-flex justify-space-between align-center">
+        <v-card>
+          <div class="pa-4">
+            <v-row no-gutters>
+              <v-col cols="6">
+                <div class="d-flex justify-space-between align-center">
+                  <v-icon
+                    class="cursor-pointer"
+                    color="secondary"
+                    small
+                    @click="subtrYear"
+                    >mdi-chevron-left</v-icon
+                  >
+                  <span class="font-10">{{ payload.year }}</span>
+                  <v-icon
+                    class="cursor-pointer"
+                    color="secondary"
+                    small
+                    @click="sumYear"
+                    >mdi-chevron-right</v-icon
+                  >
+                </div>
+                <div class="d-flex justify-space-between align-center">
+                  <div>
                     <v-icon
                       class="cursor-pointer"
                       color="secondary"
                       small
-                      @click="subtrYear"
+                      @click="subtrMonth(1)"
                       >mdi-chevron-left</v-icon
                     >
-                    <span class="font-10">{{ payload.year }}</span>
                     <v-icon
                       class="cursor-pointer"
                       color="secondary"
                       small
-                      @click="sumYear"
+                      @click="subtrMonth(0)"
+                      >mdi-chevron-double-left</v-icon
+                    >
+                  </div>
+                  <span class="font-12 font-weight-medium">{{
+                    months[payload.month]
+                  }}</span>
+                  <div>
+                    <v-icon
+                      class="cursor-pointer"
+                      color="secondary"
+                      small
+                      @click="sumMonth(11)"
+                      >mdi-chevron-double-right</v-icon
+                    >
+                    <v-icon
+                      class="cursor-pointer"
+                      color="secondary"
+                      small
+                      @click="sumMonth(1)"
                       >mdi-chevron-right</v-icon
                     >
                   </div>
-                  <div class="d-flex justify-space-between align-center">
-                    <div>
-                      <v-icon
-                        class="cursor-pointer"
-                        color="secondary"
-                        small
-                        @click="subtrMonth(1)"
-                        >mdi-chevron-left</v-icon
-                      >
-                      <v-icon
-                        class="cursor-pointer"
-                        color="secondary"
-                        small
-                        @click="subtrMonth(0)"
-                        >mdi-chevron-double-left</v-icon
-                      >
-                    </div>
-                    <span class="font-12 font-weight-medium">{{
-                      months[payload.month]
-                    }}</span>
-                    <div>
-                      <v-icon
-                        class="cursor-pointer"
-                        color="secondary"
-                        small
-                        @click="sumMonth(11)"
-                        >mdi-chevron-double-right</v-icon
-                      >
-                      <v-icon
-                        class="cursor-pointer"
-                        color="secondary"
-                        small
-                        @click="sumMonth(1)"
-                        >mdi-chevron-right</v-icon
-                      >
+                </div>
+                <div class="mt-2">
+                  <div class="d-flex flex-wrap">
+                    <div
+                      v-for="d in days"
+                      :key="d"
+                      class="font-10 font-weight-medium text-center mb-2"
+                      :class="{ 'red--text': d == 'Min' }"
+                      style="width: 14%"
+                    >
+                      {{ d }}
                     </div>
                   </div>
-                  <div class="mt-2">
+                  <div class="d-flex">
                     <div class="d-flex flex-wrap">
                       <div
-                        v-for="d in days"
-                        :key="d"
+                        v-for="d in firstDay"
+                        :key="d + 999"
                         class="font-10 font-weight-medium text-center mb-2"
                         :class="{ 'red--text': d == 'Min' }"
                         style="width: 14%"
+                      ></div>
+                      <div
+                        v-for="d in lastDay"
+                        :key="d + payload.month + payload.year"
+                        class="d-flex justify-center align-center font-10 font-weight-medium text-center cursor-pointer box-selected__not mb-2"
+                        :class="{
+                          'box-selected__true':
+                            `${payload.year}${payload.month}${d}` ==
+                              keyFocusStart ||
+                            `${payload.year}${payload.month}${d}` ==
+                              keyFocusEnd,
+                          'box-selected__secondary':
+                            parseInt(
+                              `${payload.year}${
+                                payload.month < 10
+                                  ? `0${payload.month}`
+                                  : payload.month
+                              }${d < 10 ? `0${d}` : d}`
+                            ) > dStart &&
+                            parseInt(
+                              `${payload.year}${
+                                payload.month < 10
+                                  ? `0${payload.month}`
+                                  : payload.month
+                              }${d < 10 ? `0${d}` : d}`
+                            ) < dEnd,
+                          'box-selected__disable':
+                            parseInt(
+                              `${payload.year}${
+                                payload.month < 10
+                                  ? `0${payload.month}`
+                                  : payload.month
+                              }${d < 10 ? `0${d}` : d}`
+                            ) < dStart,
+                          'box-date__today':
+                            parseInt(
+                              `${payload.year}${
+                                payload.month < 10
+                                  ? `0${payload.month}`
+                                  : payload.month
+                              }${d < 10 ? `0${d}` : d}`
+                            ) == dToday,
+                        }"
+                        style="width: 14%"
+                        @click="
+                          setDatePayload(
+                            d,
+                            parseInt(
+                              `${payload.year}${
+                                payload.month < 10
+                                  ? `0${payload.month}`
+                                  : payload.month
+                              }${d < 10 ? `0${d}` : d}`
+                            )
+                          )
+                        "
                       >
                         {{ d }}
                       </div>
                     </div>
-                    <div class="d-flex">
-                      <div class="d-flex flex-wrap">
-                        <div
-                          v-for="d in firstDay"
-                          :key="d + 999"
-                          class="font-10 font-weight-medium text-center mb-2"
-                          :class="{ 'red--text': d == 'Min' }"
-                          style="width: 14%"
-                        ></div>
-                        <div
-                          v-for="d in lastDay"
-                          :key="d + payload.month + payload.year"
-                          class="d-flex justify-center align-center font-10 font-weight-medium text-center cursor-pointer box-selected__not mb-2"
-                          :class="{
-                            'box-selected__true':
-                              `${payload.year}${payload.month}${d}` ==
-                                keyFocusStart ||
-                              `${payload.year}${payload.month}${d}` ==
-                                keyFocusEnd,
-                            'box-selected__secondary':
-                              parseInt(
-                                `${payload.year}${
-                                  payload.month < 10
-                                    ? `0${payload.month}`
-                                    : payload.month
-                                }${d < 10 ? `0${d}` : d}`
-                              ) > dStart &&
-                              parseInt(
-                                `${payload.year}${
-                                  payload.month < 10
-                                    ? `0${payload.month}`
-                                    : payload.month
-                                }${d < 10 ? `0${d}` : d}`
-                              ) < dEnd,
-                            'box-selected__disable':
-                              parseInt(
-                                `${payload.year}${
-                                  payload.month < 10
-                                    ? `0${payload.month}`
-                                    : payload.month
-                                }${d < 10 ? `0${d}` : d}`
-                              ) < dStart,
-                            'box-date__today':
-                              parseInt(
-                                `${payload.year}${
-                                  payload.month < 10
-                                    ? `0${payload.month}`
-                                    : payload.month
-                                }${d < 10 ? `0${d}` : d}`
-                              ) == dToday,
-                          }"
-                          style="width: 14%"
-                          @click="
-                            setDatePayload(
-                              d,
-                              parseInt(
-                                `${payload.year}${
-                                  payload.month < 10
-                                    ? `0${payload.month}`
-                                    : payload.month
-                                }${d < 10 ? `0${d}` : d}`
-                              )
-                            )
-                          "
-                        >
-                          {{ d }}
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                </v-col>
-                <v-col cols="6" class="pl-6">
-                  <div>
-                    <span class="font-weight-medium font-12">Dari Tanggal</span>
-                    <div class="d-flex align-center box-date px-2">
-                      <span
-                        v-if="startDate"
-                        class="font-weight-medium font-12"
-                        >{{ startDate }}</span
-                      >
-                      <span v-else class="font-weight-medium font-12 grey--text"
-                        >DD:MM:YY</span
-                      >
-                    </div>
-                  </div>
-                  <div class="mt-2">
-                    <span class="font-weight-medium font-12"
-                      >Sampai Tanggal</span
+                </div>
+              </v-col>
+              <v-col cols="6" class="pl-6">
+                <div>
+                  <span class="font-weight-medium font-12">Dari Tanggal</span>
+                  <div class="d-flex align-center box-date px-2">
+                    <span v-if="startDate" class="font-weight-medium font-12">{{
+                      startDate
+                    }}</span>
+                    <span v-else class="font-weight-medium font-12 grey--text"
+                      >DD/MM/YY</span
                     >
-                    <div class="d-flex align-center box-date px-2">
-                      <span v-if="endDate" class="font-weight-medium font-12">{{
-                        endDate
-                      }}</span>
-                      <span v-else class="font-weight-medium font-12 grey--text"
-                        >DD:MM:YY</span
-                      >
-                    </div>
                   </div>
-                </v-col>
-              </v-row>
-            </div>
+                </div>
+                <div class="mt-2">
+                  <span class="font-weight-medium font-12">Sampai Tanggal</span>
+                  <div class="d-flex align-center box-date px-2">
+                    <span v-if="endDate" class="font-weight-medium font-12">{{
+                      endDate
+                    }}</span>
+                    <span v-else class="font-weight-medium font-12 grey--text"
+                      >DD/MM/YY</span
+                    >
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn text class="text-capitalize" @click="cancelDate">
-                Cancel
-              </v-btn>
-              <v-btn
-                color="primary"
-                text
-                class="text-capitalize"
-                @click="menu = false"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </div>
-    </template>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text class="text-capitalize" @click="cancelDate">
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              text
+              class="text-capitalize"
+              @click="menu = false"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    oneday: {
+      type: Boolean,
+      default: false,
+    },
+    payloadData: {
+      type: Object,
+    },
+    tab: {
+      type: String,
+      default: "",
+    },
+    isReset: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
-    fav: true,
     menu: false,
-    message: false,
-    hints: true,
     dToday: null,
     dStart: null,
     dEnd: null,
+    oneDayKey: null,
     keyFocusStart: null,
     keyFocusEnd: null,
     firstDay: null,
     lastDay: null,
     startDate: null,
     endDate: null,
+    startDateShow: null,
+    endDateShow: null,
     payload: {
       year: "",
       month: "",
@@ -255,6 +272,39 @@ export default {
       "Desember",
     ],
   }),
+  watch: {
+    startDate() {
+      this.payloadData.startDateAt = this.startDate;
+    },
+    endDate() {
+      this.payloadData.endDateAt = this.endDate;
+    },
+    tab() {
+      this.startDate = null;
+      this.endDate = null;
+      this.startDateShow = null;
+      this.endDateShow = null;
+      this.dStart = null;
+      this.dEnd = null;
+      this.keyFocusStart = null;
+      this.keyFocusEnd = null;
+    },
+    isReset() {
+      if (this.isReset) {
+        this.startDate = null;
+        this.endDate = null;
+        this.startDateShow = null;
+        this.endDateShow = null;
+        this.dStart = null;
+        this.dEnd = null;
+        this.keyFocusStart = null;
+        this.keyFocusEnd = null;
+      }
+      setTimeout(() => {
+        this.$emit("resetFalse");
+      }, 100);
+    },
+  },
   mounted() {
     this.getToday();
     this.getFirstDayLastDay();
@@ -311,25 +361,48 @@ export default {
       this.getFirstDayLastDay();
     },
     setDatePayload(d, key) {
-      if (this.startDate == null) {
-        this.setStartDate(d);
-      } else if (this.startDate != null && this.endDate == null) {
-        if (key >= this.dStart) {
+      if (this.oneday) {
+        if (this.oneDayKey == key) {
+          this.oneDayKey = null;
+          this.startDate = null;
+          this.endDate = null;
+          this.dStart = null;
+          this.dEnd = null;
+          this.keyFocusStart = null;
+          this.keyFocusEnd = null;
+        } else {
+          this.oneDayKey = key;
+          this.setStartDate(d);
           this.setEndDate(d);
+          this.dStart = null;
+          this.dEnd = null;
         }
-      } else if (this.endDate != null) {
-        this.startDate = null;
-        this.endDate = null;
-        this.dStart = null;
-        this.dEnd = null;
-        this.keyFocusStart = null;
-        this.keyFocusEnd = null;
+      } else {
+        if (this.startDate == null) {
+          this.setStartDate(d);
+        } else if (this.startDate != null && this.endDate == null) {
+          if (key >= this.dStart) {
+            this.setEndDate(d);
+          }
+        } else if (this.endDate != null) {
+          this.startDate = null;
+          this.endDate = null;
+          this.dStart = null;
+          this.dEnd = null;
+          this.keyFocusStart = null;
+          this.keyFocusEnd = null;
+        }
       }
     },
     setStartDate(d) {
-      this.startDate = `${d < 10 ? `0${d}` : d}:${
-        this.payload.month < 10 ? `0${this.payload.month}` : this.payload.month
-      }:${this.payload.year}`;
+      this.startDate = `${d < 10 ? `0${d}` : d}/${
+        this.payload.month < 10
+          ? `0${this.payload.month + 1}`
+          : this.payload.month
+      }/${this.payload.year}`;
+      this.startDateShow = `${d < 10 ? `0${d}` : d} ${
+        this.months[this.payload.month]
+      }`;
       this.dStart = parseInt(
         `${this.payload.year}${
           this.payload.month < 10
@@ -340,9 +413,14 @@ export default {
       this.keyFocusStart = `${this.payload.year}${this.payload.month}${d}`;
     },
     setEndDate(d) {
-      this.endDate = `${d < 10 ? `0${d}` : d}:${
-        this.payload.month < 10 ? `0${this.payload.month}` : this.payload.month
-      }:${this.payload.year}`;
+      this.endDate = `${d < 10 ? `0${d}` : d}/${
+        this.payload.month < 10
+          ? `0${this.payload.month + 1}`
+          : this.payload.month
+      }/${this.payload.year}`;
+      this.endDateShow = `${d < 10 ? `0${d}` : d} ${
+        this.months[this.payload.month]
+      }`;
       this.dEnd = parseInt(
         `${this.payload.year}${
           this.payload.month < 10
