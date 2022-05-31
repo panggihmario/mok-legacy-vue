@@ -81,6 +81,13 @@ export default {
       keyword : '',
       afterTab : [],
       tabList: [
+        // {
+        //   label : 'Need Review',
+        //   active : false, 
+        //   position : 1,
+        //   payload : 'review',
+        //   pathName : 'listReviewPublisher'
+        // },
         {
           label : 'Need Review',
           active : false, 

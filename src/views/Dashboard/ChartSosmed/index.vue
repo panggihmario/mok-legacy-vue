@@ -3,7 +3,12 @@
     <Header-Content label="Dashboard" :list="items" />
 
     <div class="d-flex justify-space-between align-center">
-      <h3>User Activity</h3>
+      <div>
+        <h3 style="margin-bottom: -8px">User Activity</h3>
+        <span class="font-12 font-weight-medium grey--text"
+          >Timezone = UTC±07:00</span
+        >
+      </div>
       <div class="d-flex align-center">
         <v-btn
           text
@@ -77,7 +82,7 @@
         Rata-rata : <b>{{ meanData }}</b> Post dilihat pada
         <b>{{
           startDateAtShow == endDateAtShow
-            ? `${endDateAtShow}`
+            ? `${startDateAtShow}`
             : `${startDateAtShow} - ${endDateAtShow}`
         }}</b>
         ketika jam
@@ -211,7 +216,7 @@ export default {
       let year = new Date().getFullYear();
       let month = new Date().getMonth();
       let date = new Date().getDate() - 1;
-      let today = new Date(`${year}/${month + 1}/${date}`).getTime();
+      let today = new Date(Date.UTC(year, month, date)).getTime();
       let payload = {
         filterBy: this.payloadFilter.timeline.toLowerCase(),
         params: {
@@ -221,7 +226,6 @@ export default {
           endMinuteAt: "59",
           username: null,
           startDateAt: today,
-          endDateAt: today,
         },
       };
       this.handleFetchUserSeen(payload);
@@ -243,14 +247,16 @@ export default {
         startDateAt != null
           ? this.payloadFilter.timeline == "YEAR"
             ? this.payloadData.startDateAt
-            : `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
-          : null;
+            : Date.UTC(startDateAt[2], startDateAt[1] - 1, startDateAt[0])
+          : // : `${startDateAt[2]}/${startDateAt[1]}/${startDateAt[0]}`
+            null;
       let toEpochEnd =
         endDateAt != null
           ? this.payloadFilter.timeline == "YEAR"
             ? this.payloadData.endDateAt
-            : `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
-          : null;
+            : Date.UTC(endDateAt[2], endDateAt[1] - 1, endDateAt[0])
+          : // : `${endDateAt[2]}/${endDateAt[1]}/${endDateAt[0]}`
+            null;
       let epochStart = new Date(toEpochStart).getTime();
       let epochEnd = new Date(toEpochEnd).getTime();
 
@@ -287,6 +293,11 @@ export default {
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.startDateAt.split("/")[0]
               : this.payloadData.startDateAt,
+        },
+      };
+      if (this.payloadData.startDateAt != this.payloadData.endDateAt) {
+        payload.params = {
+          ...payload.params,
           endDateAt:
             this.payloadFilter.timeline == "HOUR" ||
             this.payloadFilter.timeline == "DAY"
@@ -296,8 +307,8 @@ export default {
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.endDateAt.split("/")[0]
               : this.payloadData.endDateAt,
-        },
-      };
+        };
+      }
 
       let nullValue = 0;
       for (const [key, value] of Object.entries(payload.params)) {
@@ -343,7 +354,9 @@ export default {
           );
           if (this.payloadFilter.timeline == "MONTH") {
             let dMonthStart = parseInt(payload.params.startDateAt);
-            let dMonthEnd = parseInt(payload.params.endDateAt);
+            let dMonthEnd = payload.params.endDateAt
+              ? parseInt(payload.params.endDateAt)
+              : dMonthStart;
             let year = new Date().getFullYear();
             this.startDateAtShow = `${this.months[dMonthStart]} ${year}`;
             this.endDateAtShow = `${this.months[dMonthEnd]} ${year}`;
@@ -352,7 +365,9 @@ export default {
             this.endDateAtShow = `${payload.params.endDateAt}`;
           } else {
             let dStart = new Date(payload.params.startDateAt);
-            let dEnd = new Date(payload.params.endDateAt);
+            let dEnd = payload.params.endDateAt
+              ? new Date(payload.params.endDateAt)
+              : dStart;
             this.startDateAtShow = `${dStart.getDate()} ${
               this.months[dStart.getMonth()]
             } ${dStart.getFullYear()}`;
@@ -394,13 +409,25 @@ export default {
               this.alertFailed = false;
               this.alertFailedMessage = "";
             }, 3000);
-            this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
-            this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
+
+            this.startDateAtShow = payload.params.startDateAt;
+            this.startHourAtShow = `${this.timeUTCplus7adjustment(
+              payload.params.startHourAt
+            )}:${payload.params.startMinuteAt}`;
+            this.endHourAtShow = `${this.timeUTCplus7adjustment(
+              payload.params.endHourAt
+            )}:${payload.params.endMinuteAt}`;
+
             if (this.payloadFilter.timeline == "HOUR") {
+              let dStart = new Date(payload.params.startDateAt);
               this.labelChart.xLabels = [
-                `${payload.params.startHourAt}:${payload.params.startMinuteAt}`,
-                `${payload.params.endHourAt}:${payload.params.endMinuteAt}`,
+                this.startHourAtShow,
+                this.endHourAtShow,
               ];
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              }`;
+              this.endDateAtShow = this.startDateAtShow;
             } else if (this.payloadFilter.timeline == "DAY") {
               let dStart = new Date(payload.params.startDateAt);
               let dEnd = new Date(payload.params.endDateAt);
@@ -408,16 +435,32 @@ export default {
                 `${dStart.getDate()} ${this.months[dStart.getMonth()]}`,
                 `${dEnd.getDate()} ${this.months[dEnd.getMonth()]}`,
               ];
+              this.startDateAtShow = `${dStart.getDate()} ${
+                this.months[dStart.getMonth()]
+              }`;
+              this.endDateAtShow = payload.params.endDateAt
+                ? `${dEnd.getDate()} ${this.months[dEnd.getMonth()]}`
+                : this.startDateAtShow;
             } else if (this.payloadFilter.timeline == "MONTH") {
               this.labelChart.xLabels = [
                 `${this.months[parseInt(payload.params.startDateAt) - 1]}`,
                 `${this.months[parseInt(payload.params.endDateAt) - 1]}`,
               ];
+              this.startDateAtShow = `${
+                this.months[parseInt(payload.params.startDateAt) - 1]
+              }`;
+              this.endDateAtShow = payload.params.endDateAt
+                ? `${this.months[parseInt(payload.params.endDateAt) - 1]}`
+                : this.startDateAtShow;
             } else {
               this.labelChart.xLabels = [
                 `${payload.params.startDateAt}`,
                 `${payload.params.endDateAt}`,
               ];
+              (this.startDateAtShow = `${payload.params.startDateAt}`),
+                (this.endDateAtShow = payload.params.endDateAt
+                  ? `${payload.params.endDateAt}`
+                  : this.startDateAtShow);
             }
             this.datasets[0].data = [0, 0];
           } else {
@@ -459,7 +502,8 @@ export default {
         hmin7 += 24;
       }
       datah = hmin7 < 10 ? `0${hmin7}` : `${hmin7}`;
-      return datah;
+      // return datah;
+      return h;
     },
     timeUTCplus7adjustment(h) {
       let hnum = parseInt(h);
@@ -470,12 +514,16 @@ export default {
       }
       datah = hplus7 < 10 ? `0${hplus7}` : `${hplus7}`;
       return datah;
+      // return h;
     },
   },
 };
 </script>
 
 <style lang="scss">
+.font-12 {
+  font-size: 12px;
+}
 .bitcoin-price {
   .vtc {
     height: 250px;
