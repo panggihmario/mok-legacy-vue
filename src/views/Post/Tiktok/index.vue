@@ -131,15 +131,9 @@
       </div>
     </div>
 
-    <v-snackbar v-model="alertSuccess" top right color="success">
+    <v-snackbar v-model="previewTiktokSuccess" top right color="success">
       <span>Success Post</span>
       <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
-    </v-snackbar>
-    <v-snackbar v-model="alertFailed" top right color="error">
-      Error: {{ payloadError.message }}
-    </v-snackbar>
-    <v-snackbar v-model="alertRules" top right color="error">
-      Harap isi Channel
     </v-snackbar>
   </div>
 </template>
@@ -231,6 +225,7 @@ export default {
   computed: {
     ...mapState({
       previewTiktok: "previewTiktok",
+      previewTiktokSuccess: "previewTiktokSuccess",
     }),
   },
   methods: {

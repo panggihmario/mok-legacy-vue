@@ -28,7 +28,6 @@ export default {
   },
   mounted() {
     this.page = this.$route.meta.page;
-    console.log(this.$route.meta);
   },
   data() {
     return {
