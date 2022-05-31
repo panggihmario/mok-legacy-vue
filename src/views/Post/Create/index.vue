@@ -20,13 +20,6 @@
           />
         </div>
       </div>
-      <div style="width: 250px">
-        <k-select
-          :items="channels"
-          item-text="name"
-          v-model="dataChannel"
-        />
-      </div>
       <div style="width: 584px">
         <custom-textarea
           label="Caption"
@@ -37,7 +30,17 @@
           rules="required|max:1000"
         />
       </div>
-     
+
+      <!-- <div style="width: 250px">
+        <k-select 
+          :items="channels" 
+          item-text="name" 
+          placeholder="Pilih Channel"
+          v-model="channel"
+          label="Channel"
+        />
+      </div> -->
+
       <div style="width: 250px">
         <custom-autocomplete
           :value="channel"
@@ -48,8 +51,7 @@
           return-object
         />
       </div>
-      
-      
+
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
       </v-snackbar>
@@ -85,7 +87,7 @@ export default {
       loading: false,
       alertSucces: false,
       alertFailed: false,
-      dataChannel : null
+      dataChannel: null,
     };
   },
   computed: {

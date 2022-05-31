@@ -1,4 +1,4 @@
-$height : 32px;
+$height : 40px;
 .autocomplete {
   position: relative;
   &__popover {
@@ -8,27 +8,43 @@ $height : 32px;
     transition: all 0.4s;
     left: 0;
     right: 0;
-    top: 40px;
     max-width: 100%;
     background-color: white;
-    border: 1px solid;
+    border: 1px solid #DDDDDD;
+    border-radius: 8px;
+    overflow-y: hidden;
+  }
+  &__label {
+    color: #4A4A4A;
+    font-size: 10px;
+    font-weight: 500;
+    margin-bottom: 8px;
   }
   .options {
     width: 100%;
-    border: 1px solid #EEEEEE;
+    border-radius: 8px;
+    border: none;
   }
   .input-wrapper {
-    border: 1px solid #EEEEEE;
+    border: 1px solid #DDDDDD;
     width: 100%;
+    border-radius: 8px;
   }
+}
+
+.isTop {
+  bottom: 50px;
+}
+
+.isBottom {
+  top : 50px;
 }
 
 .autocomplete-results {
   padding: 0;
   margin: 0;
-  border: 1px solid white;
   overflow: auto;
-  max-height: 7em;
+  max-height: 10em;
 }
 
 .autocomplete-result {
@@ -36,6 +52,8 @@ $height : 32px;
   text-align: left;
   padding: 5px 10px;
   color: black;
+  font-size: 12px;
+  font-weight: 400;
   cursor: pointer;
   &:hover {
     background-color: #4AAE9B;
@@ -43,12 +61,16 @@ $height : 32px;
   }
 }
 
+input::placeholder {
+  color: #BBBBBB;
+}
+
 .autocomplete-input {
   border: none;
-  justify-content: space-between;
   padding: 5px 10px;
   height: $height;
-  background: #FFFFFF;
+  font-size: 12px;
+  font-weight: 400;
   &:focus {
     outline: none;
   }

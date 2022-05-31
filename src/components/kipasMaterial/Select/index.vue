@@ -1,5 +1,6 @@
 <template>
-  <div class="autocomplete">
+  <div class="autocomplete" :class="`select-${idElement}`" >
+    <label class="autocomplete__label" > {{label}} </label>
     <div class="input-wrapper">
       <input
         v-show="helper"
@@ -10,9 +11,14 @@
         class="autocomplete-input"
         @click="openList"
         v-model="search"
+        v-bind="$attrs"
       />
     </div>
-    <div class="autocomplete__popover" v-show="isOpen">
+    <div 
+      class="autocomplete__popover" 
+      :class="isTop ?  'isTop' : 'isBottom' "
+      v-show="isOpen"
+    >
       <div class="options">
       <ul class="autocomplete-results" >
         <li
@@ -43,13 +49,23 @@ export default {
     },
     value : {
       type : [Object, String]
+    },
+    pos : {
+      type : String
+    },
+    label : {
+      type : String
     }
   },
   computed : {
     itemValue () {
-      const getValue = this.value[this.itemText]
-      this.search = getValue
-      return this.value[this.itemText]
+      console.log(this.value)
+      if(this.value) {
+        const getValue = this.value[this.itemText]
+        this.search = getValue
+        return this.value[this.itemText]
+      }
+      
     }
   },
   watch : {
@@ -70,6 +86,10 @@ export default {
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
+    this.checkPosition()
+  },
+  beforeMount() {
+    this.idElement = this._uid
   },
   destroyed() {
     document.removeEventListener("click", this.handleClickOutside);
@@ -82,10 +102,23 @@ export default {
       arrowCounter: -1,
       itemId : '',
       selectedItem : {},
-      helper : false
+      helper : false,
+      idElement : '',
+      isTop : false
     };
   },
   methods: {
+    checkPosition () {
+      const heightView = window.innerHeight
+      const centerView = heightView / 2
+      const el = document.querySelector(`.select-${this.idElement}`)
+      const positionElement = el.offsetTop
+      if(positionElement > centerView) {
+        this.isTop = true
+      }else { 
+        this.isTop = false
+      }
+    },
     filterResults() {
       this.results = this.items.filter(
         (item) => item.toLowerCase().indexOf(this.search.toLowerCase()) > -1
