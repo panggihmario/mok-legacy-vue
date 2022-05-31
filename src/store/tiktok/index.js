@@ -5,10 +5,21 @@ export default {
     pathDiscover: "discover",
     pathDownloadNoWatermark: "download-no-watermark",
     previewTiktokData: {},
+    previewTiktokPayload: {
+      channel: null,
+      description: null,
+      medias: [],
+      product: null,
+      type: "social",
+    },
   },
   mutations: {
     setPreviewTiktokData(state, payload) {
       state.previewTiktokData = payload;
+      state.previewTiktokPayload.channel = null;
+      state.previewTiktokPayload.description = payload.desc;
+      state.previewTiktokPayload.medias = [];
+      state.previewTiktokPayload.product = null;
     },
   },
   actions: {

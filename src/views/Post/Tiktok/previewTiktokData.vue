@@ -23,15 +23,15 @@
 
         <div class="mt-8 font-12 text-break">
           <v-textarea
-            v-model="previewTiktokData.desc"
+            v-model="previewTiktokPayload.description"
             label="Description"
             outlined
             background-color="white"
             class="font-12"
           ></v-textarea>
           <custom-autocomplete
-            :value="payload.channel"
-            v-model="payload.channel"
+            :value="previewTiktokPayload.channel"
+            v-model="previewTiktokPayload.channel"
             :items="channels"
             item-text="name"
             placeholder="Select Channel"
@@ -56,6 +56,14 @@
           </custom-button>
         </div>
       </div>
+
+      <v-snackbar v-model="alertSuccess" top right color="success">
+        <span>Success Post</span>
+        <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+      </v-snackbar>
+      <v-snackbar v-model="alertFailed" top right color="error">
+        <span>Error: {{ payloadFailed.message }}</span>
+      </v-snackbar>
     </div>
   </v-navigation-drawer>
 </template>
@@ -67,34 +75,49 @@ export default {
   data() {
     return {
       loadingSubmit: false,
+      alertSuccess: false,
+      alertFailed: false,
       channels: [],
       payload: {
         medias: [],
         description: null,
         channel: null,
       },
+      payloadFailed: {
+        message: "",
+      },
     };
   },
   mounted() {
     this.handleGetChannel();
-    this.setPayload();
   },
   computed: {
     ...mapState({
       previewTiktokData: (state) => state.tiktok.previewTiktokData,
+      previewTiktokPayload: (state) => state.tiktok.previewTiktokPayload,
     }),
   },
   methods: {
     ...mapActions({
       changeStatusPreviewTiktok: "changeStatusPreviewTiktok",
+      changeStatusPreviewTiktokSuccess: "changeStatusPreviewTiktokSuccess",
       getAllChannel: "channel/getAllChannel",
       getTiktokVideoNoWatermark: "tiktok/getTiktokVideoNoWatermark",
+      postFeed: "post/postFeed",
     }),
     actionChangeStatusPreviewTiktok(status) {
       this.changeStatusPreviewTiktok(status);
     },
-    setPayload() {
-      this.payload.description = this.previewTiktokData.desc;
+    actionChangeStatusPreviewTiktokSuccess(status) {
+      this.changeStatusPreviewTiktokSuccess(status);
+    },
+    movePageDraft() {
+      this.$router.push({
+        name: "draft",
+        params: {
+          page: 1,
+        },
+      });
     },
     async handleGetChannel() {
       const response = await this.getAllChannel();
@@ -112,23 +135,43 @@ export default {
       }
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
-      if (this.payload.channel == null) {
-        this.alertRules = true;
+      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
+      if (this.previewTiktokPayload.channel == null) {
+        this.alertFailed = true;
         setTimeout(() => {
-          this.alertRules = false;
+          this.alertFailed = false;
         }, 3000);
+        this.payloadFailed.message = "Harap Pilih Channel";
       } else {
         this.loadingSubmit = true;
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
-            this.payload.medias.push(response.data.data);
+            this.previewTiktokPayload.medias.push(response.data.data);
             this.actionPostToDraft();
           })
           .catch((err) => {
             this.loadingSubmit = false;
           });
       }
+    },
+    actionPostToDraft() {
+      return this.postFeed(this.previewTiktokPayload)
+        .then((response) => {
+          this.loadingSubmit = false;
+          this.actionChangeStatusPreviewTiktokSuccess(true);
+          setTimeout(() => {
+            this.actionChangeStatusPreviewTiktokSuccess(false);
+          }, 3000);
+          this.actionChangeStatusPreviewTiktok(false);
+        })
+        .catch((err) => {
+          this.loadingSubmit = false;
+          this.payloadFailed = err.response;
+          this.alertFailed = true;
+          setTimeout(() => {
+            this.alertFailed = false;
+          }, 3000);
+        });
     },
   },
 };
