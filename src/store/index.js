@@ -38,10 +38,18 @@ export default new Vuex.Store({
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
     viewNews: false,
+    previewTiktok: false,
+    previewTiktokSuccess: false,
   },
   mutations: {
     setViewNews(state, payload) {
       state.viewNews = payload;
+    },
+    setPreviewTiktok(state, payload) {
+      state.previewTiktok = payload;
+    },
+    setPreviewTiktokSuccess(state, payload) {
+      state.previewTiktokSuccess = payload;
     },
   },
   getters: {
@@ -52,6 +60,12 @@ export default new Vuex.Store({
   actions: {
     changeStatusViewNews({ commit }, params) {
       commit("setViewNews", params);
+    },
+    changeStatusPreviewTiktok({ commit }, params) {
+      commit("setPreviewTiktok", params);
+    },
+    changeStatusPreviewTiktokSuccess({ commit }, params) {
+      commit("setPreviewTiktokSuccess", params);
     },
     getWithToken(ctx, data) {
       return this._vm.$httpWithToken().get(data.url, {

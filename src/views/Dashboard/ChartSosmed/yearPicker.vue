@@ -19,7 +19,13 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ endDate == null ? "Year" : `${startDate} - ${endDate}` }}
+              {{
+                endDate == null
+                  ? "Year"
+                  : endDate == startDate
+                  ? endDate
+                  : `${startDate} - ${endDate}`
+              }}
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
