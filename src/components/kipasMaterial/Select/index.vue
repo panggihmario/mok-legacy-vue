@@ -59,7 +59,6 @@ export default {
   },
   computed : {
     itemValue () {
-      console.log(this.value)
       if(this.value) {
         const getValue = this.value[this.itemText]
         this.search = getValue
