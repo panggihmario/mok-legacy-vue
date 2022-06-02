@@ -2,9 +2,9 @@
   <div>
     <custom-form :onSubmit="submitForm">
       <HeaderContent label="Post Feed" :list="list">
-        <custom-button 
-          color="secondary" 
-          class="white--text" 
+        <custom-button
+          color="secondary"
+          class="white--text"
           size="small"
           type="submit"
           :loading="loading"
@@ -13,17 +13,14 @@
         </custom-button>
       </HeaderContent>
       <div class="d-flex mb-4">
-        <div 
-          v-for="(d, idx) in medias" :key="idx" 
-          class="mr-4"
-        >
-        <Upload
-          :id="`post-${idx}`"
-          @saveImageOnPayload="saveImageOnPayload"
-        />
+        <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
+          <Upload
+            :id="`post-${idx}`"
+            @saveImageOnPayload="saveImageOnPayload"
+          />
         </div>
       </div>
-      <div style="width : 584px">
+      <div style="width: 584px">
         <custom-textarea
           label="Caption"
           name="Caption"
@@ -33,7 +30,18 @@
           rules="required|max:1000"
         />
       </div>
-      <div style="width : 250px">
+
+      <!-- <div style="width: 250px">
+        <k-select 
+          :items="channels" 
+          item-text="name" 
+          placeholder="Pilih Channel"
+          v-model="channel"
+          label="Channel"
+        />
+      </div> -->
+
+      <div style="width: 250px">
         <custom-autocomplete
           :value="channel"
           v-model="channel"
@@ -43,7 +51,7 @@
           return-object
         />
       </div>
-      
+
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
       </v-snackbar>
@@ -61,24 +69,25 @@ import HeaderContent from "@/containers/HeaderContent";
 export default {
   components: {
     HeaderContent,
-    Upload
+    Upload,
   },
   data() {
     return {
-      description : '',
-      visibleThumbnail : false,
+      description: "",
+      visibleThumbnail: false,
       list: [
         {
           text: "Konten Feed",
           disabled: true,
         },
       ],
-      medias : [{}, {}, {}, {}, {}],
+      medias: [{}, {}, {}, {}, {}],
       channels: [],
-      channel : null,
+      channel: null,
       loading: false,
       alertSucces: false,
       alertFailed: false,
+      dataChannel: null,
     };
   },
   computed: {
@@ -93,43 +102,43 @@ export default {
       getAllChannel: "channel/getAllChannel",
     }),
     saveImageOnPayload(params) {
-      this.$set(this.medias, params.position , params.response)
+      this.$set(this.medias, params.position, params.response);
     },
     submitForm() {
-      this.loading = true
-      const payloadMedias = this.medias.filter(m => {
-        if(m.url) {
-          return m
+      this.loading = true;
+      const payloadMedias = this.medias.filter((m) => {
+        if (m.url) {
+          return m;
         }
-      })
+      });
       const payload = {
-        type : 'social',
-        medias  : [...payloadMedias],
-        product : null,
-        channel : this.channel,
-        description : this.description
-      }
+        type: "social",
+        medias: [...payloadMedias],
+        product: null,
+        channel: this.channel,
+        description: this.description,
+      };
       return this.postFeed(payload)
         .then(() => {
-          this.alertSucces = true
+          this.alertSucces = true;
           setTimeout(() => {
-            this.alertSucces = false
-            this.loading = false
+            this.alertSucces = false;
+            this.loading = false;
             this.$router.push({
-              name : 'draft',
-              params : {
-                page : 1
-              }
-            })
-          }, 1500)
+              name: "draft",
+              params: {
+                page: 1,
+              },
+            });
+          }, 1500);
         })
         .catch(() => {
-          this.loading = false
-          this.alertFailed = true
+          this.loading = false;
+          this.alertFailed = true;
           setTimeout(() => {
-            this.alertFailed = false
-          }, 1500)
-        })
+            this.alertFailed = false;
+          }, 1500);
+        });
     },
     async getResponseChannel() {
       const response = await this.getAllChannel();
@@ -157,14 +166,14 @@ export default {
 .image-box {
   width: 104px;
   height: 104px;
-  background: #FFFFFF;
-  border: 1px dashed #1890FF;
+  background: #ffffff;
+  border: 1px dashed #1890ff;
   box-sizing: border-box;
   border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #1890FF;
+  color: #1890ff;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
