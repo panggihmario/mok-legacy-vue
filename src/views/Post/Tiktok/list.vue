@@ -21,7 +21,7 @@
           <div style="max-width: 100% !important">
             <v-img :src="item.video.cover" height="260px" width="100%"></v-img>
 
-            <div class="mt-2 font-12 text-break">
+            <div class="mt-2 font-12 text-break ellipsis-second-line">
               {{ item.desc }}
             </div>
             <div>
@@ -114,4 +114,10 @@ export default {
 	top: 0
 	height: 100vh
 	overflow: auto
+.ellipsis-second-line
+	overflow: hidden
+	text-overflow: ellipsis
+	display: -webkit-box
+	-webkit-line-clamp: 2
+	-webkit-box-orient: vertical
 </style>
