@@ -31,7 +31,7 @@
         />
       </div>
 
-      <div style="width: 250px">
+      <!-- <div style="width: 250px">
         <k-select 
           :items="channels" 
           item-text="name" 
@@ -39,7 +39,7 @@
           v-model="channel"
           label="Channel"
         />
-      </div>
+      </div> -->
 
       <div style="width: 250px">
         <custom-autocomplete
