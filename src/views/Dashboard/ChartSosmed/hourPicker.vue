@@ -30,9 +30,6 @@
 
           <v-card>
             <div class="pa-4">
-              <span class="font-14 font-weight-medium"
-                >Filter Berdasarkan Timezone = UTC±00:00</span
-              >
               <div>
                 <span class="font-weight-medium font-12">Dari Jam</span>
                 <v-menu

@@ -5,9 +5,6 @@
     <div class="d-flex justify-space-between align-center">
       <div>
         <h3 style="margin-bottom: -8px">User Activity</h3>
-        <span class="font-12 font-weight-medium grey--text"
-          >Timezone = UTC±07:00</span
-        >
       </div>
       <div class="d-flex align-center">
         <v-btn
@@ -220,9 +217,9 @@ export default {
       let payload = {
         filterBy: this.payloadFilter.timeline.toLowerCase(),
         params: {
-          startHourAt: this.timeUTCmin7adjustment("00"),
+          startHourAt: "00",
           startMinuteAt: "00",
-          endHourAt: this.timeUTCmin7adjustment("23"),
+          endHourAt: "23",
           endMinuteAt: "59",
           username: null,
           startDateAt: today,
@@ -340,7 +337,8 @@ export default {
           if (this.payloadFilter.timeline == "HOUR") {
             for (let i = 0; i < res.xlabels.length; i++) {
               this.labelChart.xLabels.push(
-                `${this.timeUTCplus7adjustment(res.xlabels[i])}:00`
+                `${res.xlabels[i]}:00`
+                // `${this.timeUTCplus7adjustment(res.xlabels[i])}:00`
               );
             }
           } else {
@@ -375,12 +373,14 @@ export default {
               this.months[dEnd.getMonth()]
             } ${dEnd.getFullYear()}`;
           }
-          this.startHourAtShow = `${this.timeUTCplus7adjustment(
-            payload.params.startHourAt
-          )}:${payload.params.startMinuteAt}`;
-          this.endHourAtShow = `${this.timeUTCplus7adjustment(
-            payload.params.endHourAt
-          )}:${payload.params.endMinuteAt}`;
+          // this.startHourAtShow = `${this.timeUTCplus7adjustment(
+          //   payload.params.startHourAt
+          // )}:${payload.params.startMinuteAt}`;
+          // this.endHourAtShow = `${this.timeUTCplus7adjustment(
+          //   payload.params.endHourAt
+          // )}:${payload.params.endMinuteAt}`;
+          this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
+          this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
 
           if (res.datasets[0].data.length <= 1) {
             this.datasets[0].data.unshift(0);
@@ -411,12 +411,8 @@ export default {
             }, 3000);
 
             this.startDateAtShow = payload.params.startDateAt;
-            this.startHourAtShow = `${this.timeUTCplus7adjustment(
-              payload.params.startHourAt
-            )}:${payload.params.startMinuteAt}`;
-            this.endHourAtShow = `${this.timeUTCplus7adjustment(
-              payload.params.endHourAt
-            )}:${payload.params.endMinuteAt}`;
+            this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
+            this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
 
             if (this.payloadFilter.timeline == "HOUR") {
               let dStart = new Date(payload.params.startDateAt);
