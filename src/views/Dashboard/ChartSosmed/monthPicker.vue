@@ -20,7 +20,11 @@
               v-on="on"
             >
               {{
-                endDate == null ? "Month" : `${startDateShow} - ${endDateShow}`
+                endDate == null
+                  ? "Month"
+                  : endDate == startDate
+                  ? endDateShow
+                  : `${startDateShow} - ${endDateShow}`
               }}
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
