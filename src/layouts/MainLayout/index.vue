@@ -1,10 +1,10 @@
 <template>
   <div>
     <CoreDrawer />
-    <div class="my-12">
-      <v-container :class="styling">
+    <div class="my-6">
+      <div :class="styling">
         <CoreView />
-      </v-container>
+      </div>
     </div>
     <DrawerNews v-if="viewNews && page === 'news'" />
     <DrawerDetail v-if="detail && page === 'product'" />
@@ -68,28 +68,31 @@ export default {
 }
 
 .auto-space-right {
-  padding-right: 300px;
-  padding-left: 180px;
+  padding-right: 420px;
+  padding-left: 250px;
 }
 
 .auto-space-right-tiktok {
-  padding-right: 280px;
-  padding-left: 180px;
+  padding-right: 350px;
+  padding-left: 250px;
 }
 
 @media only screen and (min-width: 1024px) {
   .auto-space {
-    padding-left: 180px;
+    padding-left: 250px;
+    padding-right: 60px;
   }
 }
 @media only screen and (min-width: 1440px) {
   .auto-space {
-    padding-left: 160px;
+    padding-left: 260px;
+    padding-right: 60px;
   }
 }
 @media only screen and (min-width: 1600px) {
   .auto-space {
-    padding-left: 220px;
+    padding-left: 280px;
+    padding-right: 60px;
   }
 }
 </style>
