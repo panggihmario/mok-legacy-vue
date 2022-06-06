@@ -282,30 +282,43 @@ export default {
               : null,
           username: null,
           startDateAt:
-            this.payloadFilter.timeline == "HOUR" ||
-            this.payloadFilter.timeline == "DAY"
+            this.payloadData.startDateAt == null
+              ? null
+              : this.payloadFilter.timeline == "HOUR" ||
+                this.payloadFilter.timeline == "DAY"
               ? epochStart != 0
                 ? epochStart
                 : null
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.startDateAt.split("/")[0]
               : this.payloadData.startDateAt,
-        },
-      };
-      if (this.payloadData.startDateAt != this.payloadData.endDateAt) {
-        payload.params = {
-          ...payload.params,
           endDateAt:
-            this.payloadFilter.timeline == "HOUR" ||
-            this.payloadFilter.timeline == "DAY"
+            this.payloadData.endDateAt == null
+              ? null
+              : this.payloadFilter.timeline == "HOUR" ||
+                this.payloadFilter.timeline == "DAY"
               ? epochEnd != 0
                 ? epochEnd
                 : null
               : this.payloadFilter.timeline == "MONTH"
               ? this.payloadData.endDateAt.split("/")[0]
               : this.payloadData.endDateAt,
-        };
-      }
+        },
+      };
+      // if (this.payloadData.startDateAt != this.payloadData.endDateAt) {
+      //   payload.params = {
+      //     ...payload.params,
+      //     endDateAt:
+      //       this.payloadFilter.timeline == "HOUR" ||
+      //       this.payloadFilter.timeline == "DAY"
+      //         ? epochEnd != 0
+      //           ? epochEnd
+      //           : null
+      //         : this.payloadFilter.timeline == "MONTH"
+      //         ? this.payloadData.endDateAt.split("/")[0]
+      //         : this.payloadData.endDateAt,
+      //   };
+      // }
 
       let nullValue = 0;
       for (const [key, value] of Object.entries(payload.params)) {
@@ -413,6 +426,7 @@ export default {
             this.startDateAtShow = payload.params.startDateAt;
             this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
             this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
+            this.meanData = "0";
 
             if (this.payloadFilter.timeline == "HOUR") {
               let dStart = new Date(payload.params.startDateAt);
