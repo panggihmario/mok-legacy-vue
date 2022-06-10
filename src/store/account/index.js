@@ -70,11 +70,12 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .get(
-            `${state.pathAccount}/${payload.type}/search?value=${payload.params}`
+            `${state.pathAccount}/${payload.type}/search?value=${payload.params}`,
+            {params : {...payload.data}}
           );
         return response;
       } catch (error) {
-        return error;
+        throw error;
       }
     },
     async getAccountById({ state }, payload) {
