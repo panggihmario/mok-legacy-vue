@@ -14,16 +14,18 @@
           @click="actionResetFilter"
           >reset</v-btn
         >
-        <v-text-field
-          v-model="payloadFilter.username"
-          placeholder="All User"
+        <v-autocomplete
+          v-model="dataUsername"
+          :items="listUsername"
+          :search-input.sync="payloadFilter.username"
+          placeholder="Username"
+          clearable
           outlined
           dense
           hide-details
-          clearable
-          class="mr-2"
-          style="width: 180px"
-        ></v-text-field>
+          @keyup="handleGetUser"
+          class="mr-2 font-12"
+        ></v-autocomplete>
         <v-select
           v-model="payloadFilter.timeline"
           :items="itemsFilter"
@@ -138,6 +140,8 @@ export default {
       alertFailed: false,
       alertFailedMessage: "",
       isReset: false,
+      listUsername: [],
+      dataUsername: null,
       items: [
         {
           text: "Dashboard Sosmed",
@@ -158,7 +162,8 @@ export default {
       labelChart: {
         xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         yLabels: 5,
-        yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
+        // yLabelsTextFormatter: (val) => Math.round(val * 100) / 100,
+        yLabelsTextFormatter: (val) => Math.floor(val),
       },
       datasets: [
         {
@@ -280,7 +285,7 @@ export default {
             this.payloadData.endHourAt != null
               ? this.payloadData.endHourAt.split(":")[1]
               : null,
-          username: null,
+          username: this.payloadFilter.username,
           startDateAt:
             this.payloadData.startDateAt == null
               ? null
@@ -305,20 +310,6 @@ export default {
               : this.payloadData.endDateAt,
         },
       };
-      // if (this.payloadData.startDateAt != this.payloadData.endDateAt) {
-      //   payload.params = {
-      //     ...payload.params,
-      //     endDateAt:
-      //       this.payloadFilter.timeline == "HOUR" ||
-      //       this.payloadFilter.timeline == "DAY"
-      //         ? epochEnd != 0
-      //           ? epochEnd
-      //           : null
-      //         : this.payloadFilter.timeline == "MONTH"
-      //         ? this.payloadData.endDateAt.split("/")[0]
-      //         : this.payloadData.endDateAt,
-      //   };
-      // }
 
       let nullValue = 0;
       for (const [key, value] of Object.entries(payload.params)) {
@@ -333,14 +324,7 @@ export default {
         }
       }
       if (nullValue == 0) {
-        if (
-          this.payloadFilter.username == "" ||
-          this.payloadFilter.username == null
-        ) {
-          this.handleFetchUserSeen(payload);
-        } else {
-          this.handleGetUser(payload);
-        }
+        this.handleFetchUserSeen(payload);
       }
     },
     handleFetchUserSeen(payload) {
@@ -386,12 +370,6 @@ export default {
               this.months[dEnd.getMonth()]
             } ${dEnd.getFullYear()}`;
           }
-          // this.startHourAtShow = `${this.timeUTCplus7adjustment(
-          //   payload.params.startHourAt
-          // )}:${payload.params.startMinuteAt}`;
-          // this.endHourAtShow = `${this.timeUTCplus7adjustment(
-          //   payload.params.endHourAt
-          // )}:${payload.params.endMinuteAt}`;
           this.startHourAtShow = `${payload.params.startHourAt}:${payload.params.startMinuteAt}`;
           this.endHourAtShow = `${payload.params.endHourAt}:${payload.params.endMinuteAt}`;
 
@@ -483,24 +461,25 @@ export default {
           }
         });
     },
-    handleGetUser(payload) {
-      return this.searchUser(this.payloadFilter.username)
-        .then((res) => {
-          if (res.status == 200) {
-            this.handleFetchUserSeen(payload);
-          }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.alertFailedMessage = `Error: ${err.response.data.message}`;
-          setTimeout(() => {
-            this.alertFailed = false;
-            this.alertFailedMessage = "";
-          }, 3000);
-        });
+    handleGetUser() {
+      return this.searchUser(this.payloadFilter.username).then((res) => {
+        this.listUsername = [];
+        for (let i = 0; i < res.data.data.length; i++) {
+          const element = res.data.data[i];
+          this.listUsername.push(element.username);
+        }
+      });
+      // .catch((err) => {
+      //   this.alertFailed = true;
+      //   this.alertFailedMessage = `Error: ${err.response.data.data}`;
+      //   setTimeout(() => {
+      //     this.alertFailed = false;
+      //     this.alertFailedMessage = "";
+      //   }, 3000);
+      // });
     },
     actionResetFilter() {
-      this.payloadFilter.username = "";
+      this.payloadFilter.username = null;
       this.payloadFilter.timeline = "HOUR";
       this.isReset = true;
     },
