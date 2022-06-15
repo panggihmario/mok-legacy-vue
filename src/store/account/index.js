@@ -70,11 +70,12 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .get(
-            `${state.pathAccount}/${payload.type}/search?value=${payload.params}`
+            `${state.pathAccount}/${payload.type}/search?value=${payload.params}`,
+            {params : {...payload.data}}
           );
         return response;
       } catch (error) {
-        return error;
+        throw error;
       }
     },
     async getAccountById({ state }, payload) {
@@ -121,10 +122,10 @@ export default {
         return error;
       }
     },
-    async searchUser({ state }, payload) {
+    searchUser({ state }, payload) {
       let response;
       try {
-        response = await this._vm
+        response = this._vm
           .$httpWithToken()
           .get(`${state.pathAccountSearch}/username?value=${payload}`);
         return response;
