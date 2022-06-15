@@ -48,7 +48,7 @@
             placeholder="Search"
             style="width: 200px"
             v-model="keyword"
-            @keyup.enter="handleSearch"
+            @keyup.enter="onSubmitFilter"
           />
         </div>
       </div>
@@ -95,12 +95,21 @@ import Expand from "./expand/index.vue"
 import moment from "moment"
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
+
   components: {
     HeaderContent,
     Expand
   },
   mounted() {
-    this.onInitiateFetchFeeds()
+    const query = this.$route.query.keyword
+    if(query) {
+      const page = this.$route.params.page
+      const name = this.$route.name
+      this.isFilter = true
+      return this.onFilterByPage(page, name, query)
+    }else{
+      this.onInitiateFetchFeeds()
+    }
   },
   computed : {
     ...mapState({
@@ -123,17 +132,27 @@ export default {
           name,
           params : {
             page : value
+          },
+          query : {
+            keyword : this.keyword
           }
         })
-        if(this.keyword) {
-          return this.fetchSearchApi(name)
-        }else if(this.isParamsFilter) {
+        if(this.isParamsFilter  ) {
           const page = value - 1
           return this.onFilterByPage(page, name)
         }else{
           return this.onInitiateFetchFeeds(name, value - 1)
         }
         
+      }
+    }
+  },
+  watch : {
+    keyword : function (value) {
+      if(value.length > 0 ){
+        this.isFilter = true
+      }else{
+        this.isFilter = false
       }
     }
   },
@@ -148,9 +167,7 @@ export default {
        const name = this.$route.name
        const valuePage = this.$route.params.page
        const page = valuePage - 1
-        if(this.keyword) {
-          return this.fetchSearchApi(name)
-        }else if(this.isParamsFilter) {
+        if(this.isParamsFilter) {
           return this.onFilterByPage(page, name)
         }else{
           return this.onInitiateFetchFeeds(name, page)
@@ -164,6 +181,7 @@ export default {
         page,
         ...(sort &&  {sort : sort} )
       }
+
       return this.fetchFeeds(payload)
     },
     changeTab(tab) {
@@ -226,7 +244,7 @@ export default {
       this.isFilter = true
       this.isParamsFilter = true
       const routerName = this.$route.name;
-      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 ) {
+      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 || this.keyword.length > 0 ) {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
@@ -236,7 +254,8 @@ export default {
           tab : routerName,
           channelCodes : channels,
           ...date,
-          ...(sort &&  {sort : sort} )
+          ...(sort &&  {sort : sort} ),
+          keyword : this.keyword
         }
         return this.filterFeed(payload)
           .then(() => {
@@ -244,6 +263,9 @@ export default {
               name : this.$route.name,
               params : {
                 page : 1
+              },
+              query : {
+                keyword : this.keyword
               }
             })
             .catch(() => {})
@@ -264,6 +286,7 @@ export default {
     resetFilter () {
       this.isFilter = false
       this.isParamsFilter = false
+      this.keyword = ""
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
@@ -278,7 +301,7 @@ export default {
           }).catch(() => {})
         })
     },
-    onFilterByPage (page, name) {
+    onFilterByPage (page, name, keyword = this.keyword) {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
@@ -289,7 +312,8 @@ export default {
           page : page,
           channelCodes : channels,
           ...date,
-          ...(sort &&  {sort : sort} )
+          ...(sort &&  {sort : sort} ),
+          keyword
         }
         return this.filterFeed(payload)
     },
