@@ -25,9 +25,6 @@ import DetailReportedSeller from "../views/Shop/ReportedSeller/detail.vue";
 import AdminCreate from "../views/AccountManage/AdminCreate";
 import AdminEdit from "../views/AccountManage/AdminEdit";
 import AdminDelete from "../views/AccountManage/AdminDelete";
-import User from "../views/AccountManage/User";
-import UserCreate from "../views/AccountManage/User/UserCreate";
-import UserEdit from "../views/AccountManage/User/UserEdit";
 import PostProduct from "../views/Post/product.vue";
 import Complaint from "../views/Shop/Complaint";
 import ComplaintDetail from "../views/Shop/Complaint/detail";
@@ -87,26 +84,6 @@ const routes = [
         path: "/admin/delete",
         name: "AdminDelete",
         component: AdminDelete,
-      },
-      {
-        path: "/user",
-        name: "User",
-        component: User,
-      },
-      {
-        path: "/user/feed/:id/:name",
-        name: "feedUser",
-        component: () => import("../views/AccountManage/User/Feeds/index.vue"),
-      },
-      {
-        path: "/user/create",
-        name: "UserCreate",
-        component: UserCreate,
-      },
-      {
-        path: "/user/:id",
-        name: "userEdit",
-        component: UserEdit,
       },
       {
         path: "/",
