@@ -36,6 +36,7 @@
               </v-avatar>
               <span class="text-break font-10">{{ item.author.nickname }}</span>
               <v-spacer></v-spacer>
+              <v-icon x-small color="red" class="mr-1">fa-heart</v-icon>
               <span class="font-10">{{
                 formatThousandToKMB(item.stats.diggCount)
               }}</span>

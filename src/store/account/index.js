@@ -121,10 +121,10 @@ export default {
         return error;
       }
     },
-    async searchUser({ state }, payload) {
+    searchUser({ state }, payload) {
       let response;
       try {
-        response = await this._vm
+        response = this._vm
           .$httpWithToken()
           .get(`${state.pathAccountSearch}/username?value=${payload}`);
         return response;
