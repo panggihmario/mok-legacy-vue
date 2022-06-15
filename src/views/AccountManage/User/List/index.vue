@@ -170,5 +170,4 @@ export default {
   &__data
     padding-top: 16px
     padding-bottom: 16px
-    // border-bottom: none !important
 </style>
