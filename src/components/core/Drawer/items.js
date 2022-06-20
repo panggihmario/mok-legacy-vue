@@ -26,7 +26,7 @@ export default [
       },
       {
         title: "List User",
-        path: "/user/1",
+        path: "/user/1?search=",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
     ],
