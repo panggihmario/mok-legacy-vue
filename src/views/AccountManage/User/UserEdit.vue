@@ -1,10 +1,10 @@
 <template>
   <div>
     <HeaderContent :list="items" label="Edit Management Account" />
-    <FormUser 
-      :data="data" 
-      :loading="loading" 
-      @onSubmit="onSubmit" 
+    <FormUser
+      :data="data"
+      :loading="loading"
+      @onSubmit="onSubmit"
       @deleteUser="handleDelete"
     />
     <v-snackbar top right v-model="alertError" color="error">
@@ -69,10 +69,9 @@ export default {
     }),
     handleDelete() {
       const id = this.$route.params.id;
-      return this.deleteUser(id)
-        .then(() => {
-          this.$router.push("/user");
-        })
+      return this.deleteUser(id).then(() => {
+        this.$router.push("/user");
+      });
     },
     async onSubmit(params) {
       const id = this.$route.params.id;
@@ -86,11 +85,23 @@ export default {
         this.loading = false;
         this.alertSuccess = true;
         setTimeout(() => {
-          this.$router.push("/user");
+          const route = this.$route
+          this.$router.push({
+            name: "User",
+            params: {
+              id: id,
+              page: route.params.page,
+            },
+            ...(route.query.keyword && {
+              query: {
+                search: route.query.keyword,
+              },
+            }),
+          });
         }, 1000);
       } else {
-      	this.loading = false
-      	this.alertError = true
+        this.loading = false;
+        this.alertError = true;
       }
     },
     async handleResponseById() {

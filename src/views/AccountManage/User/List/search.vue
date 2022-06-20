@@ -27,24 +27,24 @@ export default {
   data () {
     return {
       keyword : '',
-
     }
+  },
+  mounted () {
+    this.keyword = this.$route.query.search
   },
   methods : {
     onSearch () {
-      if(this.keyword.length > 0) {
-        this.$emit("onSearch", this.keyword)
-      }else {
-        this.$emit("resetSearch")
+      this.$emit("onSearch", this.keyword)
         this.$router.push({
           name: this.$route.name,
           params: {
             page: 1,
           },
+          query : {
+            search : this.keyword
+          }
         })
         .catch(() => {})
-      }
-      
     }
   }
 }
