@@ -77,6 +77,7 @@ export default {
           page : page - 1
         }
       }
+      console.log(page)
       return this.searchAccount(payload)
         .then((resp) => {
           this.$router
@@ -133,7 +134,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchSearchData(1)
+    this.fetchSearchData(this.$route.params.page)
   },
 };
 </script>
