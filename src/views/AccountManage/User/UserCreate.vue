@@ -75,7 +75,15 @@ export default {
 				this.loading = false
 				this.alertSuccess = true
 				setTimeout(() => {
-					this.$router.push("/user");
+					this.$router.push({
+            name : 'User',
+            params  : {
+              page : 1
+            },
+            query : {
+              search : ""
+            }
+          });
 				},1000)
       } else {
 				this.loading = false

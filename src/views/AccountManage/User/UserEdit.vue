@@ -89,7 +89,6 @@ export default {
           this.$router.push({
             name: "User",
             params: {
-              id: id,
               page: route.params.page,
             },
             ...(route.query.keyword && {
