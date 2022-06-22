@@ -140,11 +140,9 @@ export default {
           id: id,
           page : route.params.page
         },
-        ...(route.query.search &&  {
-          query : {
+        query : {
             keyword : route.query.search
           }
-        })
       });
     },
   }
