@@ -91,11 +91,9 @@ export default {
             params: {
               page: route.params.page,
             },
-            ...(route.query.keyword && {
-              query: {
-                search: route.query.keyword,
-              },
-            }),
+            query: {
+              search: route.query.keyword,
+            },
           });
         }, 1000);
       } else {
