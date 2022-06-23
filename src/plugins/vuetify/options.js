@@ -25,7 +25,7 @@ export default {
 				gainsboro : '#DDDDDD',
 				irisblue: '#00B9BD',
 				kellygreen : '#52C41A',
-				primarylowtint : '#FFF3E7',
+				primarylowtint : '#FFEBEF',
 				secondarylowtint : '#E7F3FF',
 			},
 		},
