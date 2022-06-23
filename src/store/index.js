@@ -15,6 +15,8 @@ import order from "./order";
 import dashboard from "./dashboard";
 import trending from "./trending";
 import tiktok from "./tiktok";
+import masterCategory from "./master/category";
+import manageHashtag from "./manage/hashtag";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -34,6 +36,8 @@ export default new Vuex.Store({
     dashboard,
     trending,
     tiktok,
+    masterCategory,
+    manageHashtag
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
