@@ -67,7 +67,6 @@ export default {
       createUser: "account/createUser"
     }),
     async onSubmit(payload) {
-      console.log(payload)
 			this.loading = true
       const response = await this.createUser(payload);
       console.log(response)
@@ -75,7 +74,15 @@ export default {
 				this.loading = false
 				this.alertSuccess = true
 				setTimeout(() => {
-					this.$router.push("/user");
+					this.$router.push({
+            name : 'User',
+            params  : {
+              page : 1
+            },
+            query : {
+              search : ""
+            }
+          });
 				},1000)
       } else {
 				this.loading = false

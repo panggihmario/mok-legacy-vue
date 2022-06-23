@@ -16,7 +16,7 @@ const pathUser = [
     props : route => ({ query : route.query.search })
   },
   {
-    path: "/user/:id",
+    path: "/user/:id/:page",
     name: "userEdit",
     component: () => import("../../views/AccountManage/User/UserEdit") ,
   },

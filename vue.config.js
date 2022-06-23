@@ -44,13 +44,12 @@ module.exports = {
 				language: 'en',
     		buildAllTranslationsToSeparateFiles: true,
 			}),
-	
 		]
 	},
 
 	// Vue CLI would normally use its own loader to load .svg and .css files, however:
 	//	1. The icons used by CKEditor must be loaded using raw-loader,
-	//	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
+	//	2. The CSS used by CKEditor must be transpiled using Post  to load properly.
 	chainWebpack: config => {
 		// (1.) To handle editor icons, get the default rule for *.svg files first:
 		const svgRule = config.module.rule('svg');

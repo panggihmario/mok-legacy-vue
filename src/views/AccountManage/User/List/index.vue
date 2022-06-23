@@ -2,9 +2,9 @@
   <div>
     <Header />
 
-    <Search 
-      :totalUser="totalUser" 
-      @onSearch="onSearch" 
+    <Search
+      :totalUser="totalUser"
+      @onSearch="onSearch"
       @resetSearch="resetSearch"
     />
 
@@ -37,38 +37,8 @@ export default {
         return current;
       },
       set(value) {
-        const name = this.$route.name;
-        const query = this.$route.query.search
-        
-        if(query) {
-          const payload = {
-            params: query,
-            type: "users",
-            data: {
-              page: value - 1,
-            },
-          };
-          return this.handleSearch(payload)
-            .then(() => {
-              this.$router.push({
-                name,
-                params: {
-                  page: value,
-                },
-                query : {
-                  search : payload.params
-                }
-              })
-            })
-        }else {
-          this.$router.push({
-            name,
-            params: {
-              page: value,
-            },
-          });
-          return this.getDataBaseOnPage(value);
-        }
+        const query = this.$route.query.search;
+        return this.fetchSearchData(value, query)
       },
     },
   },
@@ -93,34 +63,42 @@ export default {
       searchAccount: "account/searchAccount",
     }),
     resetSearch() {
-      return this.getDataBaseOnPage()
+      return this.fetchSearchData(1);
     },
     onSearch(keyword) {
-      const payload = {
-        params: keyword,
-        type: "users",
-        data: {
-          page: 0,
-        },
-      };
-      return this.handleSearch(payload)
-        .then(() => {
-          this.$router.push({
-            name: this.$route.name,
-            params: {
-              page: 1,
-            },
-            query : {
-              search : payload.params
-            }
-          })
-          .catch(() => {})
-        })
+      const page = 1
+      return this.fetchSearchData(page, keyword)
     },
-    handleSearch (payload) {
+    fetchSearchData (page, keyword = this.$route.query.search ) {
+      const payload = {
+        type : 'users',
+        params : keyword,
+        data : {
+          page : page - 1
+        }
+      }
+      console.log(page)
       return this.searchAccount(payload)
-        .then(response =>  {return this.formattingResponse(response)} )
-        .catch(err =>  {return err} )
+        .then((resp) => {
+          this.$router
+            .push({
+              name: this.$route.name,
+              params: {
+                page  : page,
+              },
+              query: {
+                search: keyword,
+              },
+            })
+            .catch(() => {})
+          return resp
+        })
+        .then((response => {
+          return this.formattingResponse(response);
+        }))
+        .catch((err) => {
+          return err;
+        });
     },
     formattingResponse(response) {
       const totalDataUser = response.data.data.totalElements;
@@ -142,20 +120,21 @@ export default {
       this.data = formatResponse;
     },
     async getDataBaseOnPage(value = this.$route.params.page) {
-      const params = {
+      const payload = {
+        params: this.$route.query.search,
         type: "users",
-        param: {
+        data: {
           page: value - 1,
         },
       };
-      const response = await this.getListRespone(params);
+      const response = await this.searchAccount(payload);
       if (response.status === 200) {
         this.formattingResponse(response);
       }
     },
   },
   mounted() {
-    this.getDataBaseOnPage();
+    this.fetchSearchData(this.$route.params.page)
   },
 };
 </script>
@@ -170,5 +149,4 @@ export default {
   &__data
     padding-top: 16px
     padding-bottom: 16px
-    // border-bottom: none !important
 </style>
