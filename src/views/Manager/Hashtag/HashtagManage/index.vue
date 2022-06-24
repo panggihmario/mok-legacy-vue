@@ -142,6 +142,12 @@ export default {
       },
     };
   },
+  watch: {
+    sort() {
+      this.page = 0;
+      this.handleGetListManageHashtag();
+    },
+  },
   mounted() {
     this.handleGetListManageHashtag();
   },
@@ -157,9 +163,11 @@ export default {
         },
       });
     },
-    handleGetListManageHashtag(p) {
+    handleGetListManageHashtag() {
       let payload = {
         params: {
+          sort: "createdAt",
+          direction: this.sort == "Newest" ? "DESC" : "ASC",
           size: 10,
           page: this.page,
         },
@@ -178,6 +186,8 @@ export default {
     changePage(p) {
       let payload = {
         params: {
+          sort: "createdAt",
+          direction: this.sort == "Newest" ? "DESC" : "ASC",
           size: 10,
           page: p - 1,
         },
