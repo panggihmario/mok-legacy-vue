@@ -33,7 +33,7 @@
             </div>
 
             <div
-              class="d-flex justify-space-between align-center whitesmoke grey--text font-12 font-weight-medium px-2"
+              class="d-flex justify-space-between align-center whitesmoke grey--text font-12 font-weight-medium px-3"
               style="height: 24px"
             >
               <span>Total Kategori</span>
@@ -79,7 +79,7 @@
                     <div
                       v-for="i in listMasterCategory"
                       :key="i.id"
-                      class="d-flex align-center grey--text font-weight-medium mx-2 px-3"
+                      class="d-flex align-center grey--text font-weight-medium px-3"
                       :class="{
                         'selected-category': i.value == selectedCategory.value,
                       }"
@@ -88,14 +88,7 @@
                     >
                       <span class="font-12">{{ i.value }}</span>
                     </div>
-                    <div v-if="pageCategory < totalPageCategory">
-                      <v-card v-intersect="onScrollCategory">
-                        <v-progress-circular
-                          indeterminate
-                          color="secondary"
-                        ></v-progress-circular>
-                      </v-card>
-                    </div>
+                    <v-card v-intersect="onScrollCategory"></v-card>
                   </div>
                 </div>
               </div>
@@ -146,7 +139,7 @@
             </div>
 
             <div
-              class="d-flex justify-space-between align-center whitesmoke grey--text font-12 font-weight-medium px-2"
+              class="d-flex justify-space-between align-center whitesmoke grey--text font-12 font-weight-medium px-3"
               style="height: 24px"
             >
               <span>Total Sub Kategori</span>
@@ -166,7 +159,7 @@
                   silahkan gunakan keyword lain</span
                 >
               </div>
-              <div v-else >
+              <div v-else>
                 <div v-if="listSubCategorySearch.length > 0" class="py-2">
                   <div
                     v-for="i in listSubCategorySearch"
@@ -188,7 +181,7 @@
                     <div
                       v-for="i in listSubCategory"
                       :key="i.id"
-                      class="grey--text font-weight-medium mx-2"
+                      class="grey--text font-weight-medium px-3"
                       style="height: 32px"
                     >
                       <span class="font-12">{{ i.value }}</span>
@@ -366,7 +359,7 @@ export default {
     "selectedCategory.id"() {
       this.pageSubCategory = 0;
       this.listSubCategory = [];
-      this.listSubCategorySearch = []
+      this.listSubCategorySearch = [];
       this.alertFailedSearchMasterCategory = false;
       this.alertFailedSearchSubCategory = false;
       this.handleGetListSubCategory();
@@ -386,6 +379,12 @@ export default {
       if (this.searchMasterCategory == null) {
         this.searchMasterCategory = "";
         this.actionSearchListMasterCategory();
+      }
+    },
+    searchSubCategory() {
+      if (this.searchSubCategory == null) {
+        this.searchSubCategory = "";
+        this.actionSearchListSubCategory();
       }
     },
   },
@@ -437,21 +436,25 @@ export default {
           page: this.pageCategory,
         },
       };
-      return this.getListCategory(payload)
-        .then((response) => {
-          this.pageCategory++;
-          for (let i = 0; i < response.data.content.length; i++) {
-            const e = response.data.content[i];
-            this.listMasterCategory.push(e);
-            if (this.selectedCategory.value == null && i == 0) {
-              this.selectedCategory = response.data.content[0];
+      if (this.pageCategory <= this.totalPageCategory) {
+        return this.getListCategory(payload)
+          .then((response) => {
+            this.pageCategory++;
+            for (let i = 0; i < response.data.content.length; i++) {
+              const e = response.data.content[i];
+              this.listMasterCategory.push(e);
+              if (this.selectedCategory.value == null && i == 0) {
+                this.selectedCategory = response.data.content[0];
+              }
             }
-          }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.dataFailed = err.response.data;
-        });
+          })
+          .catch((err) => {
+            this.alertFailed = true;
+            this.dataFailed = err.response.data;
+          });
+      } else {
+        return;
+      }
     },
     actionSearchListMasterCategory() {
       let payload = {

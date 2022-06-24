@@ -135,8 +135,10 @@
             <p
               v-if="
                 dataPreview.percentage &&
-                  dataPreview.percentage <= 100 &&
-                  dataPreview.percentage > 0
+                  dataPreview.percentage <= availablePercentage &&
+                  dataPreview.percentage > 0 &&
+                  (dataPreview.percentage / 100) * totalData <=
+                    dataPreview.available
               "
               class="font-12"
             >
@@ -146,11 +148,29 @@
                 (dataPreview.percentage / 100) * totalData
               }}</b>
             </p>
+            <p v-else-if="dataPreview.percentage < 1" class="red--text font-12">
+              Kurang dari total presentase, tambah presentase!
+            </p>
             <p
-              v-else-if="dataPreview.percentage > 100"
+              v-else-if="dataPreview.percentage > availablePercentage"
               class="red--text font-12"
             >
               Melebihi total presentase, kurangi presentase!
+            </p>
+            <p
+              v-else-if="dataPreview.qty > dataPreview.available"
+              class="red--text font-12"
+            >
+              Melebihi total presentase, kurangi presentase!
+            </p>
+            <p
+              v-else-if="
+                (dataPreview.percentage / 100) * totalData >
+                  dataPreview.available
+              "
+              class="red--text font-12"
+            >
+              Melebihi total konten yang tersedia, kurangi presentase!
             </p>
           </div>
         </div>
@@ -174,8 +194,10 @@
             @click="addPreviewCategory"
             :disabled="
               dataPreview.percentage == null ||
-                dataPreview.percentage > 100 ||
-                dataPreview.percentage < 1
+                dataPreview.percentage > availablePercentage ||
+                dataPreview.percentage < 1 ||
+                (dataPreview.percentage / 100) * totalData >
+                  dataPreview.available
             "
             >Simpan</v-btn
           >
@@ -219,7 +241,7 @@ export default {
       listMasterCategorySearch: [],
       page: 0,
       totalPage: 0,
-      totalData: 0,
+      totalData: null,
       dialogAddPreview: false,
       dataPreview: {
         value: "",
@@ -314,20 +336,26 @@ export default {
           this.dataFailed = err.response.data;
         });
     },
-    handleGetAvailabilitySubHashtag(content, idx) {
+    handleGetAvailabilitySubHashtag(content, idx, isSearch) {
       return this.getAvailabilitySubHashtag(content.value)
         .then((response) => {
           let dataList = {
             ...content,
             available: response.data.available,
           };
-          this.listMasterCategory.push(dataList);
+          if (isSearch) {
+            this.listMasterCategorySearch.push(dataList);
+          } else {
+            this.listMasterCategorySearch = [];
+            this.listMasterCategory.push(dataList);
+          }
         })
         .catch((err) => {
           console.log({ err });
         });
     },
     actionSearchListHashtagFormationSubs(v) {
+      this.listMasterCategorySearch = [];
       let payload = {
         search: v,
       };
@@ -335,7 +363,11 @@ export default {
         .then((response) => {
           if (response.data.length > 0) {
             this.alertFailedSearch = false;
-            this.listMasterCategorySearch = response.data;
+            let content = response.data;
+            for (let i = 0; i < content.length; i++) {
+              const e = content[i];
+              this.handleGetAvailabilitySubHashtag(e, i, true);
+            }
           } else {
             this.alertFailedSearch = true;
           }
@@ -351,6 +383,9 @@ export default {
         totalQty: this.totalData,
         hashtags: [],
       };
+
+      this.sortingPreviewData(this.listPreviewCategory);
+      this.countQtyFromPercent(this.listPreviewCategory);
       for (let i = 0; i < this.listPreviewCategory.length; i++) {
         const e = this.listPreviewCategory[i];
         payload.hashtags.push({

@@ -75,15 +75,8 @@
 
         <div class="d-flex justify-space-between mt-5">
           <v-btn
-            depressed
             height="38px"
-            width="90px"
-            class="text-capitalize whitesmoke"
-            >Batal</v-btn
-          >
-          <v-btn
-            height="38px"
-            width="145px"
+            block
             class="text-capitalize secondary"
             @click="submitData"
             :loading="loadingSubmit"
@@ -93,7 +86,7 @@
                 totalQtyGreater > 0 ||
                 availablePercentage !== 0
             "
-            >Simpan</v-btn
+            >Terapkan Trending</v-btn
           >
         </div>
 
