@@ -133,11 +133,16 @@ export default {
       });
     },
     moveToEdit(id) {
+      const route = this.$route
       this.$router.push({
         name: "userEdit",
         params: {
           id: id,
+          page : route.params.page
         },
+        query : {
+            keyword : route.query.search
+          }
       });
     },
   }
