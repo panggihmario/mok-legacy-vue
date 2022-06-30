@@ -69,7 +69,6 @@ export default {
     async onSubmit(payload) {
 			this.loading = true
       const response = await this.createUser(payload);
-      console.log(response)
       if (response.status === 201) {
 				this.loading = false
 				this.alertSuccess = true
