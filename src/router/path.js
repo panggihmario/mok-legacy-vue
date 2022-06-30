@@ -116,6 +116,21 @@ const routes = [
         component: () => import("../views/Manager/Hashtag"),
       },
       {
+        path: "/manage/hashtag",
+        name: "manageHashtag",
+        component: () => import("../views/Manager/Hashtag/HashtagManage"),
+      },
+      {
+        path: "/manage/hashtag/detail",
+        name: "manageHashtagDetail",
+        component: () => import("../views/Manager/Hashtag/HashtagManage/detail.vue"),
+      },
+      {
+        path: "/manage/hashtag/create-new-trending",
+        name: "manageHashtag",
+        component: () => import("../views/Manager/Hashtag/HashtagManage/CreateNewTrending"),
+      },
+      {
         path: "/donation",
         name: "donation",
         component: Donation,
@@ -270,6 +285,11 @@ const routes = [
         path: "/dashboard-sosmed",
         name: "dashboardSosmed",
         component: DashboardSosmed,
+      },
+      {
+        path: "/master/category",
+        name: "masterCategory",
+        component: () => import("../views/Master/Category"),
       },
     ],
   },

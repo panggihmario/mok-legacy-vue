@@ -16,6 +16,22 @@ export default [
     ],
   },
   {
+    action: "fas fa-folder",
+    title: "Master",
+    items: [
+      // {
+      //   title: "Dashboard",
+      //   path: "/dashboard",
+      //   role: ["ROLE_ADMIN"],
+      // },
+      {
+        title: "Category",
+        path: "/master/category",
+        role: ["ROLE_ADMIN"],
+      },
+    ],
+  },
+  {
     action: "fas fa-sliders-h",
     title: "Manage Account",
     items: [
@@ -26,7 +42,7 @@ export default [
       },
       {
         title: "List User",
-        path: "/user/1",
+        path: "/user/1?search=",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
     ],
@@ -38,6 +54,11 @@ export default [
       {
         title: "Trending Hashtag",
         path: "/hashtag",
+        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+      {
+        title: "Manage Hashtag",
+        path: "/manage/hashtag",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
