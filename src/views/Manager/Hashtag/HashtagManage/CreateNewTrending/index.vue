@@ -38,10 +38,12 @@
       <Box-List-Hashtag
         :listMasterCategory="listMasterCategory"
         :listMasterCategorySearch="listMasterCategorySearch"
+        :listPreviewCategory="listPreviewCategory"
         :availablePercentage="availablePercentage"
         :page="page"
         :totalPages="totalPages"
         :alertFailedSearch="alertFailedSearch"
+        :isSearchData="isSearchData"
         :loadingListMasterCategory="loadingListMasterCategory"
         :loadingSearch="loadingSearch"
         @actionSearchListHashtagFormationSubs="
@@ -245,8 +247,9 @@ export default {
       listMasterCategory: [],
       listPreviewCategory: [],
       listMasterCategorySearch: [],
-      page: 0,
+      page: 1,
       totalPages: 0,
+      totalElements: 0,
       totalData: null,
       dialogAddPreview: false,
       dataPreview: {
@@ -263,6 +266,7 @@ export default {
       loadingSubmit: false,
       loadingSearch: false,
       loadingListMasterCategory: false,
+      isSearchData: false,
       alertData: false,
       alertSuccess: false,
       alertFailed: false,
@@ -289,6 +293,32 @@ export default {
         this.dataPreview.percentage = null;
       }
     },
+    totalPages() {
+      for (let i = 1; i < this.totalPages; i++) {
+        this.page = i;
+        this.onScrollListCategory();
+      }
+    },
+    listMasterCategory() {
+      if (this.listMasterCategory.length > 0) {
+        if (this.listMasterCategory.length == this.totalElements) {
+          for (let i = 0; i < this.listMasterCategory.length; i++) {
+            const e = this.listMasterCategory[i];
+            this.handleGetAvailabilitySubHashtag(e, i);
+          }
+        }
+      }
+    },
+    listMasterCategorySearch() {
+      if (this.listMasterCategorySearch.length > 0) {
+        if (this.listMasterCategorySearch.length == this.totalElements) {
+          for (let i = 0; i < this.listMasterCategorySearch.length; i++) {
+            const e = this.listMasterCategorySearch[i];
+            this.handleGetAvailabilitySubHashtag(e, i, true);
+          }
+        }
+      }
+    },
   },
   mounted() {
     this.handleGetListMasterCategory();
@@ -303,7 +333,6 @@ export default {
     }),
     handleGetListMasterCategory() {
       this.listMasterCategory = [];
-      this.page = 1;
       let payload = {
         params: {
           size: 50,
@@ -311,13 +340,17 @@ export default {
         },
       };
       this.loadingListMasterCategory = true;
+      this.listMasterCategory = [];
+      this.listMasterCategorySearch = [];
+      this.isSearchData = false;
       return this.getListHashtagFormationSubs(payload)
         .then((response) => {
           this.totalPages = response.data.totalPages;
+          this.totalElements = response.data.totalElements;
           let content = response.data.content;
           for (let i = 0; i < content.length; i++) {
             const e = content[i];
-            this.handleGetAvailabilitySubHashtag(e, i);
+            this.listMasterCategory.push({ ...e, available: 0 });
           }
         })
         .catch((err) => {
@@ -326,46 +359,48 @@ export default {
           this.dataFailed = err.response.data;
         });
     },
-    onScrollListCategory() {
-      let payload = {
-        params: {
-          size: 50,
-          page: this.page,
-        },
-      };
-      return this.getListHashtagFormationSubs(payload)
-        .then((response) => {
-          this.page++;
-          let content = response.data.content;
-          for (let i = 0; i < content.length; i++) {
-            const e = content[i];
-            this.handleGetAvailabilitySubHashtag(e, i);
-          }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.dataFailed = err.response.data;
-        });
+    onScrollListCategory(entries, observer) {
+      if (this.page <= this.totalPages) {
+        console.log(this.page, "-", this.totalPages);
+        let payload = {
+          params: {
+            size: 50,
+            page: this.page,
+          },
+        };
+        this.loadingListMasterCategory = true;
+        this.listMasterCategorySearch = [];
+        this.isSearchData = false;
+        return this.getListHashtagFormationSubs(payload)
+          .then((response) => {
+            this.page++;
+            let content = response.data.content;
+            for (let i = 0; i < content.length; i++) {
+              const e = content[i];
+              this.listMasterCategory.push({ ...e, available: 0 });
+            }
+          })
+          .catch((err) => {
+            this.alertFailed = true;
+            this.dataFailed = err.response.data;
+          });
+      } else {
+        return;
+      }
     },
     handleGetAvailabilitySubHashtag(content, idx, isSearch) {
       return this.getAvailabilitySubHashtag(content.value)
         .then((response) => {
-          let dataList = {
-            ...content,
-            available: response.data.available,
-          };
-          if (isSearch) {
-            this.loadingListMasterCategory = false;
-            this.listMasterCategorySearch.push(dataList);
+          let avail = response.data ? response.data.available : "no data";
+          if (this.isSearchData) {
+            this.listMasterCategorySearch[idx].available = avail;
           } else {
-            this.loadingListMasterCategory = false;
-            this.listMasterCategorySearch = [];
-            this.listMasterCategory.push(dataList);
+            this.listMasterCategory[idx].available = avail;
           }
         })
         .catch((err) => {
-          console.log({ err });
           this.loadingListMasterCategory = false;
+          this.loadingSearch = false;
         });
     },
     actionSearchListHashtagFormationSubs(v) {
@@ -373,16 +408,23 @@ export default {
       let payload = {
         search: v,
       };
+      this.listMasterCategory = [];
+      this.listMasterCategorySearch = [];
       this.loadingSearch = true;
+      this.totalElements = 0;
+      this.isSearchData = true;
       return this.searchListHashtagFormationSubs(payload)
         .then((response) => {
-          this.loadingSearch = false;
+          console.log({ response });
           if (response.data.length > 0) {
             this.alertFailedSearch = false;
+            this.totalElements = response.data.length;
+            this.loadingSearch = false;
             let content = response.data;
             for (let i = 0; i < content.length; i++) {
               const e = content[i];
-              this.handleGetAvailabilitySubHashtag(e, i, true);
+              this.listMasterCategorySearch.push({ ...e, available: 0 });
+              // this.listMasterCategory.push({ ...e, available: 0 });
             }
           } else {
             this.alertFailedSearch = true;
@@ -463,7 +505,11 @@ export default {
           percentage: parseInt(this.dataPreview.percentage),
           totalData: this.totalData,
         });
-        this.listMasterCategory.splice(this.dataPreview.index, 1);
+        if (this.isSearchData) {
+          this.listMasterCategorySearch.splice(this.dataPreview.index, 1);
+        } else {
+          this.listMasterCategory.splice(this.dataPreview.index, 1);
+        }
       } else {
         this.listPreviewCategory[this.editId] = {
           ...this.dataPreview,
@@ -481,7 +527,11 @@ export default {
     },
     removePreviewCategory(i, idx) {
       this.listPreviewCategory.splice(idx, 1);
-      this.listMasterCategory.splice(i.index, 0, i);
+      if (this.isSearchData) {
+        this.listMasterCategorySearch.splice(i.index, 0, i);
+      } else {
+        this.listMasterCategory.splice(i.index, 0, i);
+      }
     },
     addListPercentage() {
       let i = 0;
