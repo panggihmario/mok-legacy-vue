@@ -10,7 +10,7 @@
         height="480px"
       >
         <template v-slot:item="{ index, item }">
-          <tr :class="{ primarylowtint: item.qty > item.available }">
+          <tr>
             <td class="font-12 font-weight-medium" style="border: none">
               {{ item.value }}
             </td>
@@ -21,25 +21,7 @@
               class="d-flex align-center font-12 font-weight-medium"
               style="border: none"
             >
-              <v-tooltip
-                v-if="item.qty > item.available"
-                color="primary"
-                bottom
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <span
-                    v-bind="attrs"
-                    v-on="on"
-                    :class="{ 'primary--text': item.qty > item.available }"
-                  >
-                    {{ item.qty }}
-                  </span>
-                </template>
-                <span class="font-12 font-weight-medium"
-                  >Qty melebihi Available harap diganti</span
-                >
-              </v-tooltip>
-              <span v-else>
+              <span>
                 {{ item.qty }}
               </span>
             </td>
@@ -83,7 +65,6 @@
             :disabled="
               loadingSubmit ||
                 totalData < 1 ||
-                totalQtyGreater > 0 ||
                 availablePercentage !== 0
             "
             >Terapkan Trending</v-btn
