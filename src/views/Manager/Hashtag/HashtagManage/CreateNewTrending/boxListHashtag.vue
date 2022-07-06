@@ -23,10 +23,7 @@
             <div class="col">Available</div>
           </div>
 
-          <div
-            v-if="alertFailedSearch"
-            class="d-flex align-start pa-3"
-          >
+          <div v-if="alertFailedSearch" class="d-flex align-start pa-3">
             <v-icon small color="red" class="mr-1"
               >fas fa-exclamation-circle</v-icon
             >
@@ -36,7 +33,14 @@
             >
           </div>
           <div v-else>
-            <div v-if="listMasterCategorySearch.length > 0">
+            <div v-if="loadingSearch" class="text-center pa-4">
+              <span class="font-12 font-weight-medium">
+                Loading...
+              </span>
+            </div>
+            <div
+              v-else-if="!loadingSearch && listMasterCategorySearch.length > 0"
+            >
               <div
                 v-for="(i, idx) in listMasterCategorySearch"
                 :key="idx"
@@ -52,7 +56,7 @@
                     v-if="hoverId == i.id && availablePercentage > 0"
                     icon
                     x-small
-                    @click="selectCategory(i)"
+                    @click="selectCategory(i, idx)"
                   >
                     <v-icon small color="secondary">fas fa-plus-circle</v-icon>
                   </v-btn>
@@ -75,16 +79,29 @@
                     v-if="hoverId == i.id && availablePercentage > 0"
                     icon
                     x-small
-                    @click="selectCategory(i)"
+                    @click="selectCategory(i, idx)"
                   >
                     <v-icon small color="secondary">fas fa-plus-circle</v-icon>
                   </v-btn>
                 </div>
               </div>
-              <v-card
-                v-if="page < totalPage"
-                v-intersect="onScrollSubCategory"
-              ></v-card>
+              <div v-if="!loadingListMasterCategory && page < totalPages">
+                <v-card v-intersect="onScrollSubCategory" flat>
+                  <span class="font-12 font-weight-medium">
+                    Loading...
+                  </span>
+                </v-card>
+              </div>
+              <div
+                v-else-if="loadingListMasterCategory"
+                class="d-flex justify-center"
+              >
+                <v-card flat>
+                  <span class="font-12 font-weight-medium">
+                    Loading...
+                  </span>
+                </v-card>
+              </div>
             </div>
           </div>
         </div>
@@ -111,10 +128,18 @@ export default {
     page: {
       type: Number,
     },
-    totalPage: {
+    totalPages: {
       type: Number,
     },
     alertFailedSearch: {
+      type: Boolean,
+      default: false,
+    },
+    loadingListMasterCategory: {
+      type: Boolean,
+      default: false,
+    },
+    loadingSearch: {
       type: Boolean,
       default: false,
     },
@@ -151,8 +176,8 @@ export default {
     },
   },
   methods: {
-    selectCategory(i) {
-      this.$emit("onChooseCategory", i);
+    selectCategory(i, idx) {
+      this.$emit("onChooseCategory", i, idx);
     },
     onHover(id) {
       this.hoverId = id;
@@ -161,7 +186,9 @@ export default {
       this.$emit("onScrollSubCategory");
     },
     actionSearchListHashtagFormationSubs() {
-      this.$emit("actionSearchListHashtagFormationSubs", this.search);
+      if (!this.loadingSearch) {
+        this.$emit("actionSearchListHashtagFormationSubs", this.search);
+      }
     },
   },
 };
