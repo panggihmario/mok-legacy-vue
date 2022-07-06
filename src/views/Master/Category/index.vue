@@ -408,7 +408,7 @@ export default {
       this.pageCategory = 1;
       let payload = {
         params: {
-          size: 10,
+          size: 50,
           page: 0,
         },
       };
@@ -432,7 +432,7 @@ export default {
     onScrollCategory() {
       let payload = {
         params: {
-          size: 10,
+          size: 50,
           page: this.pageCategory,
         },
       };
@@ -481,7 +481,7 @@ export default {
       let payload = {
         id: this.selectedCategory.id,
         params: {
-          size: 10,
+          size: 50,
           page: 0,
         },
       };
@@ -503,7 +503,7 @@ export default {
       let payload = {
         id: this.selectedCategory.id,
         params: {
-          size: 10,
+          size: 50,
           page: this.pageSubCategory,
         },
       };

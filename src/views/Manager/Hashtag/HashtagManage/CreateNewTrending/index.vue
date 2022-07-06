@@ -12,6 +12,7 @@
             outlined
             dense
             hide-details
+            type="number"
             class="font-12 my-2"
             :class="{ 'border-alert': alertData }"
             style="width: 303px"
@@ -27,8 +28,9 @@
         </v-tooltip>
       </div>
       <p class="font-10" style="width: 303px">
-        Jumlah ini adalah batas maksimal konten yang ditampilkan dalam satu
-        linimasa.
+        Merupakan batas muat konten yang ditampilkan dalam satu linimasa. Jika
+        sudah mencapai batas maksimal, maka konten akan dimuat dari awal dengan
+        jumlah dan formasi yang sama.
       </p>
     </div>
 
@@ -38,8 +40,10 @@
         :listMasterCategorySearch="listMasterCategorySearch"
         :availablePercentage="availablePercentage"
         :page="page"
-        :totalPage="totalPage"
+        :totalPages="totalPages"
         :alertFailedSearch="alertFailedSearch"
+        :loadingListMasterCategory="loadingListMasterCategory"
+        :loadingSearch="loadingSearch"
         @actionSearchListHashtagFormationSubs="
           actionSearchListHashtagFormationSubs
         "
@@ -132,46 +136,49 @@
               Persentase digunakan untuk menentukan proporsional kuantitas data
               dari total data yang akan ditampilkan.
             </p>
-            <p
-              v-if="
-                dataPreview.percentage &&
-                  dataPreview.percentage <= availablePercentage &&
-                  dataPreview.percentage > 0 &&
-                  (dataPreview.percentage / 100) * totalData <=
-                    dataPreview.available
-              "
-              class="font-12"
-            >
-              Konten <b>#{{ dataPreview.value }}</b> yang akan ditampilkan
-              adalah
-              <b class="secondary--text">{{
-                (dataPreview.percentage / 100) * totalData
-              }}</b>
-            </p>
-            <p v-else-if="dataPreview.percentage < 1" class="red--text font-12">
-              Kurang dari total presentase, tambah presentase!
-            </p>
-            <p
-              v-else-if="dataPreview.percentage > availablePercentage"
-              class="red--text font-12"
-            >
-              Melebihi total presentase, kurangi presentase!
-            </p>
-            <p
-              v-else-if="dataPreview.qty > dataPreview.available"
-              class="red--text font-12"
-            >
-              Melebihi total presentase, kurangi presentase!
-            </p>
-            <p
-              v-else-if="
-                (dataPreview.percentage / 100) * totalData >
-                  dataPreview.available
-              "
-              class="red--text font-12"
-            >
-              Melebihi total konten yang tersedia, kurangi presentase!
-            </p>
+            <div v-if="editId == null">
+              <p
+                v-if="
+                  dataPreview.percentage &&
+                    dataPreview.percentage <= availablePercentage &&
+                    dataPreview.percentage > 0
+                "
+                class="font-12"
+              >
+                Konten <b>#{{ dataPreview.value }}</b> yang akan ditampilkan
+                adalah
+                <b class="secondary--text">{{
+                  (dataPreview.percentage / 100) * totalData
+                }}</b>
+              </p>
+              <p
+                v-else-if="dataPreview.percentage < 1"
+                class="red--text font-12"
+              >
+                Kurang dari total presentase, tambah presentase!
+              </p>
+              <p
+                v-else-if="dataPreview.percentage > availablePercentage"
+                class="red--text font-12"
+              >
+                Melebihi total presentase, kurangi presentase!
+              </p>
+              <p
+                v-else-if="dataPreview.qty > dataPreview.available"
+                class="red--text font-12"
+              >
+                Melebihi total presentase, kurangi presentase!
+              </p>
+            </div>
+            <div v-else>
+              <p class="font-12">
+                Konten <b>#{{ dataPreview.value }}</b> yang akan ditampilkan
+                adalah
+                <b class="secondary--text">{{
+                  (dataPreview.percentage / 100) * totalData
+                }}</b>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -194,10 +201,9 @@
             @click="addPreviewCategory"
             :disabled="
               dataPreview.percentage == null ||
-                dataPreview.percentage > availablePercentage ||
-                dataPreview.percentage < 1 ||
-                (dataPreview.percentage / 100) * totalData >
-                  dataPreview.available
+                (editId == null &&
+                  dataPreview.percentage > availablePercentage) ||
+                dataPreview.percentage < 1
             "
             >Simpan</v-btn
           >
@@ -240,20 +246,23 @@ export default {
       listPreviewCategory: [],
       listMasterCategorySearch: [],
       page: 0,
-      totalPage: 0,
+      totalPages: 0,
       totalData: null,
       dialogAddPreview: false,
       dataPreview: {
+        id: 0,
         value: "",
         available: 0,
         qty: 0,
         percentage: null,
+        index: 0,
       },
       listPercentage: [],
       filterPercentage: null,
       availablePercentage: 100,
       loadingSubmit: false,
       loadingSearch: false,
+      loadingListMasterCategory: false,
       alertData: false,
       alertSuccess: false,
       alertFailed: false,
@@ -297,13 +306,14 @@ export default {
       this.page = 1;
       let payload = {
         params: {
-          size: 10,
+          size: 50,
           page: 0,
         },
       };
+      this.loadingListMasterCategory = true;
       return this.getListHashtagFormationSubs(payload)
         .then((response) => {
-          this.totalPage = response.data.totalPages;
+          this.totalPages = response.data.totalPages;
           let content = response.data.content;
           for (let i = 0; i < content.length; i++) {
             const e = content[i];
@@ -312,13 +322,14 @@ export default {
         })
         .catch((err) => {
           this.alertFailed = true;
+          this.loadingListMasterCategory = false;
           this.dataFailed = err.response.data;
         });
     },
     onScrollListCategory() {
       let payload = {
         params: {
-          size: 10,
+          size: 50,
           page: this.page,
         },
       };
@@ -344,14 +355,17 @@ export default {
             available: response.data.available,
           };
           if (isSearch) {
+            this.loadingListMasterCategory = false;
             this.listMasterCategorySearch.push(dataList);
           } else {
+            this.loadingListMasterCategory = false;
             this.listMasterCategorySearch = [];
             this.listMasterCategory.push(dataList);
           }
         })
         .catch((err) => {
           console.log({ err });
+          this.loadingListMasterCategory = false;
         });
     },
     actionSearchListHashtagFormationSubs(v) {
@@ -359,8 +373,10 @@ export default {
       let payload = {
         search: v,
       };
+      this.loadingSearch = true;
       return this.searchListHashtagFormationSubs(payload)
         .then((response) => {
+          this.loadingSearch = false;
           if (response.data.length > 0) {
             this.alertFailedSearch = false;
             let content = response.data;
@@ -375,6 +391,7 @@ export default {
         .catch((err) => {
           this.alertFailed = true;
           this.alertFailedSearch = false;
+          this.loadingSearch = false;
           this.dataFailed = err.response.data;
         });
     },
@@ -398,7 +415,7 @@ export default {
       return this.createDetailSubsHashtag(payload)
         .then(() => {
           this.alertSuccess = true;
-          this.loadingSubmit = false;
+          // this.loadingSubmit = false;
           setTimeout(() => {
             this.$router.push("/manage/hashtag");
           }, 3000);
@@ -408,15 +425,17 @@ export default {
           this.loadingSubmit = false;
         });
     },
-    openDialogPreviewCategory(i) {
+    openDialogPreviewCategory(i, idx) {
       if (
         this.totalData > 0 &&
         this.totalData !== null &&
         this.totalData !== ""
       ) {
         this.dialogAddPreview = true;
+        this.dataPreview.id = i.id;
         this.dataPreview.value = i.value;
         this.dataPreview.available = i.available;
+        this.dataPreview.index = idx;
 
         let found;
         for (let y = 0; y < this.listPercentage.length; y++) {
@@ -444,6 +463,7 @@ export default {
           percentage: parseInt(this.dataPreview.percentage),
           totalData: this.totalData,
         });
+        this.listMasterCategory.splice(this.dataPreview.index, 1);
       } else {
         this.listPreviewCategory[this.editId] = {
           ...this.dataPreview,
@@ -457,10 +477,11 @@ export default {
     },
     openDialogEditPreviewCategory(i, idx) {
       this.editId = idx;
-      this.openDialogPreviewCategory(this.listPreviewCategory[idx]);
+      this.openDialogPreviewCategory(i);
     },
     removePreviewCategory(i, idx) {
       this.listPreviewCategory.splice(idx, 1);
+      this.listMasterCategory.splice(i.index, 0, i);
     },
     addListPercentage() {
       let i = 0;
@@ -475,11 +496,7 @@ export default {
         this.listPercentage.push({
           text: `${i}%`,
           value: i,
-          disabled:
-            this.editId != null
-              ? false
-              : this.dataPreview.available < reqQty ||
-                i > this.availablePercentage,
+          disabled: this.editId != null ? false : i > this.availablePercentage,
         });
       } while (i < 100);
     },
