@@ -13,14 +13,14 @@
       >
         <div class="d-flex font-weight-medium whitesnow">
           <div class="col-6">Hashtag</div>
-          <div class="col-2">%</div>
-          <div class="col-4">Qty</div>
+          <div class="col-3">%</div>
+          <div class="col-3">Qty</div>
         </div>
         <div v-for="(i, idx) in dataItem.item.hashtags" :key="idx">
           <div class="d-flex font-12 font-weight-medium grey--text">
             <div class="col-6">{{ i.value }}</div>
-            <div class="col-2">{{ i.percent }}%</div>
-            <div class="col-4">{{ i.qty }}</div>
+            <div class="col-3">{{ i.percent }}%</div>
+            <div class="col-3">{{ i.qty }}</div>
           </div>
         </div>
       </v-card>
