@@ -11,7 +11,6 @@
             hide-details
             clearable
             class="font-12"
-            @keyup.enter="actionSearchListHashtagFormationSubs"
           ></v-text-field>
         </div>
 
@@ -66,10 +65,7 @@
                   </div>
                 </div>
                 <div
-                  v-else-if="
-                    listMasterCategorySearch.length == 0 &&
-                      listPreviewCategory.length > 1
-                  "
+                  v-else-if="listMasterCategorySearch.length == 0"
                   class="text-center pa-4"
                 >
                   <span class="font-12 font-weight-medium">
@@ -107,15 +103,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div v-if="loadingListMasterCategory">
-                <span class="font-12 font-weight-medium">
-                  Loading...
-                </span>
-              </div>
-              <div v-else>
-                <v-card v-intersect="onScrollSubCategory" flat> </v-card>
-              </div> -->
-              <!-- <v-card v-intersect="onScrollSubCategory" flat> </v-card> -->
             </div>
           </div>
         </div>
@@ -194,6 +181,8 @@ export default {
       if (this.search == null) {
         this.search = "";
         this.actionSearchListHashtagFormationSubs();
+      } else {
+        this.actionSearchListHashtagFormationSubs();
       }
     },
   },
@@ -213,9 +202,7 @@ export default {
       }
     },
     actionSearchListHashtagFormationSubs() {
-      if (!this.loadingSearch) {
-        this.$emit("actionSearchListHashtagFormationSubs", this.search);
-      }
+      this.$emit("actionSearchListHashtagFormationSubs", this.search);
     },
   },
 };
