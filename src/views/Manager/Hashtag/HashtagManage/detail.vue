@@ -97,7 +97,7 @@ export default {
         ? `${hour < 10 ? `0${hour}` : hour}:${
             minute < 10 ? `0${minute}` : minute
           }`
-        : `${date}/${month}/${year}`;
+        : `${date}/${month + 1}/${year}`;
     },
   },
 };

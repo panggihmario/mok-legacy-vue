@@ -59,13 +59,14 @@
           <v-btn
             height="38px"
             block
-            class="text-capitalize secondary"
+            class="text-capitalize success"
             @click="submitData"
             :loading="loadingSubmit"
             :disabled="
               loadingSubmit ||
                 totalData < 1 ||
-                availablePercentage !== 0
+                availablePercentage > 5 ||
+                availablePercentage < 0
             "
             >Terapkan Trending</v-btn
           >
@@ -135,7 +136,7 @@ export default {
         this.totalPercentage = 0;
         for (let i = 0; i < this.listPreviewCategory.length; i++) {
           const e = this.listPreviewCategory[i];
-          this.totalPercentage += e.percentage;
+          this.totalPercentage += parseFloat(e.percentage);
         }
         this.changeAvailablePercentage();
       } else {

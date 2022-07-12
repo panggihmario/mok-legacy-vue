@@ -3,7 +3,7 @@
     <HeaderContent label="Buat Trending Baru"></HeaderContent>
 
     <div>
-      <span class="font-12">Jumlah data yang ingin ditampilkan</span>
+      <span class="font-12">Jumlah data</span>
       <div class="d-flex align-center">
         <div style="width: 303px">
           <v-text-field
@@ -46,9 +46,7 @@
         :isSearchData="isSearchData"
         :loadingListMasterCategory="loadingListMasterCategory"
         :loadingSearch="loadingSearch"
-        @actionSearchListHashtagFormationSubs="
-          actionSearchListHashtagFormationSubs
-        "
+        @actionSearchListHashtagFormationSubs="actionFilterCategoryByName"
         @onChooseCategory="openDialogPreviewCategory"
         @onScrollSubCategory="onScrollListCategory"
       ></Box-List-Hashtag>
@@ -103,37 +101,44 @@
           >
 
           <div class="mt-4">
-            <span class="font-12 font-weight-medium">Persentase</span>
-            <div class="d-flex mt-1">
-              <div style="width: 155px">
-                <v-select
-                  v-model="filterPercentage"
-                  :items="listPercentage"
-                  value="value"
-                  outlined
-                  dense
-                  hide-details
-                  background-color="whitesnow"
-                  class="font-12"
-                ></v-select>
-              </div>
-              <div
-                v-if="filterPercentage == 'tulis_persentase'"
-                class="ml-2"
-                style="width: 80px"
-              >
-                <v-text-field
-                  v-model="dataPreview.percentage"
-                  suffix="%"
-                  outlined
-                  dense
-                  hide-details
-                  background-color="whitesnow"
-                  class="font-12"
-                  type="number"
-                ></v-text-field>
-              </div>
-            </div>
+            <v-row no-gutters>
+              <v-col class="pr-1">
+                <span class="font-12 font-weight-medium">Persentase</span>
+                <div class="d-flex mt-1">
+                  <div>
+                    <v-text-field
+                      v-model="dataPreview.percentage"
+                      suffix="%"
+                      outlined
+                      dense
+                      hide-details
+                      background-color="whitesnow"
+                      class="font-12"
+                      type="number"
+                      @focus="isInputPercentage = true"
+                      @blur="isInputPercentage = false"
+                    ></v-text-field>
+                  </div>
+                </div>
+              </v-col>
+              <v-col class="pl-1">
+                <span class="font-12 font-weight-medium">Qty</span>
+                <div class="mt-1">
+                  <v-text-field
+                    v-model="dataPreview.qty"
+                    outlined
+                    dense
+                    hide-details
+                    background-color="whitesnow"
+                    class="font-12"
+                    type="number"
+                    @focus="isInputQty = true"
+                    @blur="isInputQty = false"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
+
             <p class="font-10 font-weight-medium mt-2">
               Persentase digunakan untuk menentukan proporsional kuantitas data
               dari total data yang akan ditampilkan.
@@ -203,9 +208,10 @@
             @click="addPreviewCategory"
             :disabled="
               dataPreview.percentage == null ||
+                dataPreview.percentage == 0 ||
                 (editId == null &&
                   dataPreview.percentage > availablePercentage) ||
-                dataPreview.percentage < 1
+                dataPreview.percentage < 0
             "
             >Simpan</v-btn
           >
@@ -256,7 +262,7 @@ export default {
         id: 0,
         value: "",
         available: 0,
-        qty: 0,
+        qty: null,
         percentage: null,
         index: 0,
       },
@@ -267,6 +273,8 @@ export default {
       loadingSearch: false,
       loadingListMasterCategory: false,
       isSearchData: false,
+      isInputPercentage: false,
+      isInputQty: false,
       alertData: false,
       alertSuccess: false,
       alertFailed: false,
@@ -277,9 +285,24 @@ export default {
     };
   },
   watch: {
-    filterPercentage() {
-      if (this.filterPercentage != "tulis_persentase") {
-        this.dataPreview.percentage = this.filterPercentage;
+    "dataPreview.percentage"() {
+      let percent = parseFloat(this.dataPreview.percentage || 0);
+      if (this.isInputPercentage) {
+        if (percent != "" || percent != 0 || percent != null) {
+          this.dataPreview.qty = (percent / 100) * this.totalData;
+        } else {
+          this.dataPreview.percentage = "";
+        }
+      }
+    },
+    "dataPreview.qty"() {
+      let qty = parseFloat(this.dataPreview.qty || 0);
+      if (this.isInputQty) {
+        if (qty != "" || qty != 0 || qty != null) {
+          this.dataPreview.percentage = (qty / this.totalData) * 100;
+        } else {
+          this.dataPreview.qty = "";
+        }
       }
     },
     totalData() {
@@ -289,8 +312,8 @@ export default {
     dialogAddPreview() {
       if (!this.dialogAddPreview) {
         this.editId = null;
-        this.filterPercentage = null;
         this.dataPreview.percentage = null;
+        this.dataPreview.qty = null;
       }
     },
     totalPages() {
@@ -305,16 +328,6 @@ export default {
           for (let i = 0; i < this.listMasterCategory.length; i++) {
             const e = this.listMasterCategory[i];
             this.handleGetAvailabilitySubHashtag(e, i);
-          }
-        }
-      }
-    },
-    listMasterCategorySearch() {
-      if (this.listMasterCategorySearch.length > 0) {
-        if (this.listMasterCategorySearch.length == this.totalElements) {
-          for (let i = 0; i < this.listMasterCategorySearch.length; i++) {
-            const e = this.listMasterCategorySearch[i];
-            this.handleGetAvailabilitySubHashtag(e, i, true);
           }
         }
       }
@@ -361,7 +374,6 @@ export default {
     },
     onScrollListCategory(entries, observer) {
       if (this.page <= this.totalPages) {
-        console.log(this.page, "-", this.totalPages);
         let payload = {
           params: {
             size: 50,
@@ -415,7 +427,6 @@ export default {
       this.isSearchData = true;
       return this.searchListHashtagFormationSubs(payload)
         .then((response) => {
-          console.log({ response });
           if (response.data.length > 0) {
             this.alertFailedSearch = false;
             this.totalElements = response.data.length;
@@ -436,6 +447,19 @@ export default {
           this.loadingSearch = false;
           this.dataFailed = err.response.data;
         });
+    },
+    actionFilterCategoryByName(v) {
+      if (v == "" || v == null) {
+        this.isSearchData = false;
+      } else {
+        this.isSearchData = true;
+      }
+      let filteredData = this.listMasterCategory.filter((e) => {
+        if (e.value.toLowerCase().includes(v.toLowerCase())) {
+          return e;
+        }
+      });
+      this.listMasterCategorySearch = filteredData;
     },
     actionCreateDetailSubsHashtag() {
       let payload = {
@@ -463,7 +487,6 @@ export default {
           }, 3000);
         })
         .catch((err) => {
-          console.log({ err });
           this.loadingSubmit = false;
         });
     },
@@ -474,26 +497,12 @@ export default {
         this.totalData !== ""
       ) {
         this.dialogAddPreview = true;
-        this.dataPreview.id = i.id;
-        this.dataPreview.value = i.value;
-        this.dataPreview.available = i.available;
+        this.dataPreview = {
+          ...i,
+          percentage: i.percentage || null,
+          qty: i.qty || null,
+        };
         this.dataPreview.index = idx;
-
-        let found;
-        for (let y = 0; y < this.listPercentage.length; y++) {
-          const e = this.listPercentage[y];
-          if (i.percentage > 0 && e.value == i.percentage) {
-            found = true;
-          }
-        }
-        if (found) {
-          this.filterPercentage = i.percentage || null;
-        } else {
-          this.filterPercentage = "tulis_persentase";
-          this.dataPreview.percentage = i.percentage;
-        }
-
-        this.addListPercentage();
       } else {
         this.alertData = true;
       }
@@ -502,7 +511,7 @@ export default {
       if (this.editId == null) {
         this.listPreviewCategory.push({
           ...this.dataPreview,
-          percentage: parseInt(this.dataPreview.percentage),
+          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
         });
         if (this.isSearchData) {
@@ -513,7 +522,7 @@ export default {
       } else {
         this.listPreviewCategory[this.editId] = {
           ...this.dataPreview,
-          percentage: parseInt(this.dataPreview.percentage),
+          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
         };
       }
@@ -536,10 +545,6 @@ export default {
     addListPercentage() {
       let i = 0;
       this.listPercentage = [];
-      this.listPercentage.push({
-        text: "Tulis Persentase",
-        value: "tulis_persentase",
-      });
       do {
         i += 5;
         let reqQty = (i / 100) * this.totalData;
