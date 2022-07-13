@@ -23,10 +23,7 @@
             <div class="col">Available</div>
           </div>
 
-          <div
-            v-if="alertFailedSearch"
-            class="d-flex align-start pa-3"
-          >
+          <div v-if="alertFailedSearch" class="d-flex align-start pa-3">
             <v-icon small color="red" class="mr-1"
               >fas fa-exclamation-circle</v-icon
             >
@@ -36,55 +33,89 @@
             >
           </div>
           <div v-else>
-            <div v-if="listMasterCategorySearch.length > 0">
-              <div
-                v-for="(i, idx) in listMasterCategorySearch"
-                :key="idx"
-                class="d-flex align-center font-12"
-                style="height: 38px"
-                @mouseenter="onHover(i.id)"
-                @mouseleave="onHover('')"
-              >
-                <div class="col">{{ i.value }}</div>
-                <div class="col-4">{{ i.available }}</div>
-                <div class="col-2">
-                  <v-btn
-                    v-if="hoverId == i.id && availablePercentage > 0"
-                    icon
-                    x-small
-                    @click="selectCategory(i)"
-                  >
-                    <v-icon small color="secondary">fas fa-plus-circle</v-icon>
-                  </v-btn>
-                </div>
-              </div>
+            <div v-if="loadingSearch" class="text-center pa-4">
+              <span class="font-12 font-weight-medium">
+                Loading...
+              </span>
             </div>
             <div v-else>
-              <div
-                v-for="(i, idx) in listMasterCategory"
-                :key="idx"
-                class="d-flex align-center font-12"
-                style="height: 38px"
-                @mouseenter="onHover(i.id)"
-                @mouseleave="onHover('')"
-              >
-                <div class="col">{{ i.value }}</div>
-                <div class="col-4">{{ i.available }}</div>
-                <div class="col-2">
-                  <v-btn
-                    v-if="hoverId == i.id && availablePercentage > 0"
-                    icon
-                    x-small
-                    @click="selectCategory(i)"
+              <div v-if="isSearchData">
+                <div v-if="listMasterCategorySearch.length > 0">
+                  <div
+                    v-for="(i, idx) in listMasterCategorySearch"
+                    :key="idx"
+                    class="d-flex align-center font-12"
+                    style="height: 38px"
+                    @mouseenter="onHover(i.id)"
+                    @mouseleave="onHover('')"
                   >
-                    <v-icon small color="secondary">fas fa-plus-circle</v-icon>
-                  </v-btn>
+                    <div class="col">{{ i.value }}</div>
+                    <div class="col-4">{{ i.available }}</div>
+                    <div class="col-2">
+                      <v-btn
+                        v-if="hoverId == i.id && availablePercentage > 0"
+                        icon
+                        x-small
+                        @click="selectCategory(i, idx)"
+                      >
+                        <v-icon small color="secondary"
+                          >fas fa-plus-circle</v-icon
+                        >
+                      </v-btn>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  v-else-if="
+                    listMasterCategorySearch.length == 0 &&
+                      listPreviewCategory.length > 1
+                  "
+                  class="text-center pa-4"
+                >
+                  <span class="font-12 font-weight-medium">
+                    Tidak ada hashtag
+                  </span>
+                </div>
+                <div v-else class="text-center pa-4">
+                  <span class="font-12 font-weight-medium">
+                    Loading...
+                  </span>
                 </div>
               </div>
-              <v-card
-                v-if="page < totalPage"
-                v-intersect="onScrollSubCategory"
-              ></v-card>
+              <div v-else>
+                <div
+                  v-for="(i, idx) in listMasterCategory"
+                  :key="idx"
+                  class="d-flex align-center font-12"
+                  style="height: 38px"
+                  @mouseenter="onHover(i.id)"
+                  @mouseleave="onHover('')"
+                >
+                  <div class="col">{{ i.value }}</div>
+                  <div class="col-4">{{ i.available }}</div>
+                  <div class="col-2">
+                    <v-btn
+                      v-if="hoverId == i.id && availablePercentage > 0"
+                      icon
+                      x-small
+                      @click="selectCategory(i, idx)"
+                    >
+                      <v-icon small color="secondary"
+                        >fas fa-plus-circle</v-icon
+                      >
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+              <!-- <div v-if="loadingListMasterCategory">
+                <span class="font-12 font-weight-medium">
+                  Loading...
+                </span>
+              </div>
+              <div v-else>
+                <v-card v-intersect="onScrollSubCategory" flat> </v-card>
+              </div> -->
+              <!-- <v-card v-intersect="onScrollSubCategory" flat> </v-card> -->
             </div>
           </div>
         </div>
@@ -104,6 +135,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    listPreviewCategory: {
+      type: Array,
+      default: () => [],
+    },
     availablePercentage: {
       type: Number,
       default: 100,
@@ -111,10 +146,22 @@ export default {
     page: {
       type: Number,
     },
-    totalPage: {
+    totalPages: {
       type: Number,
     },
     alertFailedSearch: {
+      type: Boolean,
+      default: false,
+    },
+    isSearchData: {
+      type: Boolean,
+      default: false,
+    },
+    loadingListMasterCategory: {
+      type: Boolean,
+      default: false,
+    },
+    loadingSearch: {
       type: Boolean,
       default: false,
     },
@@ -151,17 +198,24 @@ export default {
     },
   },
   methods: {
-    selectCategory(i) {
-      this.$emit("onChooseCategory", i);
+    selectCategory(i, idx) {
+      this.$emit("onChooseCategory", i, idx);
     },
     onHover(id) {
       this.hoverId = id;
     },
-    onScrollSubCategory() {
-      this.$emit("onScrollSubCategory");
+    onScrollSubCategory(entries, observer) {
+      const isIntersecting = entries[0].isIntersecting;
+      if (isIntersecting) {
+        this.$emit("onScrollSubCategory");
+      } else {
+        return;
+      }
     },
     actionSearchListHashtagFormationSubs() {
-      this.$emit("actionSearchListHashtagFormationSubs", this.search);
+      if (!this.loadingSearch) {
+        this.$emit("actionSearchListHashtagFormationSubs", this.search);
+      }
     },
   },
 };
