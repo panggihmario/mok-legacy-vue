@@ -1,19 +1,37 @@
 <template>
   <div>
-    <HeaderContent label="Manage Hashtag">
-      <custom-button
-        color="secondary"
-        class="white--text"
-        @click="moveTo('/manage/hashtag/create-new-trending')"
-      >
-        Buat Trending Baru
-      </custom-button>
-    </HeaderContent>
+    <HeaderContent label="Manage Hashtag" marginBottom="16"> </HeaderContent>
 
     <div>
-      <div class="d-flex align-center font-14">
+      <div class="d-flex justify-space-between">
+        <div style="width: 145px">
+          <v-select
+            v-model="filterCountry"
+            :items="listCountry"
+            item-text="label"
+            item-value="value"
+            solo
+            dense
+            hide-details
+            return-object
+            dark
+            background-color="success"
+            class="font-12"
+          ></v-select>
+        </div>
+
+        <custom-button
+          dark
+          color="secondary"
+          @click="dialogCreateTrending = true"
+        >
+          Buat Trending Baru
+        </custom-button>
+      </div>
+
+      <div class="d-flex align-center font-14 mt-5" style="width: 145px">
         <span style="color: #9b9b9b">Sort</span>
-        <div style="width: 120px">
+        <div>
           <v-select
             v-model="sort"
             :items="listSort"
@@ -84,6 +102,73 @@
           ></v-pagination>
         </div>
       </div>
+
+      <v-dialog v-model="dialogCreateTrending" width="343">
+        <v-card>
+          <div class="pt-5 px-5 pb-3">
+            <div>
+              <span class="font-24 font-weight-medium">Buat Trending Baru</span>
+              <br />
+              <span class="font-10 font-weight-medium mt-3">
+                Pilih channel untuk menentukan dimana formasi diterapkan
+              </span>
+            </div>
+
+            <div class="d-flex justify-space-between align-center mt-6">
+              <div
+                v-for="(item, idx) in itemsTrendingCountry"
+                :key="idx"
+                class="d-flex justify-center align-center box-country"
+                :class="{
+                  'box-country-selected':
+                    createTrendingCountry &&
+                    createTrendingCountry.value == item.value,
+                }"
+                @click="createTrendingCountry = item"
+              >
+                <div
+                  class="d-flex flex-column justify-center align-center text-center"
+                >
+                  <v-img
+                    v-if="item.value == 'indonesia'"
+                    src="@/assets/flag_id.png"
+                    width="32px"
+                  ></v-img>
+                  <v-img
+                    v-else-if="item.value == 'china'"
+                    src="@/assets/flag_cn.png"
+                    width="32px"
+                  ></v-img>
+                  <span class="font-10 font-weight-medium">{{
+                    item.label
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <v-divider></v-divider>
+
+          <div class="d-flex justify-space-between pt-3 px-5 pb-5">
+            <custom-button
+              style="width: 145px; border-radius: 8px"
+              @click="dialogCreateTrending = false"
+            >
+              Cancel
+            </custom-button>
+            <custom-button
+              color="secondary"
+              style="width: 145px; border-radius: 8px"
+              @click="
+                moveTo(createTrendingCountry.href, createTrendingCountry.value)
+              "
+              :disabled="createTrendingCountry == null"
+            >
+              Buat
+            </custom-button>
+          </div>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>
@@ -98,6 +183,33 @@ export default {
   },
   data() {
     return {
+      createTrendingCountry: null,
+      itemsTrendingCountry: [
+        {
+          label: "Indonesia",
+          value: "indonesia",
+          href: "/manage/hashtag/create-new-trending",
+        },
+        {
+          label: "China",
+          value: "china",
+          href: "/manage/hashtag/create-new-trending",
+        },
+      ],
+      filterCountry: {
+        label: "Indonesia",
+        value: "indonesia",
+      },
+      listCountry: [
+        {
+          label: "Indonesia",
+          value: "indonesia",
+        },
+        {
+          label: "China",
+          value: "china",
+        },
+      ],
       sort: "Newest",
       listSort: ["Newest", "Oldest"],
       page: 0,
@@ -140,12 +252,18 @@ export default {
       dataFailed: {
         message: "",
       },
+      dialogCreateTrending: false,
     };
   },
   watch: {
     sort() {
       this.page = 0;
       this.handleGetListManageHashtag();
+    },
+    dialogCreateTrending() {
+      if (!this.dialogCreateTrending) {
+        this.createTrendingCountry = null;
+      }
     },
   },
   mounted() {
@@ -159,6 +277,7 @@ export default {
       this.$router.push({
         path: val,
         query: {
+          channel: this.filterCountry.value,
           item: item,
         },
       });
@@ -219,7 +338,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.font-10 {
+  font-size: 10px;
+}
 .font-14 {
   font-size: 14px;
+}
+.font-24 {
+  font-size: 24px;
+}
+.box-country {
+  height: 78px;
+  width: 142px;
+  border: 1px solid $whitesmoke;
+  border-radius: 8px;
+}
+.box-country-selected {
+  border: 1px solid $secondary !important;
 }
 </style>
