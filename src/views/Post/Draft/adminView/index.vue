@@ -1,120 +1,162 @@
 <template>
-  <div>
+  <div :class="feed['tb__td']">
     <v-data-table
       :headers="headers"
       hide-default-footer
       class="grey--text"
       :items="feeds"
     >
-      <template v-slot:[`item.media`]="{item}" >
-        <LinkDialog 
-          :item="item" 
-          @refreshDataFeed="refreshDataFeed" 
-          :isAdmin="true"
-          :feeds="feeds" 
-        />
-      </template>
-      <template v-slot:[`item.description`]="{ item }" >
-        <div :class="feed['tb__caption']"  > {{item.description}}  </div>
-      </template>
-      <template v-slot:[`item.channel`]="{ item }" >
-        <div :class="feed['tb__caption']"  > {{item.channel.name}}  </div>
-      </template>
-      <template v-slot:[`item.date`]="{item}">
-        <div :class="feed['tb__caption']"> {{formatingDate(item.submittedAt)}} </div>
-      </template>
-      <template v-slot:[`item.user`]="{item}">
-        <div :class="feed['tb__caption']">{{item.createBy}}</div>
-      </template>
-      <template v-slot:[`item.schedule`]="{item}" >
-        <ActionsPicker 
-          :item="item" 
-          @refreshDataFeed="refreshDataFeed"
-        />
-      </template>
-      <template v-slot:[`body.append`]>
-        <tr></tr>
+      <template v-slot:body="{ items }">
+        <tbody
+          
+        >
+          <tr 
+            v-for="item in items" 
+            :key="item.id"
+            @mouseover="onHover(item)"
+            @mouseleave="onLeave"
+          >  
+            
+            <td>
+              <LinkDialog
+                :item="item"
+                @refreshDataFeed="refreshDataFeed"
+                :isAdmin="true"
+                :feeds="feeds"
+              />
+           
+            </td>
+
+            <td >
+              <div :class="feed['tb__caption']">{{ item.description }}</div>
+                <div
+                  v-if="item.id === selectedItem" 
+                  :class="feed['tb__hover-image']"
+                  :style="{top : `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))) )}px`  }"
+                >
+                  <img
+                    :src="thumbnailImage"
+                    width="100%"
+                    height="100%"
+                    style="border-radius: 8px;"
+                  />
+                </div>
+            </td>
+            <td>
+              <div :class="feed['tb__caption']">{{ item.channel.name }}</div>
+            </td>
+            <td>
+              <div :class="feed['tb__caption']">
+                {{ formatingDate(item.submittedAt) }}
+              </div>
+            </td>
+            <td>
+              <div :class="feed['tb__caption']">{{ item.createBy }}</div>
+            </td>
+            <td>
+              <ActionsPicker :item="item" @refreshDataFeed="refreshDataFeed" />
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex"
-import Picker from "./datePicker.vue"
-import Actions from "./actions.vue"
-import LinkDialog from "../../containers/dialog/index.vue"
-import moment from 'moment'
-import ActionsPicker from "./actionsPicker.vue"
+import { mapActions, mapState } from "vuex";
+import Picker from "./datePicker.vue";
+import Actions from "./actions.vue";
+import LinkDialog from "../../containers/dialog/index.vue";
+import moment from "moment";
+import ActionsPicker from "./actionsPicker.vue";
 export default {
-  components : {
+  components: {
     Picker,
     Actions,
     LinkDialog,
-    ActionsPicker
+    ActionsPicker,
   },
-  computed : {
+  computed: {
     ...mapState({
-      feeds : (state) => state.post.feeds,
+      feeds: (state) => state.post.feeds,
     }),
-   },
-  methods : {
+  },
+  methods: {
+    ...mapActions({
+      fetchFeedById: "post/fetchFeedById",
+    }),
     formatingDate(rawDate) {
-      const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
+      const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
       return cek;
     },
     refreshDataFeed() {
-      this.$emit('refreshDataFeed')
+      this.$emit("refreshDataFeed");
+    },
+    onHover(item) {
+      this.selectedItem = item.id
+      return this.fetchFeedById(item.id).then((response) => {
+        const medias = response.medias
+        const [media] = medias
+        const thumbnail = media.thumbnail.medium
+        this.thumbnailImage = thumbnail
+      });
+    },
+    onLeave() {
+      this.selectedItem = null
+      this.thumbnailImage = ""
     },
   },
-  data () {
+  data() {
     return {
-      headers : [
+      selectedItem : null,
+      thumbnailImage : "",
+      headers: [
         {
-          text : 'Media',
-          class : 'whitesnow',
+          text: "Media",
+          class: "whitesnow",
           sortable: false,
-          value : 'media',
+          value: "media",
           filterable: false,
-          width : "90"
+          width: "90",
         },
         {
-          text : 'Caption',
-          class : 'whitesnow',
-          value : 'description',
+          text: "Caption",
+          class: "whitesnow",
+          value: "description",
           sortable: false,
           filterable: false,
-          width : "100"
+          width: "100",
         },
         {
-          text : 'Channel',
-          class : 'whitesnow',
+          text: "Channel",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'channel',
-          
+          value: "channel",
         },
         {
-          text : 'Submitted',
-          class : 'whitesnow',
+          text: "Submitted",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'date'
+          value: "date",
         },
         {
-          text : 'User',
-          class : 'whitesnow',
+          text: "User",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'user'
+          value: "user",
         },
         {
-          text : 'Schedule',
-          class : 'whitesnow',
+          text: "Schedule",
+          class: "whitesnow",
           sortable: false,
           filterable: false,
-          value : 'schedule',
-          align : 'left',
+          value: "schedule",
+          align: "left",
         },
         // {
         //   text : 'Action',
@@ -125,30 +167,46 @@ export default {
         //   align : 'center',
         //   width : "200"
         // }
-      ]
-    }
-  }
-}
+      ],
+    };
+  },
+};
 </script>
 
 <style lang="scss" module="feed">
 //$
+
 .fonts {
   font-size: 12px;
   font-weight: 500;
   color: #777777;
 }
 .tb {
+  &__hover-image {
+    position: absolute;
+    background: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.1);
+    left: 25px;
+    z-index: 999;
+    width: 141px;
+    height: 172px;
+    border-radius: 16px;
+    padding: 12px;
+  }
+  &__td {
+    position: relative;
+  }
   &__caption {
     @extend .fonts;
-    white-space: nowrap!important;
-    overflow: hidden!important;
-    text-overflow: ellipsis!important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     max-width: 150px;
   }
   &__schedule {
-    background: #FFFFFF;
-    border : 0.6px solid #BBBBBB;
+    background: #ffffff;
+    border: 0.6px solid #bbbbbb;
     border-radius: 4px;
     box-sizing: border-box;
     width: 138px;
@@ -158,7 +216,7 @@ export default {
     cursor: pointer;
   }
   &__schedule:focus {
-    border : 0.6px solid #BBBBBB;
+    border: 0.6px solid #bbbbbb;
     outline: none;
   }
   &__icon-input {
@@ -170,5 +228,4 @@ export default {
 </style>
 
 <style src="../../style.scss" lang="scss" module="ad">
-
 </style>
