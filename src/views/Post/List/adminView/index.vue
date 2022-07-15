@@ -5,12 +5,13 @@
       hide-default-footer
       class="grey--text"
       :items="feeds"
+      
     >
       <template v-slot:[`item.media`]="{ item }">
         <LinkDialog :item="item" :feeds="feeds" />
       </template>
       <template v-slot:[`item.description`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.description }}</div>
+        <div  :class="ad['tb__caption']">{{ item.description }}</div>
       </template>
       <template v-slot:[`item.channel`]="{ item }">
         <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
@@ -58,6 +59,9 @@ export default {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
       return cek;
     },
+    onHover() {
+      console.log("on hover")
+    }
   },
   data() {
     return {
