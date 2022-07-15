@@ -35,10 +35,11 @@
             class="d-flex align-center whitesnow mt-2 px-4"
             style="height: 35px; border-radius: 4px"
           >
-            <span
-              class="font-12 font-weight-medium text-capitalize grey--text"
-              >{{ channel }}</span
-            >
+            <span class="font-12 font-weight-medium grey--text">{{
+              $route.query.item.feedChannelCode.toLowerCase() == "chinatiktok"
+                ? "China"
+                : "Indonesia"
+            }}</span>
           </div>
         </div>
       </div>
@@ -51,7 +52,7 @@
         class="ml-5"
         style="border-radius: 8px; overflow: auto"
       >
-        <div class="d-flex font-weight-medium whitesnow">
+        <div class="d-flex font-weight-medium whitesnow sticky">
           <div class="col-6">Hashtag</div>
           <div class="col-3">%</div>
           <div class="col-3">Qty</div>
@@ -73,20 +74,27 @@
         class="ml-5"
         style="border-radius: 8px; overflow: auto"
       >
-        <div class="d-flex font-weight-medium whitesnow">
+        <div class="d-flex font-weight-medium whitesnow sticky">
           <div class="col-6">Time</div>
           <div class="col-6">Activity</div>
         </div>
-        <div v-if="dataItem.logs">
+
+        <div v-if="dataItem.item.logs">
           <div v-for="(i, idx) in dataItem.item.logs" :key="idx">
             <div class="d-flex font-12 font-weight-medium grey--text">
-              <div class="col-6">{{ i }}</div>
-              <div class="col-6">{{ i }}</div>
+              <div class="col-6">
+                {{ formatDate(i.createAt) }} {{ formatDate(i.createAt, true) }}
+              </div>
+              <div class="col-6" :class="`text--${i.status.toLowerCase()}`">
+                {{ i.activity }}
+              </div>
             </div>
           </div>
         </div>
         <div v-else class="text-center mt-2">
-          <span class="font-12 font-weight-medium grey--text">Tidak ada activity</span>
+          <span class="font-12 font-weight-medium grey--text"
+            >Tidak ada activity</span
+          >
         </div>
       </v-card>
     </div>
@@ -159,3 +167,17 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.sticky {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
+.text--failed {
+  color: $warning;
+}
+.text--success {
+  color: $success;
+}
+</style>

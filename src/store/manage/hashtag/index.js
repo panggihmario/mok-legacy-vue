@@ -46,9 +46,9 @@ export default {
     getAvailabilitySubHashtag({ state }, payload) {
       return this._vm
         .$httpWithToken()
-        .get(
-          `${state.pathManage}/hashtag-formations/subs/count?value=${payload}`
-        )
+        .get(`${state.pathManage}/hashtag-formations/subs/count`, {
+          params: payload.params,
+        })
         .then((response) => {
           return response.data;
         })
@@ -56,7 +56,7 @@ export default {
           throw err;
         });
     },
-    createDetailSubsHashtag({ state }, payload) {
+    createListTrendingHashtag({ state }, payload) {
       return this._vm
         .$httpWithToken()
         .post(`${state.pathManage}/hashtag-formations`, {
