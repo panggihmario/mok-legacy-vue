@@ -7,16 +7,13 @@
       :items="feeds"
     >
       <template v-slot:body="{ items }">
-        <tbody
-          
-        >
+        <tbody>
           <tr 
             v-for="item in items" 
             :key="item.id"
             @mouseover="onHover(item)"
             @mouseleave="onLeave"
           >  
-            
             <td>
               <LinkDialog
                 :item="item"
@@ -24,9 +21,7 @@
                 :isAdmin="true"
                 :feeds="feeds"
               />
-           
             </td>
-
             <td >
               <div :class="feed['tb__caption']">{{ item.description }}</div>
                 <div
@@ -36,9 +31,7 @@
                 >
                   <img
                     :src="thumbnailImage"
-                    width="100%"
-                    height="100%"
-                    style="border-radius: 8px;"
+                    :class="feed['tb__image']"
                   />
                 </div>
             </td>
@@ -193,6 +186,14 @@ export default {
     height: 172px;
     border-radius: 16px;
     padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__image {
+    max-width: 100%;
+    border-radius: 8px;
+    max-height: 100%;
   }
   &__td {
     position: relative;
