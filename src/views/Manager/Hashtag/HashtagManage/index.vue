@@ -49,6 +49,7 @@
           :headers="tableHeaders"
           :items="tableItems"
           hide-default-footer
+          :loading="loadingTableItems"
         >
           <template v-slot:item="{ item }">
             <tr>
@@ -81,7 +82,7 @@
                   depressed
                   color="whitesnow"
                   class="text-capitalize secondary--text font-weight-medium"
-                  @click="moveTo('/manage/hashtag/detail', item)"
+                  @click="moveTo('/manage/hashtag/detail', item, true)"
                   >Detail</v-btn
                 >
               </td>
@@ -199,15 +200,18 @@ export default {
       filterCountry: {
         label: "Indonesia",
         value: "indonesia",
+        feedChannelCode: "tiktok",
       },
       listCountry: [
         {
           label: "Indonesia",
           value: "indonesia",
+          feedChannelCode: "tiktok",
         },
         {
           label: "China",
           value: "china",
+          feedChannelCode: "chinatiktok",
         },
       ],
       sort: "Newest",
@@ -248,6 +252,7 @@ export default {
         },
       ],
       tableItems: [],
+      loadingTableItems: false,
       alertFailed: false,
       dataFailed: {
         message: "",
@@ -265,6 +270,11 @@ export default {
         this.createTrendingCountry = null;
       }
     },
+    filterCountry() {
+      // console.log(this.filterCountry);
+      this.page = 0;
+      this.handleGetListManageHashtag();
+    },
   },
   mounted() {
     this.handleGetListManageHashtag();
@@ -273,13 +283,20 @@ export default {
     ...mapActions({
       getListHashtagFormation: "manageHashtag/getListHashtagFormation",
     }),
-    moveTo(val, item) {
+    moveTo(val, item, isQueryObject) {
+      let query = {};
+      if (isQueryObject) {
+        query = {
+          item: item,
+        };
+      } else {
+        query = {
+          channel: item,
+        };
+      }
       this.$router.push({
         path: val,
-        query: {
-          channel: this.filterCountry.value,
-          item: item,
-        },
+        query: query,
       });
     },
     handleGetListManageHashtag() {
@@ -289,16 +306,20 @@ export default {
           direction: this.sort == "Newest" ? "DESC" : "ASC",
           size: 10,
           page: this.page,
+          code: this.filterCountry.feedChannelCode,
         },
       };
+      this.loadingTableItems = true;
       return this.getListHashtagFormation(payload)
         .then((response) => {
           this.tableItems = response.data.content;
           this.page++;
           this.pageCount = response.data.totalPages;
+          this.loadingTableItems = false;
         })
         .catch((err) => {
           this.alertFailed = true;
+          this.loadingTableItems = false;
           this.dataFailed = err.response.data;
         });
     },

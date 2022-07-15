@@ -16,8 +16,8 @@
 
         <v-divider></v-divider>
 
-        <div style="height: 600px; overflow: auto">
-          <div class="d-flex font-12 whitesnow">
+        <div style="height: 600px; overflow: auto;">
+          <div class="d-flex font-12 whitesnow sticky">
             <div class="col">Hashtag</div>
             <div class="col">Available</div>
           </div>
@@ -211,5 +211,10 @@ export default {
 <style lang="scss" scoped>
 .list-category:hover {
   background-color: $secondarylowtint;
+}
+.sticky {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
 }
 </style>

@@ -1,48 +1,60 @@
 <template>
   <div>
     <v-card outlined width="300px" style="border-radius: 8px">
-      <v-data-table
-        :headers="itemHeader"
-        :items="listPreviewCategory"
-        hide-default-footer
-        :items-per-page="-1"
-        fixed-header
-        height="480px"
-      >
-        <template v-slot:item="{ index, item }">
-          <tr>
-            <td class="font-12 font-weight-medium" style="border: none">
-              {{ item.value }}
-            </td>
-            <td class="font-12 font-weight-medium" style="border: none">
-              {{ item.percentage }}%
-            </td>
-            <td
-              class="d-flex align-center font-12 font-weight-medium"
-              style="border: none"
-            >
-              <span>
-                {{ item.qty }}
-              </span>
-            </td>
-            <td class="font-12 font-weight-medium" style="border: none">
-              <div class="d-flex">
-                <v-btn icon x-small @click="editPreviewCategory(item, index)">
-                  <v-icon size="12px" color="secondary">fas fa-pen</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  x-small
-                  @click="removePreviewCategory(item, index)"
-                  class="ml-2"
-                >
-                  <v-icon color="red">fas fa-times</v-icon>
-                </v-btn>
-              </div>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
+      <div style="height: 480px">
+        <div class="d-flex whitesnow grey--text sticky">
+          <div class="col-3 font-12 font-weight-medium">Hashtag</div>
+          <div class="col-4 font-12 font-weight-medium">Persentase</div>
+          <div class="col-2 font-12 font-weight-medium">Qty</div>
+          <div class="col-3 font-12 font-weight-medium"></div>
+        </div>
+
+        <div
+          v-if="listPreviewCategory.length < 1"
+          class="d-flex flex-column justify-center align-center font-12"
+          style="height: 438px"
+        >
+          <span class="grey--text text-weight-medium">Hashtag belum diatur</span>
+          <!-- <span
+            class="text-decoration-underline text-weight-medium secondary--text cursor-pointer"
+            @click="actionUseLastFormation"
+          >
+            Gunakan Formasi Terakhir
+          </span> -->
+        </div>
+
+        <div
+          v-for="(item, idx) in listPreviewCategory"
+          :key="idx"
+          class="d-flex"
+        >
+          <div class="col-3 font-12 font-weight-medium">
+            {{ item.value }}
+          </div>
+          <div class="col-4 font-12 font-weight-medium">
+            {{ item.percentage }}%
+          </div>
+          <div class="col-2 font-12 font-weight-medium">
+            {{ item.qty }}
+          </div>
+          <div class="col-3 font-12 font-weight-medium">
+            <div class="d-flex">
+              <v-btn icon x-small @click="editPreviewCategory(item, idx)">
+                <v-icon size="12px" color="secondary">fas fa-pen</v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                x-small
+                @click="removePreviewCategory(item, idx)"
+                class="ml-2"
+              >
+                <v-icon color="red">fas fa-times</v-icon>
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="whitesnow pt-3 px-5 pb-4" style="height: 193px">
         <div class="d-flex justify-space-between font-12 font-weight-medium">
           <span class="grey--text">Total</span>
@@ -155,6 +167,9 @@ export default {
     removePreviewCategory(i, idx) {
       this.$emit("removePreviewCategory", i, idx);
     },
+    actionUseLastFormation() {
+      console.log("lol");
+    },
     submitData() {
       this.$emit("submitData");
     },
@@ -165,5 +180,13 @@ export default {
 <style lang="scss" scoped>
 .font-10 {
   font-size: 10px;
+}
+.sticky {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
