@@ -2,36 +2,54 @@
   <div>
     <HeaderContent label="Buat Trending Baru"></HeaderContent>
 
-    <div>
-      <span class="font-12">Jumlah data</span>
-      <div class="d-flex align-center">
-        <div style="width: 303px">
-          <v-text-field
-            v-model="totalData"
-            placeholder="ex: 500"
-            outlined
-            dense
-            hide-details
-            type="number"
-            class="font-12 my-2"
-            :class="{ 'border-alert': alertData }"
-            style="width: 303px"
-          ></v-text-field>
+    <div class="d-flex">
+      <div>
+        <span class="font-12">Channel</span>
+        <div class="d-flex align-center">
+          <div style="width: 303px">
+            <div class="d-flex align-center imitate-btn font-12 my-2 px-3">
+              <span class="text-capitalize font-weight-medium">{{
+                $route.query.channel
+              }}</span>
+            </div>
+          </div>
         </div>
-        <v-tooltip v-if="alertData" bottom color="red">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon color="red" dark v-bind="attrs" v-on="on" class="ml-2">
-              fas fa-exclamation-circle
-            </v-icon>
-          </template>
-          <span>Harap isi Jumlah Data yang ingin ditampilkan</span>
-        </v-tooltip>
+        <p class="font-10" style="width: 303px">
+          Formasi akan diterapkan pada cleeps
+          <span class="text-capitalize">{{ $route.query.channel }}</span>
+        </p>
       </div>
-      <p class="font-10" style="width: 303px">
-        Merupakan batas muat konten yang ditampilkan dalam satu linimasa. Jika
-        sudah mencapai batas maksimal, maka konten akan dimuat dari awal dengan
-        jumlah dan formasi yang sama.
-      </p>
+      <div class="ml-3">
+        <span class="font-12">Jumlah data</span>
+        <div class="d-flex align-center">
+          <div style="width: 303px">
+            <v-text-field
+              v-model="totalData"
+              placeholder="ex: 500"
+              outlined
+              dense
+              hide-details
+              type="number"
+              class="font-12 my-2"
+              :class="{ 'border-alert': alertData }"
+              style="width: 303px"
+            ></v-text-field>
+          </div>
+          <v-tooltip v-if="alertData" bottom color="red">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon color="red" dark v-bind="attrs" v-on="on" class="ml-2">
+                fas fa-exclamation-circle
+              </v-icon>
+            </template>
+            <span>Harap isi Jumlah Data yang ingin ditampilkan</span>
+          </v-tooltip>
+        </div>
+        <p class="font-10" style="width: 303px">
+          Merupakan batas muat konten yang ditampilkan dalam satu linimasa. Jika
+          sudah mencapai batas maksimal, maka konten akan dimuat dari awal
+          dengan jumlah dan formasi yang sama.
+        </p>
+      </div>
     </div>
 
     <div class="d-flex mt-6">
@@ -61,7 +79,7 @@
         @changeAvailablePercentage="changeAvailablePercentage"
         @editPreviewCategory="openDialogEditPreviewCategory"
         @removePreviewCategory="removePreviewCategory"
-        @submitData="actionCreateDetailSubsHashtag"
+        @submitData="actionCreateListTrendingHashtag"
       ></Box-List-Preview>
 
       <div
@@ -265,6 +283,7 @@ export default {
         qty: null,
         percentage: null,
         index: 0,
+        indexBeforeSearch: 0,
       },
       listPercentage: [],
       filterPercentage: null,
@@ -342,7 +361,7 @@ export default {
       getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
       searchListHashtagFormationSubs:
         "manageHashtag/searchListHashtagFormationSubs",
-      createDetailSubsHashtag: "manageHashtag/createDetailSubsHashtag",
+      createListTrendingHashtag: "manageHashtag/createListTrendingHashtag",
     }),
     handleGetListMasterCategory() {
       this.listMasterCategory = [];
@@ -363,7 +382,11 @@ export default {
           let content = response.data.content;
           for (let i = 0; i < content.length; i++) {
             const e = content[i];
-            this.listMasterCategory.push({ ...e, available: 0 });
+            this.listMasterCategory.push({
+              ...e,
+              available: 0,
+              indexBeforeSearch: i,
+            });
           }
         })
         .catch((err) => {
@@ -401,7 +424,13 @@ export default {
       }
     },
     handleGetAvailabilitySubHashtag(content, idx, isSearch) {
-      return this.getAvailabilitySubHashtag(content.value)
+      let payload = {
+        params: {
+          value: content.value,
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+        },
+      };
+      return this.getAvailabilitySubHashtag(payload)
         .then((response) => {
           let avail = response.data ? response.data.available : "no data";
           if (this.isSearchData) {
@@ -415,56 +444,26 @@ export default {
           this.loadingSearch = false;
         });
     },
-    actionSearchListHashtagFormationSubs(v) {
-      this.listMasterCategorySearch = [];
-      let payload = {
-        search: v,
-      };
-      this.listMasterCategory = [];
-      this.listMasterCategorySearch = [];
-      this.loadingSearch = true;
-      this.totalElements = 0;
-      this.isSearchData = true;
-      return this.searchListHashtagFormationSubs(payload)
-        .then((response) => {
-          if (response.data.length > 0) {
-            this.alertFailedSearch = false;
-            this.totalElements = response.data.length;
-            this.loadingSearch = false;
-            let content = response.data;
-            for (let i = 0; i < content.length; i++) {
-              const e = content[i];
-              this.listMasterCategorySearch.push({ ...e, available: 0 });
-              // this.listMasterCategory.push({ ...e, available: 0 });
-            }
-          } else {
-            this.alertFailedSearch = true;
-          }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.alertFailedSearch = false;
-          this.loadingSearch = false;
-          this.dataFailed = err.response.data;
-        });
-    },
     actionFilterCategoryByName(v) {
       if (v == "" || v == null) {
         this.isSearchData = false;
       } else {
         this.isSearchData = true;
       }
-      let filteredData = this.listMasterCategory.filter((e) => {
+      let filteredData = this.listMasterCategory.filter((e, idx) => {
         if (e.value.toLowerCase().includes(v.toLowerCase())) {
-          return e;
+          return { ...e };
         }
       });
       this.listMasterCategorySearch = filteredData;
     },
-    actionCreateDetailSubsHashtag() {
+    actionCreateListTrendingHashtag() {
       let payload = {
         totalQty: this.totalData,
         hashtags: [],
+        channel: {
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+        },
       };
 
       this.sortingPreviewData(this.listPreviewCategory);
@@ -478,7 +477,7 @@ export default {
         });
       }
       this.loadingSubmit = true;
-      return this.createDetailSubsHashtag(payload)
+      return this.createListTrendingHashtag(payload)
         .then(() => {
           this.alertSuccess = true;
           // this.loadingSubmit = false;
@@ -516,8 +515,15 @@ export default {
         });
         if (this.isSearchData) {
           this.listMasterCategorySearch.splice(this.dataPreview.index, 1);
+          this.listMasterCategory.splice(this.dataPreview.indexBeforeSearch, 1);
         } else {
           this.listMasterCategory.splice(this.dataPreview.index, 1);
+        }
+        for (let idx = 0; idx < this.listMasterCategory.length; idx++) {
+          const e = this.listMasterCategory[idx];
+          if (e.indexBeforeSearch > this.dataPreview.indexBeforeSearch) {
+            e.indexBeforeSearch--;
+          }
         }
       } else {
         this.listPreviewCategory[this.editId] = {
@@ -592,5 +598,11 @@ export default {
 }
 .box-exclamation {
   border-radius: 8px;
+}
+.imitate-btn {
+  height: 40px;
+  width: 303px;
+  background-color: $whitesmoke;
+  border-radius: 4px;
 }
 </style>
