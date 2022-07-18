@@ -85,7 +85,10 @@
               <div class="col-6">
                 {{ formatDate(i.createAt) }} {{ formatDate(i.createAt, true) }}
               </div>
-              <div class="col-6" :class="`text--${i.status.toLowerCase()}`">
+              <div
+                class="col-6"
+                :class="`text--${i.status && i.status.toLowerCase()}`"
+              >
                 {{ i.activity }}
               </div>
             </div>

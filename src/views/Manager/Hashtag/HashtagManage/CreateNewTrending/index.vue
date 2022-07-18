@@ -369,6 +369,8 @@ export default {
         params: {
           size: 50,
           page: 0,
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+          isWithCount: true,
         },
       };
       this.loadingListMasterCategory = true;
@@ -401,6 +403,9 @@ export default {
           params: {
             size: 50,
             page: this.page,
+            code:
+              this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+            isWithCount: true,
           },
         };
         this.loadingListMasterCategory = true;
