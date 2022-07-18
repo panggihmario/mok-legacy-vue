@@ -6,8 +6,12 @@ export default {
 		token: '',
 		accountId: "",
 		role: {},
+		dataProfile : null
 	},
 	mutations: {
+		setDataProfile(state,  payload) {
+			state.dataProfile = payload
+		},
 		setInitialiseData(state) {
 			const dataOnStorage = localStorage.getItem('adminKoanba')
 			if (dataOnStorage) {
@@ -52,6 +56,7 @@ export default {
 				const id = response.data.accountId
 				const username = response.data.userName
 				const role = response.data.role
+				console.log(response)
 				const initialiseData = {
 					token,
 					accountId : id,
@@ -65,44 +70,17 @@ export default {
 				throw error
 			}
 		},
-		// login({ dispatch }, payload) {
-		// 	const data = {
-		// 		url: `auth/login`,
-		// 		data: {
-		// 			...payload
-		// 		}
-		// 	}
-		// 	return dispatch('postWithToken', data, { root: true })
-		// 		.then(response => {
-		// 			console.log(response)
-		// 			const token = response.data.token
-		// 			const id = response.data.accountId
-		// 			const username = response.data.userName
-		// 			const role = response.data.role
-		// 			const initialiseData = {
-		// 				token,
-		// 				accountId: id,
-		// 				username,
-		// 				role
-		// 			}
-		// 			localStorage.setItem('adminKoanba', JSON.stringify(initialiseData))
-		// 			context.commit('setInitialiseDataFromLogin', initialiseData)
-		// 			return response
-		// 		})
-		// 		.catch(err => {
-		// 			console.log('errr')
-		// 			throw err
-		// 		})
-		// },
 		logout(context) {
 			context.commit('clearToken', '')
 			localStorage.removeItem('adminKoanba')
 		},
-		getProfile({ state, dispatch }) {
+		getProfile({ state, dispatch, commit }) {
 			const id = state.accountId
 			return this._vm.$httpWithToken().get(`profile/${id}`)
 				.then(response => {
-					// console.log(response)
+					console.log(response)
+					const data = response.data.data
+					commit("setDataProfile", data)
 				})
 				.catch(err => {
 					const codeResponse = err.response.status

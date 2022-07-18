@@ -2,36 +2,54 @@
   <div>
     <HeaderContent label="Buat Trending Baru"></HeaderContent>
 
-    <div>
-      <span class="font-12">Jumlah data yang ingin ditampilkan</span>
-      <div class="d-flex align-center">
-        <div style="width: 303px">
-          <v-text-field
-            v-model="totalData"
-            placeholder="ex: 500"
-            outlined
-            dense
-            hide-details
-            type="number"
-            class="font-12 my-2"
-            :class="{ 'border-alert': alertData }"
-            style="width: 303px"
-          ></v-text-field>
+    <div class="d-flex">
+      <div>
+        <span class="font-12">Channel</span>
+        <div class="d-flex align-center">
+          <div style="width: 303px">
+            <div class="d-flex align-center imitate-btn font-12 my-2 px-3">
+              <span class="text-capitalize font-weight-medium">{{
+                $route.query.channel
+              }}</span>
+            </div>
+          </div>
         </div>
-        <v-tooltip v-if="alertData" bottom color="red">
-          <template v-slot:activator="{ on, attrs }">
-            <v-icon color="red" dark v-bind="attrs" v-on="on" class="ml-2">
-              fas fa-exclamation-circle
-            </v-icon>
-          </template>
-          <span>Harap isi Jumlah Data yang ingin ditampilkan</span>
-        </v-tooltip>
+        <p class="font-10" style="width: 303px">
+          Formasi akan diterapkan pada cleeps
+          <span class="text-capitalize">{{ $route.query.channel }}</span>
+        </p>
       </div>
-      <p class="font-10" style="width: 303px">
-        Merupakan batas muat konten yang ditampilkan dalam satu linimasa. Jika
-        sudah mencapai batas maksimal, maka konten akan dimuat dari awal dengan
-        jumlah dan formasi yang sama.
-      </p>
+      <div class="ml-3">
+        <span class="font-12">Jumlah data</span>
+        <div class="d-flex align-center">
+          <div style="width: 303px">
+            <v-text-field
+              v-model="totalData"
+              placeholder="ex: 500"
+              outlined
+              dense
+              hide-details
+              type="number"
+              class="font-12 my-2"
+              :class="{ 'border-alert': alertData }"
+              style="width: 303px"
+            ></v-text-field>
+          </div>
+          <v-tooltip v-if="alertData" bottom color="red">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon color="red" dark v-bind="attrs" v-on="on" class="ml-2">
+                fas fa-exclamation-circle
+              </v-icon>
+            </template>
+            <span>Harap isi Jumlah Data yang ingin ditampilkan</span>
+          </v-tooltip>
+        </div>
+        <p class="font-10" style="width: 303px">
+          Merupakan batas muat konten yang ditampilkan dalam satu linimasa. Jika
+          sudah mencapai batas maksimal, maka konten akan dimuat dari awal
+          dengan jumlah dan formasi yang sama.
+        </p>
+      </div>
     </div>
 
     <div class="d-flex mt-6">
@@ -46,9 +64,7 @@
         :isSearchData="isSearchData"
         :loadingListMasterCategory="loadingListMasterCategory"
         :loadingSearch="loadingSearch"
-        @actionSearchListHashtagFormationSubs="
-          actionSearchListHashtagFormationSubs
-        "
+        @actionSearchListHashtagFormationSubs="actionFilterCategoryByName"
         @onChooseCategory="openDialogPreviewCategory"
         @onScrollSubCategory="onScrollListCategory"
       ></Box-List-Hashtag>
@@ -63,7 +79,7 @@
         @changeAvailablePercentage="changeAvailablePercentage"
         @editPreviewCategory="openDialogEditPreviewCategory"
         @removePreviewCategory="removePreviewCategory"
-        @submitData="actionCreateDetailSubsHashtag"
+        @submitData="actionCreateListTrendingHashtag"
       ></Box-List-Preview>
 
       <div
@@ -103,37 +119,44 @@
           >
 
           <div class="mt-4">
-            <span class="font-12 font-weight-medium">Persentase</span>
-            <div class="d-flex mt-1">
-              <div style="width: 155px">
-                <v-select
-                  v-model="filterPercentage"
-                  :items="listPercentage"
-                  value="value"
-                  outlined
-                  dense
-                  hide-details
-                  background-color="whitesnow"
-                  class="font-12"
-                ></v-select>
-              </div>
-              <div
-                v-if="filterPercentage == 'tulis_persentase'"
-                class="ml-2"
-                style="width: 80px"
-              >
-                <v-text-field
-                  v-model="dataPreview.percentage"
-                  suffix="%"
-                  outlined
-                  dense
-                  hide-details
-                  background-color="whitesnow"
-                  class="font-12"
-                  type="number"
-                ></v-text-field>
-              </div>
-            </div>
+            <v-row no-gutters>
+              <v-col class="pr-1">
+                <span class="font-12 font-weight-medium">Persentase</span>
+                <div class="d-flex mt-1">
+                  <div>
+                    <v-text-field
+                      v-model="dataPreview.percentage"
+                      suffix="%"
+                      outlined
+                      dense
+                      hide-details
+                      background-color="whitesnow"
+                      class="font-12"
+                      type="number"
+                      @focus="isInputPercentage = true"
+                      @blur="isInputPercentage = false"
+                    ></v-text-field>
+                  </div>
+                </div>
+              </v-col>
+              <v-col class="pl-1">
+                <span class="font-12 font-weight-medium">Qty</span>
+                <div class="mt-1">
+                  <v-text-field
+                    v-model="dataPreview.qty"
+                    outlined
+                    dense
+                    hide-details
+                    background-color="whitesnow"
+                    class="font-12"
+                    type="number"
+                    @focus="isInputQty = true"
+                    @blur="isInputQty = false"
+                  ></v-text-field>
+                </div>
+              </v-col>
+            </v-row>
+
             <p class="font-10 font-weight-medium mt-2">
               Persentase digunakan untuk menentukan proporsional kuantitas data
               dari total data yang akan ditampilkan.
@@ -203,9 +226,10 @@
             @click="addPreviewCategory"
             :disabled="
               dataPreview.percentage == null ||
+                dataPreview.percentage == 0 ||
                 (editId == null &&
                   dataPreview.percentage > availablePercentage) ||
-                dataPreview.percentage < 1
+                dataPreview.percentage < 0
             "
             >Simpan</v-btn
           >
@@ -256,9 +280,10 @@ export default {
         id: 0,
         value: "",
         available: 0,
-        qty: 0,
+        qty: null,
         percentage: null,
         index: 0,
+        indexBeforeSearch: 0,
       },
       listPercentage: [],
       filterPercentage: null,
@@ -267,6 +292,8 @@ export default {
       loadingSearch: false,
       loadingListMasterCategory: false,
       isSearchData: false,
+      isInputPercentage: false,
+      isInputQty: false,
       alertData: false,
       alertSuccess: false,
       alertFailed: false,
@@ -277,9 +304,24 @@ export default {
     };
   },
   watch: {
-    filterPercentage() {
-      if (this.filterPercentage != "tulis_persentase") {
-        this.dataPreview.percentage = this.filterPercentage;
+    "dataPreview.percentage"() {
+      let percent = parseFloat(this.dataPreview.percentage || 0);
+      if (this.isInputPercentage) {
+        if (percent != "" || percent != 0 || percent != null) {
+          this.dataPreview.qty = (percent / 100) * this.totalData;
+        } else {
+          this.dataPreview.percentage = "";
+        }
+      }
+    },
+    "dataPreview.qty"() {
+      let qty = parseFloat(this.dataPreview.qty || 0);
+      if (this.isInputQty) {
+        if (qty != "" || qty != 0 || qty != null) {
+          this.dataPreview.percentage = (qty / this.totalData) * 100;
+        } else {
+          this.dataPreview.qty = "";
+        }
       }
     },
     totalData() {
@@ -289,8 +331,8 @@ export default {
     dialogAddPreview() {
       if (!this.dialogAddPreview) {
         this.editId = null;
-        this.filterPercentage = null;
         this.dataPreview.percentage = null;
+        this.dataPreview.qty = null;
       }
     },
     totalPages() {
@@ -299,26 +341,16 @@ export default {
         this.onScrollListCategory();
       }
     },
-    listMasterCategory() {
-      if (this.listMasterCategory.length > 0) {
-        if (this.listMasterCategory.length == this.totalElements) {
-          for (let i = 0; i < this.listMasterCategory.length; i++) {
-            const e = this.listMasterCategory[i];
-            this.handleGetAvailabilitySubHashtag(e, i);
-          }
-        }
-      }
-    },
-    listMasterCategorySearch() {
-      if (this.listMasterCategorySearch.length > 0) {
-        if (this.listMasterCategorySearch.length == this.totalElements) {
-          for (let i = 0; i < this.listMasterCategorySearch.length; i++) {
-            const e = this.listMasterCategorySearch[i];
-            this.handleGetAvailabilitySubHashtag(e, i, true);
-          }
-        }
-      }
-    },
+    // listMasterCategory() {
+    //   if (this.listMasterCategory.length > 0) {
+    //     if (this.listMasterCategory.length == this.totalElements) {
+    //       for (let i = 0; i < this.listMasterCategory.length; i++) {
+    //         const e = this.listMasterCategory[i];
+    //         this.handleGetAvailabilitySubHashtag(e, i);
+    //       }
+    //     }
+    //   }
+    // },
   },
   mounted() {
     this.handleGetListMasterCategory();
@@ -329,7 +361,7 @@ export default {
       getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
       searchListHashtagFormationSubs:
         "manageHashtag/searchListHashtagFormationSubs",
-      createDetailSubsHashtag: "manageHashtag/createDetailSubsHashtag",
+      createListTrendingHashtag: "manageHashtag/createListTrendingHashtag",
     }),
     handleGetListMasterCategory() {
       this.listMasterCategory = [];
@@ -337,6 +369,8 @@ export default {
         params: {
           size: 50,
           page: 0,
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+          withCount: true,
         },
       };
       this.loadingListMasterCategory = true;
@@ -350,7 +384,10 @@ export default {
           let content = response.data.content;
           for (let i = 0; i < content.length; i++) {
             const e = content[i];
-            this.listMasterCategory.push({ ...e, available: 0 });
+            this.listMasterCategory.push({
+              ...e,
+              indexBeforeSearch: i,
+            });
           }
         })
         .catch((err) => {
@@ -361,11 +398,13 @@ export default {
     },
     onScrollListCategory(entries, observer) {
       if (this.page <= this.totalPages) {
-        console.log(this.page, "-", this.totalPages);
         let payload = {
           params: {
             size: 50,
             page: this.page,
+            code:
+              this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+            withCount: true,
           },
         };
         this.loadingListMasterCategory = true;
@@ -377,7 +416,10 @@ export default {
             let content = response.data.content;
             for (let i = 0; i < content.length; i++) {
               const e = content[i];
-              this.listMasterCategory.push({ ...e, available: 0 });
+              this.listMasterCategory.push({
+                ...e,
+                indexBeforeSearch: this.listMasterCategory.length + i,
+              });
             }
           })
           .catch((err) => {
@@ -389,7 +431,13 @@ export default {
       }
     },
     handleGetAvailabilitySubHashtag(content, idx, isSearch) {
-      return this.getAvailabilitySubHashtag(content.value)
+      let payload = {
+        params: {
+          value: content.value,
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+        },
+      };
+      return this.getAvailabilitySubHashtag(payload)
         .then((response) => {
           let avail = response.data ? response.data.available : "no data";
           if (this.isSearchData) {
@@ -403,44 +451,26 @@ export default {
           this.loadingSearch = false;
         });
     },
-    actionSearchListHashtagFormationSubs(v) {
-      this.listMasterCategorySearch = [];
-      let payload = {
-        search: v,
-      };
-      this.listMasterCategory = [];
-      this.listMasterCategorySearch = [];
-      this.loadingSearch = true;
-      this.totalElements = 0;
-      this.isSearchData = true;
-      return this.searchListHashtagFormationSubs(payload)
-        .then((response) => {
-          console.log({ response });
-          if (response.data.length > 0) {
-            this.alertFailedSearch = false;
-            this.totalElements = response.data.length;
-            this.loadingSearch = false;
-            let content = response.data;
-            for (let i = 0; i < content.length; i++) {
-              const e = content[i];
-              this.listMasterCategorySearch.push({ ...e, available: 0 });
-              // this.listMasterCategory.push({ ...e, available: 0 });
-            }
-          } else {
-            this.alertFailedSearch = true;
-          }
-        })
-        .catch((err) => {
-          this.alertFailed = true;
-          this.alertFailedSearch = false;
-          this.loadingSearch = false;
-          this.dataFailed = err.response.data;
-        });
+    actionFilterCategoryByName(v) {
+      if (v == "" || v == null) {
+        this.isSearchData = false;
+      } else {
+        this.isSearchData = true;
+      }
+      let filteredData = this.listMasterCategory.filter((e, idx) => {
+        if (e.value.toLowerCase().includes(v.toLowerCase())) {
+          return { ...e };
+        }
+      });
+      this.listMasterCategorySearch = filteredData;
     },
-    actionCreateDetailSubsHashtag() {
+    actionCreateListTrendingHashtag() {
       let payload = {
         totalQty: this.totalData,
         hashtags: [],
+        channel: {
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+        },
       };
 
       this.sortingPreviewData(this.listPreviewCategory);
@@ -454,7 +484,7 @@ export default {
         });
       }
       this.loadingSubmit = true;
-      return this.createDetailSubsHashtag(payload)
+      return this.createListTrendingHashtag(payload)
         .then(() => {
           this.alertSuccess = true;
           // this.loadingSubmit = false;
@@ -463,7 +493,6 @@ export default {
           }, 3000);
         })
         .catch((err) => {
-          console.log({ err });
           this.loadingSubmit = false;
         });
     },
@@ -474,26 +503,12 @@ export default {
         this.totalData !== ""
       ) {
         this.dialogAddPreview = true;
-        this.dataPreview.id = i.id;
-        this.dataPreview.value = i.value;
-        this.dataPreview.available = i.available;
+        this.dataPreview = {
+          ...i,
+          percentage: i.percentage || null,
+          qty: i.qty || null,
+        };
         this.dataPreview.index = idx;
-
-        let found;
-        for (let y = 0; y < this.listPercentage.length; y++) {
-          const e = this.listPercentage[y];
-          if (i.percentage > 0 && e.value == i.percentage) {
-            found = true;
-          }
-        }
-        if (found) {
-          this.filterPercentage = i.percentage || null;
-        } else {
-          this.filterPercentage = "tulis_persentase";
-          this.dataPreview.percentage = i.percentage;
-        }
-
-        this.addListPercentage();
       } else {
         this.alertData = true;
       }
@@ -502,18 +517,25 @@ export default {
       if (this.editId == null) {
         this.listPreviewCategory.push({
           ...this.dataPreview,
-          percentage: parseInt(this.dataPreview.percentage),
+          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
         });
         if (this.isSearchData) {
           this.listMasterCategorySearch.splice(this.dataPreview.index, 1);
+          this.listMasterCategory.splice(this.dataPreview.indexBeforeSearch, 1);
         } else {
           this.listMasterCategory.splice(this.dataPreview.index, 1);
+        }
+        for (let idx = 0; idx < this.listMasterCategory.length; idx++) {
+          const e = this.listMasterCategory[idx];
+          if (e.indexBeforeSearch > this.dataPreview.indexBeforeSearch) {
+            e.indexBeforeSearch--;
+          }
         }
       } else {
         this.listPreviewCategory[this.editId] = {
           ...this.dataPreview,
-          percentage: parseInt(this.dataPreview.percentage),
+          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
         };
       }
@@ -536,10 +558,6 @@ export default {
     addListPercentage() {
       let i = 0;
       this.listPercentage = [];
-      this.listPercentage.push({
-        text: "Tulis Persentase",
-        value: "tulis_persentase",
-      });
       do {
         i += 5;
         let reqQty = (i / 100) * this.totalData;
@@ -587,5 +605,11 @@ export default {
 }
 .box-exclamation {
   border-radius: 8px;
+}
+.imitate-btn {
+  height: 40px;
+  width: 303px;
+  background-color: $whitesmoke;
+  border-radius: 4px;
 }
 </style>

@@ -37,7 +37,7 @@ export default new Vuex.Store({
     trending,
     tiktok,
     masterCategory,
-    manageHashtag
+    manageHashtag,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,

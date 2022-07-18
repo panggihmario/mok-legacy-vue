@@ -3,28 +3,7 @@
     <HeaderContent label="Manage Hashtag" :list="crumbs"></HeaderContent>
 
     <div class="d-flex">
-      <v-card
-        width="286"
-        min-height="266"
-        max-height="600"
-        outlined
-        flat
-        style="border-radius: 8px; overflow: auto"
-      >
-        <div class="d-flex font-weight-medium whitesnow">
-          <div class="col-6">Hashtag</div>
-          <div class="col-3">%</div>
-          <div class="col-3">Qty</div>
-        </div>
-        <div v-for="(i, idx) in dataItem.item.hashtags" :key="idx">
-          <div class="d-flex font-12 font-weight-medium grey--text">
-            <div class="col-6">{{ i.value }}</div>
-            <div class="col-3">{{ i.percent }}%</div>
-            <div class="col-3">{{ i.qty }}</div>
-          </div>
-        </div>
-      </v-card>
-      <div class="ml-8 pt-4">
+      <div class="pt-4">
         <div>
           <span class="font-weight-medium"
             >Jumlah data yang ingin ditampilkan</span
@@ -50,7 +29,77 @@
             >
           </div>
         </div>
+        <div class="mt-5">
+          <span class="font-weight-medium">Channel</span>
+          <div
+            class="d-flex align-center whitesnow mt-2 px-4"
+            style="height: 35px; border-radius: 4px"
+          >
+            <span class="font-12 font-weight-medium grey--text">{{
+              $route.query.item.feedChannelCode.toLowerCase() == "chinatiktok"
+                ? "China"
+                : "Indonesia"
+            }}</span>
+          </div>
+        </div>
       </div>
+
+      <v-card
+        width="286"
+        height="835"
+        outlined
+        flat
+        class="ml-5"
+        style="border-radius: 8px; overflow: auto"
+      >
+        <div class="d-flex font-weight-medium whitesnow sticky">
+          <div class="col-6">Hashtag</div>
+          <div class="col-3">%</div>
+          <div class="col-3">Qty</div>
+        </div>
+        <div v-for="(i, idx) in sortedHashtags" :key="idx">
+          <div class="d-flex font-12 font-weight-medium grey--text">
+            <div class="col-6">{{ i.value }}</div>
+            <div class="col-3">{{ i.percent }}%</div>
+            <div class="col-3">{{ i.qty }}</div>
+          </div>
+        </div>
+      </v-card>
+
+      <v-card
+        width="488"
+        height="835"
+        outlined
+        flat
+        class="ml-5"
+        style="border-radius: 8px; overflow: auto"
+      >
+        <div class="d-flex font-weight-medium whitesnow sticky">
+          <div class="col-6">Time</div>
+          <div class="col-6">Activity</div>
+        </div>
+
+        <div v-if="dataItem.item.logs">
+          <div v-for="(i, idx) in dataItem.item.logs" :key="idx">
+            <div class="d-flex font-12 font-weight-medium grey--text">
+              <div class="col-6">
+                {{ formatDate(i.createAt) }} {{ formatDate(i.createAt, true) }}
+              </div>
+              <div
+                class="col-6"
+                :class="`text--${i.status && i.status.toLowerCase()}`"
+              >
+                {{ i.activity }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="text-center mt-2">
+          <span class="font-12 font-weight-medium grey--text"
+            >Tidak ada activity</span
+          >
+        </div>
+      </v-card>
     </div>
   </div>
 </template>
@@ -71,13 +120,23 @@ export default {
           href: "/manage/hashtag",
         },
         {
-          text: "Buat Trending",
+          text: "Detail Trending",
           disabled: true,
         },
       ],
+      sortedHashtags: [],
     };
   },
+  mounted() {
+    this.sortingPreviewData();
+  },
   computed: {
+    channel: {
+      get() {
+        const channel = this.$route.query.channel;
+        return channel;
+      },
+    },
     dataItem: {
       get() {
         const item = this.$route.query.item;
@@ -97,8 +156,31 @@ export default {
         ? `${hour < 10 ? `0${hour}` : hour}:${
             minute < 10 ? `0${minute}` : minute
           }`
-        : `${date}/${month}/${year}`;
+        : `${date}/${month + 1}/${year}`;
+    },
+    sortingPreviewData() {
+      let hashtags = this.$route.query.item.hashtags;
+      hashtags.sort((a, b) => {
+        let fa = a.value.toLowerCase();
+        let fb = b.value.toLowerCase();
+        return b.percent - a.percent || fa.localeCompare(fb);
+      });
+      this.sortedHashtags = hashtags;
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.sticky {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
+.text--failed {
+  color: $warning;
+}
+.text--success {
+  color: $success;
+}
+</style>

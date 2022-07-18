@@ -202,13 +202,6 @@ export default {
       };
       const response = await this.getListAdmin(data);
     },
-    filterByStatus() {
-      const payload = {
-        ...this.params,
-        filterBy: this.isActive,
-      };
-      this.params = payload;
-    },
     handleClick(params) {
       this.$router.push(`/admin/${params}`);
     },
@@ -261,6 +254,7 @@ export default {
       const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const dataResponse = response.data.data.content;
+      console.log("data", dataResponse);
       const formatResponse = dataResponse.map((d) => {
         return {
           id: d.id,
