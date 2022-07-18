@@ -341,16 +341,16 @@ export default {
         this.onScrollListCategory();
       }
     },
-    listMasterCategory() {
-      if (this.listMasterCategory.length > 0) {
-        if (this.listMasterCategory.length == this.totalElements) {
-          for (let i = 0; i < this.listMasterCategory.length; i++) {
-            const e = this.listMasterCategory[i];
-            this.handleGetAvailabilitySubHashtag(e, i);
-          }
-        }
-      }
-    },
+    // listMasterCategory() {
+    //   if (this.listMasterCategory.length > 0) {
+    //     if (this.listMasterCategory.length == this.totalElements) {
+    //       for (let i = 0; i < this.listMasterCategory.length; i++) {
+    //         const e = this.listMasterCategory[i];
+    //         this.handleGetAvailabilitySubHashtag(e, i);
+    //       }
+    //     }
+    //   }
+    // },
   },
   mounted() {
     this.handleGetListMasterCategory();
@@ -370,7 +370,7 @@ export default {
           size: 50,
           page: 0,
           code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
-          isWithCount: true,
+          withCount: true,
         },
       };
       this.loadingListMasterCategory = true;
@@ -386,7 +386,6 @@ export default {
             const e = content[i];
             this.listMasterCategory.push({
               ...e,
-              available: 0,
               indexBeforeSearch: i,
             });
           }
@@ -405,7 +404,7 @@ export default {
             page: this.page,
             code:
               this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
-            isWithCount: true,
+            withCount: true,
           },
         };
         this.loadingListMasterCategory = true;
@@ -417,7 +416,10 @@ export default {
             let content = response.data.content;
             for (let i = 0; i < content.length; i++) {
               const e = content[i];
-              this.listMasterCategory.push({ ...e, available: 0 });
+              this.listMasterCategory.push({
+                ...e,
+                indexBeforeSearch: this.listMasterCategory.length + i,
+              });
             }
           })
           .catch((err) => {
