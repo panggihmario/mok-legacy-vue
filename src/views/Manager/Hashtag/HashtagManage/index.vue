@@ -6,7 +6,7 @@
       <div class="d-flex justify-space-between">
         <div style="width: 145px">
           <v-select
-            v-model="filterCountry"
+            v-model="filterCountryLocal"
             :items="listCountry"
             item-text="label"
             item-value="value"
@@ -176,7 +176,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 export default {
   components: {
@@ -197,7 +197,7 @@ export default {
           href: "/manage/hashtag/create-new-trending",
         },
       ],
-      filterCountry: {
+      filterCountryLocal: {
         label: "Indonesia",
         value: "indonesia",
         feedChannelCode: "tiktok",
@@ -270,18 +270,30 @@ export default {
         this.createTrendingCountry = null;
       }
     },
+    filterCountryLocal() {
+      this.setFilterCountry(this.filterCountryLocal);
+    },
     filterCountry() {
-      // console.log(this.filterCountry);
+      console.log("lol hcia");
       this.page = 0;
       this.handleGetListManageHashtag();
     },
   },
   mounted() {
+    this.filterCountryLocal = this.filterCountry;
     this.handleGetListManageHashtag();
+  },
+  computed: {
+    ...mapGetters({
+      filterCountry: "manageHashtag/filterCountry",
+    }),
   },
   methods: {
     ...mapActions({
       getListHashtagFormation: "manageHashtag/getListHashtagFormation",
+    }),
+    ...mapMutations({
+      setFilterCountry: "manageHashtag/setFilterCountry",
     }),
     moveTo(val, item, isQueryObject) {
       let query = {};

@@ -2,6 +2,21 @@ export default {
   namespaced: true,
   state: {
     pathManage: "admin",
+    filterCountry: {
+      label: "Indonesia",
+      value: "indonesia",
+      feedChannelCode: "tiktok",
+    },
+  },
+  mutations: {
+    setFilterCountry(state, payload) {
+      state.filterCountry = payload;
+    },
+  },
+  getters: {
+    filterCountry: (state) => {
+      return state.filterCountry;
+    },
   },
   actions: {
     getListHashtagFormation({ state }, payload) {
