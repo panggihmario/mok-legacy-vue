@@ -1,5 +1,8 @@
 <template>
-  <div class="d-flex justify-space-between header__container">
+  <div
+    class="d-flex justify-space-between"
+    :style="`margin-bottom: ${marginBottom}px`"
+  >
     <div>
       <div class="black--text header__label">{{ label }}</div>
       <v-breadcrumbs class="header__breadcrumbs" :items="list">
@@ -22,10 +25,14 @@
 export default {
   props: {
     list: {
-      type: Array
+      type: Array,
     },
     label: {
-      type: String
+      type: String,
+    },
+    marginBottom: {
+      type: [String, Number],
+      default: "40",
     },
   },
 };

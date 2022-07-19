@@ -1,43 +1,62 @@
 <template>
-  <div>
+  <div :class="ad['tb__td']">
     <v-data-table
       :headers="headers"
       hide-default-footer
       class="grey--text"
       :items="feeds"
     >
-      <template v-slot:[`item.media`]="{ item }">
-        <LinkDialog :item="item" :feeds="feeds" />
-      </template>
-      <template v-slot:[`item.description`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.description }}</div>
-      </template>
-      <template v-slot:[`item.channel`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
-      </template>
-      <template v-slot:[`item.publisher`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.publishBy }}</div>
-      </template>
-      <template v-slot:[`item.user`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.createBy }}</div>
-      </template>
-      <template v-slot:[`item.delete`]="{ item }">
-        <div :class="ad['tb__caption']">{{ item.deletedBy }}</div>
-      </template>
-      <template v-slot:[`item.date`]="{ item }">
-        <div :class="ad['tb__caption']">
-          {{ formatingDate(item.deletedAt) }}
-        </div>
-      </template>
-      <template v-slot:[`body.append`]>
-        <tr></tr>
+      <template v-slot:body="{ items }">
+        <tbody>
+          <tr
+            v-for="item in items"
+            :key="item.id"
+            @mouseover="onHover(item)"
+            @mouseleave="onLeave"
+          >
+            <td>
+              <LinkDialog :item="item" :feeds="feeds" />
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.description }}</div>
+              <div
+                v-if="item.id === selectedItem"
+                :class="ad['tb__hover-image']"
+                :style="{
+                  top: `${
+                    (item.index + 1) * 100 - (item.index * 50 + item.index * 20)
+                  }px`,
+                }"
+              >
+                <img :src="thumbnailImage" :class="ad['tb__image']" />
+              </div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.publishBy }}</div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.createBy }}</div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.deletedBy }}</div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">
+                {{ formatingDate(item.deletedAt) }}
+              </div>
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import moment from "moment";
 import LinkDialog from "../../containers/dialog/index.vue";
 export default {
@@ -55,6 +74,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      fetchFeedById: "post/fetchFeedById",
+    }),
     formatingDate(rawDate) {
       if (rawDate) {
         const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
@@ -63,10 +85,25 @@ export default {
         return "Rejected";
       }
     },
+    onHover(item) {
+      this.selectedItem = item.id
+      return this.fetchFeedById(item.id).then((response) => {
+        const medias = response.medias
+        const [media] = medias
+        const thumbnail = media.thumbnail.medium
+        this.thumbnailImage = thumbnail
+      });
+    },
+    onLeave() {
+      this.selectedItem = null
+      this.thumbnailImage = ""
+    },
   },
   data() {
     return {
       page: 1,
+      selectedItem : null,
+      thumbnailImage : "",
       headers: [
         {
           text: "Media",

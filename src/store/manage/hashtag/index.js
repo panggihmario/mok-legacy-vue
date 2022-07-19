@@ -2,6 +2,21 @@ export default {
   namespaced: true,
   state: {
     pathManage: "admin",
+    filterCountry: {
+      label: "Indonesia",
+      value: "indonesia",
+      feedChannelCode: "tiktok",
+    },
+  },
+  mutations: {
+    setFilterCountry(state, payload) {
+      state.filterCountry = payload;
+    },
+  },
+  getters: {
+    filterCountry: (state) => {
+      return state.filterCountry;
+    },
   },
   actions: {
     getListHashtagFormation({ state }, payload) {
@@ -46,9 +61,9 @@ export default {
     getAvailabilitySubHashtag({ state }, payload) {
       return this._vm
         .$httpWithToken()
-        .get(
-          `${state.pathManage}/hashtag-formations/subs/count?value=${payload}`
-        )
+        .get(`${state.pathManage}/hashtag-formations/subs/count`, {
+          params: payload.params,
+        })
         .then((response) => {
           return response.data;
         })
@@ -56,7 +71,7 @@ export default {
           throw err;
         });
     },
-    createDetailSubsHashtag({ state }, payload) {
+    createListTrendingHashtag({ state }, payload) {
       return this._vm
         .$httpWithToken()
         .post(`${state.pathManage}/hashtag-formations`, {
