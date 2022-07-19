@@ -105,6 +105,12 @@
               </div>
             </div>
           </div>
+          <div v-if="loadingListMasterCategory" class="text-center">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </div>
         </div>
       </div>
     </v-card>
