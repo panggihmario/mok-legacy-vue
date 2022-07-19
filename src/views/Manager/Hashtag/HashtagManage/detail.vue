@@ -160,11 +160,11 @@ export default {
     },
     sortingPreviewData() {
       let hashtags = this.$route.query.item.hashtags;
-      hashtags.sort((a, b) => {
-        let fa = a.value.toLowerCase();
-        let fb = b.value.toLowerCase();
-        return b.percent - a.percent || fa.localeCompare(fb);
-      });
+      // hashtags.sort((a, b) => {
+      //   let fa = a.value.toLowerCase();
+      //   let fb = b.value.toLowerCase();
+      //   return b.percent - a.percent || fa.localeCompare(fb);
+      // });
       this.sortedHashtags = hashtags;
     },
   },

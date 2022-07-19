@@ -473,8 +473,8 @@ export default {
         },
       };
 
-      this.sortingPreviewData(this.listPreviewCategory);
-      this.countQtyFromPercent(this.listPreviewCategory);
+      // this.sortingPreviewData(this.listPreviewCategory);
+      // this.countQtyFromPercent(this.listPreviewCategory);
       for (let i = 0; i < this.listPreviewCategory.length; i++) {
         const e = this.listPreviewCategory[i];
         payload.hashtags.push({
@@ -539,8 +539,8 @@ export default {
           totalData: this.totalData,
         };
       }
-      this.sortingPreviewData(this.listPreviewCategory);
-      this.countQtyFromPercent(this.listPreviewCategory);
+      // this.sortingPreviewData(this.listPreviewCategory);
+      // this.countQtyFromPercent(this.listPreviewCategory);
       this.dialogAddPreview = false;
     },
     openDialogEditPreviewCategory(i, idx) {
