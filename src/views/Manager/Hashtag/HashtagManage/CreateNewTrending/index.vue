@@ -66,8 +66,8 @@
         :loadingSearch="loadingSearch"
         @actionSearchListHashtagFormationSubs="actionFilterCategoryByName"
         @onChooseCategory="openDialogPreviewCategory"
-        @onScrollSubCategory="onScrollListCategory"
       ></Box-List-Hashtag>
+      <!-- @onScrollSubCategory="onScrollListCategory" -->
 
       <Box-List-Preview
         :listPreviewCategory="listPreviewCategory"
@@ -337,23 +337,23 @@ export default {
     },
     totalPages() {
       for (let i = 1; i < this.totalPages; i++) {
-        this.page = i;
-        this.onScrollListCategory();
+        this.onScrollListCategory(0 + i);
       }
     },
-    // listMasterCategory() {
-    //   if (this.listMasterCategory.length > 0) {
-    //     if (this.listMasterCategory.length == this.totalElements) {
-    //       for (let i = 0; i < this.listMasterCategory.length; i++) {
-    //         const e = this.listMasterCategory[i];
-    //         this.handleGetAvailabilitySubHashtag(e, i);
-    //       }
-    //     }
-    //   }
-    // },
+    listMasterCategory() {
+      if (this.listMasterCategory.length == this.totalElements) {
+        this.loadingListMasterCategory = false;
+        // if (this.listMasterCategory.length == this.totalElements) {
+        //   for (let i = 0; i < this.listMasterCategory.length; i++) {
+        //     const e = this.listMasterCategory[i];
+        //     this.handleGetAvailabilitySubHashtag(e, i);
+        //   }
+        // }
+      }
+    },
   },
   mounted() {
-    this.handleGetListMasterCategory();
+    this.handleGetListMasterCategory(0);
   },
   methods: {
     ...mapActions({
@@ -363,12 +363,12 @@ export default {
         "manageHashtag/searchListHashtagFormationSubs",
       createListTrendingHashtag: "manageHashtag/createListTrendingHashtag",
     }),
-    handleGetListMasterCategory() {
+    handleGetListMasterCategory(page) {
       this.listMasterCategory = [];
       let payload = {
         params: {
-          size: 50,
-          page: 0,
+          size: 1,
+          page: page,
           code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
           withCount: true,
         },
@@ -386,7 +386,7 @@ export default {
             const e = content[i];
             this.listMasterCategory.push({
               ...e,
-              indexBeforeSearch: i,
+              indexBeforeSearch: page,
             });
           }
         })
@@ -396,12 +396,12 @@ export default {
           this.dataFailed = err.response.data;
         });
     },
-    onScrollListCategory(entries, observer) {
+    onScrollListCategory(page) {
       if (this.page <= this.totalPages) {
         let payload = {
           params: {
-            size: 50,
-            page: this.page,
+            size: 1,
+            page: page,
             code:
               this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
             withCount: true,
@@ -473,8 +473,8 @@ export default {
         },
       };
 
-      this.sortingPreviewData(this.listPreviewCategory);
-      this.countQtyFromPercent(this.listPreviewCategory);
+      // this.sortingPreviewData(this.listPreviewCategory);
+      // this.countQtyFromPercent(this.listPreviewCategory);
       for (let i = 0; i < this.listPreviewCategory.length; i++) {
         const e = this.listPreviewCategory[i];
         payload.hashtags.push({
@@ -539,8 +539,8 @@ export default {
           totalData: this.totalData,
         };
       }
-      this.sortingPreviewData(this.listPreviewCategory);
-      this.countQtyFromPercent(this.listPreviewCategory);
+      // this.sortingPreviewData(this.listPreviewCategory);
+      // this.countQtyFromPercent(this.listPreviewCategory);
       this.dialogAddPreview = false;
     },
     openDialogEditPreviewCategory(i, idx) {
