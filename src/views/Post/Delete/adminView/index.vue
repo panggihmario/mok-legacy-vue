@@ -13,15 +13,15 @@
             :key="item.id"
             @mouseover="onHover(item)"
             @mouseleave="onLeave"
+            @mousemove="getPosition"
+            @mouseout="stopTracking"
           >
             <td>
               <LinkDialog :item="item" :feeds="feeds" />
-            </td>
-            <td>
-              <div :class="ad['tb__caption']">{{ item.description }}</div>
-              <div
+               <div
                 v-if="item.id === selectedItem"
                 :class="ad['tb__hover-image']"
+                id="displayAreaDelete"
                 :style="{
                   top: `${
                     (item.index + 1) * 100 - (item.index * 50 + item.index * 20)
@@ -30,6 +30,10 @@
               >
                 <img :src="thumbnailImage" :class="ad['tb__image']" />
               </div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.description }}</div>
+             
             </td>
             <td>
               <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
@@ -97,6 +101,14 @@ export default {
     onLeave() {
       this.selectedItem = null
       this.thumbnailImage = ""
+    },
+    getPosition(e) {
+      const x = e.clientX;
+      const y = e.clientY;
+      document.getElementById("displayAreaDelete").style.left =  (x - 246) + 'px';
+    },
+    stopTracking() {
+
     },
   },
   data() {
