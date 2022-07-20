@@ -517,9 +517,9 @@ export default {
       if (this.editId == null) {
         this.listPreviewCategory.push({
           ...this.dataPreview,
-          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
         });
+        console.log(this.listPreviewCategory);
         if (this.isSearchData) {
           this.listMasterCategorySearch.splice(this.dataPreview.index, 1);
           this.listMasterCategory.splice(this.dataPreview.indexBeforeSearch, 1);
@@ -533,19 +533,16 @@ export default {
           }
         }
       } else {
-        this.listPreviewCategory[this.editId] = {
+        this.listPreviewCategory.splice(this.editId, 1, {
           ...this.dataPreview,
-          percentage: this.dataPreview.percentage,
           totalData: this.totalData,
-        };
+        });
       }
-      // this.sortingPreviewData(this.listPreviewCategory);
-      // this.countQtyFromPercent(this.listPreviewCategory);
       this.dialogAddPreview = false;
     },
     openDialogEditPreviewCategory(i, idx) {
       this.editId = idx;
-      this.openDialogPreviewCategory(i);
+      this.openDialogPreviewCategory(i, this.editId);
     },
     removePreviewCategory(i, idx) {
       this.listPreviewCategory.splice(idx, 1);
