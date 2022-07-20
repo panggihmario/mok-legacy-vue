@@ -13,6 +13,8 @@
             :key="item.id"
             @mouseover="onHover(item)"
             @mouseleave="onLeave"
+            @mousemove="getPosition"
+            @mouseout="stopTracking"
           >  
             <td>
               <LinkDialog
@@ -21,12 +23,10 @@
                 :isAdmin="true"
                 :feeds="feeds"
               />
-            </td>
-            <td >
-              <div :class="feed['tb__caption']">{{ item.description }}</div>
-                <div
+              <div
                   v-if="item.id === selectedItem" 
                   :class="feed['tb__hover-image']"
+                  id="displayAreaDraft"
                   :style="{top : `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))) )}px`  }"
                 >
                   <img
@@ -34,6 +34,10 @@
                     :class="feed['tb__image']"
                   />
                 </div>
+            </td>
+            <td >
+              <div :class="feed['tb__caption']">{{ item.description }}</div>
+                
             </td>
             <td>
               <div :class="feed['tb__caption']">{{ item.channel.name }}</div>
@@ -95,6 +99,14 @@ export default {
         const thumbnail = media.thumbnail.medium
         this.thumbnailImage = thumbnail
       });
+    },
+    getPosition(e) {
+      const x = e.clientX;
+      const y = e.clientY;
+      document.getElementById("displayAreaDraft").style.left =  (x - 246) + 'px';
+    },
+    stopTracking() {
+
     },
     onLeave() {
       this.selectedItem = null
