@@ -13,14 +13,15 @@
             :key="item.id"
             @mouseover="onHover(item)"
             @mouseleave="onLeave"
+            @mousemove="getPosition"
+            @mouseout="stopTracking"
           >
+            
             <td>
               <LinkDialog :item="item" :feeds="feeds" />
-            </td>
-            <td>
-              <div :class="ad['tb__caption']">{{ item.description }}</div>
-              <div
+               <div
                 v-if="item.id === selectedItem"
+                id="displayArea"
                 :class="ad['tb__hover-image']"
                 :style="{
                   top: `${
@@ -33,6 +34,10 @@
                   :class="ad['tb__image']"
                 />
               </div>
+            </td>
+            <td>
+              <div :class="ad['tb__caption']">{{ item.description }}</div>
+             
             </td>
             <td>
               <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
@@ -92,6 +97,14 @@ export default {
         const thumbnail = media.thumbnail.medium
         this.thumbnailImage = thumbnail
       });
+    },
+    getPosition(e) {
+      const x = e.clientX;
+      const y = e.clientY;
+      document.getElementById("displayArea").style.left =  (x - 246) + 'px';
+    },
+    stopTracking() {
+
     },
     onLeave() {
       this.selectedItem = null
