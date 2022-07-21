@@ -9,14 +9,14 @@
           <div style="width: 303px">
             <div class="d-flex align-center imitate-btn font-12 my-2 px-3">
               <span class="text-capitalize font-weight-medium">{{
-                $route.query.channel
+                $route.query.item.channel
               }}</span>
             </div>
           </div>
         </div>
         <p class="font-10" style="width: 303px">
           Formasi akan diterapkan pada cleeps
-          <span class="text-capitalize">{{ $route.query.channel }}</span>
+          <span class="text-capitalize">{{ $route.query.item.channel }}</span>
         </p>
       </div>
       <div class="ml-3">
@@ -67,7 +67,6 @@
         @actionSearchListHashtagFormationSubs="actionFilterCategoryByName"
         @onChooseCategory="openDialogPreviewCategory"
       ></Box-List-Hashtag>
-      <!-- @onScrollSubCategory="onScrollListCategory" -->
 
       <Box-List-Preview
         :listPreviewCategory="listPreviewCategory"
@@ -75,11 +74,13 @@
         :totalData="totalData"
         :totalQtyGreater="totalQtyGreater"
         :loadingSubmit="loadingSubmit"
+        :loadingListMasterCategory="loadingListMasterCategory"
         class="ml-4"
         @changeAvailablePercentage="changeAvailablePercentage"
         @editPreviewCategory="openDialogEditPreviewCategory"
         @removePreviewCategory="removePreviewCategory"
         @submitData="actionCreateListTrendingHashtag"
+        @actionUseLastActiveFormation="actionUseLastActiveFormation"
       ></Box-List-Preview>
 
       <div
@@ -284,6 +285,7 @@ export default {
         percentage: null,
         index: 0,
         indexBeforeSearch: 0,
+        indexSearch: 0,
       },
       listPercentage: [],
       filterPercentage: null,
@@ -358,9 +360,6 @@ export default {
   methods: {
     ...mapActions({
       getListHashtagFormationSubs: "manageHashtag/getListHashtagFormationSubs",
-      getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
-      searchListHashtagFormationSubs:
-        "manageHashtag/searchListHashtagFormationSubs",
       createListTrendingHashtag: "manageHashtag/createListTrendingHashtag",
     }),
     handleGetListMasterCategory(page) {
@@ -369,7 +368,10 @@ export default {
         params: {
           size: 1,
           page: page,
-          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+          code:
+            this.$route.query.item.channel == "china"
+              ? "chinatiktok"
+              : "tiktok",
           withCount: true,
         },
       };
@@ -403,7 +405,9 @@ export default {
             size: 1,
             page: page,
             code:
-              this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+              this.$route.query.item.channel == "china"
+                ? "chinatiktok"
+                : "tiktok",
             withCount: true,
           },
         };
@@ -430,38 +434,22 @@ export default {
         return;
       }
     },
-    handleGetAvailabilitySubHashtag(content, idx, isSearch) {
-      let payload = {
-        params: {
-          value: content.value,
-          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
-        },
-      };
-      return this.getAvailabilitySubHashtag(payload)
-        .then((response) => {
-          let avail = response.data ? response.data.available : "no data";
-          if (this.isSearchData) {
-            this.listMasterCategorySearch[idx].available = avail;
-          } else {
-            this.listMasterCategory[idx].available = avail;
-          }
-        })
-        .catch((err) => {
-          this.loadingListMasterCategory = false;
-          this.loadingSearch = false;
-        });
-    },
     actionFilterCategoryByName(v) {
       if (v == "" || v == null) {
         this.isSearchData = false;
       } else {
         this.isSearchData = true;
       }
-      let filteredData = this.listMasterCategory.filter((e, idx) => {
+      let filteredData = [];
+      let searchData = this.listMasterCategory.filter((e, idx) => {
         if (e.value.toLowerCase().includes(v.toLowerCase())) {
-          return { ...e };
+          return e;
         }
       });
+      for (let i = 0; i < searchData.length; i++) {
+        const e = searchData[i];
+        filteredData.push({ ...e, indexSearch: i });
+      }
       this.listMasterCategorySearch = filteredData;
     },
     actionCreateListTrendingHashtag() {
@@ -469,7 +457,10 @@ export default {
         totalQty: this.totalData,
         hashtags: [],
         channel: {
-          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
+          code:
+            this.$route.query.item.channel == "china"
+              ? "chinatiktok"
+              : "tiktok",
         },
       };
 
@@ -519,26 +510,61 @@ export default {
           ...this.dataPreview,
           totalData: this.totalData,
         });
-        console.log(this.listPreviewCategory);
         if (this.isSearchData) {
-          this.listMasterCategorySearch.splice(this.dataPreview.index, 1);
-          this.listMasterCategory.splice(this.dataPreview.indexBeforeSearch, 1);
+          this.spliceRemoveFromList(
+            this.listMasterCategorySearch,
+            this.dataPreview.index
+          );
+          this.spliceRemoveFromList(
+            this.listMasterCategory,
+            this.dataPreview.indexBeforeSearch
+          );
         } else {
-          this.listMasterCategory.splice(this.dataPreview.index, 1);
-        }
-        for (let idx = 0; idx < this.listMasterCategory.length; idx++) {
-          const e = this.listMasterCategory[idx];
-          if (e.indexBeforeSearch > this.dataPreview.indexBeforeSearch) {
-            e.indexBeforeSearch--;
-          }
+          this.spliceRemoveFromList(
+            this.listMasterCategory,
+            this.dataPreview.indexBeforeSearch
+          );
         }
       } else {
         this.listPreviewCategory.splice(this.editId, 1, {
           ...this.dataPreview,
           totalData: this.totalData,
         });
+        console.log(this.dataPreview);
+        console.log(this.listPreviewCategory);
       }
       this.dialogAddPreview = false;
+    },
+    actionUseLastActiveFormation() {
+      this.isSearchData = false;
+      this.listMasterCategorySearch = [];
+      this.totalData = this.$route.query.item.data.totalQty;
+      let hashtags = this.$route.query.item.data.hashtags;
+      let partOfHashtags = [];
+      for (let i = 0; i < hashtags.length; i++) {
+        const e = hashtags[i];
+        partOfHashtags.push(
+          this.listMasterCategory
+            .filter((list) => {
+              return list.value == e.value;
+            })
+            .map((list) => {
+              return list;
+            })
+        );
+        this.spliceRemoveFromList(
+          this.listMasterCategory,
+          partOfHashtags[i][0].indexBeforeSearch
+        );
+      }
+      for (let i = 0; i < partOfHashtags.length; i++) {
+        const e = partOfHashtags[i];
+        this.listPreviewCategory.push({
+          ...e[0],
+          percentage: hashtags[i].percent,
+          qty: hashtags[i].qty,
+        });
+      }
     },
     openDialogEditPreviewCategory(i, idx) {
       this.editId = idx;
@@ -547,9 +573,20 @@ export default {
     removePreviewCategory(i, idx) {
       this.listPreviewCategory.splice(idx, 1);
       if (this.isSearchData) {
-        this.listMasterCategorySearch.splice(i.index, 0, i);
+        this.spliceAddToList(this.listMasterCategorySearch, {
+          ...i,
+          indexSearch: 0,
+          indexBeforeSearch: 0,
+        });
+        this.spliceAddToList(this.listMasterCategory, {
+          ...i,
+          indexBeforeSearch: 0,
+        });
       } else {
-        this.listMasterCategory.splice(i.index, 0, i);
+        this.spliceAddToList(this.listMasterCategory, {
+          ...i,
+          indexBeforeSearch: 0,
+        });
       }
     },
     addListPercentage() {
@@ -572,6 +609,30 @@ export default {
         e.qty = (e.percentage / 100) * this.totalData;
         if (e.qty > e.available) {
           this.totalQtyGreater++;
+        }
+      }
+    },
+    spliceAddToList(list, item) {
+      list.splice(0, 0, item);
+      for (let i = 0; i < list.length; i++) {
+        const e = list[i];
+        if (i > 0) {
+          if (this.isSearchData) {
+            e.indexSearch++;
+          }
+          e.indexBeforeSearch++;
+        }
+      }
+    },
+    spliceRemoveFromList(list, idx) {
+      list.splice(idx, 1);
+      for (let i = 0; i < list.length; i++) {
+        const e = list[i];
+        if (e.indexBeforeSearch > idx) {
+          e.indexBeforeSearch--;
+        }
+        if (this.isSearchData && e.indexSearch > idx) {
+          e.indexSearch--;
         }
       }
     },
