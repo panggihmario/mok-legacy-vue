@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-card outlined width="300px" style="border-radius: 8px">
-      <div style="height: 480px">
+    <v-card outlined width="300px" style="border-radius: 8px; overflow: hidden">
+      <div style="height: 480px; overflow: auto">
         <div class="d-flex whitesnow grey--text sticky">
           <div class="col-3 font-12 font-weight-medium">Hashtag</div>
           <div class="col-4 font-12 font-weight-medium">Persentase</div>
@@ -14,13 +14,16 @@
           class="d-flex flex-column justify-center align-center font-12"
           style="height: 438px"
         >
-          <span class="grey--text text-weight-medium">Hashtag belum diatur</span>
-          <!-- <span
+          <span class="grey--text text-weight-medium"
+            >Hashtag belum diatur</span
+          >
+          <span
             class="text-decoration-underline text-weight-medium secondary--text cursor-pointer"
-            @click="actionUseLastFormation"
+            :class="{ 'grey--text': loadingListMasterCategory }"
+            @click="actionUseLastActiveFormation"
           >
             Gunakan Formasi Terakhir
-          </span> -->
+          </span>
         </div>
 
         <div
@@ -96,6 +99,10 @@
 <script>
 export default {
   props: {
+    listLastActiveHashtag: {
+      type: Object,
+      default: () => {},
+    },
     listPreviewCategory: {
       type: Array,
       default: () => [],
@@ -110,6 +117,9 @@ export default {
       type: Number,
     },
     loadingSubmit: {
+      type: Boolean,
+    },
+    loadingListMasterCategory: {
       type: Boolean,
     },
   },
@@ -167,8 +177,10 @@ export default {
     removePreviewCategory(i, idx) {
       this.$emit("removePreviewCategory", i, idx);
     },
-    actionUseLastFormation() {
-      console.log("lol");
+    actionUseLastActiveFormation() {
+      if (!this.loadingListMasterCategory) {
+        this.$emit("actionUseLastActiveFormation");
+      }
     },
     submitData() {
       this.$emit("submitData");
@@ -185,6 +197,7 @@ export default {
   top: 0;
   position: -webkit-sticky;
   position: sticky;
+  z-index: 10;
 }
 .cursor-pointer {
   cursor: pointer;
