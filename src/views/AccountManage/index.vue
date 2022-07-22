@@ -10,8 +10,7 @@
       </custom-button>
     </HeaderContent>
     <v-row dense class="mt-8">
-      <v-col cols="6" class="d-flex justify-space-between">
-      </v-col>
+      <v-col cols="6" class="d-flex justify-space-between"> </v-col>
       <v-col cols="6">
         <div class="d-flex justify-end">
           <custom-input
@@ -234,15 +233,18 @@ export default {
       }
     },
     async onSearch() {
-      const payload = {
-        params: this.payloadSearch,
-        type: "management",
-      };
-      const response = await this.searchAccount(payload);
-      if (response.status === 200) {
-        this.formatResponse(response);
+      const keyword = this.payloadSearch;
+      if (keyword.length > 0) {
+        const payload = {
+          params: keyword,
+          type: "management",
+        };
+        const response = await this.searchAccount(payload);
+        if (response.status === 200) {
+          this.formatResponse(response);
+        }
       } else {
-        console.log(response);
+        return this.handleResponseListAdmin()
       }
     },
     ...mapActions({
