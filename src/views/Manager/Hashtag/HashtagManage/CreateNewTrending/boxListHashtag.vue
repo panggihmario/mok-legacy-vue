@@ -48,7 +48,7 @@
                     @mouseenter="onHover(i.id)"
                     @mouseleave="onHover('')"
                   >
-                    <div class="col">{{ i.value }}</div>
+                    <div class="col">{{ i.indexSearch + i.value }}</div>
                     <div class="col-4">{{ i.available }}</div>
                     <div class="col-2">
                       <v-btn
@@ -87,7 +87,7 @@
                   @mouseenter="onHover(i.id)"
                   @mouseleave="onHover('')"
                 >
-                  <div class="col">{{ i.value }}</div>
+                  <div class="col">{{ i.indexBeforeSearch + i.value }}</div>
                   <div class="col-4">{{ i.available }}</div>
                   <div class="col-2">
                     <v-btn
@@ -183,6 +183,11 @@ export default {
     };
   },
   watch: {
+    isSearchData() {
+      if (!this.isSearchData) {
+        this.search = "";
+      }
+    },
     search() {
       if (this.search == null) {
         this.search = "";
@@ -198,14 +203,6 @@ export default {
     },
     onHover(id) {
       this.hoverId = id;
-    },
-    onScrollSubCategory(entries, observer) {
-      const isIntersecting = entries[0].isIntersecting;
-      if (isIntersecting) {
-        this.$emit("onScrollSubCategory");
-      } else {
-        return;
-      }
     },
     actionSearchListHashtagFormationSubs() {
       this.$emit("actionSearchListHashtagFormationSubs", this.search);

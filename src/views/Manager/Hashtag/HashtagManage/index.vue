@@ -160,9 +160,7 @@
             <custom-button
               color="secondary"
               style="width: 145px; border-radius: 8px"
-              @click="
-                moveTo(createTrendingCountry.href, createTrendingCountry.value)
-              "
+              @click="handleCreateTrending"
               :disabled="createTrendingCountry == null"
             >
               Buat
@@ -171,6 +169,10 @@
         </v-card>
       </v-dialog>
     </div>
+
+    <v-snackbar v-model="alertFailed" top right color="primary" :timeout="3000">
+      Error: {{ dataFailed.message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -274,7 +276,6 @@ export default {
       this.setFilterCountry(this.filterCountryLocal);
     },
     filterCountry() {
-      console.log("lol hcia");
       this.page = 0;
       this.handleGetListManageHashtag();
     },
@@ -310,6 +311,35 @@ export default {
         path: val,
         query: query,
       });
+    },
+    async handleCreateTrending() {
+      let payload = {
+        params: {
+          sort: "createdAt",
+          direction: this.sort == "Newest" ? "DESC" : "ASC",
+          size: 10,
+          page: 0,
+          code:
+            this.createTrendingCountry.value == "china"
+              ? "chinatiktok"
+              : "tiktok",
+        },
+      };
+      let dataTrending = {
+        channel: this.createTrendingCountry.value,
+        data: null,
+      };
+      dataTrending.data = await this.getListHashtagFormation(payload)
+        .then((response) => {
+          return response.data.content[0];
+        })
+        .catch((err) => {
+          this.alertFailed = true;
+          this.dataFailed = err;
+        });
+      if (dataTrending.data != null) {
+        this.moveTo(this.createTrendingCountry.href, dataTrending, true);
+      }
     },
     handleGetListManageHashtag() {
       let payload = {
