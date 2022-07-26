@@ -17,6 +17,10 @@
 <script>
 export default {
   props: {
+    type : {
+      type : String,
+      default : 'text'
+    },
     label: {
       type: String,
       default: ""
