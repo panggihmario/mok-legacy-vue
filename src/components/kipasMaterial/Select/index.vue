@@ -64,7 +64,6 @@ export default {
         this.search = getValue
         return this.value[this.itemText]
       }
-      
     }
   },
   watch : {
