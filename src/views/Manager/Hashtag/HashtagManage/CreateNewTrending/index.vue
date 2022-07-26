@@ -292,7 +292,7 @@ export default {
       availablePercentage: 100,
       loadingSubmit: false,
       loadingSearch: false,
-      loadingListMasterCategory: false,
+      loadingListMasterCategory: true,
       isSearchData: false,
       isInputPercentage: false,
       isInputQty: false,
