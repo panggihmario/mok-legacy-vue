@@ -530,8 +530,6 @@ export default {
           ...this.dataPreview,
           totalData: this.totalData,
         });
-        console.log(this.dataPreview);
-        console.log(this.listPreviewCategory);
       }
       this.dialogAddPreview = false;
     },
