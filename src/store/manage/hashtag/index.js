@@ -45,6 +45,19 @@ export default {
           throw err;
         });
     },
+    getAvailabilitySubHashtag({ state }, payload) {
+      return this._vm
+        .$httpWithToken()
+        .get(`${state.pathManage}/hashtag-formations/subs/count`, {
+          params: payload.params,
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     createListTrendingHashtag({ state }, payload) {
       return this._vm
         .$httpWithToken()
