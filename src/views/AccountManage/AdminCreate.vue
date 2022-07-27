@@ -81,7 +81,6 @@ export default {
     handleGetListRole() {
       return this.getListRole().then((response) => {
         const listRole = response.data.data;
-        console.log(listRole);
         for (let i = 0; i < listRole.length; i++) {
           this.listAccountType.push(listRole[i].replace("ROLE_", ""));
         }

@@ -17,7 +17,22 @@
           <span class="grey--text text-weight-medium"
             >Hashtag belum diatur</span
           >
+
+          <v-tooltip v-if="loadingListMasterCategory" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                v-bind="attrs"
+                v-on="on"
+                class="text-decoration-underline text-weight-medium grey--text cursor-pointer"
+              >
+                Gunakan Formasi Terakhir
+              </span>
+            </template>
+            <span class="font-12">Sedang memeriksa kategori yang tersedia</span>
+          </v-tooltip>
+
           <span
+            v-else
             class="text-decoration-underline text-weight-medium secondary--text cursor-pointer"
             :class="{ 'grey--text': loadingListMasterCategory }"
             @click="actionUseLastActiveFormation"
@@ -124,6 +139,7 @@ export default {
     },
     loadingListMasterCategory: {
       type: Boolean,
+      default: true,
     },
   },
   data() {
