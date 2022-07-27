@@ -31,6 +31,9 @@
           :key="idx"
           class="d-flex"
         >
+          <!-- :draggable="true"
+          @dragstart="(e) => actionDragPreviewStart(e, item, idx)"
+          @dragend="actionDragPreviewEnd" -->
           <div class="col-3 font-12 font-weight-medium">
             {{ item.value }}
           </div>
@@ -182,6 +185,12 @@ export default {
         this.$emit("actionUseLastActiveFormation");
       }
     },
+    // actionDragPreviewStart(e, item, idx) {
+    //   console.log(e.layerY, idx, item);
+    // },
+    // actionDragPreviewEnd(e) {
+    //   console.log(e.layerY);
+    // },
     submitData() {
       this.$emit("submitData");
     },
