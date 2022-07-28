@@ -50,7 +50,8 @@
           @end="dragging = false"
         >
           <div
-            class="d-flex list-group-item"
+            class="d-flex list-group-item cursor-grab"
+            :class="{ 'cursor-grabbing': dragging }"
             v-for="(item, idx) in listPreviewCategory"
             :key="item.value"
           >
@@ -80,36 +81,6 @@
             </div>
           </div>
         </draggable>
-        <!-- <div
-          v-for="(item, idx) in listPreviewCategory"
-          :key="idx"
-          class="d-flex"
-        >
-          <div class="col-3 font-12 font-weight-medium">
-            {{ item.value }}
-          </div>
-          <div class="col-4 font-12 font-weight-medium">
-            {{ item.percentage }}%
-          </div>
-          <div class="col-2 font-12 font-weight-medium">
-            {{ item.qty }}
-          </div>
-          <div class="col-3 font-12 font-weight-medium">
-            <div class="d-flex">
-              <v-btn icon x-small @click="editPreviewCategory(item, idx)">
-                <v-icon size="12px" color="secondary">fas fa-pen</v-icon>
-              </v-btn>
-              <v-btn
-                icon
-                x-small
-                @click="removePreviewCategory(item, idx)"
-                class="ml-2"
-              >
-                <v-icon color="red">fas fa-times</v-icon>
-              </v-btn>
-            </div>
-          </div>
-        </div> -->
       </div>
 
       <div class="whitesnow pt-3 px-5 pb-4" style="height: 193px">
@@ -211,11 +182,6 @@ export default {
       ],
       totalPercentage: 0,
       enabled: true,
-      list: [
-        { name: "John", id: 0 },
-        { name: "Joao", id: 1 },
-        { name: "Jean", id: 2 },
-      ],
       dragging: false,
     };
   },
@@ -272,11 +238,20 @@ export default {
   position: sticky;
   z-index: 10;
 }
+.list-group-item:hover {
+  background-color: $secondarylowtint;
+}
+.ghost {
+  opacity: 1;
+  background: $primary;
+}
 .cursor-pointer {
   cursor: pointer;
 }
-.ghost {
-  opacity: 0.2;
-  background: $secondary;
+.cursor-grab {
+  cursor: grab;
+}
+.cursor-grabbing {
+  cursor: grabbing;
 }
 </style>
