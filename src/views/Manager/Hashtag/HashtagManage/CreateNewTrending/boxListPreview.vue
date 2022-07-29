@@ -17,7 +17,22 @@
           <span class="grey--text text-weight-medium"
             >Hashtag belum diatur</span
           >
+
+          <v-tooltip v-if="loadingListMasterCategory" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                v-bind="attrs"
+                v-on="on"
+                class="text-decoration-underline text-weight-medium grey--text cursor-pointer"
+              >
+                Gunakan Formasi Terakhir
+              </span>
+            </template>
+            <span class="font-12">Sedang memeriksa kategori yang tersedia</span>
+          </v-tooltip>
+
           <span
+            v-else
             class="text-decoration-underline text-weight-medium secondary--text cursor-pointer"
             :class="{ 'grey--text': loadingListMasterCategory }"
             @click="actionUseLastActiveFormation"
@@ -26,36 +41,46 @@
           </span>
         </div>
 
-        <div
-          v-for="(item, idx) in listPreviewCategory"
-          :key="idx"
-          class="d-flex"
+        <draggable
+          :list="listPreviewCategory"
+          :disabled="!enabled"
+          class="list-group"
+          ghost-class="ghost"
+          @start="dragging = true"
+          @end="dragging = false"
         >
-          <div class="col-3 font-12 font-weight-medium">
-            {{ item.value }}
-          </div>
-          <div class="col-4 font-12 font-weight-medium">
-            {{ item.percentage }}%
-          </div>
-          <div class="col-2 font-12 font-weight-medium">
-            {{ item.qty }}
-          </div>
-          <div class="col-3 font-12 font-weight-medium">
-            <div class="d-flex">
-              <v-btn icon x-small @click="editPreviewCategory(item, idx)">
-                <v-icon size="12px" color="secondary">fas fa-pen</v-icon>
-              </v-btn>
-              <v-btn
-                icon
-                x-small
-                @click="removePreviewCategory(item, idx)"
-                class="ml-2"
-              >
-                <v-icon color="red">fas fa-times</v-icon>
-              </v-btn>
+          <div
+            class="d-flex list-group-item cursor-grab"
+            :class="{ 'cursor-grabbing': dragging }"
+            v-for="(item, idx) in listPreviewCategory"
+            :key="item.value"
+          >
+            <div class="col-3 font-12 font-weight-medium">
+              {{ item.value }}
+            </div>
+            <div class="col-4 font-12 font-weight-medium">
+              {{ item.percentage }}%
+            </div>
+            <div class="col-2 font-12 font-weight-medium">
+              {{ item.qty }}
+            </div>
+            <div class="col-3 font-12 font-weight-medium">
+              <div class="d-flex">
+                <v-btn icon x-small @click="editPreviewCategory(item, idx)">
+                  <v-icon size="12px" color="secondary">fas fa-pen</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  x-small
+                  @click="removePreviewCategory(item, idx)"
+                  class="ml-2"
+                >
+                  <v-icon color="red">fas fa-times</v-icon>
+                </v-btn>
+              </div>
             </div>
           </div>
-        </div>
+        </draggable>
       </div>
 
       <div class="whitesnow pt-3 px-5 pb-4" style="height: 193px">
@@ -97,7 +122,12 @@
 </template>
 
 <script>
+import draggable from "vuedraggable";
+
 export default {
+  components: {
+    draggable,
+  },
   props: {
     listLastActiveHashtag: {
       type: Object,
@@ -121,6 +151,7 @@ export default {
     },
     loadingListMasterCategory: {
       type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -150,6 +181,8 @@ export default {
         },
       ],
       totalPercentage: 0,
+      enabled: true,
+      dragging: false,
     };
   },
   watch: {
@@ -182,6 +215,12 @@ export default {
         this.$emit("actionUseLastActiveFormation");
       }
     },
+    // actionDragPreviewStart(e, item, idx) {
+    //   console.log(e.layerY, idx, item);
+    // },
+    // actionDragPreviewEnd(e) {
+    //   console.log(e.layerY);
+    // },
     submitData() {
       this.$emit("submitData");
     },
@@ -199,7 +238,20 @@ export default {
   position: sticky;
   z-index: 10;
 }
+.list-group-item:hover {
+  background-color: $secondarylowtint;
+}
+.ghost {
+  opacity: 1;
+  background: $primary;
+}
 .cursor-pointer {
   cursor: pointer;
+}
+.cursor-grab {
+  cursor: grab;
+}
+.cursor-grabbing {
+  cursor: grabbing;
 }
 </style>

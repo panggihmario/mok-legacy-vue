@@ -84,7 +84,7 @@
             label="Phone"
             name="Phone"
             :value="data.mobile"
-            rules="required"
+            rules="required|numeric"
             v-model="data.mobile"
           />
           <custom-textarea

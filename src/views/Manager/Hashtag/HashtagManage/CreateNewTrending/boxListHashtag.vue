@@ -43,12 +43,12 @@
                   <div
                     v-for="(i, idx) in listMasterCategorySearch"
                     :key="idx"
-                    class="d-flex align-center font-12"
+                    class="d-flex align-center font-12 list-master-category"
                     style="height: 38px"
                     @mouseenter="onHover(i.id)"
                     @mouseleave="onHover('')"
                   >
-                    <div class="col">{{ i.indexSearch + i.value }}</div>
+                    <div class="col">{{ i.value }}</div>
                     <div class="col-4">{{ i.available }}</div>
                     <div class="col-2">
                       <v-btn
@@ -82,12 +82,12 @@
                 <div
                   v-for="(i, idx) in listMasterCategory"
                   :key="idx"
-                  class="d-flex align-center font-12"
+                  class="d-flex align-center font-12 list-master-category"
                   style="height: 38px"
                   @mouseenter="onHover(i.id)"
                   @mouseleave="onHover('')"
                 >
-                  <div class="col">{{ i.indexBeforeSearch + i.value }}</div>
+                  <div class="col">{{ i.value }}</div>
                   <div class="col-4">{{ i.available }}</div>
                   <div class="col-2">
                     <v-btn
@@ -212,7 +212,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.list-category:hover {
+.list-master-category:hover {
   background-color: $secondarylowtint;
 }
 .sticky {

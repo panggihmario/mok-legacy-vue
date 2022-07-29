@@ -292,7 +292,7 @@ export default {
       availablePercentage: 100,
       loadingSubmit: false,
       loadingSearch: false,
-      loadingListMasterCategory: false,
+      loadingListMasterCategory: true,
       isSearchData: false,
       isInputPercentage: false,
       isInputQty: false,
@@ -530,8 +530,6 @@ export default {
           ...this.dataPreview,
           totalData: this.totalData,
         });
-        console.log(this.dataPreview);
-        console.log(this.listPreviewCategory);
       }
       this.dialogAddPreview = false;
     },

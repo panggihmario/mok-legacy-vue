@@ -2,8 +2,8 @@
   <div>
     <HeaderContent label="Manage Hashtag" :list="crumbs"></HeaderContent>
 
-    <div class="d-flex">
-      <div class="pt-4">
+    <div class="d-flex font-12">
+      <div class="pt-4" style="width:285px">
         <div>
           <span class="font-weight-medium"
             >Jumlah data yang ingin ditampilkan</span
@@ -45,7 +45,7 @@
       </div>
 
       <v-card
-        width="286"
+        width="353"
         height="835"
         outlined
         flat
@@ -53,15 +53,17 @@
         style="border-radius: 8px; overflow: auto"
       >
         <div class="d-flex font-weight-medium whitesnow sticky">
-          <div class="col-6">Hashtag</div>
-          <div class="col-3">%</div>
-          <div class="col-3">Qty</div>
+          <div class="col-4">Hashtag</div>
+          <div class="col-2">%</div>
+          <div class="col-2">Qty</div>
+          <div class="col-4">Available</div>
         </div>
         <div v-for="(i, idx) in sortedHashtags" :key="idx">
           <div class="d-flex font-12 font-weight-medium grey--text">
-            <div class="col-6">{{ i.value }}</div>
-            <div class="col-3">{{ i.percent }}%</div>
-            <div class="col-3">{{ i.qty }}</div>
+            <div class="col-4">{{ i.value }}</div>
+            <div class="col-2">{{ i.percent }}%</div>
+            <div class="col-2">{{ i.qty }}</div>
+            <div class="col-4">{{ i.available }}</div>
           </div>
         </div>
       </v-card>
@@ -106,6 +108,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -127,6 +130,14 @@ export default {
       sortedHashtags: [],
     };
   },
+  watch: {
+    sortedHashtags() {
+      for (let i = 0; i < this.sortedHashtags.length; i++) {
+        const e = this.sortedHashtags[i];
+        this.handleGetAvailabilitySubHashtag(e, i);
+      }
+    },
+  },
   mounted() {
     this.sortingPreviewData();
   },
@@ -145,6 +156,22 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
+    }),
+    handleGetAvailabilitySubHashtag(v, idx) {
+      let payload = {
+        params: {
+          value: v.value,
+          code: this.$route.query.item.feedChannelCode,
+        },
+      };
+      return this.getAvailabilitySubHashtag(payload)
+        .then((response) => {
+          this.sortedHashtags[idx].available = response.data.available;
+        })
+        .catch((err) => {});
+    },
     formatDate(v, isHour) {
       let d = new Date(v);
       let date = d.getDate();
@@ -160,12 +187,10 @@ export default {
     },
     sortingPreviewData() {
       let hashtags = this.$route.query.item.hashtags;
-      // hashtags.sort((a, b) => {
-      //   let fa = a.value.toLowerCase();
-      //   let fb = b.value.toLowerCase();
-      //   return b.percent - a.percent || fa.localeCompare(fb);
-      // });
-      this.sortedHashtags = hashtags;
+      for (let i = 0; i < hashtags.length; i++) {
+        const e = hashtags[i];
+        this.sortedHashtags.push({ ...e, available: 0 });
+      }
     },
   },
 };
