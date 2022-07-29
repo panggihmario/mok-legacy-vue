@@ -43,7 +43,7 @@
                   <div
                     v-for="(i, idx) in listMasterCategorySearch"
                     :key="idx"
-                    class="d-flex align-center font-12"
+                    class="d-flex align-center font-12 list-master-category"
                     style="height: 38px"
                     @mouseenter="onHover(i.id)"
                     @mouseleave="onHover('')"
@@ -82,7 +82,7 @@
                 <div
                   v-for="(i, idx) in listMasterCategory"
                   :key="idx"
-                  class="d-flex align-center font-12"
+                  class="d-flex align-center font-12 list-master-category"
                   style="height: 38px"
                   @mouseenter="onHover(i.id)"
                   @mouseleave="onHover('')"
@@ -212,7 +212,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.list-category:hover {
+.list-master-category:hover {
   background-color: $secondarylowtint;
 }
 .sticky {
