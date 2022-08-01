@@ -10,6 +10,7 @@
       v-on="inputListener"
       :error-messages="errors"
       :background-color="colorbg"
+      :type="type"
     ></v-text-field>
   </ValidationProvider>
 </template>
