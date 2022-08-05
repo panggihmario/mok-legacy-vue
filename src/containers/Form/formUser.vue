@@ -77,7 +77,7 @@
             name="Phone"
             :value="data.mobile"
             v-model="data.mobile"
-            rules="required"
+            rules="required|numeric|min:10"
           />
 
           <div class="verified-box my-10 pa-6 font-weight-medium whitesnow">
