@@ -11,17 +11,21 @@
           <tr 
             v-for="item in items" 
             :key="item.id"
-            @mouseover="onHover(item)"
-            @mouseleave="onLeave"
-            @mousemove="getPosition"
-            @mouseout="stopTracking"
+           
           >  
-            <td>
+            <td
+              @mouseover="onHover(item)"
+                @mouseleave="onLeave"
+                @mousemove="getPosition"
+                @mouseout="stopTracking"
+            
+            >
               <LinkDialog
                 :item="item"
                 @refreshDataFeed="refreshDataFeed"
                 :isAdmin="true"
                 :feeds="feeds"
+                
               />
               <div
                   v-if="item.id === selectedItem" 
