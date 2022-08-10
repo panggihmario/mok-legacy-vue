@@ -33,11 +33,11 @@
       >
         <template v-slot:activator>
           <v-list-item-content>
-            <div class="d-flex align-center" >
+            <div class="d-flex align-center">
               <div style="width : 20px">
-                <v-icon  small>{{ item.action }}</v-icon>
+                <v-icon small>{{ item.action }}</v-icon>
               </div>
-              
+
               <div class="drawer__label ml-3">{{ item.title }}</div>
             </div>
           </v-list-item-content>
@@ -79,14 +79,23 @@
       </v-list-group>
     </v-list>
 
-    <div class="drawer__button">
-      <v-btn elevation="0" @click="handleLogout" color="white">
-        <v-icon size="15" class="error--text" left>mdi-logout</v-icon>
-        <span class="error--text text-capitalize" style="letterspacing: 0">
-          {{ $t("auth.logout") }}
-        </span>
-      </v-btn>
-    </div>
+    <template v-slot:append>
+      <div>
+        <v-btn
+          elevation="2"
+          tile
+          @click="handleLogout"
+          block
+          color="white"
+          height="50"
+        >
+          <v-icon size="15" class="error--text" left>mdi-logout</v-icon>
+          <span class="error--text text-capitalize" style="letterspacing: 0">
+            {{ $t("auth.logout") }}
+          </span>
+        </v-btn>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 

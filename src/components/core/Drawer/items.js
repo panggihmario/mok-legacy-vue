@@ -16,22 +16,6 @@ export default [
     ],
   },
   {
-    action: "fas fa-folder",
-    title: "Master",
-    items: [
-      // {
-      //   title: "Dashboard",
-      //   path: "/dashboard",
-      //   role: ["ROLE_ADMIN"],
-      // },
-      {
-        title: "Category",
-        path: "/master/category",
-        role: ["ROLE_ADMIN"],
-      },
-    ],
-  },
-  {
     action: "fas fa-sliders-h",
     title: "Manage Account",
     items: [
@@ -44,6 +28,22 @@ export default [
         title: "List User",
         path: "/user/1?search=",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+    ],
+  },
+  {
+    action: "fas fa-folder",
+    title: "Master",
+    items: [
+      // {
+      //   title: "Dashboard",
+      //   path: "/dashboard",
+      //   role: ["ROLE_ADMIN"],
+      // },
+      {
+        title: "Category",
+        path: "/master/category",
+        role: ["ROLE_ADMIN"],
       },
     ],
   },
@@ -99,6 +99,22 @@ export default [
     ],
   },
   {
+    title: "Kontent Feed",
+    action: "fas fa-pen",
+    items: [
+      {
+        title: "Post Feed",
+        path: "/post/1",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+      {
+        title: "Post Tiktok",
+        path: "/post/tiktok",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+    ],
+  },
+  {
     action: "fa-newspaper",
     title: "Publikasi",
     path: "/publisher",
@@ -139,22 +155,6 @@ export default [
   // 		},
   // 	]
   // },
-  {
-    title: "Kontent Feed",
-    action: "fas fa-pen",
-    items: [
-      {
-        title: "Post Feed",
-        path: "/post/1",
-        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
-      },
-      {
-        title: "Post Tiktok",
-        path: "/post/tiktok",
-        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
-      },
-    ],
-  },
   {
     action: "fas fa-shopping-basket",
     title: "Shop",
