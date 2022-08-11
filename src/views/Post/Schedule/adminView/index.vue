@@ -11,12 +11,13 @@
           <tr
             v-for="item in items"
             :key="item.id"
-            @mouseover="onHover(item)"
-            @mouseleave="onLeave"
-            @mousemove="getPosition"
-            @mouseout="stopTracking"
           >
-            <td>
+            <td
+              @mouseover="onHover(item)"
+              @mouseleave="onLeave"
+              @mousemove="getPosition"
+              @mouseout="stopTracking"
+            >
               <LinkDialog :item="item" :feeds="feeds" />
               <div
                 v-if="item.id === selectedItem"
@@ -49,7 +50,7 @@
             </td>
             <td>
               <div :class="ad['dg__desc']">
-                {{ formatingDate(item.publishedAt) }}
+                {{ formatingDate(item.scheduledTime) }}
               </div>
             </td>
             <td></td>

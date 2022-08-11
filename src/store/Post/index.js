@@ -67,6 +67,7 @@ export default {
       return dispatch('getWithToken', data , {root : true})
         .then(response => {
           const responseData = response.data.data
+          console.log(responseData)
           const content = responseData.content
           const totalPages = responseData.totalPages
           const totalData = responseData.totalElements
