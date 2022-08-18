@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate';
-import {required}   from 'vee-validate/dist/rules';
+import {required , alpha_dash}   from 'vee-validate/dist/rules';
 import * as rules from 'vee-validate/dist/rules';
 
 Object.keys(rules).forEach(rule => {
@@ -11,6 +11,14 @@ extend('required', {
 	message (fieldname){
 		const [realFieldName] = fieldname.split("-")
 		return `The ${realFieldName} field is required`
+	}
+})
+
+extend('alpha_dash', {
+	...alpha_dash , 
+	message (fieldname){
+		const [realFieldName] = fieldname.split("-")
+		return `${realFieldName} hanya dapat berupa huruf, angka dan underscore`
 	}
 })
 
