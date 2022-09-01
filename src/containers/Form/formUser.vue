@@ -42,7 +42,7 @@
             name="Username"
             :value="data.username"
             v-model="data.username"
-            rules="required"
+            rules="required|alpha_dash"
           />
           <custom-input
             :label="$t('input.password')"

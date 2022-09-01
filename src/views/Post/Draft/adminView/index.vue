@@ -11,14 +11,12 @@
           <tr 
             v-for="item in items" 
             :key="item.id"
-           
           >  
             <td
               @mouseover="onHover(item)"
-                @mouseleave="onLeave"
-                @mousemove="getPosition"
-                @mouseout="stopTracking"
-            
+              @mouseleave="onLeave"
+              @mousemove="getPosition"
+              @mouseout="stopTracking"
             >
               <LinkDialog
                 :item="item"
@@ -28,10 +26,10 @@
                 
               />
               <div
-                  v-if="item.id === selectedItem" 
-                  :class="feed['tb__hover-image']"
-                  id="displayAreaDraft"
-                  :style="{top : `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))) )}px`  }"
+                v-if="item.id === selectedItem" 
+                :class="feed['tb__hover-image']"
+                id="displayAreaDraft"
+                :style="{top : `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))) )}px`  }"
                 >
                   <img
                     :src="thumbnailImage"
@@ -41,7 +39,6 @@
             </td>
             <td >
               <div :class="feed['tb__caption']">{{ item.description }}</div>
-                
             </td>
             <td>
               <div :class="feed['tb__caption']">{{ item.channel.name }}</div>
