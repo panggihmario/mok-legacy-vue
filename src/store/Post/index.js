@@ -2,198 +2,281 @@ export default {
   namespaced: true,
   state: {
     pathPost: "feeds/post",
-    pathFeed : 'admin/social',
-    feeds : [],
-    channelCode : null,
-    totalPages : 0,
-    totalElements : 0,
-    keywordSearch : '',
-    paramsUsers : [],
-    paramsChannel : [],
-    paramsDate : [],
-    displayDate : ''
+    pathFeed: "admin/social",
+    pathTrendingFeeds: "admin/trending-feeds",
+    feeds: [],
+    channelCode: null,
+    totalPages: 0,
+    totalElements: 0,
+    keywordSearch: "",
+    paramsUsers: [],
+    paramsChannel: [],
+    paramsDate: [],
+    displayDate: "",
   },
-  mutations : {
-    setParamsUsers (state, payload) {
-      state.paramsUsers = payload
+  mutations: {
+    setParamsUsers(state, payload) {
+      state.paramsUsers = payload;
     },
-    setDisplayDate (state, payload) {
-      state.displayDate = payload
+    setDisplayDate(state, payload) {
+      state.displayDate = payload;
     },
-    setParamsChannel (state, payload) {
-      state.paramsChannel = payload
+    setParamsChannel(state, payload) {
+      state.paramsChannel = payload;
     },
-    setParamsDate (state, payload) {
-      state.paramsDate = payload
+    setParamsDate(state, payload) {
+      state.paramsDate = payload;
     },
-    setKeyWord (state, payload) {
-      state.keywordSearch = payload
+    setKeyWord(state, payload) {
+      state.keywordSearch = payload;
     },
     setFeeds(state, payload) {
-      state.feeds = payload
+      state.feeds = payload;
     },
-    setChannelCode (state, payload) {
-      state.channelCode = payload
+    setChannelCode(state, payload) {
+      state.channelCode = payload;
     },
-    setTotalPages (state, payload) {
-      state.totalPages = payload
+    setTotalPages(state, payload) {
+      state.totalPages = payload;
     },
-    setTotalElements (state, payload) {
-      state.totalElements = payload
+    setTotalElements(state, payload) {
+      state.totalElements = payload;
     },
     setEpochFeed(state, params) {
-      state.feeds[params.index].scheduledTime = params.time
-    }
+      state.feeds[params.index].scheduledTime = params.time;
+    },
   },
   actions: {
-    fetchFeedById ({state, dispatch}, payload) {
+    fetchFeedById({ state, dispatch }, payload) {
       const data = {
-        url : `${state.pathFeed}/${payload}`
-      }
-      return dispatch('getWithToken', data,  {root : true} )
-        .then(response => {
-          const responseData = response.data.data
-          return responseData
+        url: `${state.pathFeed}/${payload}`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          const responseData = response.data.data;
+          return responseData;
         })
-        .catch(err =>  { throw err })
+        .catch((err) => {
+          throw err;
+        });
     },
-    fetchFeeds ({state, dispatch, commit}, payload) {
+    fetchFeeds({ state, dispatch, commit }, payload) {
       const data = {
-        url : `${state.pathFeed}`,
-        params : {
-          ...payload
-        }
-      }
-      return dispatch('getWithToken', data , {root : true})
-        .then(response => {
-          const responseData = response.data.data
-          const content = responseData.content
-          const totalPages = responseData.totalPages
-          const totalData = responseData.totalElements
+        url: `${state.pathFeed}`,
+        params: {
+          ...payload,
+        },
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          const responseData = response.data.data;
+          const content = responseData.content;
+          const totalPages = responseData.totalPages;
+          const totalData = responseData.totalElements;
           const contentWithIndex = content.map((c, idx) => {
             return {
               ...c,
-              index : idx
-            }
-          })
-          commit('setFeeds', contentWithIndex)
-          commit('setTotalPages', totalPages)
-          commit('setTotalElements', totalData)
-          return responseData
+              index: idx,
+            };
+          });
+          commit("setFeeds", contentWithIndex);
+          commit("setTotalPages", totalPages);
+          commit("setTotalElements", totalData);
+          return responseData;
         })
-        .catch (err => { throw err })
+        .catch((err) => {
+          throw err;
+        });
     },
-    postFeed({ state , dispatch }, payload) {
+    postFeed({ state, dispatch }, payload) {
       const params = {
-        url : `${state.pathFeed}`,
-        data : {
-          ...payload
-        }
-      }
-      return dispatch('postWithToken', params, {root : true} )
-        .then(response => { return response })
-        .catch(err => { throw err })
+        url: `${state.pathFeed}`,
+        data: {
+          ...payload,
+        },
+      };
+      return dispatch("postWithToken", params, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
-    updatePostFeed ({state, dispatch}, payload) {
+    updatePostFeed({ state, dispatch }, payload) {
       const params = {
-        url : `${state.pathFeed}/${payload.id}/publisher/${payload.type}`,
-        data : {
-          ...payload.params
-        }
-      }
-      return dispatch('putWithToken', params, { root : true })
-        .then(response => { return response })
-        .catch(err => { throw err })
-      
+        url: `${state.pathFeed}/${payload.id}/publisher/${payload.type}`,
+        data: {
+          ...payload.params,
+        },
+      };
+      return dispatch("putWithToken", params, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
-    deleteFeed ({state, dispatch}, payload) {
+    deleteFeed({ state, dispatch }, payload) {
       const params = {
-        url : `${state.pathFeed}/${payload}`
-      }
-      return dispatch('deleteWithToken', params , { root : true })
-        .then(response => { return response })
-        .catch(err => {throw err})
+        url: `${state.pathFeed}/${payload}`,
+      };
+      return dispatch("deleteWithToken", params, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
-    searchFeed({state, dispatch, commit}, payload) {
+    searchFeed({ state, dispatch, commit }, payload) {
       const data = {
-        url : `${state.pathFeed}/search`,
-        params : {
-          ...payload
-        }
-      }
-      return dispatch('getWithToken', data , {root : true})
-      .then(response => {
-        const responseData = response.data.data
-        const content = responseData.content
-        const totalPages = responseData.totalPages
+        url: `${state.pathFeed}/search`,
+        params: {
+          ...payload,
+        },
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          const responseData = response.data.data;
+          const content = responseData.content;
+          const totalPages = responseData.totalPages;
+          const contentWithIndex = content.map((c, idx) => {
+            return {
+              ...c,
+              index: idx,
+            };
+          });
+          commit("setFeeds", contentWithIndex);
+          commit("setTotalPages", totalPages);
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    filterFeed({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathFeed}/filter`,
+        params: {
+          ...payload,
+          size: 10,
+        },
+      };
+      return dispatch("getWithToken", data, { root: true }).then((response) => {
+        const responseData = response.data.data;
+        const content = responseData.content;
+        const totalElements = responseData.totalElements;
+        const totalPages = responseData.totalPages;
         const contentWithIndex = content.map((c, idx) => {
           return {
             ...c,
-            index : idx
-          }
-        })
-        commit('setFeeds', contentWithIndex)
-        commit('setTotalPages', totalPages)
-        return responseData
-      })
-      .catch (err => { throw err })
+            index: idx,
+          };
+        });
+        commit("setFeeds", contentWithIndex);
+        commit("setTotalPages", totalPages);
+        commit("setTotalElements", totalElements);
+      });
     },
-    filterFeed({state, dispatch, commit}, payload) {
+    fetchListAccounts({ state, dispatch }, payload) {
       const data = {
-        url : `${state.pathFeed}/filter`,
-        params : {
+        url: `${state.pathFeed}/accounts`,
+        params: {
           ...payload,
-          size : 10
-        }
-      }
-      return dispatch('getWithToken', data , {root : true})
-        .then(response => {
-          const responseData = response.data.data
-          const content = responseData.content
-          const totalElements = responseData.totalElements
-          const totalPages = responseData.totalPages
-          const contentWithIndex = content.map((c, idx) => {
-            return {
-              ...c,
-              index : idx
-            }
-          })
-          commit('setFeeds', contentWithIndex)
-          commit('setTotalPages', totalPages)
-          commit('setTotalElements', totalElements)
-        })
+          sort: "createAt",
+          direction: "ASC",
+          size: 10,
+        },
+      };
+      return dispatch("getWithToken", data, { root: true }).then((response) => {
+        const responseData = response.data.data;
+        return responseData;
+      });
     },
-    fetchListAccounts ({state, dispatch}, payload) {
+    searchAccounts({ state, dispatch }, payload) {
       const data = {
-        url : `${state.pathFeed}/accounts`,
-        params : {
+        url: `${state.pathFeed}/account/username`,
+        params: {
+          sort: "createAt",
+          direction: "ASC",
           ...payload,
-          sort : 'createAt',
-          direction : 'ASC',
-          size : 10
-        }
-      }
-      return dispatch('getWithToken', data , {root : true})
-        .then(response => {
-          const responseData = response.data.data
-          return responseData
+        },
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          const responseData = response.data.data;
+          return responseData;
         })
+        .catch((err) => {
+          throw err;
+        });
     },
-    searchAccounts ({state, dispatch}, payload) {
+    fetchPostAllUser({ state, dispatch, commit }, payload) {
       const data = {
-        url : `${state.pathFeed}/account/username`,
-        params : {
-          sort : 'createAt',
-          direction : 'ASC',
-          ...payload
-        }
-      }
-      return dispatch('getWithToken', data, {root : true})
-        .then(response => {
-          const responseData = response.data.data
-          return responseData
+        url: `${state.pathTrendingFeeds}/candidates/filter`,
+        params: payload,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
         })
-        .catch(err =>  {throw err})
-    }
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserDetailById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/candidates/${payload.id}`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserTrending({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/actives/filter`,
+        params: payload,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserTrendingDetailById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/actives/${payload.id}`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    postFeedAsTrendingById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/actives`,
+        data: {
+          id: payload.id,
+        },
+      };
+      return dispatch("postWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
   },
 };
