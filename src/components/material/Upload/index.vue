@@ -150,6 +150,25 @@ export default {
           return true;
         }
     },
+    createThumbnail (data) {
+      
+      const largeThumbnail = this.drawImageOnCanvas(data, 1)
+    },
+    drawImageOnCanvas (scaleFactor, data) {
+      const { type, url, metaData } = data
+      let canvas = document.createElement('canvas')
+      let ctx = canvas.getContext('2d')
+      let media
+      if(type === "video") {
+        media = document.createElement('video')
+        media.src = url
+      }
+      let width = metaData.width * scaleFactor
+      let height = metaData.height * scaleFactor
+      canvas.width = width
+      canvas.height = height
+      ctx.drawImage(media, 0 )
+    },
     postApi(form, result) {
       return this.$httpUpload()
         .post(`${this.typeUpload}`, form)
@@ -160,6 +179,7 @@ export default {
           };
           this.loadingUpload = false;
           this.$emit("response", result);
+          // this.createThumbnail(response.data)
         })
         .catch((error) => {
           result = {
