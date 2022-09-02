@@ -4,10 +4,10 @@ import store from "../../store";
 import * as OSS from 'ali-oss'
 
 const storeOss = new OSS({
-  accessKeyId: 'LTAI5tGhEywRAdbecZZqaJPU',
-  accessKeySecret: '2cbJWhmNoIvUQBiybxvW6rsqKP4tB4',
-  bucket: 'koanba-storage-test',
-  endpoint: 'oss-ap-southeast-5.aliyuncs.com',
+  accessKeyId: process.env.VUE_APP_ACCESS_KEY_ID_OSS,
+  accessKeySecret: process.env.VUE_APP_ACCESS_KEY_SECRET,
+  bucket: process.env.VUE_APP_BUCKET_OSS,
+  endpoint: process.env.VUE_APP_ENDPOINT,
 });
 
 const BASE_URL = process.env.VUE_APP_BASE_URL;
