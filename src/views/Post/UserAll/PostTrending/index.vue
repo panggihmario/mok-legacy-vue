@@ -11,22 +11,24 @@
         hide-default-footer
       >
         <template v-slot:body="{ items }">
-          <tr v-for="(item, idx) in items" :key="idx">
-            <td class="font-12">
-              <span class="show-post" @click="openDialogPost(item.id, idx)"
-                >Lihat Post</span
-              >
-            </td>
-            <td class="font-12">
-              <div class="text-truncate" style="width: 200px">
-                {{ item.description }}
-              </div>
-            </td>
-            <td class="font-12">{{ item.channel.name }}</td>
-            <td class="font-12">{{ item.createBy }}</td>
-            <td class="font-12">{{ item.trendingBy }}</td>
-            <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
-          </tr>
+          <tbody>
+            <tr v-for="(item, idx) in items" :key="idx">
+              <td class="font-12">
+                <span class="show-post" @click="openDialogPost(item.id, idx)"
+                  >Lihat Post</span
+                >
+              </td>
+              <td class="font-12">
+                <div class="text-truncate" style="width: 200px">
+                  {{ item.description }}
+                </div>
+              </td>
+              <td class="font-12">{{ item.channel.name }}</td>
+              <td class="font-12">{{ item.createBy }}</td>
+              <td class="font-12">{{ item.trendingBy }}</td>
+              <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
+            </tr>
+          </tbody>
         </template>
       </v-data-table>
     </div>
