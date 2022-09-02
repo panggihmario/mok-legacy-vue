@@ -108,7 +108,12 @@ export default [
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
-        title: "Post Tiktok",
+        title: "Semua Postingan User",
+        path: "/post/user/all",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+      {
+        title: "Tiktok Mirroring",
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
