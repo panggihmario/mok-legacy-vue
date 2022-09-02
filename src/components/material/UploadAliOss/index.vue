@@ -196,6 +196,7 @@ export default {
       return new Promise((resolve, reject) => {
         const videoPlayer = document.createElement('video');
         videoPlayer.setAttribute('src', URL.createObjectURL(file));
+        videoPlayer.crossOrigin = "anonymous";
         videoPlayer.load();
         videoPlayer.addEventListener('error', (ex) => {
           reject("error when loading video file", ex);
