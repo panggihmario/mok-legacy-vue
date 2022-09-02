@@ -6,6 +6,7 @@ export default {
     pathDownloadNoWatermark: "download-no-watermark",
     previewTiktokData: {},
     previewTiktokPayload: {
+      id: null,
       channel: null,
       description: null,
       medias: [],
