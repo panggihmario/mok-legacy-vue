@@ -2,44 +2,19 @@
   <div>
     <custom-form :onSubmit="submitForm">
       <HeaderContent label="Post Feed" :list="list">
-        <custom-button
-          color="secondary"
-          class="white--text"
-          size="small"
-          type="submit"
-          :loading="loading"
-        >
+        <custom-button color="secondary" class="white--text" size="small" type="submit" :loading="loading">
           Submit Post
         </custom-button>
       </HeaderContent>
       <div class="d-flex mb-4">
         <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
-          <Upload
-            :id="`post-${idx}`"
-            @saveImageOnPayload="saveImageOnPayload"
-          />
+          <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" />
         </div>
       </div>
       <div style="width: 584px">
-        <custom-textarea
-          label="Caption"
-          name="Caption"
-          counter
-          v-model="description"
-          :value="description"
-          rules="required|max:1000"
-        />
+        <custom-textarea label="Caption" name="Caption" counter v-model="description" :value="description"
+          rules="required|max:1000" />
       </div>
-
-      <!-- <div style="width: 250px">
-        <k-select 
-          :items="channels" 
-          item-text="name" 
-          placeholder="Pilih Channel"
-          v-model="channel"
-          label="Channel"
-        />
-      </div> -->
 
       <div style="width: 250px">
         <custom-autocomplete
@@ -51,6 +26,8 @@
           return-object
         />
       </div>
+
+
 
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
@@ -74,6 +51,9 @@ export default {
   data() {
     return {
       description: "",
+      testUrl: "",
+      file: "",
+      urlUpload : "https://test-api-upload.kipaskipas.com/api/v1",
       visibleThumbnail: false,
       list: [
         {
@@ -118,6 +98,7 @@ export default {
         channel: this.channel,
         description: this.description,
       };
+
       return this.postFeed(payload)
         .then(() => {
           this.alertSucces = true;

@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "1.8.8-rc1",
+  "version": "1.8.8-rc2",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -22,6 +22,8 @@
     "@ckeditor/ckeditor5-upload": "^22.0.0",
     "@ckeditor/ckeditor5-vue": "^1.0.2",
     "@popperjs/core": "^2.10.1",
+    "@rajesh896/video-thumbnails-generator": "^2.3.9",
+    "ali-oss": "^6.17.1",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "moment": "^2.24.0",
