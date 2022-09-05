@@ -146,6 +146,7 @@ export default {
       return this.$storeOss.put(filePath, file)
         .then(response => {
           this.dataResponse.url = response.url
+          console.log(response)
           if (type === 'video') {
             return this.createThumbnail(file, 0.0)
           } else {
