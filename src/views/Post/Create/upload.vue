@@ -1,6 +1,6 @@
 <template>
   <div>
-    <custom-upload 
+    <upload-oss
       :id="id" style="display: none" 
       @response="getImage"
       :minVideoHeight="720"
@@ -61,6 +61,7 @@ export default {
           position,
           response : payload.response
         }
+        console.log(payload.response)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }
