@@ -1,13 +1,5 @@
 <template>
-  <v-navigation-drawer
-    floating
-    color="whitesmoke"
-    app
-    width="328"
-    permanent
-    right
-    style="padding:24px"
-  >
+  <v-navigation-drawer floating color="whitesmoke" app width="328" permanent right style="padding:24px">
     <div>
       <h5>Konten Terpilih</h5>
       <p class="font-12 mt-2">
@@ -15,43 +7,21 @@
         “Submit Post”
       </p>
       <div>
-        <video
-          :src="previewTiktokData.video.playAddr"
-          controls
-          style="max-width: 100% !important; height: 100% !important"
-        ></video>
+        <video :src="previewTiktokData.video.playAddr" controls
+          style="max-width: 100% !important; height: 100% !important"></video>
 
         <div class="mt-8 font-12 text-break">
-          <v-textarea
-            v-model="previewTiktokPayload.description"
-            label="Description"
-            outlined
-            background-color="white"
-            class="font-12"
-          ></v-textarea>
-          <custom-autocomplete
-            :value="previewTiktokPayload.channel"
-            v-model="previewTiktokPayload.channel"
-            :items="channels"
-            item-text="name"
-            placeholder="Select Channel"
-            return-object
-          />
+          <v-textarea v-model="previewTiktokPayload.description" label="Description" outlined background-color="white"
+            class="font-12"></v-textarea>
+          <custom-autocomplete :value="previewTiktokPayload.channel" v-model="previewTiktokPayload.channel"
+            :items="channels" item-text="name" placeholder="Select Channel" return-object />
         </div>
         <div class="d-flex">
-          <custom-button
-            color="white"
-            class="primary--text mr-4"
-            @click="actionChangeStatusPreviewTiktok(false)"
-          >
+          <custom-button color="white" class="primary--text mr-4" @click="actionChangeStatusPreviewTiktok(false)">
             Cancel
           </custom-button>
-          <custom-button
-            color="primary"
-            class="white--text"
-            :loading="loadingSubmit"
-            @click="actionGetTiktokVideoNoWatermark"
-          >
+          <custom-button color="primary" class="white--text" :loading="loadingSubmit"
+            @click="actionGetTiktokVideoNoWatermark">
             Submit Post
           </custom-button>
         </div>
@@ -69,6 +39,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -77,11 +48,15 @@ export default {
       loadingSubmit: false,
       alertSuccess: false,
       alertFailed: false,
+      asetKipas: 'https://asset.kipaskipas.com',
       channels: [],
-      payload: {
-        medias: [],
-        description: null,
-        channel: null,
+      payload: {},
+      dataResponse: {
+        id: null,
+        type: "video",
+        url: "",
+        thumbnail: {},
+        metadata: {},
       },
       payloadFailed: {
         message: "",
@@ -146,15 +121,111 @@ export default {
         this.loadingSubmit = true;
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
-            this.previewTiktokPayload.medias.push(response.data.data);
-            this.actionPostToDraft();
+            let res = response.data.data;
+            this.actionPostToDraft(res);
+            if (process.env.VUE_APP_SERVER_STATUS === 'production') {
+              this.dataResponse.url = `${this.asetKipas}/${res.name}`
+            } else {
+              this.dataResponse.url = res.url;
+            }
           })
           .catch((err) => {
             this.loadingSubmit = false;
           });
       }
     },
-    actionPostToDraft() {
+    actionPostToDraft(res) {
+      return this.drawImageOnCanvas(res.url, 0.0)
+        .then((base64data) => {
+          const currentDateEpoch = moment(new Date()).valueOf();
+          const filePath = `/img/media/${currentDateEpoch}.jpg`;
+          const thumbnail = this.dataURLtoFile(
+            base64data,
+            `${+new Date()}.jpg`
+          );
+          return this.$storeOss.put(filePath, thumbnail);
+        })
+        .then((response) => {
+          let url = `${this.asetKipas}/${response.name}`
+          if (process.env.VUE_APP_SERVER_STATUS === "production") {
+            this.dataResponse.thumbnail = {
+              small: url,
+              medium: url,
+              large: url,
+            };
+            this.actionPostFeed();
+          } else {
+            this.dataResponse.thumbnail = {
+              small: response.url,
+              medium: response.url,
+              large: response.url,
+            };
+            this.actionPostFeed();
+          }
+
+        })
+        .catch((err) => { });
+    },
+    drawImageOnCanvas(url, seekTo) {
+      return new Promise((resolve, reject) => {
+        const videoPlayer = document.createElement("video");
+        videoPlayer.setAttribute("src", url);
+        videoPlayer.crossOrigin = "anonymous";
+        videoPlayer.load();
+        videoPlayer.addEventListener("error", (ex) => {
+          reject("error when loading video file", ex);
+        });
+
+        videoPlayer.addEventListener("loadedmetadata", () => {
+          if (videoPlayer.duration < seekTo) {
+            reject("video is too short.");
+            return;
+          }
+          setTimeout(() => {
+            videoPlayer.currentTime = seekTo;
+          }, 200);
+          videoPlayer.addEventListener("seeked", () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = videoPlayer.videoWidth;
+            canvas.height = videoPlayer.videoHeight;
+
+            this.dataResponse.metadata = {
+              width: videoPlayer.videoWidth,
+              height: videoPlayer.videoHeight,
+              size: 100,
+            };
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+            ctx.canvas.toBlob(
+              (blob) => {
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function () {
+                  var base64data = reader.result;
+                  resolve(base64data);
+                };
+              },
+              "image/jpeg",
+              0.75 /* quality */
+            );
+          });
+        });
+      });
+    },
+    dataURLtoFile(dataurl, filename) {
+      let arr = dataurl.split(",");
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    },
+    actionPostFeed() {
+      this.previewTiktokPayload.medias[0] = this.dataResponse;
       return this.postFeed(this.previewTiktokPayload)
         .then((response) => {
           this.loadingSubmit = false;
