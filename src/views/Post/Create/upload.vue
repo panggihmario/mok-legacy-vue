@@ -61,7 +61,6 @@ export default {
           position,
           response : payload.response
         }
-        console.log(payload.response)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }
