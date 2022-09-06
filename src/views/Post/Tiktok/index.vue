@@ -185,6 +185,7 @@ export default {
         product: null,
         type: "social",
       },
+      newPayload: {},
       payloadError: {
         message: "Server Error",
       },
@@ -439,44 +440,87 @@ export default {
         });
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
-      if (this.payload.channel == null) {
-        this.alertRules = true;
-        setTimeout(() => {
-          this.alertRules = false;
-        }, 3000);
-      } else {
-        this.loadingSubmit = true;
-        return this.getTiktokVideoNoWatermark(url)
-          .then((response) => {
-            this.payload.medias.push(response.data.data);
-            this.actionPostToDraft();
-          })
-          .catch((err) => {
-            this.loadingSubmit = false;
-          });
-      }
+      // const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
+      // if (this.payload.channel == null) {
+      //   this.alertRules = true;
+      //   setTimeout(() => {
+      //     this.alertRules = false;
+      //   }, 3000);
+      // } else {
+      //   this.loadingSubmit = true;
+      //   return this.getTiktokVideoNoWatermark(url)
+      //     .then((response) => {
+      //       this.newPayload = response.data;
+      //       console.log(response.data);
+      //       // this.payload.medias.push(response.data.data);
+      //       // this.actionPostToDraft();
+      //     })
+      //     .catch((err) => {
+      //       this.loadingSubmit = false;
+      //     });
+      // }
     },
     actionPostToDraft() {
-      this.focusIndex = null;
-      return this.postFeed(this.payload)
-        .then((response) => {
-          this.payload = {
-            medias: [],
-            description: "",
-            channel: null,
-            product: null,
-            type: "social",
-          };
-          this.loadingSubmit = false;
-          this.alertSuccess = true;
-          setTimeout(() => {
-            this.alertSuccess = false;
-          }, 3000);
-        })
-        .catch((err) => {
-          this.loadingSubmit = false;
+      console.log("lol new", this.newPayload);
+      // return this.drawImageOnCanvas();
+      // this.focusIndex = null;
+      // return this.postFeed(this.payload)
+      //   .then((response) => {
+      //     this.payload = {
+      //       medias: [],
+      //       description: "",
+      //       channel: null,
+      //       product: null,
+      //       type: "social",
+      //     };
+      //     this.loadingSubmit = false;
+      //     this.alertSuccess = true;
+      //     setTimeout(() => {
+      //       this.alertSuccess = false;
+      //     }, 3000);
+      //   })
+      //   .catch((err) => {
+      //     this.loadingSubmit = false;
+      //   });
+    },
+    drawImageOnCanvas(file, seekTo) {
+      return new Promise((resolve, reject) => {
+        const videoPlayer = document.createElement("video");
+        videoPlayer.setAttribute("src", URL.createObjectURL(file));
+        videoPlayer.load();
+        videoPlayer.addEventListener("error", (ex) => {
+          reject("error when loading video file", ex);
         });
+
+        videoPlayer.addEventListener("loadedmetadata", () => {
+          if (videoPlayer.duration < seekTo) {
+            reject("video is too short.");
+            return;
+          }
+          setTimeout(() => {
+            videoPlayer.currentTime = seekTo;
+          }, 200);
+          videoPlayer.addEventListener("seeked", () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = videoPlayer.videoWidth;
+            canvas.height = videoPlayer.videoHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+            ctx.canvas.toBlob(
+              (blob) => {
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function() {
+                  var base64data = reader.result;
+                  resolve(base64data);
+                };
+              },
+              "image/jpeg",
+              0.75 /* quality */
+            );
+          });
+        });
+      });
     },
     async getResponseChannel() {
       const response = await this.getAllChannel();

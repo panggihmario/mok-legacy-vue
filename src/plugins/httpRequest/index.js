@@ -1,9 +1,17 @@
 import axios from "axios";
 import Vue from "vue";
 import store from "../../store";
+import * as OSS from 'ali-oss'
+console.log(process.env.NODE_ENV)
+const storeOss = new OSS({
+  accessKeyId: process.env.VUE_APP_ACCESS_KEY_ID_OSS,
+  accessKeySecret: process.env.VUE_APP_ACCESS_KEY_SECRET,
+  bucket: process.env.VUE_APP_BUCKET_OSS,
+  endpoint: process.env.VUE_APP_ENDPOINT,
+});
 
 const BASE_URL = process.env.VUE_APP_BASE_URL;
-const BASE_UPLOAD_URL = process.env.VUE_APP_UPLOAD;
+const BASE_UPLOAD_URL = `${process.env.VUE_APP_UPLOAD}`;
 const BASE_TIKTOK_URL = process.env.VUE_APP_BASE_TIKTOK_URL;
 
 const getToken = () => {
@@ -77,5 +85,6 @@ Vue.prototype.$httpUpload = serviceUpload;
 Vue.prototype.$httpDownload = exportFile;
 
 Vue.prototype.$fetchWithToken = getWithToken;
+Vue.prototype.$storeOss = storeOss
 
 Vue.prototype.$fetchTiktokWithoutToken = getTiktokWithoutToken;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <custom-upload 
+    <upload-oss
       :id="id" style="display: none" 
       @response="getImage"
       :minVideoHeight="720"
