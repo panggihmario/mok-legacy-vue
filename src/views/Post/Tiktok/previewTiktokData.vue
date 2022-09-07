@@ -110,7 +110,7 @@ export default {
       }
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
+      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/videosss/${this.previewTiktokData.video.id}`;
       if (this.previewTiktokPayload.channel == null) {
         this.alertFailed = true;
         setTimeout(() => {
@@ -122,11 +122,17 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            this.actionPostToDraft(res);
-            if (process.env.VUE_APP_SERVER_STATUS === 'production') {
-              this.dataResponse.url = `${this.asetKipas}/${res.name}`
-            } else {
-              this.dataResponse.url = res.url;
+            if (res.name){
+              this.actionPostToDraft(res);
+              if (process.env.VUE_APP_SERVER_STATUS === 'production') {
+                this.dataResponse.url = `${this.asetKipas}/${res.name}`
+              } else {
+                this.dataResponse.url = res.url;
+              }
+            }else{
+              this.loadingSubmit = false;
+              this.payloadFailed.message = 'Upload Failed';
+              this.alertFailed = true;
             }
           })
           .catch((err) => {
@@ -226,6 +232,7 @@ export default {
     },
     actionPostFeed() {
       this.previewTiktokPayload.medias[0] = this.dataResponse;
+      console.log(this.dataResponse)
       return this.postFeed(this.previewTiktokPayload)
         .then((response) => {
           this.loadingSubmit = false;
