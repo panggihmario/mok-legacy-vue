@@ -2,7 +2,7 @@ import axios from "axios";
 import Vue from "vue";
 import store from "../../store";
 import * as OSS from 'ali-oss'
-console.log(process.env.NODE_ENV)
+
 const storeOss = new OSS({
   accessKeyId: process.env.VUE_APP_ACCESS_KEY_ID_OSS,
   accessKeySecret: process.env.VUE_APP_ACCESS_KEY_SECRET,
