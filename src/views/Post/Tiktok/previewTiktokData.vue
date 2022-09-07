@@ -130,7 +130,6 @@ export default {
                 this.dataResponse.url = res.url;
               }
             }else{
-              console.log("failed upload")
               this.loadingSubmit = false;
               this.payloadFailed.message = 'Upload Failed';
               this.alertFailed = true;
