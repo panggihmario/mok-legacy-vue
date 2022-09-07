@@ -110,7 +110,7 @@ export default {
       }
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/videosss/${this.previewTiktokData.video.id}`;
+      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
       if (this.previewTiktokPayload.channel == null) {
         this.alertFailed = true;
         setTimeout(() => {
