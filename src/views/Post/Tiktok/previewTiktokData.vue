@@ -122,11 +122,17 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            this.actionPostToDraft(res);
-            if (process.env.VUE_APP_SERVER_STATUS === 'production') {
-              this.dataResponse.url = `${this.asetKipas}/${res.name}`
-            } else {
-              this.dataResponse.url = res.url;
+            if (res.name){
+              this.actionPostToDraft(res);
+              if (process.env.VUE_APP_SERVER_STATUS === 'production') {
+                this.dataResponse.url = `${this.asetKipas}/${res.name}`
+              } else {
+                this.dataResponse.url = res.url;
+              }
+            }else{
+              this.loadingSubmit = false;
+              this.payloadFailed.message = 'Upload Failed';
+              this.alertFailed = true;
             }
           })
           .catch((err) => {
