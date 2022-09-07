@@ -232,7 +232,6 @@ export default {
     },
     actionPostFeed() {
       this.previewTiktokPayload.medias[0] = this.dataResponse;
-      console.log(this.dataResponse)
       return this.postFeed(this.previewTiktokPayload)
         .then((response) => {
           this.loadingSubmit = false;
