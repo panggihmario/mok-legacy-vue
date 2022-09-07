@@ -122,7 +122,6 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            res.name = undefined
             if (res.name){
               this.actionPostToDraft(res);
               if (process.env.VUE_APP_SERVER_STATUS === 'production') {
