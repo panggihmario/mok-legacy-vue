@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <label-field :class="label && 'mb-5'">{{  label  }}</label-field>
+      <label-field :class="label && 'mb-5'">{{ label }}</label-field>
     </div>
     <v-btn height="29px" :outlined="!text" :text="text" elevation="0" :color="color" class="upload__button"
       @click="handleUpload" :loading="loadingUpload">
@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       loadingUpload: false,
+      asetKipas: 'https://asset.kipaskipas.com',
       media: {
         size: "",
         width: "",
@@ -139,22 +140,38 @@ export default {
           size: file.size
         }
       }
-      const fileType = file.name.split(".")[1]
+      const fileType = file.type.split("/")[1]
       this.dataResponse = data
       const currentDateEpoch = moment(new Date).valueOf()
       const filePath = `/img/media/${currentDateEpoch}.${fileType}`
       return this.$storeOss.put(filePath, file)
         .then(response => {
-          this.dataResponse.url = response.url
-          if (type === 'video') {
-            return this.createThumbnail(file, 0.0)
+          let url
+          if (process.env.VUE_APP_SERVER_STATUS === 'production') {
+            url = `${this.asetKipas}/${response.name}`
+            this.dataResponse.url = url
+            if (type === 'video') {
+              return this.createThumbnail(file, 0.0)
+            } else {
+              return {
+                large: url,
+                medium: url,
+                small: url
+              }
+            }
           } else {
-            return {
-              large: response.url,
-              medium: response.url,
-              small: response.url
+            this.dataResponse.url = response.url
+            if (type === 'video') {
+              return this.createThumbnail(file, 0.0)
+            } else {
+              return {
+                large: response.url,
+                medium: response.url,
+                small: response.url
+              }
             }
           }
+
         })
         .then(thumbnail => {
           const temp = {
@@ -184,13 +201,22 @@ export default {
           return this.$storeOss.putACL(filePath, 'public-read')
         })
         .then(() => {
-          return {
+          let url
+          if (process.env.VUE_APP_SERVER_STATUS === "production") {
+            url = `${this.asetKipas}/${response.name}`
+            return {
+              large: url,
+              medium: url,
+              small: url
+            }
+          } else {
+            return {
               large: response.url,
               medium: response.url,
               small: response.url
             }
+          }
         })
-        
     },
     drawImageOnCanvas(file, seekTo) {
       return new Promise((resolve, reject) => {
