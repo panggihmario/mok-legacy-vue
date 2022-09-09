@@ -27,6 +27,17 @@
               <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ item.trendingBy }}</td>
               <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
+              <td class="font-12 text-center">
+                <v-btn
+                  small
+                  color="secondary"
+                  class="text-capitalize"
+                  style="border-radius: 5px"
+                  @click="actionPushNotif(item.id)"
+                >
+                  Push Notif
+                </v-btn>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -185,6 +196,7 @@ export default {
         { text: "User", class: "whitesnow" },
         { text: "Di Trendingkan Oleh", class: "whitesnow" },
         { text: "Trending Berakhir", class: "whitesnow" },
+        { text: "Action", class: "whitesnow", align: "center" },
       ],
       // tableItems: [],
       tableItemsDialog: {
@@ -235,6 +247,9 @@ export default {
         .catch((err) => {
           this.loadingDetail = false;
         });
+    },
+    actionPushNotif(id) {
+      this.$emit("actionPushNotif", id);
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");

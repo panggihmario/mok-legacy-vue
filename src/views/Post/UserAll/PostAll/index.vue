@@ -26,6 +26,17 @@
               <td class="font-12">{{ item.channel.name }}</td>
               <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ formatingDate(item.createAt) }}</td>
+              <td class="font-12 text-center">
+                <v-btn
+                  small
+                  color="secondary"
+                  class="text-capitalize"
+                  style="border-radius: 5px"
+                  @click="actionPushNotif(item.id)"
+                >
+                  Push Notif
+                </v-btn>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -202,6 +213,7 @@ export default {
         { text: "Channel", class: "whitesnow" },
         { text: "User", class: "whitesnow" },
         { text: "Dipublish Pada", class: "whitesnow" },
+        { text: "Action", class: "whitesnow", align: "center" },
       ],
       tableItemsDialog: {
         medias: [],
@@ -270,6 +282,9 @@ export default {
           this.loadingMakeTrending = false;
           this.alertError = true;
         });
+    },
+    actionPushNotif(id) {
+      this.$emit("actionPushNotif", id);
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");

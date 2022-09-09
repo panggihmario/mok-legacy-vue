@@ -12,10 +12,10 @@
       <div class="d-flex align-center">
         <v-btn
           v-if="!showFilter"
-          small
           depressed
           class="text-capitalize"
           @click="showFilter = true"
+          height="40px"
           >Filter Data</v-btn
         >
         <div class="ml-2" style="width: 200px">
@@ -79,10 +79,17 @@
       </div>
 
       <div class="col d-flex justify-end align-center">
-        <v-btn small depressed color="success" @click="actionFilter"
+        <v-btn
+          depressed
+          color="success"
+          class="text-capitalize"
+          @click="actionFilter"
           >Terapkan Filter</v-btn
         >
-        <v-btn small depressed @click="isResetFilter = true" class="ml-2"
+        <v-btn
+          depressed
+          class="ml-2 text-capitalize"
+          @click="isResetFilter = true"
           >Batalkan</v-btn
         >
       </div>

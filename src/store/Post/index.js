@@ -278,5 +278,17 @@ export default {
           throw err;
         });
     },
+    postPushNotifTrendingById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/push-notif/${payload.id}`,
+      };
+      return dispatch("postWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
   },
 };
