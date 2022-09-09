@@ -32,6 +32,7 @@
           :totalPages="totalPagesCandidate"
           :totalElements="totalElementsCandidate"
           @onChangePage="changePage"
+          @actionPushNotif="actionPushNotif"
         ></Post-All>
       </div>
       <div v-else-if="tab == 1">
@@ -41,9 +42,29 @@
           :totalPages="totalPagesActive"
           :totalElements="totalElementsActive"
           @onChangePage="changePage"
+          @actionPushNotif="actionPushNotif"
         ></Post-All-Trending>
       </div>
     </div>
+
+    <v-snackbar
+      :timeout="3000"
+      top
+      right
+      v-model="alertPushNotifSuccess"
+      color="success"
+    >
+      Success
+    </v-snackbar>
+    <v-snackbar
+      :timeout="3000"
+      top
+      right
+      v-model="alertPushNotifFailed"
+      color="error"
+    >
+      {{ pushNotifFailedData }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -87,6 +108,9 @@ export default {
         endAt: "",
         keyword: "",
       },
+      alertPushNotifSuccess: false,
+      alertPushNotifFailed: false,
+      pushNotifFailedData: "",
     };
   },
   watch: {
@@ -111,6 +135,7 @@ export default {
     ...mapActions({
       fetchPostAllUser: "post/fetchPostAllUser",
       fetchPostAllUserTrending: "post/fetchPostAllUserTrending",
+      postPushNotifTrendingById: "post/postPushNotifTrendingById",
       searchAccount: "account/searchAccount",
       searchChannel: "channel/searchChannel",
     }),
@@ -196,6 +221,19 @@ export default {
         .catch((err) => {
           this.alertSearchFailed = true;
           this.searchFailedData = err.response;
+        });
+    },
+    actionPushNotif(id) {
+      let payload = {
+        id,
+      };
+      return this.postPushNotifTrendingById(payload)
+        .then((response) => {
+          this.alertPushNotifSuccess = true;
+        })
+        .catch((err) => {
+          this.alertPushNotifFailed = true;
+          this.pushNotifFailedData = err.response.data;
         });
     },
     changeTab(v) {

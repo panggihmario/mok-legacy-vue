@@ -232,6 +232,9 @@ export default {
     },
     actionPostFeed() {
       this.previewTiktokPayload.medias[0] = this.dataResponse;
+      if (this.previewTiktokPayload.description == null) {
+        this.previewTiktokPayload.description = "";
+      }
       return this.postFeed(this.previewTiktokPayload)
         .then((response) => {
           this.loadingSubmit = false;
