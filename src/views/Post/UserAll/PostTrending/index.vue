@@ -33,7 +33,7 @@
                   color="secondary"
                   class="text-capitalize"
                   style="border-radius: 5px"
-                  @click="actionPushNotif(item.id)"
+                  @click="openDialogPushNotif(item.id)"
                 >
                   Push Notif
                 </v-btn>
@@ -178,6 +178,52 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-dialog>
+
+
+    <v-dialog v-model="dialogPushNotif" width="411">
+      <v-card>
+        <div class="row no-gutters">
+          <div class="col text-end pt-6 pr-2">
+            <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
+          </div>
+          <div class="col-8 font-12 pt-6">
+            <span class="font-14 black--text"
+              >Apakah kamu yakin ingin melakukan push notif untuk konten
+              ini?</span
+            >
+            <p class="mt-2 grey--text">
+              Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
+              bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
+              ini karena akan sangat mengganggu user nantinya.
+            </p>
+            <div class="d-flex justify-space-between mb-6">
+              <v-btn
+                x-small
+                height="29px"
+                depressed
+                class="text-capitalize"
+                @click="closeDialogPushNotif"
+                >Batalkan Push Notif</v-btn
+              >
+              <v-btn
+                x-small
+                height="29px"
+                depressed
+                class="text-capitalize"
+                color="secondary"
+                @click="actionPushNotif"
+                >Push Notif Sekarang</v-btn
+              >
+            </div>
+          </div>
+          <div class="col d-flex justify-end">
+            <v-btn rounded icon>
+              <v-icon size="18" @click="closeDialogPushNotif">mdi-close</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -208,6 +254,8 @@ export default {
       dialogPost: false,
       dialogPostDataIdx: 0,
       dialogPostMediasIdx: 0,
+      dialogPushNotif: false,
+      dialogPushNotifId: "",
       page: 1,
       // totalPages: 0,
     };
@@ -229,11 +277,17 @@ export default {
       }
     },
   },
+  mounted() {
+    this.getRoute();
+  },
   methods: {
     ...mapActions({
       fetchPostAllUserTrendingDetailById:
         "post/fetchPostAllUserTrendingDetailById",
     }),
+    getRoute() {
+      this.page = parseInt(this.$route.params.page);
+    },
     handleGetUserPostDetail(id) {
       const payload = {
         id: id,
@@ -248,8 +302,17 @@ export default {
           this.loadingDetail = false;
         });
     },
-    actionPushNotif(id) {
-      this.$emit("actionPushNotif", id);
+    actionPushNotif() {
+      this.$emit("actionPushNotif", this.dialogPushNotifId);
+      this.closeDialogPushNotif();
+    },
+    openDialogPushNotif(id) {
+      this.dialogPushNotif = true;
+      this.dialogPushNotifId = id;
+    },
+    closeDialogPushNotif() {
+      this.dialogPushNotif = false;
+      this.dialogPushNotifId = "";
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");

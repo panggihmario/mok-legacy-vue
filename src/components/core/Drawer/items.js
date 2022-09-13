@@ -109,7 +109,7 @@ export default [
       },
       {
         title: "Semua Postingan User",
-        path: "/post/user/all",
+        path: "/post/user/candidates/1",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
