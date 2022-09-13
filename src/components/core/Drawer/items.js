@@ -54,7 +54,7 @@ export default [
       {
         title: "Trending Hashtag",
         path: "/hashtag",
-        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Manage Hashtag",
