@@ -54,7 +54,7 @@ export default [
       {
         title: "Trending Hashtag",
         path: "/hashtag",
-        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        role: ["ROLE_ADMIN"],
       },
       {
         title: "Manage Hashtag",
@@ -109,7 +109,7 @@ export default [
       },
       {
         title: "Semua Postingan User",
-        path: "/post/user/all",
+        path: "/post/user/candidates/1",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {

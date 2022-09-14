@@ -13,7 +13,7 @@ const pathPost = [
     },
   },
   {
-    path: "/post/user/all",
+    path: "/post/user/:tab/:page",
     name: "listUser",
     component: () => import("../../views/Post/UserAll"),
     meta: {

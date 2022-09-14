@@ -12,10 +12,10 @@
       <div class="d-flex align-center">
         <v-btn
           v-if="!showFilter"
-          small
           depressed
           class="text-capitalize"
           @click="showFilter = true"
+          height="40px"
           >Filter Data</v-btn
         >
         <div class="ml-2" style="width: 200px">
@@ -79,10 +79,17 @@
       </div>
 
       <div class="col d-flex justify-end align-center">
-        <v-btn small depressed color="success" @click="actionFilter"
+        <v-btn
+          depressed
+          color="success"
+          class="text-capitalize"
+          @click="actionFilter"
           >Terapkan Filter</v-btn
         >
-        <v-btn small depressed @click="isResetFilter = true" class="ml-2"
+        <v-btn
+          depressed
+          class="ml-2 text-capitalize"
+          @click="isResetFilter = true"
           >Batalkan</v-btn
         >
       </div>
@@ -91,6 +98,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import SelectDate from "./selectDate.vue";
 
 export default {
@@ -111,8 +119,6 @@ export default {
       filterChannel: null,
       filterPayload: {
         usernames: "",
-        direction: "ASC",
-        sort: "createAt",
         channelCodes: "",
         startAt: "",
         endAt: "",
@@ -123,6 +129,11 @@ export default {
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
+      this.filterPayload.usernames = "";
+      this.filterPayload.channelCodes = "";
+      this.filterPayload.startAt = "";
+      this.filterPayload.endAt = "";
+      this.filterPayload.keyword = "";
     },
     isResetFilter() {
       if (this.isResetFilter) {
@@ -132,6 +143,14 @@ export default {
         }, 100);
       }
     },
+    "filterPayload.keyword"() {
+      if (
+        this.filterPayload.keyword == "" ||
+        this.filterPayload.keyword == null
+      ) {
+        this.actionFilter();
+      }
+    },
     showFilter() {
       this.searchUser = "";
       this.searchChannel = "";
@@ -139,7 +158,8 @@ export default {
       this.filterPayload.channelCodes = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
-      this.filterPayload.keyword = "";
+      this.$emit("onSearchUser", "a");
+      this.$emit("onSearchChannel", "a");
       if (!this.showFilter) {
         this.$emit("onCancelFilter");
       }
@@ -155,23 +175,27 @@ export default {
       }
     },
   },
+  mounted() {
+    this.getRoute();
+  },
   methods: {
-    formatEpoch(type, v) {
-      let date, newDate;
-      if (type == "start") {
-        date = v.split("/");
-        newDate = new Date(date[2], date[1] - 1, date[0]);
+    getRoute() {
+      if (this.$route.params.tab == "candidates") {
+        this.tab = 0;
       } else {
-        date = v.split("/");
-        newDate = new Date(date[2], date[1] - 1, date[0]);
+        this.tab = 1;
       }
-      return newDate.getTime();
     },
     onSetDate(v) {
-      let startDate = this.formatEpoch("start", v.start);
-      let endDate = this.formatEpoch("end", v.end);
-      this.filterPayload.startAt = startDate;
-      this.filterPayload.endAt = endDate;
+      this.filterPayload.startAt = this.convertEpoch(v.start, 0, 0);
+      this.filterPayload.endAt = this.convertEpoch(v.end, 23, 59);
+    },
+    convertEpoch(d, h, m) {
+      const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
+        .add(7, "hours")
+        .unix();
+      const miliEpoch = epochDate * 1000;
+      return miliEpoch;
     },
     actionFilter() {
       this.$emit("onActionFilter", this.filterPayload);

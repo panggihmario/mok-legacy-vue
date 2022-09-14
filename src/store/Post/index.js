@@ -215,6 +215,19 @@ export default {
     },
     fetchPostAllUser({ state, dispatch, commit }, payload) {
       const data = {
+        url: `${state.pathTrendingFeeds}/candidates`,
+        params: payload,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserFilter({ state, dispatch, commit }, payload) {
+      const data = {
         url: `${state.pathTrendingFeeds}/candidates/filter`,
         params: payload,
       };
@@ -239,6 +252,19 @@ export default {
         });
     },
     fetchPostAllUserTrending({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/actives`,
+        params: payload,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserTrendingFilter({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathTrendingFeeds}/actives/filter`,
         params: payload,
@@ -269,6 +295,18 @@ export default {
         data: {
           id: payload.id,
         },
+      };
+      return dispatch("postWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    postPushNotifTrendingById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/push-notif/${payload.id}`,
       };
       return dispatch("postWithToken", data, { root: true })
         .then((response) => {
