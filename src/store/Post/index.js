@@ -216,6 +216,7 @@ export default {
     fetchPostAllUser({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathTrendingFeeds}/candidates`,
+        params: payload,
       };
       return dispatch("getWithToken", data, { root: true })
         .then((response) => {
@@ -250,9 +251,10 @@ export default {
           throw err;
         });
     },
-    fetchPostAllUserTrending({ state, dispatch, commit }) {
+    fetchPostAllUserTrending({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathTrendingFeeds}/actives`,
+        params: payload,
       };
       return dispatch("getWithToken", data, { root: true })
         .then((response) => {

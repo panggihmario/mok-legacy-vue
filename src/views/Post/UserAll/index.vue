@@ -107,6 +107,7 @@ export default {
       totalElementsActive: 0,
       pageActive: 1,
       totalPagesActive: 0,
+      isFilter: false,
       dataFilter: {
         usernames: "",
         channelCodes: "",
@@ -148,10 +149,18 @@ export default {
       }
     },
     pageCandidate() {
-      this.handleGetListUserPost();
+      if (this.isFilter) {
+        this.handleGetListUserPostFilter();
+      } else {
+        this.handleGetListUserPost();
+      }
     },
     pageActive() {
-      this.handleGetListUserPostTrending();
+      if (this.isFilter) {
+        this.handleGetListUserPostTrendingFilter();
+      } else {
+        this.handleGetListUserPostTrending();
+      }
     },
   },
   mounted() {
@@ -186,6 +195,7 @@ export default {
         page: this.pageCandidate - 1,
       };
       this.loadingList = true;
+      this.isFilter = false;
       return this.fetchPostAllUser(payload)
         .then((response) => {
           let res = response.data.data;
@@ -207,6 +217,7 @@ export default {
         ...this.dataFilter,
       };
       this.loadingList = true;
+      this.isFilter = true;
       return this.fetchPostAllUserFilter(payload)
         .then((response) => {
           let res = response.data.data;
@@ -227,6 +238,7 @@ export default {
         page: this.pageActive - 1,
       };
       this.loadingListActive = true;
+      this.isFilter = false;
       return this.fetchPostAllUserTrending(payload)
         .then((response) => {
           let res = response.data.data;
@@ -248,6 +260,7 @@ export default {
         ...this.dataFilter,
       };
       this.loadingListActive = true;
+      this.isFilter = true;
       return this.fetchPostAllUserTrendingFilter(payload)
         .then((response) => {
           let res = response.data.data;
@@ -271,11 +284,11 @@ export default {
         if (type == "filter") {
           this.handleGetListUserPostFilter();
         } else {
-          console.log(type);
           this.handleGetListUserPost();
         }
       } else {
         if (type == "filter") {
+          this.$route.query.filter = true;
           this.handleGetListUserPostTrendingFilter();
         } else {
           this.handleGetListUserPostTrending();
