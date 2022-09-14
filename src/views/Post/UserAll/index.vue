@@ -123,6 +123,13 @@ export default {
   },
   watch: {
     tab() {
+      this.dataFilter = {
+        usernames: "",
+        channelCodes: "",
+        startAt: "",
+        endAt: "",
+        keyword: "",
+      };
       if (this.tab == 0) {
         this.pageCandidate = this.$route.params.page;
         this.handleGetListUserPost();
@@ -156,17 +163,19 @@ export default {
       fetchPostAllUser: "post/fetchPostAllUser",
       fetchPostAllUserTrending: "post/fetchPostAllUserTrending",
       postPushNotifTrendingById: "post/postPushNotifTrendingById",
-      searchAccount: "account/searchAccount",
+      searchAccount: "post/searchAccounts",
       searchChannel: "channel/searchChannel",
     }),
     getRoute() {
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
         this.pageCandidate = this.$route.params.page;
+        this.handleSearchAccount("a");
         this.handleGetListUserPost();
       } else {
         this.tab = 1;
         this.pageActive = this.$route.params.page;
+        this.handleSearchChannel("a");
         this.handleGetListUserPostTrending();
       }
     },
@@ -224,12 +233,11 @@ export default {
     },
     handleSearchAccount(v) {
       let payload = {
-        type: "users",
-        params: v,
+        value: v,
       };
       return this.searchAccount(payload)
         .then((response) => {
-          this.itemsUser = response.data.data.content;
+          this.itemsUser = response;
         })
         .catch((err) => {
           this.alertSearchFailed = true;
