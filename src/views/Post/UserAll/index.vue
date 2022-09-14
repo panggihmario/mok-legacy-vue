@@ -33,6 +33,8 @@
           :totalElements="totalElementsCandidate"
           @onChangePage="changePage"
           @actionPushNotif="actionPushNotif"
+          @successPostTrending="handleSuccessPostTrending"
+          @errorPostTrending="handleErrorPostTrending"
         ></Post-All>
       </div>
       <div v-else-if="tab == 1">
@@ -64,6 +66,12 @@
       color="error"
     >
       {{ pushNotifFailedData }}
+    </v-snackbar>
+    <v-snackbar :timeout="3000" top right v-model="alertFailed" color="error">
+      Failed
+    </v-snackbar>
+    <v-snackbar :timeout="3000" top right v-model="alertNoData" color="error">
+      Data Tidak Ditemukan
     </v-snackbar>
   </div>
 </template>
@@ -102,23 +110,34 @@ export default {
       dataFilter: {
         usernames: "",
         channelCodes: "",
-        direction: "ASC",
-        sort: "createAt",
         startAt: "",
         endAt: "",
         keyword: "",
       },
+      alertFailed: false,
       alertPushNotifSuccess: false,
       alertPushNotifFailed: false,
+      alertNoData: false,
       pushNotifFailedData: "",
     };
   },
   watch: {
     tab() {
       if (this.tab == 0) {
+        this.pageCandidate = this.$route.params.page;
         this.handleGetListUserPost();
       } else {
+        this.pageActive = this.$route.params.page;
         this.handleGetListUserPostTrending();
+      }
+    },
+    "dataFilter.keyword"() {
+      if (this.dataFilter.keyword == "" || this.dataFilter.keyword == null) {
+        if (this.tab == 0) {
+          this.handleGetListUserPost();
+        } else {
+          this.handleGetListUserPostTrending();
+        }
       }
     },
     pageCandidate() {
@@ -129,7 +148,8 @@ export default {
     },
   },
   mounted() {
-    this.handleGetListUserPost();
+    this.getRoute();
+    // this.handleGetListUserPost();
   },
   methods: {
     ...mapActions({
@@ -139,16 +159,20 @@ export default {
       searchAccount: "account/searchAccount",
       searchChannel: "channel/searchChannel",
     }),
+    getRoute() {
+      if (this.$route.params.tab == "candidates") {
+        this.tab = 0;
+        this.pageCandidate = this.$route.params.page;
+        this.handleGetListUserPost();
+      } else {
+        this.tab = 1;
+        this.pageActive = this.$route.params.page;
+        this.handleGetListUserPostTrending();
+      }
+    },
     handleGetListUserPost() {
       let payload = {
         page: this.pageCandidate - 1,
-        usernames: "",
-        channelCodes: "",
-        direction: "ASC",
-        sort: "createAt",
-        startAt: "",
-        endAt: "",
-        keyword: "",
         ...this.dataFilter,
       };
       this.loadingList = true;
@@ -159,6 +183,9 @@ export default {
           this.tableItemsCandidate = res.content;
           this.totalPagesCandidate = res.totalPages;
           this.totalElementsCandidate = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
         })
         .catch((err) => {
           this.loadingList = false;
@@ -167,13 +194,6 @@ export default {
     handleGetListUserPostTrending() {
       let payload = {
         page: this.pageActive - 1,
-        usernames: "",
-        channelCodes: "",
-        direction: "ASC",
-        sort: "createAt",
-        startAt: "",
-        endAt: "",
-        keyword: "",
         ...this.dataFilter,
       };
       this.loadingListActive = true;
@@ -184,6 +204,9 @@ export default {
           this.tableItemsActive = res.content;
           this.totalPagesActive = res.totalPages;
           this.totalElementsActive = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
         })
         .catch((err) => {
           this.loadingListActive = false;
@@ -223,6 +246,17 @@ export default {
           this.searchFailedData = err.response;
         });
     },
+    handleSuccessPostTrending() {
+      this.alertPushNotifSuccess = true;
+      if (this.$route.params.tab == "candidates") {
+        this.handleGetListUserPost();
+      } else {
+        this.handleGetListUserPostTrending();
+      }
+    },
+    handleErrorPostTrending() {
+      this.alertFailed = true;
+    },
     actionPushNotif(id) {
       let payload = {
         id,
@@ -233,16 +267,19 @@ export default {
         })
         .catch((err) => {
           this.alertPushNotifFailed = true;
-          this.pushNotifFailedData = err.response.data;
+          this.pushNotifFailedData = err.response.data.data;
         });
     },
     changeTab(v) {
+      this.$router.push(`/post/user/${v == 0 ? "candidates" : "trending"}/1`);
       this.tab = v;
     },
     changePage(v) {
       if (this.tab == 0) {
+        this.$router.push(`/post/user/candidates/${v}`);
         this.pageCandidate = v;
       } else {
+        this.$router.push(`/post/user/trending/${v}`);
         this.pageActive = v;
       }
     },

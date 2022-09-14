@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import SelectDate from "./selectDate.vue";
 
 export default {
@@ -162,23 +163,27 @@ export default {
       }
     },
   },
+  mounted() {
+    this.getRoute();
+  },
   methods: {
-    formatEpoch(type, v) {
-      let date, newDate;
-      if (type == "start") {
-        date = v.split("/");
-        newDate = new Date(date[2], date[1] - 1, date[0]);
+    getRoute() {
+      if (this.$route.params.tab == "candidates") {
+        this.tab = 0;
       } else {
-        date = v.split("/");
-        newDate = new Date(date[2], date[1] - 1, date[0]);
+        this.tab = 1;
       }
-      return newDate.getTime();
     },
     onSetDate(v) {
-      let startDate = this.formatEpoch("start", v.start);
-      let endDate = this.formatEpoch("end", v.end);
-      this.filterPayload.startAt = startDate;
-      this.filterPayload.endAt = endDate;
+      this.filterPayload.startAt = this.convertEpoch(v.start, 0, 0);
+      this.filterPayload.endAt = this.convertEpoch(v.end, 23, 59);
+    },
+    convertEpoch(d, h, m) {
+      const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
+        .add(7, "hours")
+        .unix();
+      const miliEpoch = epochDate * 1000;
+      return miliEpoch;
     },
     actionFilter() {
       this.$emit("onActionFilter", this.filterPayload);
