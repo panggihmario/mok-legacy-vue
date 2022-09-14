@@ -18,9 +18,9 @@
         @changeTab="changeTab"
         @onSearchUser="handleSearchAccount"
         @onSearchChannel="handleSearchChannel"
-        @onSearchKeyword="actionGetListDataByTab"
-        @onActionFilter="actionGetListDataByTab"
-        @onCancelFilter="actionGetListDataByTab"
+        @onSearchKeyword="(data) => actionGetListDataByTab(data, 'filter')"
+        @onActionFilter="(data) => actionGetListDataByTab(data, 'filter')"
+        @onCancelFilter="(data) => actionGetListDataByTab(data, 'filter')"
       ></Navigation-Tab>
     </div>
 
@@ -162,6 +162,8 @@ export default {
     ...mapActions({
       fetchPostAllUser: "post/fetchPostAllUser",
       fetchPostAllUserTrending: "post/fetchPostAllUserTrending",
+      fetchPostAllUserFilter: "post/fetchPostAllUserFilter",
+      fetchPostAllUserTrendingFilter: "post/fetchPostAllUserTrendingFilter",
       postPushNotifTrendingById: "post/postPushNotifTrendingById",
       searchAccount: "post/searchAccounts",
       searchChannel: "channel/searchChannel",
@@ -182,7 +184,6 @@ export default {
     handleGetListUserPost() {
       let payload = {
         page: this.pageCandidate - 1,
-        ...this.dataFilter,
       };
       this.loadingList = true;
       return this.fetchPostAllUser(payload)
@@ -200,10 +201,30 @@ export default {
           this.loadingList = false;
         });
     },
+    handleGetListUserPostFilter() {
+      let payload = {
+        page: this.pageCandidate - 1,
+        ...this.dataFilter,
+      };
+      this.loadingList = true;
+      return this.fetchPostAllUserFilter(payload)
+        .then((response) => {
+          let res = response.data.data;
+          this.loadingListCandidate = false;
+          this.tableItemsCandidate = res.content;
+          this.totalPagesCandidate = res.totalPages;
+          this.totalElementsCandidate = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
+        })
+        .catch((err) => {
+          this.loadingList = false;
+        });
+    },
     handleGetListUserPostTrending() {
       let payload = {
         page: this.pageActive - 1,
-        ...this.dataFilter,
       };
       this.loadingListActive = true;
       return this.fetchPostAllUserTrending(payload)
@@ -221,14 +242,44 @@ export default {
           this.loadingListActive = false;
         });
     },
-    actionGetListDataByTab(data) {
+    handleGetListUserPostTrendingFilter() {
+      let payload = {
+        page: this.pageActive - 1,
+        ...this.dataFilter,
+      };
+      this.loadingListActive = true;
+      return this.fetchPostAllUserTrendingFilter(payload)
+        .then((response) => {
+          let res = response.data.data;
+          this.loadingListActive = false;
+          this.tableItemsActive = res.content;
+          this.totalPagesActive = res.totalPages;
+          this.totalElementsActive = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
+        })
+        .catch((err) => {
+          this.loadingListActive = false;
+        });
+    },
+    actionGetListDataByTab(data, type) {
       this.dataFilter = {
         ...data,
       };
       if (this.tab == 0) {
-        this.handleGetListUserPost();
+        if (type == "filter") {
+          this.handleGetListUserPostFilter();
+        } else {
+          console.log(type);
+          this.handleGetListUserPost();
+        }
       } else {
-        this.handleGetListUserPostTrending();
+        if (type == "filter") {
+          this.handleGetListUserPostTrendingFilter();
+        } else {
+          this.handleGetListUserPostTrending();
+        }
       }
     },
     handleSearchAccount(v) {

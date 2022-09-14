@@ -215,6 +215,18 @@ export default {
     },
     fetchPostAllUser({ state, dispatch, commit }, payload) {
       const data = {
+        url: `${state.pathTrendingFeeds}/candidates`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserFilter({ state, dispatch, commit }, payload) {
+      const data = {
         url: `${state.pathTrendingFeeds}/candidates/filter`,
         params: payload,
       };
@@ -238,7 +250,19 @@ export default {
           throw err;
         });
     },
-    fetchPostAllUserTrending({ state, dispatch, commit }, payload) {
+    fetchPostAllUserTrending({ state, dispatch, commit }) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/actives`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserTrendingFilter({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathTrendingFeeds}/actives/filter`,
         params: payload,
