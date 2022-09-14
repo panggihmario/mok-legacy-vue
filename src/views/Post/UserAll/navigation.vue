@@ -119,8 +119,6 @@ export default {
       filterChannel: null,
       filterPayload: {
         usernames: "",
-        direction: "ASC",
-        sort: "createAt",
         channelCodes: "",
         startAt: "",
         endAt: "",
@@ -131,6 +129,11 @@ export default {
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
+      this.filterPayload.usernames = "";
+      this.filterPayload.channelCodes = "";
+      this.filterPayload.startAt = "";
+      this.filterPayload.endAt = "";
+      this.filterPayload.keyword = "";
     },
     isResetFilter() {
       if (this.isResetFilter) {
@@ -140,6 +143,14 @@ export default {
         }, 100);
       }
     },
+    "filterPayload.keyword"() {
+      if (
+        this.filterPayload.keyword == "" ||
+        this.filterPayload.keyword == null
+      ) {
+        this.actionFilter();
+      }
+    },
     showFilter() {
       this.searchUser = "";
       this.searchChannel = "";
@@ -147,7 +158,8 @@ export default {
       this.filterPayload.channelCodes = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
-      this.filterPayload.keyword = "";
+      this.$emit("onSearchUser", "a");
+      this.$emit("onSearchChannel", "a");
       if (!this.showFilter) {
         this.$emit("onCancelFilter");
       }
