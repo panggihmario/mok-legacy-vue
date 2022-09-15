@@ -44,11 +44,7 @@ export default {
     getUserFeed({ state }, payload) {
       const data = {
         url: `${state.pathAccount}/feed`,
-        params: {
-          count: payload.count,
-          secUid: payload.secUid,
-          cursor: payload.cursor,
-        },
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -63,11 +59,7 @@ export default {
     getFeedByHashtag({ state }, payload) {
       const data = {
         url: `${state.pathDiscover}/hashtag`,
-        params: {
-          count: payload.count,
-          keyword: payload.keyword,
-          cursor: payload.cursor,
-        },
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)

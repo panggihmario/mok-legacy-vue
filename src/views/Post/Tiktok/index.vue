@@ -40,23 +40,6 @@
           @keypress.enter="actionGetFeedByHashtag()"
         ></v-text-field>
       </div>
-
-      <!-- <div v-else v-show="!loading">
-        <v-tooltip bottom color="green">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              icon
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              @click="actionGetFeedExplore"
-            >
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          </template>
-          <span class="font-10">Refresh FYP</span>
-        </v-tooltip>
-      </div> -->
     </div>
 
     <div v-if="tab == 3">
@@ -77,7 +60,6 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
           @actionLoadMoreFeed="actionGetFeedExplore"
         ></List-Item>
       </div>
@@ -101,7 +83,6 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
           @actionLoadMoreFeed="loadMoreGetFeedByUsername"
         ></List-Item>
       </div>
@@ -125,13 +106,18 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
           @actionLoadMoreFeed="loadMoreGetFeedByHashtag"
         ></List-Item>
       </div>
     </div>
 
-    <v-snackbar v-model="previewTiktokSuccess" top right color="success">
+    <v-snackbar
+      v-model="previewTiktokSuccess"
+      top
+      right
+      color="success"
+      timeout="3000"
+    >
       <span>Success Post</span>
       <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
     </v-snackbar>
@@ -169,6 +155,7 @@ export default {
       alertSuccess: false,
       alertFailed: false,
       alertRules: false,
+      alertFailedData: "",
       keywordUsername: "",
       keywordHashtag: "",
       channels: null,
@@ -176,6 +163,7 @@ export default {
       userFeed: [],
       userFeedUsername: [],
       userFeedHashtag: [],
+      hashtagId: "",
       selectedItem: null,
       cursorFirst: null,
       payload: {
@@ -199,7 +187,7 @@ export default {
         this.tabSearch = "Hashtag";
       } else if (this.tab == 3) {
         this.tabSearch = "";
-        this.actionGetFeedExplore()
+        this.actionGetFeedExplore();
       }
       this.focusIndex = null;
       this.selectedItem = null;
@@ -218,12 +206,11 @@ export default {
     },
   },
   mounted() {
-    // this.actionGetFeedExplore();
     this.getResponseChannel();
     this.getCursorFirst();
     this.setPreviewTiktokData({});
     this.changeStatusPreviewTiktok(false);
-    this.tabSearch = "Username"
+    this.tabSearch = "Username";
   },
   computed: {
     ...mapState({
@@ -296,7 +283,7 @@ export default {
     },
     actionGetFeedByUsername() {
       const payload = {
-        count: 30,
+        count: 20,
         secUid: this.userInfo.secUid,
         cursor: 0,
       };
@@ -311,7 +298,6 @@ export default {
       this.loadingUsername = true;
       return this.getUserFeed(payload)
         .then((response) => {
-          console.log(response)
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
           for (let i = 0; i < response.data.itemList.length; i++) {
@@ -326,7 +312,7 @@ export default {
     },
     actionGetFeedByHashtag() {
       const payload = {
-        count: 10,
+        count: 20,
         keyword: this.keywordHashtag,
         cursor: 0,
       };
@@ -341,11 +327,12 @@ export default {
       this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
-          console.log(response)
-          const itemList = response.data.itemList
-          const normalize = Object.entries(itemList).map(([id, obj])=> ({
-            id, ...obj
-          }))
+          this.hashtagId = response.data.challengeInfo.challenge.id;
+          const itemList = response.data.itemList;
+          const normalize = Object.entries(itemList).map(([id, obj]) => ({
+            id,
+            ...obj,
+          }));
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
           for (let i = 0; i < normalize.length; i++) {
@@ -379,7 +366,6 @@ export default {
         .catch((err) => {
           this.loading = false;
           this.loadingLoadmore = false;
-          console.log({ err });
         });
     },
     loadMoreGetFeedByUsername() {
@@ -390,7 +376,7 @@ export default {
             }000`
           : 0;
       const payload = {
-        count: 10,
+        count: 20,
         secUid: this.userInfo.secUid,
         cursor: cursor,
       };
@@ -414,34 +400,27 @@ export default {
         });
     },
     loadMoreGetFeedByHashtag() {
-      let cursor =
-        this.userFeedHashtag.length != 0
-          ? `${
-              this.userFeedHashtag[this.userFeedHashtag.length - 1].createTime
-            }000`
-          : 0;
       const payload = {
-        count: 10,
-        keyword: this.keywordHashtag,
-        cursor: cursor,
+        id: this.hashtagId,
+        count: 20,
+        cursor: this.userFeedHashtag.length,
       };
       if (this.userFeedHashtag.length == 0) {
         this.loadingHashtag = true;
       } else {
         this.loadingLoadmoreHashtag = true;
       }
-      // this.focusIndex = null;
-      // this.selectedItem = null;
-      // console.log(payload)
+      this.focusIndex = null;
+      this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
-          const itemList = response.data.itemList
-          const normalize = Object.entries(itemList).map(([id, obj])=> ({
-            id, ...obj
-          }))
+          const itemList = response.data.itemList;
+          const normalize = Object.entries(itemList).map(([id, obj]) => ({
+            id,
+            ...obj,
+          }));
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
-          // this.userFeedHashtag = response.data;
           for (let i = 0; i < normalize.length; i++) {
             const element = normalize[i];
             this.userFeedHashtag.push(element);
@@ -451,50 +430,6 @@ export default {
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
         });
-    },
-    actionGetTiktokVideoNoWatermark() {
-      // const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
-      // if (this.payload.channel == null) {
-      //   this.alertRules = true;
-      //   setTimeout(() => {
-      //     this.alertRules = false;
-      //   }, 3000);
-      // } else {
-      //   this.loadingSubmit = true;
-      //   return this.getTiktokVideoNoWatermark(url)
-      //     .then((response) => {
-      //       this.newPayload = response.data;
-      //       console.log(response.data);
-      //       // this.payload.medias.push(response.data.data);
-      //       // this.actionPostToDraft();
-      //     })
-      //     .catch((err) => {
-      //       this.loadingSubmit = false;
-      //     });
-      // }
-    },
-    actionPostToDraft() {
-      console.log("lol new", this.newPayload);
-      // return this.drawImageOnCanvas();
-      // this.focusIndex = null;
-      // return this.postFeed(this.payload)
-      //   .then((response) => {
-      //     this.payload = {
-      //       medias: [],
-      //       description: "",
-      //       channel: null,
-      //       product: null,
-      //       type: "social",
-      //     };
-      //     this.loadingSubmit = false;
-      //     this.alertSuccess = true;
-      //     setTimeout(() => {
-      //       this.alertSuccess = false;
-      //     }, 3000);
-      //   })
-      //   .catch((err) => {
-      //     this.loadingSubmit = false;
-      //   });
     },
     drawImageOnCanvas(file, seekTo) {
       return new Promise((resolve, reject) => {
