@@ -27,9 +27,7 @@ export default {
     getUserDetail({ state }, payload) {
       const data = {
         url: `${state.pathAccount}/detail`,
-        params: {
-          username: payload,
-        },
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)

@@ -83,7 +83,7 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionLoadMoreFeed="loadMoreGetFeedByUsername"
+          @actionLoadMoreFeed="actionGetFeedByUsername"
         ></List-Item>
       </div>
     </div>
@@ -162,6 +162,7 @@ export default {
       userInfo: null,
       userFeed: [],
       userFeedUsername: [],
+      userFeedUsernameCursor: "0",
       userFeedHashtag: [],
       hashtagId: "",
       selectedItem: null,
@@ -264,10 +265,14 @@ export default {
       }
     },
     actionGetUserDetail() {
+      let payload = {
+        url: "/public/check",
+        username: this.keywordUsername,
+      };
       this.loadingUsername = true;
       this.focusIndex = null;
       this.selectedItem = null;
-      return this.getUserDetail(this.keywordUsername)
+      return this.getUserDetail(payload)
         .then((response) => {
           this.loadingUsername = false;
           this.userInfo = response.data.userInfo.user;
@@ -283,23 +288,23 @@ export default {
     },
     actionGetFeedByUsername() {
       const payload = {
+        url: "/public/posts",
         count: 20,
         secUid: this.userInfo.secUid,
-        cursor: 0,
+        cursor: this.userFeedUsernameCursor,
       };
       if (this.userFeedUsername.length == 0) {
         this.loadingUsername = true;
       } else {
         this.loadingLoadmoreUsername = true;
       }
-      this.userFeedUsername = [];
       this.focusIndex = null;
       this.selectedItem = null;
-      this.loadingUsername = true;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
+          this.userFeedUsernameCursor = response.data.cursor;
           for (let i = 0; i < response.data.itemList.length; i++) {
             const element = response.data.itemList[i];
             this.userFeedUsername.push(element);
@@ -312,17 +317,17 @@ export default {
     },
     actionGetFeedByHashtag() {
       const payload = {
-        count: 20,
+        url: "public/discover/keyword",
+        urlFeedHashtag: "public/hashtag",
         keyword: this.keywordHashtag,
-        cursor: 0,
+        count: 20,
+        cursor: this.userFeedHashtag.length,
       };
       if (this.userFeedHashtag.length == 0) {
         this.loadingHashtag = true;
       } else {
         this.loadingLoadmoreHashtag = true;
       }
-      this.userFeedHashtag = [];
-      this.loadingHashtag = true;
       this.focusIndex = null;
       this.selectedItem = null;
       return this.getFeedByHashtag(payload)
@@ -366,37 +371,6 @@ export default {
         .catch((err) => {
           this.loading = false;
           this.loadingLoadmore = false;
-        });
-    },
-    loadMoreGetFeedByUsername() {
-      let cursor =
-        this.userFeedUsername.length != 0
-          ? `${
-              this.userFeedUsername[this.userFeedUsername.length - 1].createTime
-            }000`
-          : 0;
-      const payload = {
-        count: 20,
-        secUid: this.userInfo.secUid,
-        cursor: cursor,
-      };
-      if (this.userFeedUsername.length == 0) {
-        this.loadingUsername = true;
-      } else {
-        this.loadingLoadmoreUsername = true;
-      }
-      return this.getUserFeed(payload)
-        .then((response) => {
-          this.loadingUsername = false;
-          this.loadingLoadmoreUsername = false;
-          for (let i = 0; i < response.data.itemList.length; i++) {
-            const element = response.data.itemList[i];
-            this.userFeedUsername.push(element);
-          }
-        })
-        .catch((err) => {
-          this.loadingUsername = false;
-          this.loadingLoadmoreUsername = false;
         });
     },
     loadMoreGetFeedByHashtag() {
