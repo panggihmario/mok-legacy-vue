@@ -332,18 +332,23 @@ export default {
       this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
-          this.hashtagId = response.data.challengeInfo.challenge.id;
-          const itemList = response.data.itemList;
-          const normalize = Object.entries(itemList).map(([id, obj]) => ({
-            id,
-            ...obj,
-          }));
-          this.loadingHashtag = false;
-          this.loadingLoadmoreHashtag = false;
-          for (let i = 0; i < normalize.length; i++) {
-            const element = normalize[i];
-            this.userFeedHashtag.push(element);
+          this.userFeedUsernameCursor = response.data.cursor;
+          for (let i = 0; i < response.data.itemList.length; i++) {
+            const element = response.data.itemList[i];
+            this.userFeedUsername.push(element);
           }
+          // this.hashtagId = response.data.challengeInfo.challenge.id;
+          // const itemList = response.data.itemList;
+          // const normalize = Object.entries(itemList).map(([id, obj]) => ({
+          //   id,
+          //   ...obj,
+          // }));
+          // this.loadingHashtag = false;
+          // this.loadingLoadmoreHashtag = false;
+          // for (let i = 0; i < normalize.length; i++) {
+          //   const element = normalize[i];
+          //   this.userFeedHashtag.push(element);
+          // }
         })
         .catch((err) => {
           this.loadingHashtag = false;
