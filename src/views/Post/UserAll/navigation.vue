@@ -119,22 +119,23 @@ export default {
       filterUser: null,
       filterChannel: null,
       filterPayload: {
-        usernames: "",
-        channelCodes: "",
         startAt: "",
         endAt: "",
-        keyword: "",
       },
     };
   },
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
+      this.keywordTrending = "";
+      this.usernameFilter = "";
+      this.channelCodesFilter = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
-      this.filterPayload.keyword = "";
+      this.filterPayload = {
+        startAt: "",
+        endAt: "",
+      };
     },
     isResetFilter() {
       if (this.isResetFilter) {
@@ -160,8 +161,6 @@ export default {
     showFilter() {
       this.searchUser = "";
       this.searchChannel = "";
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
       this.$emit("onSearchUser", "a");
