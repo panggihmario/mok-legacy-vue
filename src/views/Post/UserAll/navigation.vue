@@ -20,7 +20,7 @@
         >
         <div class="ml-2" style="width: 200px">
           <v-text-field
-            v-model="filterPayload.keyword"
+            v-model="keywordTrending"
             placeholder="Search"
             clearable
             dense
@@ -39,24 +39,24 @@
         <div class="ml-2" style="width: 200px">
           <v-autocomplete
             class="font-12"
-            v-model="filterPayload.usernames"
+            v-model="usernameFilter"
             :items="itemsUser"
             :search-input.sync="searchUser"
             item-text="username"
+            item-value="username"
             label="User"
             solo
             dense
             clearable
             hide-details
             flat
-            color="white"
             background-color="white"
           ></v-autocomplete>
         </div>
         <div class="ml-2" style="width: 200px">
           <v-autocomplete
             class="font-12"
-            v-model="filterPayload.channelCodes"
+            v-model="channelCodesFilter"
             :items="itemsChannel"
             :search-input.sync="searchChannel"
             item-text="name"
@@ -100,6 +100,7 @@
 <script>
 import moment from "moment";
 import SelectDate from "./selectDate.vue";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   components: {
@@ -118,35 +119,41 @@ export default {
       filterUser: null,
       filterChannel: null,
       filterPayload: {
-        usernames: "",
-        channelCodes: "",
         startAt: "",
         endAt: "",
-        keyword: "",
       },
     };
   },
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
+      this.keywordTrending = "";
+      this.usernameFilter = "";
+      this.channelCodesFilter = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
-      this.filterPayload.keyword = "";
+      this.filterPayload = {
+        startAt: "",
+        endAt: "",
+      };
     },
     isResetFilter() {
       if (this.isResetFilter) {
+        this.keywordTrending = "";
+        this.usernameFilter = "";
+        this.channelCodesFilter = "";
+        this.filterPayload.startAt = "";
+        this.filterPayload.endAt = "";
         setTimeout(() => {
           this.isResetFilter = false;
           this.showFilter = false;
         }, 100);
       }
     },
-    "filterPayload.keyword"() {
+    keywordSearchTrending() {
       if (
-        this.filterPayload.keyword == "" ||
-        this.filterPayload.keyword == null
+        this.keywordSearchTrending == "" ||
+        this.keywordSearchTrending == null
       ) {
         this.actionFilter();
       }
@@ -154,8 +161,6 @@ export default {
     showFilter() {
       this.searchUser = "";
       this.searchChannel = "";
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
       this.$emit("onSearchUser", "a");
@@ -178,7 +183,47 @@ export default {
   mounted() {
     this.getRoute();
   },
+  computed: {
+    ...mapState({
+      keywordSearchTrending: (state) => state.post.keywordSearchTrending,
+      paramsUsersTrending: (state) => state.post.paramsUsersTrending,
+      channelCodeTrending: (state) => state.post.channelCodeTrending,
+      paramsDateTrending: (state) => state.post.paramsDateTrending,
+      displayDateTrending: (state) => state.post.displayDateTrending,
+    }),
+    keywordTrending: {
+      get() {
+        return this.keywordSearchTrending;
+      },
+      set(value) {
+        this.setKeywordSearchTrending(value);
+      },
+    },
+    usernameFilter: {
+      get() {
+        return this.paramsUsersTrending;
+      },
+      set(value) {
+        this.setParamsUsersTrending(value);
+      },
+    },
+    channelCodesFilter: {
+      get() {
+        return this.channelCodeTrending;
+      },
+      set(value) {
+        this.setChannelCodeTrending(value);
+      },
+    },
+  },
   methods: {
+    ...mapMutations({
+      setKeywordSearchTrending: "post/setKeywordSearchTrending",
+      setParamsUsersTrending: "post/setParamsUsersTrending",
+      setDisplayDateTrending: "post/setDisplayDateTrending",
+      setChannelCodeTrending: "post/setChannelCodeTrending",
+      setParamsDateTrending: "post/setParamsDateTrending",
+    }),
     getRoute() {
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
@@ -187,6 +232,7 @@ export default {
       }
     },
     onSetDate(v) {
+      this.setParamsDateTrending([v.start, v.end]);
       this.filterPayload.startAt = this.convertEpoch(v.start, 0, 0);
       this.filterPayload.endAt = this.convertEpoch(v.end, 23, 59);
     },
@@ -198,7 +244,14 @@ export default {
       return miliEpoch;
     },
     actionFilter() {
-      this.$emit("onActionFilter", this.filterPayload);
+      let filterPayload = {
+        usernames: this.paramsUsersTrending,
+        channelCodes: this.channelCodeTrending,
+        startAt: this.filterPayload.startAt,
+        endAt: this.filterPayload.endAt,
+        keyword: this.keywordSearchTrending,
+      };
+      this.$emit("onActionFilter", filterPayload);
     },
   },
 };

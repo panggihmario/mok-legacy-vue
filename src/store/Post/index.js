@@ -13,8 +13,28 @@ export default {
     paramsChannel: [],
     paramsDate: [],
     displayDate: "",
+    keywordSearchTrending: "",
+    paramsUsersTrending: null,
+    channelCodeTrending: null,
+    paramsDateTrending: [],
+    displayDateTrending: "",
   },
   mutations: {
+    setKeywordSearchTrending(state, payload) {
+      state.keywordSearchTrending = payload;
+    },
+    setParamsUsersTrending(state, payload) {
+      state.paramsUsersTrending = payload;
+    },
+    setDisplayDateTrending(state, payload) {
+      state.displayDateTrending = payload;
+    },
+    setChannelCodeTrending(state, payload) {
+      state.channelCodeTrending = payload;
+    },
+    setParamsDateTrending(state, payload) {
+      state.paramsDateTrending = payload;
+    },
     setParamsUsers(state, payload) {
       state.paramsUsers = payload;
     },
