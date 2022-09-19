@@ -176,6 +176,7 @@ export default {
     onReset() {
       this.choosenDate = [];
       this.setDisplayDate("");
+      this.$emit("onResetDate");
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
