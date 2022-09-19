@@ -1,7 +1,6 @@
 <template>
   <div>
     <HeaderContent label="Tiktok Mirroring" :list="crumbs" />
-
     <div class="d-flex mb-4">
       <div class="d-flex flex-wrap">
         <div
@@ -14,7 +13,8 @@
           {{ item }}
         </div>
       </div>
-      <div v-if="tab == 2 || tab == 3">
+
+      <div v-if="tab == 1 || tab == 2">
         <v-text-field
           v-if="tabSearch == 'Username'"
           rounded
@@ -59,7 +59,7 @@
       </div> -->
     </div>
 
-    <div v-if="tab == 1">
+    <div v-if="tab == 3">
       <div v-if="loading" class="d-flex justify-center py-12">
         <v-progress-circular
           indeterminate
@@ -83,7 +83,7 @@
       </div>
     </div>
 
-    <div v-else-if="tab == 2">
+    <div v-else-if="tab == 1">
       <div v-if="loadingUsername" class="d-flex justify-center py-12">
         <v-progress-circular
           indeterminate
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div v-else-if="tab == 3">
+    <div v-else-if="tab == 2">
       <div v-if="loadingHashtag" class="d-flex justify-center py-12">
         <v-progress-circular
           indeterminate
@@ -157,7 +157,7 @@ export default {
       ],
       tab: 1,
       tabSearch: "",
-      tabLabel: ["FYP", "Username", "Hashtag"],
+      tabLabel: ["Username", "Hashtag", "FYP"],
       focusIndex: null,
       loading: false,
       loadingUsername: false,
@@ -194,11 +194,12 @@ export default {
   watch: {
     tab() {
       if (this.tab == 1) {
-        this.tabSearch = "";
-      } else if (this.tab == 2) {
         this.tabSearch = "Username";
-      } else if (this.tab == 3) {
+      } else if (this.tab == 2) {
         this.tabSearch = "Hashtag";
+      } else if (this.tab == 3) {
+        this.tabSearch = "";
+        this.actionGetFeedExplore()
       }
       this.focusIndex = null;
       this.selectedItem = null;
@@ -217,11 +218,12 @@ export default {
     },
   },
   mounted() {
-    this.actionGetFeedExplore();
+    // this.actionGetFeedExplore();
     this.getResponseChannel();
     this.getCursorFirst();
     this.setPreviewTiktokData({});
     this.changeStatusPreviewTiktok(false);
+    this.tabSearch = "Username"
   },
   computed: {
     ...mapState({
@@ -309,6 +311,7 @@ export default {
       this.loadingUsername = true;
       return this.getUserFeed(payload)
         .then((response) => {
+          console.log(response)
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
           for (let i = 0; i < response.data.itemList.length; i++) {
@@ -338,10 +341,15 @@ export default {
       this.selectedItem = null;
       return this.getFeedByHashtag(payload)
         .then((response) => {
+          console.log(response)
+          const itemList = response.data.itemList
+          const normalize = Object.entries(itemList).map(([id, obj])=> ({
+            id, ...obj
+          }))
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
-          for (let i = 0; i < response.data.length; i++) {
-            const element = response.data[i];
+          for (let i = 0; i < normalize.length; i++) {
+            const element = normalize[i];
             this.userFeedHashtag.push(element);
           }
         })
@@ -382,7 +390,7 @@ export default {
             }000`
           : 0;
       const payload = {
-        count: 30,
+        count: 10,
         secUid: this.userInfo.secUid,
         cursor: cursor,
       };
@@ -424,13 +432,18 @@ export default {
       }
       // this.focusIndex = null;
       // this.selectedItem = null;
+      // console.log(payload)
       return this.getFeedByHashtag(payload)
         .then((response) => {
+          const itemList = response.data.itemList
+          const normalize = Object.entries(itemList).map(([id, obj])=> ({
+            id, ...obj
+          }))
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
           // this.userFeedHashtag = response.data;
-          for (let i = 0; i < response.data.length; i++) {
-            const element = response.data[i];
+          for (let i = 0; i < normalize.length; i++) {
+            const element = normalize[i];
             this.userFeedHashtag.push(element);
           }
         })
