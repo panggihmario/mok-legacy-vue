@@ -291,6 +291,11 @@ export default {
       }
     },
   },
+  watch: {
+    "$route.params.page"() {
+      this.getRoute();
+    },
+  },
   mounted() {
     this.getRoute();
   },

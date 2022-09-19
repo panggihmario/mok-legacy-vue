@@ -20,7 +20,7 @@
         @onSearchChannel="handleSearchChannel"
         @onSearchKeyword="(data) => actionGetListDataByTab(data, 'filter')"
         @onActionFilter="(data) => actionGetListDataByTab(data, 'filter')"
-        @onCancelFilter="(data) => actionGetListDataByTab(data, 'filter')"
+        @onCancelFilter="(data) => actionGetListDataByTab(data)"
       ></Navigation-Tab>
     </div>
 
@@ -131,37 +131,23 @@ export default {
         endAt: "",
         keyword: "",
       };
-      if (this.tab == 0) {
-        this.pageCandidate = this.$route.params.page;
-        this.handleGetListUserPost();
-      } else {
-        this.pageActive = this.$route.params.page;
-        this.handleGetListUserPostTrending();
-      }
+      this.actionGetListDataByTab();
     },
     "dataFilter.keyword"() {
       if (this.dataFilter.keyword == "" || this.dataFilter.keyword == null) {
         if (this.tab == 0) {
-          this.handleGetListUserPost();
+          this.getListPostByFilter("candidates");
         } else {
-          this.handleGetListUserPostTrending();
+          this.getListPostByFilter("trending");
         }
       }
     },
-    pageCandidate() {
-      if (this.isFilter) {
-        this.handleGetListUserPostFilter();
-      } else {
-        this.handleGetListUserPost();
-      }
-    },
-    pageActive() {
-      if (this.isFilter) {
-        this.handleGetListUserPostTrendingFilter();
-      } else {
-        this.handleGetListUserPostTrending();
-      }
-    },
+    // pageCandidate() {
+    //   this.getListPostByFilter("candidates", this.isFilter);
+    // },
+    // pageActive() {
+    //   this.getListPostByFilter("trending", this.isFilter);
+    // },
   },
   mounted() {
     this.getRoute();
@@ -179,15 +165,27 @@ export default {
     }),
     getRoute() {
       if (this.$route.params.tab == "candidates") {
-        this.tab = 0;
+        if (this.$route.query.filter) {
+          this.isFilter = true;
+        }
         this.pageCandidate = this.$route.params.page;
-        this.handleSearchAccount("a");
-        this.handleGetListUserPost();
+        this.tab = 0;
+        if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
+          this.handleSearchAccount("a");
+          this.handleSearchChannel("a");
+        }
+        this.getListPostByFilter("candidates");
       } else {
-        this.tab = 1;
+        if (this.$route.query.filter) {
+          this.isFilter = true;
+        }
         this.pageActive = this.$route.params.page;
-        this.handleSearchChannel("a");
-        this.handleGetListUserPostTrending();
+        this.tab = 1;
+        if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
+          this.handleSearchAccount("a");
+          this.handleSearchChannel("a");
+        }
+        this.getListPostByFilter("active");
       }
     },
     handleGetListUserPost() {
@@ -282,13 +280,47 @@ export default {
       };
       if (this.tab == 0) {
         if (type == "filter") {
+          this.isFilter = true;
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute("candidates", 1, { filter: true }, true);
+          } else {
+            this.routerPushGetRoute("candidates", 1, { filter: true }, true);
+          }
+        } else {
+          this.routerPushGetRoute("candidates", 1, {}, false);
+        }
+      } else {
+        if (type == "filter") {
+          this.isFilter = true;
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute("active", 1, { filter: true }, true);
+          } else {
+            this.routerPushGetRoute("active", 1, { filter: true }, true);
+          }
+        } else {
+          this.routerPushGetRoute("active", 1, {}, false);
+        }
+      }
+    },
+    routerPushGetRoute(status, page, query = {}, isFilter) {
+      this.isFilter = isFilter;
+      this.$router.push({
+        path: `/post/user/${status}/${page}`,
+        query: {
+          ...query,
+        },
+      });
+      this.getRoute();
+    },
+    getListPostByFilter(type) {
+      if (type == "candidates") {
+        if (this.isFilter) {
           this.handleGetListUserPostFilter();
         } else {
           this.handleGetListUserPost();
         }
       } else {
-        if (type == "filter") {
-          this.$route.query.filter = true;
+        if (this.isFilter) {
           this.handleGetListUserPostTrendingFilter();
         } else {
           this.handleGetListUserPostTrending();
@@ -348,10 +380,14 @@ export default {
     },
     changePage(v) {
       if (this.tab == 0) {
-        this.$router.push(`/post/user/candidates/${v}`);
+        if (this.isFilter) {
+          this.routerPushGetRoute("candidates", v, { filter: this.isFilter });
+        } else {
+          this.routerPushGetRoute("candidates", v);
+        }
         this.pageCandidate = v;
       } else {
-        this.$router.push(`/post/user/trending/${v}`);
+        // this.$router.push(`/post/user/trending/${v}`);
         this.pageActive = v;
       }
     },
