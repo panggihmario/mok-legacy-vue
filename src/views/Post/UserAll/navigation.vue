@@ -74,6 +74,7 @@
           <Select-Date
             :reset="isResetFilter"
             @onSetDate="onSetDate"
+            @onResetDate="onSetDate"
           ></Select-Date>
         </div>
       </div>
@@ -232,9 +233,9 @@ export default {
       }
     },
     onSetDate(v) {
-      this.setParamsDateTrending([v.start, v.end]);
-      this.filterPayload.startAt = this.convertEpoch(v.start, 0, 0);
-      this.filterPayload.endAt = this.convertEpoch(v.end, 23, 59);
+      this.setParamsDateTrending(v ? [v.start, v.end] : []);
+      this.filterPayload.startAt = v ? this.convertEpoch(v.start, 0, 0) : "";
+      this.filterPayload.endAt = v ? this.convertEpoch(v.end, 23, 59) : "";
     },
     convertEpoch(d, h, m) {
       const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
