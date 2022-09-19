@@ -90,6 +90,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    tab: {
+      type: [Number, String],
+      default: 0,
+    },
   },
   data: () => ({
     fav: true,
@@ -101,6 +105,9 @@ export default {
   }),
   watch: {
     reset(newVal, oldVal) {
+      this.onReset();
+    },
+    tab() {
       this.onReset();
     },
   },

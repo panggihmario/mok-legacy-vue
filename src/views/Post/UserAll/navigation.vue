@@ -72,6 +72,7 @@
         </div>
         <div class="ml-2" style="width: 200px">
           <Select-Date
+            :tab="tab"
             :reset="isResetFilter"
             @onSetDate="onSetDate"
             @onResetDate="onSetDate"
