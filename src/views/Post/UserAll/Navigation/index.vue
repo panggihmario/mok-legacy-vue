@@ -49,12 +49,7 @@
           ></Autocomplete-Channel>
         </div>
         <div class="ml-2" style="width: 200px">
-          <Select-Date
-            :tab="tab"
-            :reset="isResetFilter"
-            @onSetDate="onSetDate"
-            @onResetDate="onSetDate"
-          ></Select-Date>
+          <Select-Date></Select-Date>
         </div>
       </div>
 
@@ -110,11 +105,7 @@ export default {
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
-      this.keywordTrending = "";
-      this.usernameFilter = [];
-      this.channelFilter = [];
-      this.filterPayload.startAt = "";
-      this.filterPayload.endAt = "";
+      this.isResetFilter = true;
     },
     isResetFilter() {
       if (this.isResetFilter) {
@@ -162,7 +153,6 @@ export default {
       paramsUsersTrending: (state) => state.post.paramsUsersTrending,
       paramsChannelTrending: (state) => state.post.paramsChannelTrending,
       paramsDateTrending: (state) => state.post.paramsDateTrending,
-      displayDateTrending: (state) => state.post.displayDateTrending,
     }),
     keywordTrending: {
       get() {
@@ -194,7 +184,6 @@ export default {
       setKeywordSearchTrending: "post/setKeywordSearchTrending",
       setParamsUsersTrending: "post/setParamsUsersTrending",
       setParamsChannelTrending: "post/setParamsChannelTrending",
-      setDisplayDateTrending: "post/setDisplayDateTrending",
       setParamsDateTrending: "post/setParamsDateTrending",
     }),
     getRoute() {
@@ -205,13 +194,8 @@ export default {
         this.tab = 1;
       }
     },
-    onSetDate(v) {
-      this.setParamsDateTrending(v ? [v.start, v.end] : []);
-      this.filterPayload.startAt = v ? this.convertEpoch(v.start, 0, 0) : "";
-      this.filterPayload.endAt = v ? this.convertEpoch(v.end, 23, 59) : "";
-    },
     convertEpoch(d, h, m) {
-      const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
+      const epochDate = moment(`${d} ${h}:${m}`, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
         .unix();
       const miliEpoch = epochDate * 1000;
@@ -224,11 +208,17 @@ export default {
     },
     actionFilter() {
       let filterPayload = {
+        keyword: this.keywordSearchTrending,
         usernames: this.paramsUsersTrending.join(","),
         channelCodes: this.paramsChannelTrending.join(","),
-        startAt: this.filterPayload.startAt,
-        endAt: this.filterPayload.endAt,
-        keyword: this.keywordSearchTrending,
+        startAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[0], 0, 0)
+            : "",
+        endAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[1], 23, 59)
+            : "",
       };
       this.$emit("onActionFilter", filterPayload);
     },

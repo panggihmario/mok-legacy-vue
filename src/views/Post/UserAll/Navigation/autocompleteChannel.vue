@@ -7,7 +7,7 @@
       :search-input.sync="searchFilter"
       item-text="name"
       item-value="code"
-      label="User"
+      label="Channel"
       solo
       dense
       hide-details
