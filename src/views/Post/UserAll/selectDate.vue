@@ -85,16 +85,6 @@ import moment from "moment";
 import { mapMutations, mapState } from "vuex";
 
 export default {
-  props: {
-    reset: {
-      type: Boolean,
-      default: false,
-    },
-    tab: {
-      type: [Number, String],
-      default: 0,
-    },
-  },
   data: () => ({
     fav: true,
     menu: false,
@@ -103,17 +93,6 @@ export default {
     selectedDate: "",
     dates: [],
   }),
-  watch: {
-    "$route.path"() {
-      this.onReset();
-    },
-    reset() {
-      this.onReset();
-    },
-    tab() {
-      this.onReset();
-    },
-  },
   computed: {
     ...mapState({
       paramsDateTrending: (state) => state.post.paramsDateTrending,
@@ -168,6 +147,9 @@ export default {
       },
     },
   },
+  mounted() {
+    this.onReset();
+  },
   methods: {
     ...mapMutations({
       setParamsDateTrending: "post/setParamsDateTrending",
@@ -186,7 +168,6 @@ export default {
     onReset() {
       this.choosenDate = [];
       this.setDisplayDateTrending("");
-      this.$emit("onResetDate");
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
@@ -210,7 +191,6 @@ export default {
           const fullDate = `${start} - ${end}`;
           this.setDisplayDateTrending(fullDate);
           this.setParamsDateTrending(afterCheckRangeDate);
-          this.$emit("onSetDate", { start, end });
         }
       }
     },

@@ -81,7 +81,7 @@ import HeaderContent from "@/containers/HeaderContent";
 import NavigationTab from "./Navigation/index.vue";
 import PostAll from "./PostAll/index.vue";
 import PostAllTrending from "./PostTrending/index.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
