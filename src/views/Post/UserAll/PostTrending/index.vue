@@ -261,6 +261,9 @@ export default {
     };
   },
   watch: {
+    "$route.params.page"() {
+      this.getRoute();
+    },
     dialogPost() {
       this.stopVideo();
     },

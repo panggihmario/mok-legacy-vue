@@ -387,7 +387,11 @@ export default {
         }
         this.pageCandidate = v;
       } else {
-        // this.$router.push(`/post/user/trending/${v}`);
+        if (this.isFilter) {
+          this.routerPushGetRoute("active", v, { filter: this.isFilter });
+        } else {
+          this.routerPushGetRoute("active", v);
+        }
         this.pageActive = v;
       }
     },

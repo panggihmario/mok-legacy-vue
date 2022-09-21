@@ -234,6 +234,7 @@ export default {
       }
     },
     onSetDate(v) {
+      console.log({v});
       this.setParamsDateTrending(v ? [v.start, v.end] : []);
       this.filterPayload.startAt = v ? this.convertEpoch(v.start, 0, 0) : "";
       this.filterPayload.endAt = v ? this.convertEpoch(v.end, 23, 59) : "";

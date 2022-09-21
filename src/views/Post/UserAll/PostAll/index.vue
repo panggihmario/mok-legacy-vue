@@ -275,6 +275,9 @@ export default {
     };
   },
   watch: {
+    "$route.params.page"() {
+      this.getRoute();
+    },
     dialogPost() {
       this.stopVideo();
     },
@@ -289,11 +292,6 @@ export default {
         let id = this.tableItems[this.dialogPostDataIdx].id;
         this.handleGetUserPostDetail(id);
       }
-    },
-  },
-  watch: {
-    "$route.params.page"() {
-      this.getRoute();
     },
   },
   mounted() {
