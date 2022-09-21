@@ -198,6 +198,7 @@ export default {
       setParamsDateTrending: "post/setParamsDateTrending",
     }),
     getRoute() {
+      this.isResetFilter = true;
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
       } else {
