@@ -78,10 +78,10 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import NavigationTab from "./navigation.vue";
+import NavigationTab from "./Navigation/index.vue";
 import PostAll from "./PostAll/index.vue";
 import PostAllTrending from "./PostTrending/index.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -142,16 +142,9 @@ export default {
         }
       }
     },
-    // pageCandidate() {
-    //   this.getListPostByFilter("candidates", this.isFilter);
-    // },
-    // pageActive() {
-    //   this.getListPostByFilter("trending", this.isFilter);
-    // },
   },
   mounted() {
     this.getRoute();
-    // this.handleGetListUserPost();
   },
   methods: {
     ...mapActions({
@@ -387,7 +380,11 @@ export default {
         }
         this.pageCandidate = v;
       } else {
-        // this.$router.push(`/post/user/trending/${v}`);
+        if (this.isFilter) {
+          this.routerPushGetRoute("active", v, { filter: this.isFilter });
+        } else {
+          this.routerPushGetRoute("active", v);
+        }
         this.pageActive = v;
       }
     },

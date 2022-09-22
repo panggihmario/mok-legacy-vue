@@ -14,7 +14,8 @@ export default {
     paramsDate: [],
     displayDate: "",
     keywordSearchTrending: "",
-    paramsUsersTrending: null,
+    paramsUsersTrending: [],
+    paramsChannelTrending: [],
     channelCodeTrending: null,
     paramsDateTrending: [],
     displayDateTrending: "",
@@ -28,6 +29,9 @@ export default {
     },
     setDisplayDateTrending(state, payload) {
       state.displayDateTrending = payload;
+    },
+    setParamsChannelTrending(state, payload) {
+      state.paramsChannelTrending = payload;
     },
     setChannelCodeTrending(state, payload) {
       state.channelCodeTrending = payload;

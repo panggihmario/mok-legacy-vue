@@ -37,46 +37,19 @@
       <div class="col-7 d-flex align-center">
         <span class="font-12">Filter</span>
         <div class="ml-2" style="width: 200px">
-          <v-autocomplete
-            class="font-12"
-            v-model="usernameFilter"
-            :items="itemsUser"
-            :search-input.sync="searchUser"
-            item-text="username"
-            item-value="username"
-            label="User"
-            solo
-            dense
-            clearable
-            hide-details
-            flat
-            background-color="white"
-          ></v-autocomplete>
+          <Autocomplete-Username
+            :itemsFilter="itemsUser"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
+          ></Autocomplete-Username>
         </div>
         <div class="ml-2" style="width: 200px">
-          <v-autocomplete
-            class="font-12"
-            v-model="channelCodesFilter"
-            :items="itemsChannel"
-            :search-input.sync="searchChannel"
-            item-text="name"
-            item-value="code"
-            label="Channel"
-            solo
-            dense
-            clearable
-            hide-details
-            flat
-            background-color="white"
-          ></v-autocomplete>
+          <Autocomplete-Channel
+            :itemsFilter="itemsChannel"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
+          ></Autocomplete-Channel>
         </div>
         <div class="ml-2" style="width: 200px">
-          <Select-Date
-            :tab="tab"
-            :reset="isResetFilter"
-            @onSetDate="onSetDate"
-            @onResetDate="onSetDate"
-          ></Select-Date>
+          <Select-Date></Select-Date>
         </div>
       </div>
 
@@ -101,12 +74,16 @@
 
 <script>
 import moment from "moment";
-import SelectDate from "./selectDate.vue";
+import SelectDate from "../selectDate.vue";
 import { mapMutations, mapState } from "vuex";
+import AutocompleteUsername from "./autocompleteUsername.vue";
+import AutocompleteChannel from "./autocompleteChannel.vue";
 
 export default {
   components: {
     SelectDate,
+    AutocompleteUsername,
+    AutocompleteChannel,
   },
   props: ["itemsUser", "itemsChannel"],
   data() {
@@ -114,7 +91,6 @@ export default {
       tab: 0,
       items: ["Semua Postingan", "Trending"],
       search: "",
-      searchUser: "",
       searchChannel: "",
       showFilter: false,
       isResetFilter: false,
@@ -129,21 +105,13 @@ export default {
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
-      this.keywordTrending = "";
-      this.usernameFilter = "";
-      this.channelCodesFilter = "";
-      this.filterPayload.startAt = "";
-      this.filterPayload.endAt = "";
-      this.filterPayload = {
-        startAt: "",
-        endAt: "",
-      };
+      this.isResetFilter = true;
     },
     isResetFilter() {
       if (this.isResetFilter) {
         this.keywordTrending = "";
-        this.usernameFilter = "";
-        this.channelCodesFilter = "";
+        this.usernameFilter = [];
+        this.channelFilter = [];
         this.filterPayload.startAt = "";
         this.filterPayload.endAt = "";
         setTimeout(() => {
@@ -161,7 +129,6 @@ export default {
       }
     },
     showFilter() {
-      this.searchUser = "";
       this.searchChannel = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
@@ -169,11 +136,6 @@ export default {
       this.$emit("onSearchChannel", "a");
       if (!this.showFilter) {
         this.$emit("onCancelFilter");
-      }
-    },
-    searchUser() {
-      if (this.searchUser != null && this.searchUser.length > 0) {
-        this.$emit("onSearchUser", this.searchUser);
       }
     },
     searchChannel() {
@@ -189,9 +151,8 @@ export default {
     ...mapState({
       keywordSearchTrending: (state) => state.post.keywordSearchTrending,
       paramsUsersTrending: (state) => state.post.paramsUsersTrending,
-      channelCodeTrending: (state) => state.post.channelCodeTrending,
+      paramsChannelTrending: (state) => state.post.paramsChannelTrending,
       paramsDateTrending: (state) => state.post.paramsDateTrending,
-      displayDateTrending: (state) => state.post.displayDateTrending,
     }),
     keywordTrending: {
       get() {
@@ -209,12 +170,12 @@ export default {
         this.setParamsUsersTrending(value);
       },
     },
-    channelCodesFilter: {
+    channelFilter: {
       get() {
-        return this.channelCodeTrending;
+        return this.paramsChannelTrending;
       },
       set(value) {
-        this.setChannelCodeTrending(value);
+        this.setParamsChannelTrending(value);
       },
     },
   },
@@ -222,36 +183,42 @@ export default {
     ...mapMutations({
       setKeywordSearchTrending: "post/setKeywordSearchTrending",
       setParamsUsersTrending: "post/setParamsUsersTrending",
-      setDisplayDateTrending: "post/setDisplayDateTrending",
-      setChannelCodeTrending: "post/setChannelCodeTrending",
+      setParamsChannelTrending: "post/setParamsChannelTrending",
       setParamsDateTrending: "post/setParamsDateTrending",
     }),
     getRoute() {
+      this.isResetFilter = true;
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
       } else {
         this.tab = 1;
       }
     },
-    onSetDate(v) {
-      this.setParamsDateTrending(v ? [v.start, v.end] : []);
-      this.filterPayload.startAt = v ? this.convertEpoch(v.start, 0, 0) : "";
-      this.filterPayload.endAt = v ? this.convertEpoch(v.end, 23, 59) : "";
-    },
     convertEpoch(d, h, m) {
-      const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
+      const epochDate = moment(`${d} ${h}:${m}`, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
         .unix();
       const miliEpoch = epochDate * 1000;
       return miliEpoch;
     },
+    actionSearchFilter(v, type) {
+      if (v != null && v.length > 0) {
+        this.$emit(`onSearch${type}`, v);
+      }
+    },
     actionFilter() {
       let filterPayload = {
-        usernames: this.paramsUsersTrending,
-        channelCodes: this.channelCodeTrending,
-        startAt: this.filterPayload.startAt,
-        endAt: this.filterPayload.endAt,
         keyword: this.keywordSearchTrending,
+        usernames: this.paramsUsersTrending.join(","),
+        channelCodes: this.paramsChannelTrending.join(","),
+        startAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[0], 0, 0)
+            : "",
+        endAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[1], 23, 59)
+            : "",
       };
       this.$emit("onActionFilter", filterPayload);
     },
