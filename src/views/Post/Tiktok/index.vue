@@ -83,7 +83,7 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionLoadMoreFeed="actionGetFeedByUsername"
+          @actionLoadMoreFeed="actionGetFeedByUsername(true)"
         ></List-Item>
       </div>
     </div>
@@ -106,7 +106,7 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionLoadMoreFeed="loadMoreGetFeedByHashtag"
+          @actionLoadMoreFeed="actionGetHashtagPost"
         ></List-Item>
       </div>
     </div>
@@ -120,6 +120,12 @@
     >
       <span>Success Post</span>
       <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="alertFailed" top right color="primary" timeout="3000">
+      <span>Error</span>
+      <span v-if="payloadError.message !== ''"
+        >: {{ payloadError.message }}</span
+      >
     </v-snackbar>
   </div>
 </template>
@@ -155,7 +161,6 @@ export default {
       alertSuccess: false,
       alertFailed: false,
       alertRules: false,
-      alertFailedData: "",
       keywordUsername: "",
       keywordHashtag: "",
       channels: null,
@@ -165,6 +170,7 @@ export default {
       userFeedUsernameCursor: "0",
       userFeedHashtag: [],
       hashtagId: "",
+      hashtagCursor: 0,
       selectedItem: null,
       cursorFirst: null,
       payload: {
@@ -226,6 +232,7 @@ export default {
       getUserFeed: "tiktok/getUserFeed",
       getFeedExplore: "tiktok/getFeedExplore",
       getFeedByHashtag: "tiktok/getFeedByHashtag",
+      getHashtagPost: "tiktok/getHashtagPost",
       getTiktokVideo: "tiktok/getTiktokVideo",
       getTiktokVideoNoWatermark: "tiktok/getTiktokVideoNoWatermark",
       getAllChannel: "channel/getAllChannel",
@@ -279,27 +286,24 @@ export default {
         })
         .catch((err) => {
           this.loadingUsername = false;
-          this.payloadError = err.response.data;
           this.alertFailed = true;
-          setTimeout(() => {
-            this.alertFailed = false;
-          }, 3000);
+          this.payloadError = err.response.data.data;
         });
     },
-    actionGetFeedByUsername() {
+    actionGetFeedByUsername(isLoadmore = false) {
+      if (isLoadmore) {
+        this.loadingLoadmoreUsername = true;
+      } else {
+        this.userFeedUsername = [];
+        this.userFeedUsernameCursor = 0;
+        this.loadingUsername = true;
+      }
       const payload = {
         url: "/public/posts",
         count: 20,
         secUid: this.userInfo.secUid,
         cursor: this.userFeedUsernameCursor,
       };
-      if (this.userFeedUsername.length == 0) {
-        this.loadingUsername = true;
-      } else {
-        this.loadingLoadmoreUsername = true;
-      }
-      this.focusIndex = null;
-      this.selectedItem = null;
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
@@ -318,37 +322,44 @@ export default {
     actionGetFeedByHashtag() {
       const payload = {
         url: "public/discover/keyword",
-        urlFeedHashtag: "public/hashtag",
         keyword: this.keywordHashtag,
         count: 20,
         cursor: this.userFeedHashtag.length,
       };
-      if (this.userFeedHashtag.length == 0) {
-        this.loadingHashtag = true;
-      } else {
-        this.loadingLoadmoreHashtag = true;
-      }
-      this.focusIndex = null;
-      this.selectedItem = null;
+      this.loadingHashtag = true;
+      this.userFeedHashtag = [];
+      this.hashtagId = "";
+      this.hashtagCursor = 0;
       return this.getFeedByHashtag(payload)
         .then((response) => {
-          this.userFeedUsernameCursor = response.data.cursor;
-          for (let i = 0; i < response.data.itemList.length; i++) {
-            const element = response.data.itemList[i];
-            this.userFeedUsername.push(element);
-          }
-          // this.hashtagId = response.data.challengeInfo.challenge.id;
-          // const itemList = response.data.itemList;
-          // const normalize = Object.entries(itemList).map(([id, obj]) => ({
-          //   id,
-          //   ...obj,
-          // }));
-          // this.loadingHashtag = false;
-          // this.loadingLoadmoreHashtag = false;
-          // for (let i = 0; i < normalize.length; i++) {
-          //   const element = normalize[i];
-          //   this.userFeedHashtag.push(element);
-          // }
+          let data = response.data;
+          this.hashtagId = data.hashtags.challengeInfoList[0].challenge.id;
+          this.actionGetHashtagPost();
+        })
+        .catch((err) => {
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+          this.alertFailed = true;
+          this.payloadError = err.response.data.data;
+        });
+    },
+    actionGetHashtagPost() {
+      let response = {
+        url: "public/hashtag",
+        cursor: this.hashtagCursor,
+        count: 20,
+        challengeId: this.hashtagId,
+      };
+      this.loadingLoadmoreHashtag = true;
+      return this.getHashtagPost(response)
+        .then((response) => {
+          let data = response.data;
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+          this.hashtagCursor = data.cursor;
+          data.itemList.map((list) => {
+            this.userFeedHashtag.push(list);
+          });
         })
         .catch((err) => {
           this.loadingHashtag = false;
@@ -357,6 +368,7 @@ export default {
     },
     actionGetFeedExplore() {
       const payload = {
+        url: "/public/explore",
         country: "id",
       };
       if (this.userFeed.length == 0) {
@@ -376,38 +388,6 @@ export default {
         .catch((err) => {
           this.loading = false;
           this.loadingLoadmore = false;
-        });
-    },
-    loadMoreGetFeedByHashtag() {
-      const payload = {
-        id: this.hashtagId,
-        count: 20,
-        cursor: this.userFeedHashtag.length,
-      };
-      if (this.userFeedHashtag.length == 0) {
-        this.loadingHashtag = true;
-      } else {
-        this.loadingLoadmoreHashtag = true;
-      }
-      this.focusIndex = null;
-      this.selectedItem = null;
-      return this.getFeedByHashtag(payload)
-        .then((response) => {
-          const itemList = response.data.itemList;
-          const normalize = Object.entries(itemList).map(([id, obj]) => ({
-            id,
-            ...obj,
-          }));
-          this.loadingHashtag = false;
-          this.loadingLoadmoreHashtag = false;
-          for (let i = 0; i < normalize.length; i++) {
-            const element = normalize[i];
-            this.userFeedHashtag.push(element);
-          }
-        })
-        .catch((err) => {
-          this.loadingHashtag = false;
-          this.loadingLoadmoreHashtag = false;
         });
     },
     drawImageOnCanvas(file, seekTo) {
