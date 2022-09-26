@@ -184,13 +184,13 @@
       </v-btn>
     </v-dialog>
 
-    <v-dialog v-model="dialogPushNotif" width="411">
+    <v-dialog v-model="dialogPushNotif" width="410">
       <v-card>
-        <div class="row no-gutters">
-          <div class="col text-end pt-6 pr-2">
+        <div class="d-flex no-gutters">
+          <div class="text-end pt-6" style="width: 40px">
             <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
           </div>
-          <div class="col-8 font-12 pt-6">
+          <div class="font-12 pt-6 px-4" style="width: 320px">
             <span class="font-14 black--text"
               >Apakah kamu yakin ingin melakukan push notif untuk konten
               ini?</span
@@ -206,6 +206,7 @@
                 height="29px"
                 depressed
                 class="text-capitalize"
+                style="border-radius: 8px"
                 @click="closeDialogPushNotif"
                 >Batalkan Push Notif</v-btn
               >
@@ -215,12 +216,13 @@
                 depressed
                 class="text-capitalize"
                 color="secondary"
+                style="border-radius: 8px"
                 @click="actionPushNotif"
                 >Push Notif Sekarang</v-btn
               >
             </div>
           </div>
-          <div class="col d-flex justify-end">
+          <div class="d-flex justify-end" style="width: 50px">
             <v-btn rounded icon>
               <v-icon size="18" @click="closeDialogPushNotif">mdi-close</v-icon>
             </v-btn>
@@ -275,6 +277,9 @@ export default {
     };
   },
   watch: {
+    "$route.params.page"() {
+      this.getRoute();
+    },
     dialogPost() {
       this.stopVideo();
     },

@@ -15,7 +15,7 @@
           dense
           readonly
           placeholder="Tanggal"
-          v-model="displayDate"
+          v-model="displayDateTrending"
         ></custom-input>
       </template>
 
@@ -85,12 +85,6 @@ import moment from "moment";
 import { mapMutations, mapState } from "vuex";
 
 export default {
-  props: {
-    reset: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data: () => ({
     fav: true,
     menu: false,
@@ -99,15 +93,10 @@ export default {
     selectedDate: "",
     dates: [],
   }),
-  watch: {
-    reset(newVal, oldVal) {
-      this.onReset();
-    },
-  },
   computed: {
     ...mapState({
-      paramsDate: (state) => state.post.paramsDate,
-      displayDate: (state) => state.post.displayDate,
+      paramsDateTrending: (state) => state.post.paramsDateTrending,
+      displayDateTrending: (state) => state.post.displayDateTrending,
     }),
     fromDate() {
       if (this.choosenDate.length > 0) {
@@ -145,23 +134,26 @@ export default {
     },
     choosenDate: {
       get() {
-        return this.paramsDate;
+        return this.paramsDateTrending;
       },
       set(value) {
-        this.setParamsDate(value);
+        this.setParamsDateTrending(value);
         const after = this.checkRangeDate(value);
         if (after[1] && after[0]) {
-          this.setParamsDate(after);
+          this.setParamsDateTrending(after);
         } else {
-          this.setParamsDate(value);
+          this.setParamsDateTrending(value);
         }
       },
     },
   },
+  mounted() {
+    this.onReset();
+  },
   methods: {
     ...mapMutations({
-      setParamsDate: "post/setParamsDate",
-      setDisplayDate: "post/setDisplayDate",
+      setParamsDateTrending: "post/setParamsDateTrending",
+      setDisplayDateTrending: "post/setDisplayDateTrending",
     }),
     checkRangeDate(value) {
       const [first, second] = value;
@@ -175,7 +167,7 @@ export default {
     },
     onReset() {
       this.choosenDate = [];
-      this.setDisplayDate("");
+      this.setDisplayDateTrending("");
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
@@ -189,7 +181,7 @@ export default {
       if (this.choosenDate.length > 0) {
         const d = this.choosenDate;
         const from = this.formatter(d[0]);
-        this.setDisplayDate(from);
+        this.setDisplayDateTrending(from);
         if (this.choosenDate.length > 1) {
           // const end = this.formatter(d[1]);
           // const fullDate = `${from} - ${end}`;
@@ -197,9 +189,8 @@ export default {
           const start = this.formatter(afterCheckRangeDate[0]);
           const end = this.formatter(afterCheckRangeDate[1]);
           const fullDate = `${start} - ${end}`;
-          this.setDisplayDate(fullDate);
-          this.setParamsDate(afterCheckRangeDate);
-          this.$emit("onSetDate", { start, end });
+          this.setDisplayDateTrending(fullDate);
+          this.setParamsDateTrending(afterCheckRangeDate);
         }
       }
     },

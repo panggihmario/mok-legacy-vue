@@ -20,7 +20,7 @@
         >
         <div class="ml-2" style="width: 200px">
           <v-text-field
-            v-model="filterPayload.keyword"
+            v-model="keywordTrending"
             placeholder="Search"
             clearable
             dense
@@ -37,44 +37,19 @@
       <div class="col-7 d-flex align-center">
         <span class="font-12">Filter</span>
         <div class="ml-2" style="width: 200px">
-          <v-autocomplete
-            class="font-12"
-            v-model="filterPayload.usernames"
-            :items="itemsUser"
-            :search-input.sync="searchUser"
-            item-text="username"
-            label="User"
-            solo
-            dense
-            clearable
-            hide-details
-            flat
-            color="white"
-            background-color="white"
-          ></v-autocomplete>
+          <Autocomplete-Username
+            :itemsFilter="itemsUser"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
+          ></Autocomplete-Username>
         </div>
         <div class="ml-2" style="width: 200px">
-          <v-autocomplete
-            class="font-12"
-            v-model="filterPayload.channelCodes"
-            :items="itemsChannel"
-            :search-input.sync="searchChannel"
-            item-text="name"
-            item-value="code"
-            label="Channel"
-            solo
-            dense
-            clearable
-            hide-details
-            flat
-            background-color="white"
-          ></v-autocomplete>
+          <Autocomplete-Channel
+            :itemsFilter="itemsChannel"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
+          ></Autocomplete-Channel>
         </div>
         <div class="ml-2" style="width: 200px">
-          <Select-Date
-            :reset="isResetFilter"
-            @onSetDate="onSetDate"
-          ></Select-Date>
+          <Select-Date></Select-Date>
         </div>
       </div>
 
@@ -99,11 +74,16 @@
 
 <script>
 import moment from "moment";
-import SelectDate from "./selectDate.vue";
+import SelectDate from "../selectDate.vue";
+import { mapMutations, mapState } from "vuex";
+import AutocompleteUsername from "./autocompleteUsername.vue";
+import AutocompleteChannel from "./autocompleteChannel.vue";
 
 export default {
   components: {
     SelectDate,
+    AutocompleteUsername,
+    AutocompleteChannel,
   },
   props: ["itemsUser", "itemsChannel"],
   data() {
@@ -111,62 +91,51 @@ export default {
       tab: 0,
       items: ["Semua Postingan", "Trending"],
       search: "",
-      searchUser: "",
       searchChannel: "",
       showFilter: false,
       isResetFilter: false,
       filterUser: null,
       filterChannel: null,
       filterPayload: {
-        usernames: "",
-        channelCodes: "",
         startAt: "",
         endAt: "",
-        keyword: "",
       },
     };
   },
   watch: {
     tab() {
       this.$emit("changeTab", this.tab);
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
-      this.filterPayload.startAt = "";
-      this.filterPayload.endAt = "";
-      this.filterPayload.keyword = "";
+      this.isResetFilter = true;
     },
     isResetFilter() {
       if (this.isResetFilter) {
+        this.keywordTrending = "";
+        this.usernameFilter = [];
+        this.channelFilter = [];
+        this.filterPayload.startAt = "";
+        this.filterPayload.endAt = "";
         setTimeout(() => {
           this.isResetFilter = false;
           this.showFilter = false;
         }, 100);
       }
     },
-    "filterPayload.keyword"() {
+    keywordSearchTrending() {
       if (
-        this.filterPayload.keyword == "" ||
-        this.filterPayload.keyword == null
+        this.keywordSearchTrending == "" ||
+        this.keywordSearchTrending == null
       ) {
         this.actionFilter();
       }
     },
     showFilter() {
-      this.searchUser = "";
       this.searchChannel = "";
-      this.filterPayload.usernames = "";
-      this.filterPayload.channelCodes = "";
       this.filterPayload.startAt = "";
       this.filterPayload.endAt = "";
       this.$emit("onSearchUser", "a");
       this.$emit("onSearchChannel", "a");
       if (!this.showFilter) {
         this.$emit("onCancelFilter");
-      }
-    },
-    searchUser() {
-      if (this.searchUser != null && this.searchUser.length > 0) {
-        this.$emit("onSearchUser", this.searchUser);
       }
     },
     searchChannel() {
@@ -178,27 +147,80 @@ export default {
   mounted() {
     this.getRoute();
   },
+  computed: {
+    ...mapState({
+      keywordSearchTrending: (state) => state.post.keywordSearchTrending,
+      paramsUsersTrending: (state) => state.post.paramsUsersTrending,
+      paramsChannelTrending: (state) => state.post.paramsChannelTrending,
+      paramsDateTrending: (state) => state.post.paramsDateTrending,
+    }),
+    keywordTrending: {
+      get() {
+        return this.keywordSearchTrending;
+      },
+      set(value) {
+        this.setKeywordSearchTrending(value);
+      },
+    },
+    usernameFilter: {
+      get() {
+        return this.paramsUsersTrending;
+      },
+      set(value) {
+        this.setParamsUsersTrending(value);
+      },
+    },
+    channelFilter: {
+      get() {
+        return this.paramsChannelTrending;
+      },
+      set(value) {
+        this.setParamsChannelTrending(value);
+      },
+    },
+  },
   methods: {
+    ...mapMutations({
+      setKeywordSearchTrending: "post/setKeywordSearchTrending",
+      setParamsUsersTrending: "post/setParamsUsersTrending",
+      setParamsChannelTrending: "post/setParamsChannelTrending",
+      setParamsDateTrending: "post/setParamsDateTrending",
+    }),
     getRoute() {
+      this.isResetFilter = true;
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
       } else {
         this.tab = 1;
       }
     },
-    onSetDate(v) {
-      this.filterPayload.startAt = this.convertEpoch(v.start, 0, 0);
-      this.filterPayload.endAt = this.convertEpoch(v.end, 23, 59);
-    },
     convertEpoch(d, h, m) {
-      const epochDate = moment(`${d} ${h}:${m}`, "DD/MM/YYYY HH:mm")
+      const epochDate = moment(`${d} ${h}:${m}`, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
         .unix();
       const miliEpoch = epochDate * 1000;
       return miliEpoch;
     },
+    actionSearchFilter(v, type) {
+      if (v != null && v.length > 0) {
+        this.$emit(`onSearch${type}`, v);
+      }
+    },
     actionFilter() {
-      this.$emit("onActionFilter", this.filterPayload);
+      let filterPayload = {
+        keyword: this.keywordSearchTrending,
+        usernames: this.paramsUsersTrending.join(","),
+        channelCodes: this.paramsChannelTrending.join(","),
+        startAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[0], 0, 0)
+            : "",
+        endAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[1], 23, 59)
+            : "",
+      };
+      this.$emit("onActionFilter", filterPayload);
     },
   },
 };
