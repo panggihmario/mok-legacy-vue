@@ -1,5 +1,13 @@
 <template>
-  <v-navigation-drawer floating color="whitesmoke" app width="328" permanent right style="padding:24px">
+  <v-navigation-drawer
+    floating
+    color="whitesmoke"
+    app
+    width="328"
+    permanent
+    right
+    style="padding:24px"
+  >
     <div>
       <h5>Konten Terpilih</h5>
       <p class="font-12 mt-2">
@@ -7,21 +15,43 @@
         “Submit Post”
       </p>
       <div>
-        <video :src="previewTiktokData.video.playAddr" controls
-          style="max-width: 100% !important; height: 100% !important"></video>
+        <video
+          :src="previewTiktokData.video.playAddr"
+          controls
+          style="max-width: 100% !important; height: 100% !important"
+        ></video>
 
         <div class="mt-8 font-12 text-break">
-          <v-textarea v-model="previewTiktokPayload.description" label="Description" outlined background-color="white"
-            class="font-12"></v-textarea>
-          <custom-autocomplete :value="previewTiktokPayload.channel" v-model="previewTiktokPayload.channel"
-            :items="channels" item-text="name" placeholder="Select Channel" return-object />
+          <v-textarea
+            v-model="previewTiktokPayload.description"
+            label="Description"
+            outlined
+            background-color="white"
+            class="font-12"
+          ></v-textarea>
+          <custom-autocomplete
+            :value="previewTiktokPayload.channel"
+            v-model="previewTiktokPayload.channel"
+            :items="channels"
+            item-text="name"
+            placeholder="Select Channel"
+            return-object
+          />
         </div>
         <div class="d-flex">
-          <custom-button color="white" class="primary--text mr-4" @click="actionChangeStatusPreviewTiktok(false)">
+          <custom-button
+            color="white"
+            class="primary--text mr-4"
+            @click="actionChangeStatusPreviewTiktok(false)"
+          >
             Cancel
           </custom-button>
-          <custom-button color="primary" class="white--text" :loading="loadingSubmit"
-            @click="actionGetTiktokVideoNoWatermark">
+          <custom-button
+            color="primary"
+            class="white--text"
+            :loading="loadingSubmit"
+            @click="actionGetTiktokVideoNoWatermark"
+          >
             Submit Post
           </custom-button>
         </div>
@@ -48,7 +78,7 @@ export default {
       loadingSubmit: false,
       alertSuccess: false,
       alertFailed: false,
-      asetKipas: 'https://asset.kipaskipas.com',
+      asetKipas: "https://asset.kipaskipas.com",
       channels: [],
       payload: {},
       dataResponse: {
@@ -122,16 +152,17 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            if (res.name){
+            if (res.name) {
+              this.loadingSubmit = false;
               this.actionPostToDraft(res);
-              if (process.env.VUE_APP_SERVER_STATUS === 'production') {
-                this.dataResponse.url = `${this.asetKipas}/${res.name}`
+              if (process.env.VUE_APP_SERVER_STATUS === "production") {
+                this.dataResponse.url = `${this.asetKipas}/${res.name}`;
               } else {
                 this.dataResponse.url = res.url;
               }
-            }else{
+            } else {
               this.loadingSubmit = false;
-              this.payloadFailed.message = 'Upload Failed';
+              this.payloadFailed.message = "Upload Failed";
               this.alertFailed = true;
             }
           })
@@ -141,18 +172,23 @@ export default {
       }
     },
     actionPostToDraft(res) {
+      const currentDateEpoch = moment(new Date()).valueOf();
+      const filePath = `/img/media/${currentDateEpoch}.jpg`;
+      let response;
       return this.drawImageOnCanvas(res.url, 0.0)
         .then((base64data) => {
-          const currentDateEpoch = moment(new Date()).valueOf();
-          const filePath = `/img/media/${currentDateEpoch}.jpg`;
           const thumbnail = this.dataURLtoFile(
             base64data,
             `${+new Date()}.jpg`
           );
           return this.$storeOss.put(filePath, thumbnail);
         })
-        .then((response) => {
-          let url = `${this.asetKipas}/${response.name}`
+        .then((resp) => {
+          response = resp;
+          return this.$storeOss.putACL(filePath, "public-read");
+        })
+        .then(() => {
+          let url = `${this.asetKipas}/${response.name}`;
           if (process.env.VUE_APP_SERVER_STATUS === "production") {
             this.dataResponse.thumbnail = {
               small: url,
@@ -168,9 +204,10 @@ export default {
             };
             this.actionPostFeed();
           }
-
         })
-        .catch((err) => { });
+        .catch((err) => {
+          console.log({ err });
+        });
     },
     drawImageOnCanvas(url, seekTo) {
       return new Promise((resolve, reject) => {
@@ -207,7 +244,7 @@ export default {
               (blob) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function () {
+                reader.onloadend = function() {
                   var base64data = reader.result;
                   resolve(base64data);
                 };
