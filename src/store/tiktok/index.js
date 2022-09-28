@@ -69,11 +69,26 @@ export default {
           throw err;
         });
     },
+    getHashtagPost({ state }, payload) {
+      const data = {
+        url: `${state.pathDiscover}/hashtag/post`,
+        params: payload,
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     getFeedExplore({ state }, payload) {
       const data = {
         url: `${state.pathDiscover}/explore`,
         params: {
-          country: payload.country,
+          ...payload,
         },
       };
       return this._vm
