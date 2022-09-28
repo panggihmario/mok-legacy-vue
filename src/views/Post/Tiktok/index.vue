@@ -279,6 +279,7 @@ export default {
       this.loadingUsername = true;
       this.focusIndex = null;
       this.selectedItem = null;
+      this.changeStatusPreviewTiktok(false);
       return this.getUserDetail(payload)
         .then((response) => {
           this.loadingUsername = false;
@@ -330,6 +331,7 @@ export default {
       this.userFeedHashtag = [];
       this.hashtagId = "";
       this.hashtagCursor = 0;
+      this.changeStatusPreviewTiktok(false);
       return this.getFeedByHashtag(payload)
         .then((response) => {
           let data = response.data;
@@ -373,6 +375,7 @@ export default {
       };
       if (this.userFeed.length == 0) {
         this.loading = true;
+        this.changeStatusPreviewTiktok(false);
       } else {
         this.loadingLoadmore = true;
       }
