@@ -4,7 +4,12 @@
       <v-tabs v-model="tab">
         <v-tabs-slider></v-tabs-slider>
 
-        <v-tab v-for="item in items" :key="item" class="text-capitalize">
+        <v-tab
+          v-for="item in items"
+          :key="item"
+          class="text-capitalize"
+          style="letter-spacing: 0"
+        >
           {{ item }}
         </v-tab>
       </v-tabs>
