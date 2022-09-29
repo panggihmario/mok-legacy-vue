@@ -345,11 +345,7 @@ export default {
     },
     handleSuccessPostTrending() {
       this.alertPushNotifSuccess = true;
-      if (this.$route.params.tab == "candidates") {
-        this.handleGetListUserPost();
-      } else {
-        this.handleGetListUserPostTrending();
-      }
+      this.actionGetListDataByTab(this.dataFilter, "filter");
     },
     handleErrorPostTrending() {
       this.alertFailed = true;

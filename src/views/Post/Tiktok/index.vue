@@ -40,23 +40,6 @@
           @keypress.enter="actionGetFeedByHashtag()"
         ></v-text-field>
       </div>
-
-      <!-- <div v-else v-show="!loading">
-        <v-tooltip bottom color="green">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              icon
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              @click="actionGetFeedExplore"
-            >
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          </template>
-          <span class="font-10">Refresh FYP</span>
-        </v-tooltip>
-      </div> -->
     </div>
 
     <div v-if="tab == 3">
@@ -77,7 +60,6 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
           @actionLoadMoreFeed="actionGetFeedExplore"
         ></List-Item>
       </div>
@@ -101,8 +83,7 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
-          @actionLoadMoreFeed="loadMoreGetFeedByUsername"
+          @actionLoadMoreFeed="actionGetFeedByUsername(true)"
         ></List-Item>
       </div>
     </div>
@@ -125,15 +106,26 @@
           :selectedItem="selectedItem"
           :payload="payload"
           @selectFocus="selectFocus"
-          @actionGetTiktokVideoNoWatermark="actionGetTiktokVideoNoWatermark"
-          @actionLoadMoreFeed="loadMoreGetFeedByHashtag"
+          @actionLoadMoreFeed="actionGetHashtagPost"
         ></List-Item>
       </div>
     </div>
 
-    <v-snackbar v-model="previewTiktokSuccess" top right color="success">
+    <v-snackbar
+      v-model="previewTiktokSuccess"
+      top
+      right
+      color="success"
+      timeout="3000"
+    >
       <span>Success Post</span>
       <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="alertFailed" top right color="primary" timeout="3000">
+      <span>Error</span>
+      <span v-if="payloadError.message !== ''"
+        >: {{ payloadError.message }}</span
+      >
     </v-snackbar>
   </div>
 </template>
@@ -175,7 +167,10 @@ export default {
       userInfo: null,
       userFeed: [],
       userFeedUsername: [],
+      userFeedUsernameCursor: "0",
       userFeedHashtag: [],
+      hashtagId: "",
+      hashtagCursor: 0,
       selectedItem: null,
       cursorFirst: null,
       payload: {
@@ -199,7 +194,7 @@ export default {
         this.tabSearch = "Hashtag";
       } else if (this.tab == 3) {
         this.tabSearch = "";
-        this.actionGetFeedExplore()
+        this.actionGetFeedExplore();
       }
       this.focusIndex = null;
       this.selectedItem = null;
@@ -218,12 +213,11 @@ export default {
     },
   },
   mounted() {
-    // this.actionGetFeedExplore();
     this.getResponseChannel();
     this.getCursorFirst();
     this.setPreviewTiktokData({});
     this.changeStatusPreviewTiktok(false);
-    this.tabSearch = "Username"
+    this.tabSearch = "Username";
   },
   computed: {
     ...mapState({
@@ -238,6 +232,7 @@ export default {
       getUserFeed: "tiktok/getUserFeed",
       getFeedExplore: "tiktok/getFeedExplore",
       getFeedByHashtag: "tiktok/getFeedByHashtag",
+      getHashtagPost: "tiktok/getHashtagPost",
       getTiktokVideo: "tiktok/getTiktokVideo",
       getTiktokVideoNoWatermark: "tiktok/getTiktokVideoNoWatermark",
       getAllChannel: "channel/getAllChannel",
@@ -277,43 +272,44 @@ export default {
       }
     },
     actionGetUserDetail() {
+      let payload = {
+        url: "/public/check",
+        username: this.keywordUsername,
+      };
       this.loadingUsername = true;
       this.focusIndex = null;
       this.selectedItem = null;
-      return this.getUserDetail(this.keywordUsername)
+      this.changeStatusPreviewTiktok(false);
+      return this.getUserDetail(payload)
         .then((response) => {
           this.loadingUsername = false;
           this.userInfo = response.data.userInfo.user;
         })
         .catch((err) => {
           this.loadingUsername = false;
-          this.payloadError = err.response.data;
           this.alertFailed = true;
-          setTimeout(() => {
-            this.alertFailed = false;
-          }, 3000);
+          this.payloadError = err.response.data.data;
         });
     },
-    actionGetFeedByUsername() {
-      const payload = {
-        count: 30,
-        secUid: this.userInfo.secUid,
-        cursor: 0,
-      };
-      if (this.userFeedUsername.length == 0) {
-        this.loadingUsername = true;
-      } else {
+    actionGetFeedByUsername(isLoadmore = false) {
+      if (isLoadmore) {
         this.loadingLoadmoreUsername = true;
+      } else {
+        this.userFeedUsername = [];
+        this.userFeedUsernameCursor = 0;
+        this.loadingUsername = true;
       }
-      this.userFeedUsername = [];
-      this.focusIndex = null;
-      this.selectedItem = null;
-      this.loadingUsername = true;
+      const payload = {
+        url: "/public/posts",
+        count: 20,
+        secUid: this.userInfo.secUid,
+        cursor: this.userFeedUsernameCursor,
+      };
       return this.getUserFeed(payload)
         .then((response) => {
-          console.log(response)
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
+          this.userFeedUsernameCursor = response.data.cursor;
           for (let i = 0; i < response.data.itemList.length; i++) {
             const element = response.data.itemList[i];
             this.userFeedUsername.push(element);
@@ -326,32 +322,46 @@ export default {
     },
     actionGetFeedByHashtag() {
       const payload = {
-        count: 10,
+        url: "public/discover/keyword",
         keyword: this.keywordHashtag,
-        cursor: 0,
+        count: 20,
+        cursor: this.userFeedHashtag.length,
       };
-      if (this.userFeedHashtag.length == 0) {
-        this.loadingHashtag = true;
-      } else {
-        this.loadingLoadmoreHashtag = true;
-      }
-      this.userFeedHashtag = [];
       this.loadingHashtag = true;
-      this.focusIndex = null;
-      this.selectedItem = null;
+      this.userFeedHashtag = [];
+      this.hashtagId = "";
+      this.hashtagCursor = 0;
+      this.changeStatusPreviewTiktok(false);
       return this.getFeedByHashtag(payload)
         .then((response) => {
-          console.log(response)
-          const itemList = response.data.itemList
-          const normalize = Object.entries(itemList).map(([id, obj])=> ({
-            id, ...obj
-          }))
+          let data = response.data;
+          this.hashtagId = data.hashtags.challengeInfoList[0].challenge.id;
+          this.actionGetHashtagPost();
+        })
+        .catch((err) => {
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
-          for (let i = 0; i < normalize.length; i++) {
-            const element = normalize[i];
-            this.userFeedHashtag.push(element);
-          }
+          this.alertFailed = true;
+          this.payloadError = err.response.data.data;
+        });
+    },
+    actionGetHashtagPost() {
+      let response = {
+        url: "public/hashtag",
+        cursor: this.hashtagCursor,
+        count: 20,
+        challengeId: this.hashtagId,
+      };
+      this.loadingLoadmoreHashtag = true;
+      return this.getHashtagPost(response)
+        .then((response) => {
+          let data = response.data;
+          this.loadingHashtag = false;
+          this.loadingLoadmoreHashtag = false;
+          this.hashtagCursor = data.cursor;
+          data.itemList.map((list) => {
+            this.userFeedHashtag.push(list);
+          });
         })
         .catch((err) => {
           this.loadingHashtag = false;
@@ -360,10 +370,12 @@ export default {
     },
     actionGetFeedExplore() {
       const payload = {
+        url: "/public/explore",
         country: "id",
       };
       if (this.userFeed.length == 0) {
         this.loading = true;
+        this.changeStatusPreviewTiktok(false);
       } else {
         this.loadingLoadmore = true;
       }
@@ -379,122 +391,7 @@ export default {
         .catch((err) => {
           this.loading = false;
           this.loadingLoadmore = false;
-          console.log({ err });
         });
-    },
-    loadMoreGetFeedByUsername() {
-      let cursor =
-        this.userFeedUsername.length != 0
-          ? `${
-              this.userFeedUsername[this.userFeedUsername.length - 1].createTime
-            }000`
-          : 0;
-      const payload = {
-        count: 10,
-        secUid: this.userInfo.secUid,
-        cursor: cursor,
-      };
-      if (this.userFeedUsername.length == 0) {
-        this.loadingUsername = true;
-      } else {
-        this.loadingLoadmoreUsername = true;
-      }
-      return this.getUserFeed(payload)
-        .then((response) => {
-          this.loadingUsername = false;
-          this.loadingLoadmoreUsername = false;
-          for (let i = 0; i < response.data.itemList.length; i++) {
-            const element = response.data.itemList[i];
-            this.userFeedUsername.push(element);
-          }
-        })
-        .catch((err) => {
-          this.loadingUsername = false;
-          this.loadingLoadmoreUsername = false;
-        });
-    },
-    loadMoreGetFeedByHashtag() {
-      let cursor =
-        this.userFeedHashtag.length != 0
-          ? `${
-              this.userFeedHashtag[this.userFeedHashtag.length - 1].createTime
-            }000`
-          : 0;
-      const payload = {
-        count: 10,
-        keyword: this.keywordHashtag,
-        cursor: cursor,
-      };
-      if (this.userFeedHashtag.length == 0) {
-        this.loadingHashtag = true;
-      } else {
-        this.loadingLoadmoreHashtag = true;
-      }
-      // this.focusIndex = null;
-      // this.selectedItem = null;
-      // console.log(payload)
-      return this.getFeedByHashtag(payload)
-        .then((response) => {
-          const itemList = response.data.itemList
-          const normalize = Object.entries(itemList).map(([id, obj])=> ({
-            id, ...obj
-          }))
-          this.loadingHashtag = false;
-          this.loadingLoadmoreHashtag = false;
-          // this.userFeedHashtag = response.data;
-          for (let i = 0; i < normalize.length; i++) {
-            const element = normalize[i];
-            this.userFeedHashtag.push(element);
-          }
-        })
-        .catch((err) => {
-          this.loadingHashtag = false;
-          this.loadingLoadmoreHashtag = false;
-        });
-    },
-    actionGetTiktokVideoNoWatermark() {
-      // const url = `https://www.tiktok.com/@${this.selectedItem.author.uniqueId}/video/${this.selectedItem.video.id}`;
-      // if (this.payload.channel == null) {
-      //   this.alertRules = true;
-      //   setTimeout(() => {
-      //     this.alertRules = false;
-      //   }, 3000);
-      // } else {
-      //   this.loadingSubmit = true;
-      //   return this.getTiktokVideoNoWatermark(url)
-      //     .then((response) => {
-      //       this.newPayload = response.data;
-      //       console.log(response.data);
-      //       // this.payload.medias.push(response.data.data);
-      //       // this.actionPostToDraft();
-      //     })
-      //     .catch((err) => {
-      //       this.loadingSubmit = false;
-      //     });
-      // }
-    },
-    actionPostToDraft() {
-      console.log("lol new", this.newPayload);
-      // return this.drawImageOnCanvas();
-      // this.focusIndex = null;
-      // return this.postFeed(this.payload)
-      //   .then((response) => {
-      //     this.payload = {
-      //       medias: [],
-      //       description: "",
-      //       channel: null,
-      //       product: null,
-      //       type: "social",
-      //     };
-      //     this.loadingSubmit = false;
-      //     this.alertSuccess = true;
-      //     setTimeout(() => {
-      //       this.alertSuccess = false;
-      //     }, 3000);
-      //   })
-      //   .catch((err) => {
-      //     this.loadingSubmit = false;
-      //   });
     },
     drawImageOnCanvas(file, seekTo) {
       return new Promise((resolve, reject) => {
