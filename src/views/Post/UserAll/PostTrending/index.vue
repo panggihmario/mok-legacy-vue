@@ -185,12 +185,12 @@
           <div class="text-end pt-6" style="width: 40px">
             <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
           </div>
-          <div class="font-12 pt-6 px-4" style="width: 320px">
+          <div class="font-12 pt-6 px-4" style="width: 340px">
             <span class="font-14 black--text"
               >Apakah kamu yakin ingin melakukan push notif untuk konten
               ini?</span
             >
-            <p class="mt-2 grey--text">
+            <p class="mt-2 pr-4 grey--text">
               Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
               bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
               ini karena akan sangat mengganggu user nantinya.
@@ -198,7 +198,8 @@
             <div class="d-flex justify-space-between mb-6">
               <v-btn
                 x-small
-                height="29px"
+                height="29"
+                width="146"
                 depressed
                 class="text-capitalize"
                 style="border-radius: 8px"
@@ -207,7 +208,8 @@
               >
               <v-btn
                 x-small
-                height="29px"
+                height="29"
+                width="150"
                 depressed
                 class="text-capitalize"
                 color="secondary"
@@ -217,7 +219,7 @@
               >
             </div>
           </div>
-          <div class="d-flex justify-end" style="width: 50px">
+          <div class="d-flex justify-end" style="width: 30px">
             <v-btn rounded icon>
               <v-icon size="18" @click="closeDialogPushNotif">mdi-close</v-icon>
             </v-btn>

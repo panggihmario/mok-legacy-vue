@@ -21,7 +21,10 @@
           <div style="max-width: 100% !important">
             <v-img :src="item.video.cover" height="260px" width="100%"></v-img>
 
-            <div class="mt-2 font-12 text-break ellipsis-second-line">
+            <div
+              class="mt-2 font-12 text-break ellipsis-second-line"
+              style="height: 34px"
+            >
               {{ item.desc }}
             </div>
             <div>

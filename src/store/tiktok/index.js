@@ -27,9 +27,7 @@ export default {
     getUserDetail({ state }, payload) {
       const data = {
         url: `${state.pathAccount}/detail`,
-        params: {
-          username: payload,
-        },
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -44,11 +42,7 @@ export default {
     getUserFeed({ state }, payload) {
       const data = {
         url: `${state.pathAccount}/feed`,
-        params: {
-          count: payload.count,
-          secUid: payload.secUid,
-          cursor: payload.cursor,
-        },
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -63,11 +57,22 @@ export default {
     getFeedByHashtag({ state }, payload) {
       const data = {
         url: `${state.pathDiscover}/hashtag`,
-        params: {
-          count: payload.count,
-          keyword: payload.keyword,
-          cursor: payload.cursor,
-        },
+        params: payload,
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getHashtagPost({ state }, payload) {
+      const data = {
+        url: `${state.pathDiscover}/hashtag/post`,
+        params: payload,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -83,7 +88,7 @@ export default {
       const data = {
         url: `${state.pathDiscover}/explore`,
         params: {
-          country: payload.country,
+          ...payload,
         },
       };
       return this._vm
