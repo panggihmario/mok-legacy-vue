@@ -18,13 +18,17 @@
           controls
         />
       </v-col>
-      <v-col cols="6" :class="$style['card__right']">
-        <div class="text-right">
-          <v-icon style="cursor : pointer" small @click="closeDialog">
-            fas fa-times</v-icon
-          >
+      <v-col cols="6" class="row no-gutters" :class="$style['card__right']">
+        <div class="col">
+          <Content :data="content" @deletePost="deletePost" />
         </div>
-        <Content :data="content" @deletePost="deletePost" />
+        <div class="col-1">
+          <div class="text-right">
+            <v-icon style="cursor : pointer" small @click="closeDialog">
+              fas fa-times</v-icon
+            >
+          </div>
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -100,6 +104,7 @@ export default {
     height: 100% !important;
     display: block;
     object-fit: fill;
+    border-radius: 8px;
   }
   &__right {
     padding: 12px 12px 12px 0 !important;
