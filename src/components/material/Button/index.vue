@@ -27,11 +27,18 @@ export default {
 				"padding-right": "25px",
 				"font-size" : "12px"
 			},
-			styleSmall : {
-				height : '24px',
-				"padding-left": "14px",
-				"padding-right": "14px",
-				"font-size" : "10px"
+      styleSmall : {
+				height : '32px',
+				"padding-left": "22px",
+				"padding-right": "22px",
+				"font-size" : "11px",
+        "font-weight" : '500'
+			},
+			styleXSmall : {
+				height : '29px',
+				"padding-left": "22px",
+				"padding-right": "22px",
+				"font-size" : "11px"
 			}
     };
   },
@@ -49,6 +56,9 @@ export default {
 					break;
 				case "small" :
 					return this.styleSmall
+					break;
+        case "x-small" :
+					return this.styleXSmall
 					break;
         default:
           return this.styleMedium;
