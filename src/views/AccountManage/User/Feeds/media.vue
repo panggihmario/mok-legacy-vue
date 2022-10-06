@@ -4,81 +4,17 @@
       :url="content.post.medias[0].thumbnail.medium"
       :class="$style['card__image']"
       aspect-ratio="1"
-      @click.stop="dialog = true"
     />
-    <v-dialog  @click:outside="closeDialog" v-model="dialog" max-width="800">
-      <div :class="$style['card__container']">
-        <v-row no-gutters>
-          <v-col cols="6" :class="$style['card__left']">
-            <MediaImage
-              v-if="content.post.medias[0].type  === 'image' "
-              :url="content.post.medias[0].thumbnail.medium"
-              :class="$style['card__image']"
-              width="100%"
-              min-height="400"
-            />
-            <video 
-              v-else
-              :id="`video-${content.id}`"
-              :src="content.post.medias[0].url" 
-              :class="$style['card__video']"
-              controls
-            />
-          </v-col>
-          <v-col cols="6" :class="$style['card__right']" > 
-            <div class="text-right">
-              <v-icon 
-                style="cursor : pointer" small
-                @click="closeDialog"
-                > fas fa-times</v-icon>
-            </div>
-            <Content
-              :data="content"
-              @deletePost="deletePost"
-            />
-          </v-col>
-        </v-row>
-      </div>
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import MediaImage from "./image.vue";
-import Content from "./content.vue";
+
 export default {
   props: ["content", "index"],
-  components : {
+  components: {
     MediaImage,
-    Content
-  },
-  data() {
-    return {
-      dialog: false,
-    };
-  },
-  methods: {
-    deletePost (id) {
-      this.dialog = false
-      const payload = {
-        idx : this.index,
-        id
-      }
-      this.$emit('deletePost' , payload)
-    },
-    closeDialog() {
-      const isImage = this.content.post.medias[0].type
-      if(isImage === 'image' ){
-        this.dialog = false
-      }else{
-        const idVideo = `video-${this.content.id}`
-        const getVideo = document.getElementById(idVideo)
-        getVideo.pause()
-        getVideo.currentTime  = 0
-        this.dialog = false
-      }
-      
-    }
   },
 };
 </script>
