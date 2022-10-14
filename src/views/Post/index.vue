@@ -4,7 +4,7 @@
       <custom-button
         color="kellygreen"
         class="white--text"
-        size="x-small"
+        size="small"
         @click="moveToCreatePost"
       >
         Buat Post
@@ -25,7 +25,6 @@
       <div>
         <div class="d-flex align-center">
           <custom-button
-
             color="primarylowtint"
             class="mr-4"
             v-if="isFilter"
@@ -37,7 +36,6 @@
           
           <custom-button 
             v-if="!expand"
-
             class="mr-4"
             size="small"
             @click="expand = !expand"

@@ -27,19 +27,25 @@ export default {
 				"padding-right": "25px",
 				"font-size" : "12px"
 			},
-      styleSmall : {
+      styleXMedium : {
 				height : '32px',
 				"padding-left": "22px",
 				"padding-right": "22px",
 				"font-size" : "11px",
         "font-weight" : '500'
 			},
-			styleXSmall : {
+			styleSmall : {
 				height : '29px',
 				"padding-left": "22px",
 				"padding-right": "22px",
 				"font-size" : "11px"
-			}
+			},
+      styleXSmall : {
+        height : '24px',
+				"padding-left": "14px",
+				"padding-right": "14px",
+				"font-size" : "10px"
+      }
     };
   },
   props: {
