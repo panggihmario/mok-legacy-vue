@@ -1,7 +1,7 @@
 <template>
 <div>
   <custom-button 
-    size="small" 
+    size="x-small" 
     color="primary" 
     @click="openDialogReject"
   >
@@ -30,7 +30,7 @@
                   <custom-button
                     :loading="loadingDelete" 
                     @click="handleDelete" 
-                    size="small" 
+                    size="x-small" 
                     color="error" 
                   >
                     Hapus Postingan
