@@ -27,12 +27,25 @@ export default {
 				"padding-right": "25px",
 				"font-size" : "12px"
 			},
+      styleXMedium : {
+				height : '32px',
+				"padding-left": "22px",
+				"padding-right": "22px",
+				"font-size" : "11px",
+        "font-weight" : '500'
+			},
 			styleSmall : {
-				height : '24px',
+				height : '29px',
+				"padding-left": "22px",
+				"padding-right": "22px",
+				"font-size" : "11px"
+			},
+      styleXSmall : {
+        height : '24px',
 				"padding-left": "14px",
 				"padding-right": "14px",
 				"font-size" : "10px"
-			}
+      }
     };
   },
   props: {
@@ -49,6 +62,9 @@ export default {
 					break;
 				case "small" :
 					return this.styleSmall
+					break;
+        case "x-small" :
+					return this.styleXSmall
 					break;
         default:
           return this.styleMedium;

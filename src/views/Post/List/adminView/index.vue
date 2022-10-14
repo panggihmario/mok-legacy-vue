@@ -54,7 +54,7 @@
               </div>
             </td>
             <td><Action :item="item" @successDelete="successDelete" /></td>
-            <td></td>
+            <!-- <td></td> -->
           </tr>
         </tbody>
       </template>
