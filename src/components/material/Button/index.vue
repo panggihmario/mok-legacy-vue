@@ -66,6 +66,8 @@ export default {
         case "x-small" :
 					return this.styleXSmall
 					break;
+        case "x-medium" : 
+          return this.styleXMedium
         default:
           return this.styleMedium;
       }
