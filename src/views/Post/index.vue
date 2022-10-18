@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="Post Feed">
+    <HeaderContent :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"

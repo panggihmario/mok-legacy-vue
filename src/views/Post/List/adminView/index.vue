@@ -53,7 +53,9 @@
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
-            <td><Action :item="item" @successDelete="successDelete" /></td>
+            <td class="d-flex justify-center align-center">
+              <Action :item="item" @successDelete="successDelete" />
+            </td>
             <!-- <td></td> -->
           </tr>
         </tbody>
