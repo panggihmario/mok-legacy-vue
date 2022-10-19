@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="Post Feed">
+    <HeaderContent :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -29,7 +29,7 @@
             class="mr-4"
             v-if="isFilter"
             @click="resetFilter"
-            size="small"
+            size="x-medium"
           >
             <div class="warning--text" >Reset Filter</div>
           </custom-button>
@@ -37,7 +37,7 @@
           <custom-button 
             v-if="!expand"
             class="mr-4"
-            size="small"
+            size="x-medium"
             @click="expand = !expand"
           >
             Filter Data

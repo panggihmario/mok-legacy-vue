@@ -25,11 +25,11 @@
         > -->
         <custom-button
           v-if="!showFilter"
-          size="small"
+          size="x-medium"
           @click="showFilter = true"
           class="mr-4"
         >
-          <div>Reset Filter</div>
+          <div>Filter Data</div>
         </custom-button>
         <input  
           style="width: 200px"

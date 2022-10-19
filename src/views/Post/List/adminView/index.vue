@@ -46,14 +46,16 @@
               <div :class="ad['dg__desc']">{{ item.createBy }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.publishBy }}</div>
+              <div :class="ad['dg__desc']"  >{{ item.publishBy }}</div>
             </td>
-            <td>
-              <div :class="ad['dg__desc']">
+            <td >
+              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
-            <td><Action :item="item" @successDelete="successDelete" /></td>
+            <td class="d-flex justify-center align-center">
+              <Action :item="item" @successDelete="successDelete" />
+            </td>
             <!-- <td></td> -->
           </tr>
         </tbody>
@@ -162,6 +164,7 @@ export default {
           value: "schedule",
           align: "center",
           width: "150",
+          align : 'center'
         },
         {
           text: "Action",
