@@ -202,6 +202,16 @@ export default {
     ],
   }),
   watch: {
+    menu2() {
+      this.payload.hourStart = null;
+      this.keyFocusStart = null;
+      this.payloadData.startHourAt = null;
+    },
+    menu3() {
+      this.payload.hourEnd = null;
+      this.keyFocusEnd = null;
+      this.payloadData.endHourAt = null;
+    },
     "payload.hourStart"() {
       this.payloadData.startHourAt = this.payload.hourStart;
     },

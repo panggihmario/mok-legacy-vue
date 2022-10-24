@@ -185,7 +185,7 @@ export default {
       let payload = {
         page: this.pageCandidate - 1,
       };
-      this.loadingList = true;
+      this.loadingListCandidate = true;
       this.isFilter = false;
       return this.fetchPostAllUser(payload)
         .then((response) => {
@@ -199,7 +199,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.loadingList = false;
+          this.loadingListCandidate = false;
         });
     },
     handleGetListUserPostFilter() {
@@ -207,7 +207,7 @@ export default {
         page: this.pageCandidate - 1,
         ...this.dataFilter,
       };
-      this.loadingList = true;
+      this.loadingListCandidate = true;
       this.isFilter = true;
       return this.fetchPostAllUserFilter(payload)
         .then((response) => {
@@ -221,7 +221,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.loadingList = false;
+          this.loadingListCandidate = false;
         });
     },
     handleGetListUserPostTrending() {
