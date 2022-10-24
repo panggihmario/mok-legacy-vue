@@ -15,18 +15,21 @@
       </v-tabs>
 
       <div class="d-flex align-center">
-        <custom-button v-if="!showFilter" @click="showFilter = true">
-          Filter Data
+        <custom-button
+          v-if="!showFilter"
+          size="x-medium"
+          @click="showFilter = true"
+          class="mr-4"
+        >
+          <div>Filter Data</div>
         </custom-button>
-        <div class="ml-2" style="width: 200px">
-          <custom-input
-            dense
-            hide-details
-            placeholder="Search"
-            v-model="keywordTrending"
-            @keyup.enter="actionFilter"
+        <input  
+          style="width: 200px"
+          placeholder="Search"
+          :class="p['input-search']"
+          v-model="keywordTrending"
+          @keyup.enter="actionFilter"
           />
-        </div>
       </div>
     </div>
 
@@ -215,3 +218,18 @@ export default {
   },
 };
 </script>
+
+
+<style lang="scss" module="p">
+.input-search {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  height: 32px;
+  font-size: 12px;
+  padding: 9px;
+  &:focus {
+    outline: none;
+  }
+}
+</style>
