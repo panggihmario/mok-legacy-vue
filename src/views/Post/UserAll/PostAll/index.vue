@@ -13,20 +13,20 @@
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, idx) in items" :key="idx">
-              <td class="font-12">
+              <td class="font-12 grey--text font-weight-medium">
                 <span class="show-post" @click="openDialogPost(item.id, idx)"
                   >Lihat Post</span
                 >
               </td>
-              <td class="font-12">
+              <td class="font-12 grey--text font-weight-medium">
                 <div class="text-truncate" style="width: 200px">
                   {{ item.description }}
                 </div>
               </td>
-              <td class="font-12">{{ item.channel.name }}</td>
-              <td class="font-12">{{ item.createBy }}</td>
-              <td class="font-12">{{ formatingDate(item.createAt) }}</td>
-              <td class="font-12 text-center">
+              <td class="font-12 grey--text font-weight-medium">{{ item.channel.name }}</td>
+              <td class="font-12 grey--text font-weight-medium">{{ item.createBy }}</td>
+              <td class="font-12 grey--text font-weight-medium">{{ formatingDate(item.createAt) }}</td>
+              <td class="font-12 grey--text font-weight-medium text-center">
                 <v-btn
                   small
                   color="secondary"
@@ -426,12 +426,12 @@ export default {
   object-fit: contain;
 }
 .font-10 {
-  font-size: 10px;
+  font-size: 10px !important;
 }
 .font-12 {
-  font-size: 12px;
+  font-size: 12px !important;
 }
 .font-14 {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 </style>

@@ -32,6 +32,19 @@ export default {
           throw err;
         });
     },
+    getLogsHashtagFormation({ state }, payload) {
+      return this._vm
+        .$httpWithToken()
+        .get(`${state.pathManage}/hashtag-formations/${payload.id}/logs`, {
+          params: payload.params,
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     getListHashtagFormationSubs({ state }, payload) {
       return this._vm
         .$httpWithToken()

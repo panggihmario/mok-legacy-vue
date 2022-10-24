@@ -15,25 +15,17 @@
       </v-tabs>
 
       <div class="d-flex align-center">
-        <v-btn
-          v-if="!showFilter"
-          depressed
-          class="text-capitalize"
-          @click="showFilter = true"
-          height="40px"
-          >Filter Data</v-btn
-        >
+        <custom-button v-if="!showFilter" @click="showFilter = true">
+          Filter Data
+        </custom-button>
         <div class="ml-2" style="width: 200px">
-          <v-text-field
-            v-model="keywordTrending"
-            placeholder="Search"
-            clearable
+          <custom-input
             dense
-            outlined
-            full-width
             hide-details
-            @keypress.enter="actionFilter"
-          ></v-text-field>
+            placeholder="Search"
+            v-model="keywordTrending"
+            @keyup.enter="actionFilter"
+          />
         </div>
       </div>
     </div>
@@ -59,19 +51,12 @@
       </div>
 
       <div class="col d-flex justify-end align-center">
-        <v-btn
-          depressed
-          color="success"
-          class="text-capitalize"
-          @click="actionFilter"
-          >Terapkan Filter</v-btn
-        >
-        <v-btn
-          depressed
-          class="ml-2 text-capitalize"
-          @click="isResetFilter = true"
-          >Batalkan</v-btn
-        >
+        <custom-button color="success" @click="actionFilter">
+          Terapkan Filter
+        </custom-button>
+        <custom-button class="ml-2" @click="isResetFilter = true">
+          Batalkan
+        </custom-button>
       </div>
     </div>
   </div>
