@@ -338,7 +338,7 @@ export default {
           this.dataFailed = err;
         });
       if (dataTrending.data != null) {
-        this.moveTo(this.createTrendingCountry.href, dataTrending, true);
+        this.moveTo(this.createTrendingCountry.href, dataTrending);
       }
     },
     handleGetListManageHashtag() {
