@@ -54,7 +54,6 @@
             <td>
               <ActionsPicker :item="item" @refreshDataFeed="refreshDataFeed" />
             </td>
-            <td></td>
           </tr>
         </tbody>
       </template>

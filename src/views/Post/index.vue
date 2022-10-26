@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="Post Feed">
+    <HeaderContent :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -25,31 +25,31 @@
       <div>
         <div class="d-flex align-center">
           <custom-button
-            style="margin-bottom : 24px"
             color="primarylowtint"
             class="mr-4"
             v-if="isFilter"
             @click="resetFilter"
+            size="x-medium"
           >
             <div class="warning--text" >Reset Filter</div>
           </custom-button>
           
           <custom-button 
             v-if="!expand"
-            style="margin-bottom : 24px"
             class="mr-4"
+            size="x-medium"
             @click="expand = !expand"
           >
             Filter Data
           </custom-button>
 
-          <custom-input
-            dense
-            placeholder="Search"
+          <input  
             style="width: 200px"
+            placeholder="Search"
+            :class="p['input-search']"
             v-model="keyword"
             @keyup.enter="onSubmitFilter"
-          />
+            />
         </div>
       </div>
     </div>
@@ -459,5 +459,17 @@ export default {
   position: absolute;
   top: 20px;
   right: 20px;
+}
+
+.input-search {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  height: 32px;
+  font-size: 12px;
+  padding: 9px;
+  &:focus {
+    outline: none;
+  }
 }
 </style>

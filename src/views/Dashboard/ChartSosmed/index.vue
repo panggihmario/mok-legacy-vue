@@ -482,6 +482,7 @@ export default {
       this.payloadFilter.username = null;
       this.payloadFilter.timeline = "HOUR";
       this.isReset = true;
+      this.handleGetDataChartFirstMounted();
     },
     timeUTCmin7adjustment(h) {
       let hnum = parseInt(h);

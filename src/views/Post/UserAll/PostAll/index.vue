@@ -18,7 +18,7 @@
                   >Lihat Post</span
                 >
               </td>
-              <td class="font-12">
+              <td class="font-12 grey--text font-weight-medium">
                 <div class="text-truncate" style="width: 200px">
                   {{ item.description }}
                 </div>
@@ -27,15 +27,14 @@
               <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ formatingDate(item.createAt) }}</td>
               <td class="font-12 text-center">
-                <v-btn
-                  small
+                <custom-button
+                  class="mr-2"
+                  size="x-small"
                   color="secondary"
-                  class="text-capitalize"
-                  style="border-radius: 5px"
                   @click="openDialogPushNotif(item.id)"
                 >
                   Push Notif
-                </v-btn>
+                </custom-button>
               </td>
             </tr>
           </tbody>
@@ -114,7 +113,10 @@
                   <span class="font-10">User</span>
                   <p>@{{ tableItemsDialog.createBy }}</p>
                 </div>
-                <div class="whitesnow mt-5 pa-2" style="height: 400px; overflow: auto">
+                <div
+                  class="whitesnow mt-5 pa-2"
+                  style="height: 400px; overflow: auto"
+                >
                   {{ tableItemsDialog.description }}
                 </div>
               </div>
@@ -400,6 +402,7 @@ export default {
   text-decoration: underline;
   cursor: pointer;
 }
+
 .nav {
   &__btn-left {
     position: absolute;
@@ -408,6 +411,7 @@ export default {
     left: 10em;
     background: rgba($color: #000000, $alpha: 0.5);
   }
+
   &__btn-right {
     position: absolute;
     z-index: 1;
@@ -416,22 +420,27 @@ export default {
     background: rgba($color: #000000, $alpha: 0.5);
   }
 }
+
 .img {
   max-width: 100%;
   max-height: 100%;
 }
+
 .vid {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain;
 }
+
 .font-10 {
-  font-size: 10px;
+  font-size: 10px !important;
 }
+
 .font-12 {
-  font-size: 12px;
+  font-size: 12px !important;
 }
+
 .font-14 {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 </style>

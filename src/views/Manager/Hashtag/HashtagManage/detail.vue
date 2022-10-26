@@ -36,7 +36,8 @@
             style="height: 35px; border-radius: 4px"
           >
             <span class="font-12 font-weight-medium grey--text">{{
-              $route.query.item.feedChannelCode.toLowerCase() == "chinatiktok"
+              dataDetailHashtag.feedChannelCode &&
+              dataDetailHashtag.feedChannelCode.toLowerCase() == "chinatiktok"
                 ? "China"
                 : "Indonesia"
             }}</span>
@@ -81,25 +82,36 @@
           <div class="col-6">Activity</div>
         </div>
 
-        <div v-if="dataItem.item.logs">
-          <div v-for="(i, idx) in dataItem.item.logs" :key="idx">
-            <div class="d-flex font-12 font-weight-medium grey--text">
-              <div class="col-6">
-                {{ formatDate(i.createAt) }} {{ formatDate(i.createAt, true) }}
-              </div>
-              <div
-                class="col-6"
-                :class="`text--${i.status && i.status.toLowerCase()}`"
-              >
-                {{ i.activity }}
+        <div>
+          <div v-if="loadingDataLogHashtag" class="mt-8 text-center">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </div>
+          <div v-else>
+            <div v-if="dataLogHashtag.length > 0">
+              <div v-for="(i, idx) in dataLogHashtag" :key="idx">
+                <div class="d-flex font-12 font-weight-medium grey--text">
+                  <div class="col-6">
+                    {{ formatDate(i.createAt) }}
+                    {{ formatDate(i.createAt, true) }}
+                  </div>
+                  <div
+                    class="col-6"
+                    :class="`text--${i.status && i.status.toLowerCase()}`"
+                  >
+                    {{ i.activity }}
+                  </div>
+                </div>
               </div>
             </div>
+            <div v-else class="text-center mt-2">
+              <span class="grey--text font-weight-medium"
+                >Tidak Ada Data Activity</span
+              >
+            </div>
           </div>
-        </div>
-        <div v-else class="text-center mt-2">
-          <span class="font-12 font-weight-medium grey--text"
-            >Tidak ada activity</span
-          >
         </div>
       </v-card>
     </div>
@@ -108,7 +120,7 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -127,7 +139,10 @@ export default {
           disabled: true,
         },
       ],
+      dataDetailHashtag: {},
+      dataLogHashtag: [],
       sortedHashtags: [],
+      loadingDataLogHashtag: false,
     };
   },
   watch: {
@@ -140,8 +155,13 @@ export default {
   },
   mounted() {
     this.sortingPreviewData();
+    this.handleGetLogsHashtagFormation();
   },
   computed: {
+    ...mapGetters({
+      pathManage: "manageHashtag/pathManage",
+      filterCountry: "manageHashtag/filterCountry",
+    }),
     channel: {
       get() {
         const channel = this.$route.query.channel;
@@ -150,7 +170,7 @@ export default {
     },
     dataItem: {
       get() {
-        const item = this.$route.query.item;
+        const item = this.dataDetailHashtag;
         return { item };
       },
     },
@@ -158,12 +178,13 @@ export default {
   methods: {
     ...mapActions({
       getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
+      getLogsHashtagFormation: "manageHashtag/getLogsHashtagFormation",
     }),
     handleGetAvailabilitySubHashtag(v, idx) {
       let payload = {
         params: {
           value: v.value,
-          code: this.$route.query.item.feedChannelCode,
+          code: this.dataDetailHashtag.feedChannelCode,
         },
       };
       return this.getAvailabilitySubHashtag(payload)
@@ -171,6 +192,26 @@ export default {
           this.sortedHashtags[idx].available = response.data.available;
         })
         .catch((err) => {});
+    },
+    handleGetLogsHashtagFormation() {
+      let payload = {
+        id: this.dataDetailHashtag.id,
+        params: {
+          // direction: "DESC",
+          size: 10,
+          page: 0,
+        },
+      };
+      this.loadingDataLogHashtag = true;
+      return this.getLogsHashtagFormation(payload)
+        .then((response) => {
+          this.loadingDataLogHashtag = false;
+          this.dataLogHashtag = response.data;
+        })
+        .catch((err) => {
+          console.log({ err });
+          this.loadingDataLogHashtag = false;
+        });
     },
     formatDate(v, isHour) {
       let d = new Date(v);
@@ -186,7 +227,10 @@ export default {
         : `${date}/${month + 1}/${year}`;
     },
     sortingPreviewData() {
-      let hashtags = this.$route.query.item.hashtags;
+      const dataOnStorage = localStorage.getItem("detailHashtag");
+      const dataParse = JSON.parse(dataOnStorage);
+      this.dataDetailHashtag = dataParse;
+      let hashtags = dataParse.hashtags;
       for (let i = 0; i < hashtags.length; i++) {
         const e = hashtags[i];
         this.sortedHashtags.push({ ...e, available: 0 });

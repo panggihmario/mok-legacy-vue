@@ -3,7 +3,7 @@
     <transition name="fade" mode="out-in">
       <custom-button
         class="mr-2"
-        size="small"
+        size="x-small"
         color="secondary"
         :loading="loadingPublish"
         @click="publishFeed(item)"
@@ -22,7 +22,7 @@
       </v-chip>
     </transition>
     <custom-button
-      size="small"
+      size="x-small"
       color="primary"
       @click="openDialogReject"
     >

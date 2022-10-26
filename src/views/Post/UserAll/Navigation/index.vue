@@ -15,26 +15,21 @@
       </v-tabs>
 
       <div class="d-flex align-center">
-        <v-btn
+        <custom-button
           v-if="!showFilter"
-          depressed
-          class="text-capitalize"
+          size="x-medium"
           @click="showFilter = true"
-          height="40px"
-          >Filter Data</v-btn
+          class="mr-4"
         >
-        <div class="ml-2" style="width: 200px">
-          <v-text-field
-            v-model="keywordTrending"
-            placeholder="Search"
-            clearable
-            dense
-            outlined
-            full-width
-            hide-details
-            @keypress.enter="actionFilter"
-          ></v-text-field>
-        </div>
+          <div>Filter Data</div>
+        </custom-button>
+        <input  
+          style="width: 200px"
+          placeholder="Search"
+          :class="p['input-search']"
+          v-model="keywordTrending"
+          @keyup.enter="actionFilter"
+          />
       </div>
     </div>
 
@@ -59,19 +54,12 @@
       </div>
 
       <div class="col d-flex justify-end align-center">
-        <v-btn
-          depressed
-          color="success"
-          class="text-capitalize"
-          @click="actionFilter"
-          >Terapkan Filter</v-btn
-        >
-        <v-btn
-          depressed
-          class="ml-2 text-capitalize"
-          @click="isResetFilter = true"
-          >Batalkan</v-btn
-        >
+        <custom-button color="success" @click="actionFilter">
+          Terapkan Filter
+        </custom-button>
+        <custom-button class="ml-2" @click="isResetFilter = true">
+          Batalkan
+        </custom-button>
       </div>
     </div>
   </div>
@@ -230,3 +218,18 @@ export default {
   },
 };
 </script>
+
+
+<style lang="scss" module="p">
+.input-search {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  height: 32px;
+  font-size: 12px;
+  padding: 9px;
+  &:focus {
+    outline: none;
+  }
+}
+</style>

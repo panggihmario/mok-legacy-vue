@@ -1,6 +1,6 @@
 <template>
   <div
-    class="d-flex justify-space-between"
+    class="d-flex justify-space-between align-center"
     :style="`margin-bottom: ${marginBottom}px`"
   >
     <div>
