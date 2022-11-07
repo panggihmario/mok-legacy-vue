@@ -1,6 +1,7 @@
 export default {
 	theme: {
 		themes: {
+			custom : true,
 			light: {
 				primary: '#FF4265',
 				secondary: '#1890FF',

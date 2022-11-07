@@ -89,7 +89,7 @@ export default {
   }
   &__filters {
     display: grid;
-    grid-template-columns: 50px 120px 120px 190px 120px 120px;
+    grid-template-columns: 50px 120px 120px 190px 310px;
     gap: 8px;
   }
 }

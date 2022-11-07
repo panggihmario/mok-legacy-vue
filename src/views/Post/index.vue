@@ -90,7 +90,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import HeaderContent from "@/containers/HeaderContent";
 import Expand from "./expand/index.vue"
 import moment from "moment"
