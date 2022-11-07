@@ -9,14 +9,14 @@
           <div style="width: 303px">
             <div class="d-flex align-center imitate-btn font-12 my-2 px-3">
               <span class="text-capitalize font-weight-medium">{{
-                $route.query.item.channel
+                $route.query.channel.channel
               }}</span>
             </div>
           </div>
         </div>
         <p class="font-10" style="width: 303px">
           Formasi akan diterapkan pada cleeps
-          <span class="text-capitalize">{{ $route.query.item.channel }}</span>
+          <span class="text-capitalize">{{ $route.query.channel.channel }}</span>
         </p>
       </div>
       <div class="ml-3">
@@ -368,10 +368,7 @@ export default {
         params: {
           size: 1,
           page: page,
-          code:
-            this.$route.query.item.channel == "china"
-              ? "chinatiktok"
-              : "tiktok",
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
           withCount: true,
         },
       };
@@ -405,9 +402,7 @@ export default {
             size: 1,
             page: page,
             code:
-              this.$route.query.item.channel == "china"
-                ? "chinatiktok"
-                : "tiktok",
+              this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
             withCount: true,
           },
         };
@@ -457,10 +452,7 @@ export default {
         totalQty: this.totalData,
         hashtags: [],
         channel: {
-          code:
-            this.$route.query.item.channel == "china"
-              ? "chinatiktok"
-              : "tiktok",
+          code: this.$route.query.channel == "china" ? "chinatiktok" : "tiktok",
         },
       };
 
@@ -536,8 +528,8 @@ export default {
     actionUseLastActiveFormation() {
       this.isSearchData = false;
       this.listMasterCategorySearch = [];
-      this.totalData = this.$route.query.item.data.totalQty;
-      let hashtags = this.$route.query.item.data.hashtags;
+      this.totalData = this.$route.query.channel.data.totalQty;
+      let hashtags = this.$route.query.channel.data.hashtags;
       let partOfHashtags = [];
       for (let i = 0; i < hashtags.length; i++) {
         const e = hashtags[i];

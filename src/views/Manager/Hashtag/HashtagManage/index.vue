@@ -282,11 +282,13 @@ export default {
   },
   mounted() {
     this.filterCountryLocal = this.filterCountry;
+    console.log(this.filterCountry);
     this.handleGetListManageHashtag();
   },
   computed: {
     ...mapGetters({
       filterCountry: "manageHashtag/filterCountry",
+      detailHashtag: "manageHashtag/detailHashtag",
     }),
   },
   methods: {
@@ -299,9 +301,7 @@ export default {
     moveTo(val, item, isQueryObject) {
       let query = {};
       if (isQueryObject) {
-        query = {
-          item: item,
-        };
+        localStorage.setItem("detailHashtag", JSON.stringify(item));
       } else {
         query = {
           channel: item,
@@ -338,7 +338,7 @@ export default {
           this.dataFailed = err;
         });
       if (dataTrending.data != null) {
-        this.moveTo(this.createTrendingCountry.href, dataTrending, true);
+        this.moveTo(this.createTrendingCountry.href, dataTrending);
       }
     },
     handleGetListManageHashtag() {
