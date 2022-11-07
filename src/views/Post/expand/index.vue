@@ -1,16 +1,12 @@
 <template>
   <div class="ex__card">
     <div class="d-flex justify-space-between">
-      <div class="d-flex align-center">
+      <div class="ex__filters">
         <div class="ex__label mr-2">Filter </div>
-          <SelectUser
-          />
-          <SelectChannel
-            :items="channels"
-          />
-        <SelectDate
-          
-        />
+          <SelectUser/>
+          <SelectChannel :items="channels"/>
+          <SelectDate/>
+          <Tayang  v-if="$route.name === 'list'  " />
       </div>
       <div class="d-flex">
         <custom-button 
@@ -31,6 +27,7 @@ import { mapActions } from "vuex"
 import SelectUser from './selectUsers.vue';
 import SelectChannel from './selectChannel.vue';
 import SelectDate from "./selectDate.vue";
+import Tayang from "./tayang.vue"
 export default {
   mounted () {
     this.fetchDataChannel()
@@ -38,7 +35,8 @@ export default {
   components: { 
     SelectUser,
     SelectChannel,
-    SelectDate
+    SelectDate,
+    Tayang
   },
   data() {
     return {
@@ -87,6 +85,12 @@ export default {
     color: #9b9b9b;
     font-size: 12px;
     line-height: 14px;
+    align-self: center;
+  }
+  &__filters {
+    display: grid;
+    grid-template-columns: 50px 120px 120px 190px 120px 120px;
+    gap: 8px;
   }
 }
 </style>

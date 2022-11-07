@@ -37,7 +37,6 @@
             </td>
             <td>
               <div :class="ad['tb__caption']">{{ item.description }}</div>
-             
             </td>
             <td>
               <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
@@ -52,6 +51,9 @@
               <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
                 {{ formatingDate(item.publishedAt) }}
               </div>
+            </td>
+            <td>
+              <div :class="ad['dg__desc']"  >{{ item.proceedAt }}</div>
             </td>
             <td class="d-flex justify-center align-center">
               <Action :item="item" @successDelete="successDelete" />
@@ -164,6 +166,13 @@ export default {
           value: "schedule",
           align: "center",
           width: "150",
+        },
+        {
+          text : 'Tayang',
+          class : 'whitesnow',
+          sortable : false,
+          filterable : false , 
+          value : 'proceedAt',
           align : 'center'
         },
         {

@@ -15,15 +15,13 @@
     @focus="isFocus"
     @blur="isBlur"
     :loading="isLoading"
+    style="width : '100px'"
   >
     <template v-slot:selection="{ index }">
       <span v-if="index === 0 && !focus" class="grey--text text-caption">
         {{ selectedUser.length }} selected
       </span>
     </template>
-    <!-- <template v-slot:append-item>
-    <div v-intersect="endIntersect" />
-  </template> -->
   </v-autocomplete>
 </template>
 

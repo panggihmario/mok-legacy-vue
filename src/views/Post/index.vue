@@ -10,6 +10,7 @@
         Buat Post
       </custom-button>
     </HeaderContent>
+    <!-- <k-input label="label input" ></k-input> -->
     <div class="d-flex">
       <v-tabs color="primary" left class="mb-4">
         <v-tab
@@ -42,14 +43,14 @@
           >
             Filter Data
           </custom-button>
-
-          <input  
-            style="width: 200px"
-            placeholder="Search"
-            :class="p['input-search']"
-            v-model="keyword"
-            @keyup.enter="onSubmitFilter"
-            />
+          
+          <div style="width : 200px" >
+            <k-input 
+              placeholder="Search" 
+              v-model="keyword" 
+              @keyup.enter="onSubmitFilter"
+            ></k-input>
+          </div>
         </div>
       </div>
     </div>
@@ -183,6 +184,9 @@ export default {
       }
 
       return this.fetchFeeds(payload)
+        .then(response => {
+          console.log(response)
+        })
     },
     changeTab(tab) {
       this.isFilter = false
