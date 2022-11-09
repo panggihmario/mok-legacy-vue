@@ -138,9 +138,9 @@ export default {
         this.setProcessDate(value)
         const after = this.checkRangeDate(value);
         if (after[1] && after[0]) {
-          this.setDisplayProcessDate(after);
+          this.setProcessDate(after);
         } else {
-          this.setDisplayProcessDate(value);
+          this.setProcessDate(value);
         }
       },
     },
@@ -183,7 +183,7 @@ export default {
           const end = this.formatter(afterCheckRangeDate[1]);
           const fullDate = `${start} - ${end}`;
           this.setDisplayProcessDate(fullDate);
-          this.setDisplayProcessDate(afterCheckRangeDate);
+          this.setProcessDate(afterCheckRangeDate);
         }
       }
     },

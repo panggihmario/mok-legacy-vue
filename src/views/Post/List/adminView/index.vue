@@ -53,7 +53,12 @@
               </div>
             </td>
             <td>
-              <div :class="ad['dg__desc']"  >{{ item.proceedAt }}</div>
+              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
+                <div v-if="item.proceedAt"> {{ formatingDate(item.proceedAt) }} </div>
+                <div v-else > 
+                  <v-icon size="small" >far fa-clock</v-icon>
+                </div>
+              </div>
             </td>
             <td class="d-flex justify-center align-center">
               <Action :item="item" @successDelete="successDelete" />
