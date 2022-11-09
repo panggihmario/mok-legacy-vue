@@ -302,14 +302,17 @@ export default {
       let query = {};
       if (isQueryObject) {
         localStorage.setItem("detailHashtag", JSON.stringify(item));
-      } else {
-        query = {
-          channel: item,
-        };
-      }
+      } 
+      // else {
+      //   query = {
+      //     channel: item,
+      //   };
+      // }
       this.$router.push({
         path: val,
-        query: query,
+        query: {
+          channel : item.channel
+        },
       });
     },
     async handleCreateTrending() {
