@@ -10,6 +10,7 @@
         Buat Post
       </custom-button>
     </HeaderContent>
+    <!-- <k-input label="label input" ></k-input> -->
     <div class="d-flex">
       <v-tabs color="primary" left class="mb-4">
         <v-tab
@@ -42,14 +43,14 @@
           >
             Filter Data
           </custom-button>
-
-          <input  
-            style="width: 200px"
-            placeholder="Search"
-            :class="p['input-search']"
-            v-model="keyword"
-            @keyup.enter="onSubmitFilter"
-            />
+          
+          <div style="width : 200px" >
+            <k-input 
+              placeholder="Search" 
+              v-model="keyword" 
+              @keyup.enter="onSubmitFilter"
+            ></k-input>
+          </div>
         </div>
       </div>
     </div>
@@ -89,7 +90,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import HeaderContent from "@/containers/HeaderContent";
 import Expand from "./expand/index.vue"
 import moment from "moment"
@@ -118,7 +119,8 @@ export default {
       channelCode : (state) => state.post.channelCode,
       paramsUsers : (state) => state.post.paramsUsers,
       paramsChannel : (state) => state.post.paramsChannel,
-      paramsDate : (state) => state.post.paramsDate
+      paramsDate : (state) => state.post.paramsDate,
+      paramsProcess : (state) => state.post.paramsProcess
     }),
     currentPage : {
       get() {
@@ -244,10 +246,11 @@ export default {
       this.isFilter = true
       this.isParamsFilter = true
       const routerName = this.$route.name;
-      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 || this.keyword.length > 0 ) {
+      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 || this.keyword.length > 0 || this.paramsProcess.length > 0 ) {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
+        const processDate = this.formatingParamsDate(this.paramsProcess)
         const sort = this.typeOfSort(routerName);
         const payload = {
           usernames : users,
@@ -255,7 +258,9 @@ export default {
           channelCodes : channels,
           ...date,
           ...(sort &&  {sort : sort} ),
-          keyword : this.keyword
+          keyword : this.keyword,
+          startProceedAt : processDate.startAt,
+          endProceedAt : processDate.endAt
         }
         return this.filterFeed(payload)
           .then(() => {
@@ -290,7 +295,9 @@ export default {
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
+      this.setProcessDate([])
       this.setDisplayDate('')
+      this.setDisplayProcessDate('')
       return this.onInitiateFetchFeeds()
         .then(() => {
           this.$router.push({
@@ -306,6 +313,7 @@ export default {
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
         const sort = this.typeOfSort(name);
+        const processDate = this.formatingParamsDate(this.paramsProcess)
         const payload = {
           usernames : users,
           tab : name,
@@ -313,7 +321,9 @@ export default {
           channelCodes : channels,
           ...date,
           ...(sort &&  {sort : sort} ),
-          keyword
+          keyword,
+          startProceedAt : processDate.startAt,
+          endProceedAt : processDate.endAt
         }
         return this.filterFeed(payload)
     },
@@ -363,7 +373,9 @@ export default {
       setParamsUsers : 'post/setParamsUsers',
       setParamsChannel : 'post/setParamsChannel',
       setDisplayDate : 'post/setDisplayDate',
-      setParamsDate : 'post/setParamsDate'
+      setParamsDate : 'post/setParamsDate',
+      setProcessDate : 'post/setProcessDate',
+      setDisplayProcessDate : 'post/setDisplayProcessDate'
     }),
     moveToCreatePost() {
       this.$router.push({

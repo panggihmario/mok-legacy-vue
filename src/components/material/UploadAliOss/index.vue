@@ -119,12 +119,18 @@ export default {
       this.file = file
       const type = file.type.split("/")
       const typeMedia = type[0];
+      // console.time('validationMedia')
+      // console.time('getDimension')
       const dimensions = await this.getDimension(typeMedia, file);
       this.loadingUpload = true;
       this.$emit("response", result);
       const isValid = this.validationMedia(typeMedia, dimensions);
+      // console.timeEnd('validationMedia')
+      // console.timeEnd('getDimension')
       if (isValid) {
+        // console.time('saveFileToAliOss')
         return this.saveFileToAliOss(file, typeMedia, dimensions)
+        // console.timeEnd('saveFileToAliOss')
       } else {
         const tempResult = this.printError(file)
         this.$emit('response', tempResult)
