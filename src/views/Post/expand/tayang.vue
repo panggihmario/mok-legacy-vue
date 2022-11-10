@@ -18,12 +18,13 @@
           :key="idx"
           color="secondary"
           link
+          @click="chooseHandler(item)"
         >
        
-          <v-list-item-title >
-            <div  @click="chooseHandler(item)" class="charcoal--text tayang__item">
+          <v-list-item-content >
+            <div   class="charcoal--text tayang__item">
             {{item.text}}
-          </div></v-list-item-title>
+          </div></v-list-item-content>
         </v-list-item>
       </v-list>
     </v-menu>
