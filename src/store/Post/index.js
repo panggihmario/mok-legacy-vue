@@ -21,8 +21,12 @@ export default {
     channelCodeTrending: null,
     paramsDateTrending: [],
     displayDateTrending: "",
+    isStatusProcess : false
   },
   mutations: {
+    setIsStatusProcess (state , payload) {
+      state.isStatusProcess = payload
+    },
     setKeywordSearchTrending(state, payload) {
       state.keywordSearchTrending = payload;
     },
