@@ -14,7 +14,7 @@
           v-on="on"
           dense
           readonly
-          placeholder="Tanggal"
+          placeholder="Tayang"
           v-model="displayProcessDate"
         ></custom-input>
       </template>

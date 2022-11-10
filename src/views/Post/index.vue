@@ -120,7 +120,8 @@ export default {
       paramsUsers : (state) => state.post.paramsUsers,
       paramsChannel : (state) => state.post.paramsChannel,
       paramsDate : (state) => state.post.paramsDate,
-      paramsProcess : (state) => state.post.paramsProcess
+      paramsProcess : (state) => state.post.paramsProcess,
+      isStatusProcess : (state) => state.post.isStatusProcess
     }),
     currentPage : {
       get() {
@@ -246,12 +247,13 @@ export default {
       this.isFilter = true
       this.isParamsFilter = true
       const routerName = this.$route.name;
-      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 || this.keyword.length > 0 || this.paramsProcess.length > 0 ) {
+      if(this.paramsUsers.length > 0 || this.paramsChannel.length > 0 || this.paramsDate.length > 0 || this.keyword.length > 0 || this.paramsProcess.length > 0 || this.isStatusProcess ) {
         const users = this.formatingParamsUsers(this.paramsUsers)
         const channels = this.formatingParamsChannel(this.paramsChannel)
         const date = this.formatingParamsDate(this.paramsDate)
         const processDate = this.formatingParamsDate(this.paramsProcess)
         const sort = this.typeOfSort(routerName);
+        const isStatusProcess  = this.isStatusProcess
         const payload = {
           usernames : users,
           tab : routerName,
@@ -260,7 +262,8 @@ export default {
           ...(sort &&  {sort : sort} ),
           keyword : this.keyword,
           startProceedAt : processDate.startAt,
-          endProceedAt : processDate.endAt
+          endProceedAt : processDate.endAt,
+          isStatusProcess : isStatusProcess
         }
         return this.filterFeed(payload)
           .then(() => {
@@ -314,6 +317,7 @@ export default {
         const date = this.formatingParamsDate(this.paramsDate)
         const sort = this.typeOfSort(name);
         const processDate = this.formatingParamsDate(this.paramsProcess)
+        const isStatusProcess  = this.isStatusProcess
         const payload = {
           usernames : users,
           tab : name,
@@ -323,7 +327,8 @@ export default {
           ...(sort &&  {sort : sort} ),
           keyword,
           startProceedAt : processDate.startAt,
-          endProceedAt : processDate.endAt
+          endProceedAt : processDate.endAt,
+          isStatusProcess : isStatusProcess
         }
         return this.filterFeed(payload)
     },
@@ -375,7 +380,8 @@ export default {
       setDisplayDate : 'post/setDisplayDate',
       setParamsDate : 'post/setParamsDate',
       setProcessDate : 'post/setProcessDate',
-      setDisplayProcessDate : 'post/setDisplayProcessDate'
+      setDisplayProcessDate : 'post/setDisplayProcessDate',
+      setIsStatusProcess : 'post/setIsStatusProcess'
     }),
     moveToCreatePost() {
       this.$router.push({
