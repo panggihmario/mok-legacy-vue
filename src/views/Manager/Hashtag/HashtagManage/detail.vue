@@ -73,8 +73,8 @@
         outlined
         flat
         class="ml-5"
-        style="border-radius: 8px; overflow: scroll; height: 800px;"
-        @scroll="onScroll"
+        style="border-radius: 8px; overflow: scroll; height: 400px;"
+
 
       >
         <div class="d-flex font-weight-medium whitesnow sticky">
@@ -175,10 +175,10 @@ export default {
   mounted() {
     this.sortingPreviewData();
     this.handleGetLogsHashtagFormation();
-    document.addEventListener('scroll', this.onScroll)
+    // document.addEventListener('scroll', this.onScroll)
   },
   destroyed() {
-    document.addEventListener('scroll', this.onScroll)
+    // document.addEventListener('scroll', this.onScroll)
   },
   computed: {
     ...mapGetters({
@@ -212,10 +212,11 @@ export default {
         let payload = {
           id: this.dataDetailHashtag.id,
           params: {
-            size: 20,
+            size: 10,
             page: this.page,
           },
         };
+        console.log(payload)
         idLoading.classList.add('active')
         idLoading.classList.remove('pasif')
         this.isLoadingInfinite = true
@@ -258,7 +259,7 @@ export default {
         id: this.dataDetailHashtag.id,
         params: {
           // direction: "DESC",
-          size: 20,
+          size: 10,
           page: 0,
         },
       };
