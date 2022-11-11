@@ -47,11 +47,11 @@ export default {
       label : 'Status Proses',
       items: [
         { 
-          text : 'Diproses' , 
+          text : 'Menunggu' , 
           isShowCalendar : false,
           isStatusProcess : true
         },{ 
-          text : 'Tgl Tayang',
+          text : 'Tayang',
           isShowCalendar : true,
           isStatusProcess : false
         }
@@ -89,11 +89,7 @@ export default {
     font-size: 11px;
     font-weight: semibold;
     width: 100%;
-    color: red;
     cursor: pointer;
-    &:hover {
-      // background-color: red;
-    }
   }
 }
 

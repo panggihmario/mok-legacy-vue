@@ -14,7 +14,7 @@
           v-on="on"
           dense
           readonly
-          placeholder="Tanggal"
+          placeholder="Dipublish Pada"
           v-model="displayDate"
         ></custom-input>
       </template>
