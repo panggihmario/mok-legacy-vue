@@ -12,15 +12,21 @@ export default {
     paramsUsers: [],
     paramsChannel: [],
     paramsDate: [],
+    paramsProcess : [],
     displayDate: "",
+    displayProcessDate : '',
     keywordSearchTrending: "",
     paramsUsersTrending: [],
     paramsChannelTrending: [],
     channelCodeTrending: null,
     paramsDateTrending: [],
     displayDateTrending: "",
+    isStatusProcess : false
   },
   mutations: {
+    setIsStatusProcess (state , payload) {
+      state.isStatusProcess = payload
+    },
     setKeywordSearchTrending(state, payload) {
       state.keywordSearchTrending = payload;
     },
@@ -45,11 +51,17 @@ export default {
     setDisplayDate(state, payload) {
       state.displayDate = payload;
     },
+    setDisplayProcessDate (state, payload) {
+      state.displayProcessDate = payload
+    },  
     setParamsChannel(state, payload) {
       state.paramsChannel = payload;
     },
     setParamsDate(state, payload) {
       state.paramsDate = payload;
+    },
+    setProcessDate(state, payload) {
+      state.paramsProcess = payload
     },
     setKeyWord(state, payload) {
       state.keywordSearch = payload;
