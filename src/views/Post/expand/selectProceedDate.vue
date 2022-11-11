@@ -14,11 +14,10 @@
           v-on="on"
           dense
           readonly
-          placeholder="Dipublish Pada"
-          v-model="displayDate"
+          placeholder="Tayang"
+          v-model="displayProcessDate"
         ></custom-input>
       </template>
-
       <v-card class="dt__card" flat>
         <v-row>
           <v-col cols="6">
@@ -95,8 +94,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      paramsDate: (state) => state.post.paramsDate,
-      displayDate: (state) => state.post.displayDate,
+      paramsProcess: (state) => state.post.paramsProcess,
+      displayProcessDate: (state) => state.post.displayProcessDate,
     }),
     fromDate() {
       if (this.choosenDate.length > 0) {
@@ -133,23 +132,23 @@ export default {
     },
     choosenDate: {
       get() {
-        return this.paramsDate;
+        return this.paramsProcess;
       },
       set(value) {
-        this.setParamsDate(value)
+        this.setProcessDate(value)
         const after = this.checkRangeDate(value);
         if (after[1] && after[0]) {
-          this.setParamsDate(after);
+          this.setProcessDate(after);
         } else {
-          this.setParamsDate(value);
+          this.setProcessDate(value);
         }
       },
     },
   },
   methods: {
     ...mapMutations({
-      setParamsDate: "post/setParamsDate",
-      setDisplayDate: "post/setDisplayDate",
+      setProcessDate: "post/setProcessDate",
+      setDisplayProcessDate: "post/setDisplayProcessDate",
     }),
     checkRangeDate(value) {
       const [first, second] = value;
@@ -163,7 +162,7 @@ export default {
     },
     onReset() {
       this.choosenDate = [];
-      this.setDisplayDate("");
+      this.setDisplayProcessDate("");
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
@@ -177,14 +176,14 @@ export default {
       if (this.choosenDate.length > 0) {
         const d = this.choosenDate;
         const from = this.formatter(d[0]);
-        this.setDisplayDate(from);
+        this.setDisplayProcessDate(from);
         if (this.choosenDate.length > 1) {
           const afterCheckRangeDate = this.checkRangeDate(this.choosenDate);
           const start = this.formatter(afterCheckRangeDate[0]);
           const end = this.formatter(afterCheckRangeDate[1]);
           const fullDate = `${start} - ${end}`;
-          this.setDisplayDate(fullDate);
-          this.setParamsDate(afterCheckRangeDate);
+          this.setDisplayProcessDate(fullDate);
+          this.setProcessDate(afterCheckRangeDate);
         }
       }
     },
