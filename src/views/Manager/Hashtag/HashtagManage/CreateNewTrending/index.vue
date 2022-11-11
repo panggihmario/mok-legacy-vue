@@ -9,14 +9,14 @@
           <div style="width: 303px">
             <div class="d-flex align-center imitate-btn font-12 my-2 px-3">
               <span class="text-capitalize font-weight-medium">{{
-                $route.query.channel.channel
+                $route.query.channel
               }}</span>
             </div>
           </div>
         </div>
         <p class="font-10" style="width: 303px">
           Formasi akan diterapkan pada cleeps
-          <span class="text-capitalize">{{ $route.query.channel.channel }}</span>
+          <span class="text-capitalize">{{ $route.query.channel }}</span>
         </p>
       </div>
       <div class="ml-3">
