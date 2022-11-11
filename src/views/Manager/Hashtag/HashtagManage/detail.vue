@@ -73,7 +73,7 @@
         outlined
         flat
         class="ml-5"
-        style="border-radius: 8px; overflow: scroll; height: 400px;"
+        style="border-radius: 8px; overflow: scroll; height: 600px;"
 
 
       >
@@ -266,9 +266,10 @@ export default {
       this.loadingDataLogHashtag = true;
       return this.getLogsHashtagFormation(payload)
         .then((response) => {
-          console.log(response)
           this.loadingDataLogHashtag = false;
-          this.dataLogHashtag = response.data.content;
+          // esponse.data.content;
+          const content = response.data
+          this.dataLogHashtag = content
         })
         .catch((err) => {
           this.loadingDataLogHashtag = false;
