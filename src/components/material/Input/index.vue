@@ -56,7 +56,7 @@ export default {
 <style lang="sass" scoped>
 .field
   border-radius: $border-radius-root
-  font-size: $font-size-root
+  font-size: 11px
   &__label
     font-size: $font-size-12
     font-weight: 500

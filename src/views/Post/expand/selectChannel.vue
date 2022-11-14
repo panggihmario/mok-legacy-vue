@@ -3,7 +3,7 @@
     dense
     hide-details
     placeholder="Channel"
-    class="ex__field mr-2"
+    class="expand__field mr-2"
     :items="items"
     item-text="name"
     v-model="selectedChannels"
@@ -15,7 +15,7 @@
     @blur="isBlur"
   >
      <template v-slot:selection="{ index }">
-      <span v-if="index === 0 && !focus" class="grey--text text-caption">
+      <span v-if="index === 0 && !focus" class="grey--text expand__selected">
         {{ selectedChannels.length }} selected
       </span>
     </template>
@@ -62,3 +62,6 @@ export default {
   }
 }
 </script>
+
+<style lang="scss"  src="./expand.scss" >
+</style>
