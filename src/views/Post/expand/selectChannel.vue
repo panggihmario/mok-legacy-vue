@@ -15,7 +15,7 @@
     @blur="isBlur"
   >
      <template v-slot:selection="{ index }">
-      <span v-if="index === 0 && !focus" class="grey--text text-caption">
+      <span v-if="index === 0 && !focus" class="grey--text count-selected">
         {{ selectedChannels.length }} selected
       </span>
     </template>
@@ -62,3 +62,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.count-selected {
+  color: #4A4A4A;
+  font-size: 11px;
+}
+</style>
