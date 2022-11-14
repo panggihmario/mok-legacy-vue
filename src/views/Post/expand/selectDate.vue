@@ -16,6 +16,7 @@
           readonly
           placeholder="Dipublish Pada"
           v-model="displayDate"
+          class="expand__field"
         ></custom-input>
       </template>
 
@@ -192,25 +193,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.dt {
-  &__card {
-    padding: 16px;
-    background-color: $whitesnow;
-  }
-  &__box-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  &__text-button {
-    font-size: 9px;
-    font-weight: 500;
-  }
-}
-.warning-sign {
-  font-size: 12px;
-  font-weight: 500;
-  color: #777777;
-}
+<style lang="scss" scoped src="./expand.scss"  >
+
 </style>
