@@ -74,7 +74,7 @@
         flat
         class="ml-5"
         style="border-radius: 8px; overflow: scroll; height: 600px;"
-
+        @scroll="onScroll"
 
       >
         <div class="d-flex font-weight-medium whitesnow sticky">
@@ -146,6 +146,7 @@ export default {
     return {
       isBottom : false,
       isLoadingInfinite : false,
+      totalElements : 0,
       page : 1,
       crumbs: [
         {
@@ -175,10 +176,10 @@ export default {
   mounted() {
     this.sortingPreviewData();
     this.handleGetLogsHashtagFormation();
-    // document.addEventListener('scroll', this.onScroll)
+    document.addEventListener('scroll', this.onScroll)
   },
   destroyed() {
-    // document.addEventListener('scroll', this.onScroll)
+    document.addEventListener('scroll', this.onScroll)
   },
   computed: {
     ...mapGetters({
@@ -214,9 +215,10 @@ export default {
           params: {
             size: 10,
             page: this.page,
+            totalElements : this.totalElements
           },
         };
-        console.log(payload)
+        // console.log(payload)
         idLoading.classList.add('active')
         idLoading.classList.remove('pasif')
         this.isLoadingInfinite = true
@@ -266,9 +268,11 @@ export default {
       this.loadingDataLogHashtag = true;
       return this.getLogsHashtagFormation(payload)
         .then((response) => {
+          console.log({response})
           this.loadingDataLogHashtag = false;
           // esponse.data.content;
-          const content = response.data
+          const content = response.data.content
+          this.totalElements = content.totalElements
           this.dataLogHashtag = content
         })
         .catch((err) => {
