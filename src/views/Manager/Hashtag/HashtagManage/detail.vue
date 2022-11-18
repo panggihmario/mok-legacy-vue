@@ -218,7 +218,7 @@ export default {
             totalElements : this.totalElements
           },
         };
-        // console.log(payload)
+        console.log(payload)
         idLoading.classList.add('active')
         idLoading.classList.remove('pasif')
         this.isLoadingInfinite = true
@@ -268,11 +268,10 @@ export default {
       this.loadingDataLogHashtag = true;
       return this.getLogsHashtagFormation(payload)
         .then((response) => {
-          console.log({response})
           this.loadingDataLogHashtag = false;
-          // esponse.data.content;
           const content = response.data.content
-          this.totalElements = content.totalElements
+          const totalElements = response.data.totalElements
+          this.totalElements = totalElements
           this.dataLogHashtag = content
         })
         .catch((err) => {
