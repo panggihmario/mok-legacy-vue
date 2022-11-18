@@ -5,53 +5,34 @@
     <div class="d-flex font-12">
       <div class="pt-4" style="width:285px">
         <div>
-          <span class="font-weight-medium"
-            >Jumlah data yang ingin ditampilkan</span
-          >
-          <div
-            class="d-flex align-center whitesnow mt-2 px-4"
-            style="height: 35px; border-radius: 4px"
-          >
+          <span class="font-weight-medium">Jumlah data yang ingin ditampilkan</span>
+          <div class="d-flex align-center whitesnow mt-2 px-4" style="height: 35px; border-radius: 4px">
             <span class="font-12 font-weight-medium grey--text">{{
-              dataItem.item.totalQty
+                dataItem.item.totalQty
             }}</span>
           </div>
         </div>
         <div class="mt-5">
           <span class="font-weight-medium">Waktu proses</span>
-          <div
-            class="d-flex align-center whitesnow mt-2 px-4"
-            style="height: 35px; border-radius: 4px"
-          >
-            <span class="font-12 font-weight-medium grey--text"
-              >{{ formatDate(dataItem.item.createAt) }}
-              {{ formatDate(dataItem.item.createAt, true) }}</span
-            >
+          <div class="d-flex align-center whitesnow mt-2 px-4" style="height: 35px; border-radius: 4px">
+            <span class="font-12 font-weight-medium grey--text">{{ formatDate(dataItem.item.createAt) }}
+              {{ formatDate(dataItem.item.createAt, true) }}</span>
           </div>
         </div>
         <div class="mt-5">
           <span class="font-weight-medium">Channel</span>
-          <div
-            class="d-flex align-center whitesnow mt-2 px-4"
-            style="height: 35px; border-radius: 4px"
-          >
+          <div class="d-flex align-center whitesnow mt-2 px-4" style="height: 35px; border-radius: 4px">
             <span class="font-12 font-weight-medium grey--text">{{
-              dataDetailHashtag.feedChannelCode &&
-              dataDetailHashtag.feedChannelCode.toLowerCase() == "chinatiktok"
-                ? "China"
-                : "Indonesia"
+                dataDetailHashtag.feedChannelCode &&
+                  dataDetailHashtag.feedChannelCode.toLowerCase() == "chinatiktok"
+                  ? "China"
+                  : "Indonesia"
             }}</span>
           </div>
         </div>
       </div>
 
-      <v-card
-        width="353"
-        outlined
-        flat
-        class="ml-5"
-        style="border-radius: 8px; overflow: auto ;position: relative;"
-      >
+      <v-card width="353" outlined flat class="ml-5" style="border-radius: 8px; overflow: auto ;position: relative;">
         <div class="d-flex font-weight-medium whitesnow sticky">
           <div class="col-4">Hashtag</div>
           <div class="col-2">%</div>
@@ -68,15 +49,9 @@
         </div>
       </v-card>
 
-      <v-card
-        width="488"
-        outlined
-        flat
-        class="ml-5"
-        style="border-radius: 8px; overflow: scroll; height: 600px;"
-        @scroll="onScroll"
-
-      >
+      <v-card width="488" outlined flat class="ml-5" style="border-radius: 8px; overflow: scroll; height: 600px;"
+      @scroll="onScroll"
+        >
         <div class="d-flex font-weight-medium whitesnow sticky">
           <div class="col-6">Time </div>
           <div class="col-6">Activity</div>
@@ -84,10 +59,7 @@
 
         <div>
           <div v-if="loadingDataLogHashtag" class="mt-8 text-center">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
 
           </div>
           <div v-else>
@@ -98,38 +70,30 @@
                     {{ formatDate(i.createAt) }}
                     {{ formatDate(i.createAt, true) }}
                   </div>
-                  <div
-                    class="col-6"
-                    :class="`text--${i.status && i.status.toLowerCase()}`"
-                  >
+                  <div class="col-6" :class="`text--${i.status && i.status.toLowerCase()}`">
                     {{ i.activity }}
                   </div>
                 </div>
               </div>
               <div class="text-center">
-                <v-progress-circular
-              indeterminate
-              :color="isLoadingInfinite ? 'primary' : 'transparent' "
-              class="text-center"
-            ></v-progress-circular>
+                <v-progress-circular indeterminate :color="isLoadingInfinite ? 'primary' : 'transparent'"
+                  class="text-center"></v-progress-circular>
               </div>
-          
-              <div class="loading text-center " id="loading" > 
+
+              <div class="loading text-center " id="loading">
                 virtual footer
               </div>
-             
+
             </div>
             <div v-else class="text-center mt-2">
-              <span class="grey--text font-weight-medium"
-                >Tidak Ada Data Activity</span
-              >
+              <span class="grey--text font-weight-medium">Tidak Ada Data Activity</span>
             </div>
           </div>
         </div>
 
 
       </v-card>
-    
+
     </div>
   </div>
 </template>
@@ -144,10 +108,10 @@ export default {
   },
   data() {
     return {
-      isBottom : false,
-      isLoadingInfinite : false,
-      totalElements : 0,
-      page : 1,
+      isBottom: false,
+      isLoadingInfinite: false,
+      totalElements: 0,
+      page: 1,
       crumbs: [
         {
           text: "Manage Hashtag",
@@ -204,42 +168,41 @@ export default {
       getAvailabilitySubHashtag: "manageHashtag/getAvailabilitySubHashtag",
       getLogsHashtagFormation: "manageHashtag/getLogsHashtagFormation",
     }),
-    onScroll (event) {      
-      const { scrollTop , offsetHeight , scrollHeight } = event.target
+    onScroll(event) {
+      const { scrollTop, offsetHeight, scrollHeight } = event.target
       const virtualHeight = scrollHeight
       const unionHeight = scrollTop + offsetHeight
       const idLoading = document.getElementById('loading')
-      if(unionHeight >= virtualHeight  ) {
+      if (unionHeight >= virtualHeight  && !this.isLoadingInfinite) {
         let payload = {
           id: this.dataDetailHashtag.id,
           params: {
             size: 10,
             page: this.page,
-            totalElements : this.totalElements
+            totalElements: this.totalElements
           },
         };
-        console.log(payload)
         idLoading.classList.add('active')
         idLoading.classList.remove('pasif')
         this.isLoadingInfinite = true
         return this.getLogsHashtagFormation(payload)
           .then((response) => {
-            this.page ++
+            this.page++
             const content = response.data.content
             setTimeout(() => {
               content.forEach((data) => {
                 this.dataLogHashtag.push(data)
               })
               idLoading.classList.add('pasif')
-        idLoading.classList.remove('active')
-        this.isLoadingInfinite = false
-            },900)
-            
+              idLoading.classList.remove('active')
+              this.isLoadingInfinite = false
+            }, 1500)
+
           })
           .catch((err) => {
             this.isLoadingInfinite = false
             idLoading.classList.add('pasif')
-        idLoading.classList.remove('active')
+            idLoading.classList.remove('active')
           });
       }
     },
@@ -254,7 +217,7 @@ export default {
         .then((response) => {
           this.sortedHashtags[idx].available = response.data.available;
         })
-        .catch((err) => {});
+        .catch((err) => { });
     },
     handleGetLogsHashtagFormation() {
       let payload = {
@@ -286,9 +249,8 @@ export default {
       let hour = d.getHours();
       let minute = d.getMinutes();
       return isHour
-        ? `${hour < 10 ? `0${hour}` : hour}:${
-            minute < 10 ? `0${minute}` : minute
-          }`
+        ? `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute
+        }`
         : `${date}/${month + 1}/${year}`;
     },
     sortingPreviewData() {
@@ -311,20 +273,25 @@ export default {
   position: -webkit-sticky;
   position: sticky;
 }
+
 .text--failed {
   color: $warning;
 }
+
 .text--success {
   color: $success;
 }
+
 .loading {
   position: sticky;
   bottom: 0;
   color: transparent;
 }
+
 .active {
-  color : 'red'
+  color: 'red'
 }
+
 .pasif {
   color: transparent;
 }
