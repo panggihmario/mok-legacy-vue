@@ -282,7 +282,6 @@ export default {
   },
   mounted() {
     this.filterCountryLocal = this.filterCountry;
-    console.log(this.filterCountry);
     this.handleGetListManageHashtag();
   },
   computed: {
@@ -299,19 +298,10 @@ export default {
       setFilterCountry: "manageHashtag/setFilterCountry",
     }),
     moveTo(val, item, isQueryObject) {
-      console.log(item)
       let query = {};
-      // if (isQueryObject) {
-        localStorage.setItem("detailHashtag", JSON.stringify(item));
-      // } 
-      // else {
-      //   query = {
-      //     channel: item,
-      //   };
-      // }
+      localStorage.setItem("detailHashtag", JSON.stringify(item));
       this.$router.push({
         path: val,
-        name : 'createHashtag' ,
         query: {
           channel : item.channel
         },
