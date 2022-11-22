@@ -127,7 +127,7 @@ const routes = [
       },
       {
         path: "/manage/hashtag/create-new-trending",
-        name: "manageHashtag",
+        name: "createHashtag",
         component: () => import("../views/Manager/Hashtag/HashtagManage/CreateNewTrending"),
       },
       {

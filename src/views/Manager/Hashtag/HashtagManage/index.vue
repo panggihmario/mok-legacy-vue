@@ -299,10 +299,11 @@ export default {
       setFilterCountry: "manageHashtag/setFilterCountry",
     }),
     moveTo(val, item, isQueryObject) {
+      console.log(item)
       let query = {};
-      if (isQueryObject) {
+      // if (isQueryObject) {
         localStorage.setItem("detailHashtag", JSON.stringify(item));
-      } 
+      // } 
       // else {
       //   query = {
       //     channel: item,
@@ -310,6 +311,7 @@ export default {
       // }
       this.$router.push({
         path: val,
+        name : 'createHashtag' ,
         query: {
           channel : item.channel
         },
