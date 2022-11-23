@@ -263,7 +263,7 @@ export default {
           keyword : this.keyword,
           startProceedAt : processDate.startAt,
           endProceedAt : processDate.endAt,
-          isStatusProcess : isStatusProcess
+          statusProcess : isStatusProcess
         }
         return this.filterFeed(payload)
           .then(() => {
@@ -328,7 +328,7 @@ export default {
           keyword,
           startProceedAt : processDate.startAt,
           endProceedAt : processDate.endAt,
-          isStatusProcess : isStatusProcess
+          statusProcess : isStatusProcess
         }
         return this.filterFeed(payload)
     },
