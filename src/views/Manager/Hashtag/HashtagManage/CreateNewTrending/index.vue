@@ -354,6 +354,14 @@ export default {
       }
     },
   },
+  // beforeRouteEnter (to, from , next) {
+  //   console.log('log')
+  //   next()
+  // },  
+  beforeRouteLeave (to, from , next) {
+    localStorage.removeItem('detailHashtag')
+    next()
+  },
   mounted() {
     this.handleGetListMasterCategory(0);
   },
@@ -528,8 +536,9 @@ export default {
     actionUseLastActiveFormation() {
       this.isSearchData = false;
       this.listMasterCategorySearch = [];
-      this.totalData = this.$route.query.channel.data.totalQty;
-      let hashtags = this.$route.query.channel.data.hashtags;
+      const storage = JSON.parse(localStorage.getItem('detailHashtag'))
+      this.totalData = storage.data.totalQty;
+      let hashtags = storage.data.hashtags;
       let partOfHashtags = [];
       for (let i = 0; i < hashtags.length; i++) {
         const e = hashtags[i];
