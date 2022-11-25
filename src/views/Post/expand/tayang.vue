@@ -49,11 +49,11 @@ export default {
         { 
           text : 'Menunggu' , 
           isShowCalendar : false,
-          isStatusProcess : true
+          isStatusProcess : 'wait'
         },{ 
           text : 'Tayang',
           isShowCalendar : true,
-          isStatusProcess : false
+          isStatusProcess : 'process'
         }
       ],
       value: null,
