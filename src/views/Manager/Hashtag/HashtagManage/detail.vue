@@ -231,6 +231,7 @@ export default {
       this.loadingDataLogHashtag = true;
       return this.getLogsHashtagFormation(payload)
         .then((response) => {
+          console.log(response)
           this.loadingDataLogHashtag = false;
           const content = response.data.content
           const totalElements = response.data.totalElements
