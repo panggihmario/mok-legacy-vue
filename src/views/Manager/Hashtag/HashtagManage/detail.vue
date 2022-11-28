@@ -224,7 +224,7 @@ export default {
         id: this.dataDetailHashtag.id,
         params: {
           // direction: "DESC",
-          size: 10,
+          size: 15,
           page: 0,
         },
       };
