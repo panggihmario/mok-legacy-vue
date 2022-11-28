@@ -111,6 +111,7 @@ export default {
       isBottom: false,
       isLoadingInfinite: false,
       totalElements: 0,
+      sizeData : 15,
       page: 1,
       crumbs: [
         {
@@ -177,7 +178,7 @@ export default {
         let payload = {
           id: this.dataDetailHashtag.id,
           params: {
-            size: 10,
+            size: this.sizeData,
             page: this.page,
             totalElements: this.totalElements
           },
@@ -224,13 +225,14 @@ export default {
         id: this.dataDetailHashtag.id,
         params: {
           // direction: "DESC",
-          size: 10,
+          size: this.sizeData,
           page: 0,
         },
       };
       this.loadingDataLogHashtag = true;
       return this.getLogsHashtagFormation(payload)
         .then((response) => {
+          console.log(response)
           this.loadingDataLogHashtag = false;
           const content = response.data.content
           const totalElements = response.data.totalElements
