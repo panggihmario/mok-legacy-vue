@@ -23,10 +23,10 @@
                   {{ item.description }}
                 </div>
               </td>
-              <td class="font-12">{{ item.channel.name }}</td>
-              <td class="font-12">{{ item.createBy }}</td>
-              <td class="font-12">{{ formatingDate(item.createAt) }}</td>
-              <td class="font-12 text-center">
+              <td class="font-12 grey--text font-weight-medium">{{ item.channel.name }}</td>
+              <td class="font-12 grey--text font-weight-medium">{{ item.createBy }}</td>
+              <td class="font-12 grey--text font-weight-medium">{{ formatingDate(item.createAt) }}</td>
+              <td class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium">
                 <custom-button
                   class="mr-2"
                   size="x-small"
@@ -35,6 +35,13 @@
                 >
                   Push Notif
                 </custom-button>
+                <v-icon 
+                  size="15px" 
+                  color="warning"
+                  @click="openDialogDelete(item.id)"
+                >
+                  fa-solid fa-trash
+                </v-icon>
               </td>
             </tr>
           </tbody>
@@ -59,7 +66,7 @@
         @input="changePage"
       ></v-pagination>
     </div>
-
+  
     <v-dialog v-model="dialogPost" width="880">
       <v-btn
         rounded
@@ -185,7 +192,11 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-dialog>
-
+    <DialogDelete 
+      :dialogDelete="dialogDelete" 
+      @closeDialogDelete="closeDialogDelete"
+      @handleDelete="handleDelete"
+    />
     <v-dialog v-model="dialogPushNotif" width="410">
       <v-card>
         <div class="d-flex no-gutters">
@@ -253,9 +264,12 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-
+import DialogDelete from "./dialogDelete.vue"
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
+  components : {
+    DialogDelete
+  },  
   data() {
     return {
       tableHeaders: [
@@ -278,6 +292,8 @@ export default {
       dialogPushNotifId: "",
       alertSuccess: false,
       alertError: false,
+      dialogDelete : false,
+      idPost : ''
     };
   },
   watch: {
@@ -307,7 +323,27 @@ export default {
     ...mapActions({
       fetchPostAllUserDetailById: "post/fetchPostAllUserDetailById",
       postFeedAsTrendingById: "post/postFeedAsTrendingById",
+      deleteFeed : 'account/deleteFeed'
     }),
+    handleDelete () {
+      const idPost = this.idPost
+      return this.deleteFeed(idPost)
+        .then(() => {
+          this.idPost = ""
+          this.dialogDelete = false
+          this.$emit("resetData")
+        })
+        .catch(() => {
+          this.idPost = ""
+        })
+    },
+    openDialogDelete (idPost) {
+      this.idPost = idPost
+      this.dialogDelete = true
+    },
+    closeDialogDelete(value) {
+      this.dialogDelete = value
+    },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
     },

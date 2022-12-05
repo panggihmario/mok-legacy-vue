@@ -35,6 +35,7 @@
           @actionPushNotif="actionPushNotif"
           @successPostTrending="handleSuccessPostTrending"
           @errorPostTrending="handleErrorPostTrending"
+          @resetData="resetData"
         ></Post-All>
       </div>
       <div v-else-if="tab == 1">
@@ -181,6 +182,9 @@ export default {
         this.getListPostByFilter("active");
       }
     },
+    resetData () {
+      this.getListPostByFilter('candidates')
+    },  
     handleGetListUserPost() {
       let payload = {
         page: this.pageCandidate - 1,
@@ -190,7 +194,6 @@ export default {
       return this.fetchPostAllUser(payload)
         .then((response) => {
           let res = response.data.data;
-          console.log({res})
           this.loadingListCandidate = false;
           this.tableItemsCandidate = res.content;
           this.totalPagesCandidate = res.totalPages;
