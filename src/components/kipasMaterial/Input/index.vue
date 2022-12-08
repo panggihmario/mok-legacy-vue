@@ -1,19 +1,27 @@
 <template>
-  <div class="kipas__input-container">
-    <label v-if="label" class="kipas__input-label" > {{label}} </label>
-    <input 
-      :type="type" 
-      :class="[`kipas__input-${size}`]"
-      class="kipas__input"
-      v-bind="$attrs"
-      :value="value"
-      v-on="inputListener"
-    >
-  </div>
+  <ValidationProvider  v-slot="{ errors }" :name="name" :rules="rules" >
+    <div class="kipas__input-container">
+      <label v-if="label" class="input__label" :class="errors.length > 0 && 'input__error-label' " > {{label}} </label>
+      <input 
+        :type="type" 
+        :class="[`kipas__input-${size}` , { 'input__error' :  errors.length > 0 }]"
+        class="input"
+        v-bind="$attrs"
+        :value="value"
+        v-on="inputListener"
+      >
+      <div class="input__error-label" > {{errors[0]}} </div>
+    </div>
+</ValidationProvider>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      hasError : false
+    }
+  },
   props : {
     type : {
       type : String,
@@ -23,18 +31,22 @@ export default {
       type : String
     },
     value: {
-      type: [String, Number, Object]
+      type: [String, Number, Object],
+      require : true
     },
     rules: {
       type: String
     },
     size : {
       type : String,
-      default : 'md'
+      default : 'md',
     },
-    value: {
-      type: [String, Number, Object]
+    name : {
+      type : String
     },
+    rules : {
+      type : String
+    }
   },
   computed : {
     inputListener () {
@@ -50,6 +62,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.utils {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+
+.input {
+  outline: none;
+  font-size: 12px;
+  font-weight: 500;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  &__error-label {
+    color: $danger !important;
+    @extend .utils;
+  }
+  &__label {
+    @extend .utils;
+    color: $charcoal;
+  }
+  &__error {
+    border: 1px solid $danger;
+  }
+}
 .kipas {
   &__input {
     outline: none;
@@ -60,8 +98,8 @@ export default {
     border-radius: 4px;
   }
   &__input-label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     color: #4A4A4A;
     letter-spacing: 0.01em;
   }

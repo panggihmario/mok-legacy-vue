@@ -96,6 +96,11 @@ export default [
         path: "/donation",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
+      {
+        title: "Feedback user",
+        path: "/feedback/1",
+        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
     ],
   },
   {
