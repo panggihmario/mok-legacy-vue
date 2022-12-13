@@ -83,11 +83,16 @@ export default {
       const afterCheckRangeDate = this.checkRangeDate(this.dates);
       const start = this.formatter(afterCheckRangeDate[0]);
       const end = this.formatter(afterCheckRangeDate[1]);
-      const fullDate = `${start} - ${end}`;
-      this.displayDate = fullDate
-      this.dates = afterCheckRangeDate
-      const payload = this.formatingParamsDate(afterCheckRangeDate)
-      this.$emit('getPayloadDate', payload)
+        const fullDate = `${start} - ${end}`;
+        
+        this.dates = afterCheckRangeDate
+        const payload = this.formatingParamsDate(afterCheckRangeDate)
+        this.$emit('getPayloadDate', payload)
+        if(start) {
+          this.displayDate = fullDate
+        }else{
+          this.displayDate = ''
+        }
     },
     onReset () {
       this.dates = []

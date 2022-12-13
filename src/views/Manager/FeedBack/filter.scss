@@ -1,4 +1,12 @@
 .filter {
+  &__message {                /* CSS3 */
+    word-wrap: break-word;                  /* Internet Explorer 5.5+ */
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 400px;
+  }
   &__container {
     padding: 6px 16px;
     background: #EEEEEE;
@@ -117,9 +125,8 @@
     color: $greys;
     font-size: 11px;
     font-weight: 500;
-    white-space: nowrap; 
-    // overflow: hidden;
-    text-overflow: ellipsis; 
+    // white-space: nowrap; 
+    // text-overflow: ellipsis; 
   }
   &__total {
     font-size: 12px;
