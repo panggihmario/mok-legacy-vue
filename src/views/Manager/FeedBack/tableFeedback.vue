@@ -20,7 +20,7 @@
               <div class="filter__table-label">{{ item.devicePlatform }}</div>
             </td>
             <td>
-              <div class="filter__table-label">{{ item.message }}</div>
+              <div class="filter__table-label filter__message">{{ item.message }}</div>
             </td>
           </tr>
         </tbody>
@@ -138,7 +138,6 @@ export default {
           sortable: false,
           value: "message",
           filterable: false,
-          width: "500",
         },
       ]
     }
