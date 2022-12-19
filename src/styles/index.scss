@@ -1,0 +1,30 @@
+@import "variables";
+@import "colors";
+@import "typography";
+@import "global";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+:root {
+  --primary-color : #{$primary};
+  --secondary-color : #{$secondary};
+  --bg-color : #{$white};
+  --dark-bg-color : #{$darkPrimary};
+  --kellygreen-color : #{$kellygreen};
+  --black-color : #{$black};
+  --grey-color : #{$grey};
+  --whitesnow-color : #{$whitesnow};
+  --white-color : #{$white};
+  --charcoal-color : #{$charcoal};
+  --whitesmoke-color : #{$whitesmoke};
+  --grey90-color : #{$grey90};
+  --gainsboro-color : #{$gainsboro};
+  --danger-color : #{$danger};
+
+  --width-aside : 11.25rem;
+  --text-color : var(--primary-color);
+}
+
+
+
+
+
