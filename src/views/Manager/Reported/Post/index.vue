@@ -17,8 +17,8 @@
             class="d-flex justify-center image__box whitesnow cursor-pointer"
             @click="openDialogImage(item)"
           >
-            <!-- <v-img max-width="100%" height="100%" :src="item.photo" /> -->
-            <video :src="item.photo" :poster="item.photo" height="100%"></video>
+            <video v-if="item.mediaType === 'video'" :src="item.photo"  height="100%"></video>
+            <v-img v-else max-width="100%" height="100%" :src="item.photo" />
           </div>
         </div>
       </template>
@@ -109,14 +109,17 @@
 
     <v-dialog v-model="dialogImage" width="600" @click:outside="closeDialog">
       <v-card class="text-center pa-8">
-        <!-- <v-img :src="imageDialog"></v-img> -->
+       
         <video
+          v-if="mediaType === 'video' "
           :src="imageDialog"
-          :poster="imageDialog"
           controls
           width="100%"
           height="100%"
         ></video>
+        <v-img 
+        v-else
+        :src="imageDialog"></v-img>
       </v-card>
     </v-dialog>
 
@@ -220,6 +223,7 @@ export default {
       items: [],
       reports: [],
       reasonOthers: [],
+      mediaType : ''
     };
   },
   mounted() {
@@ -243,7 +247,6 @@ export default {
       };
       const response = await this.getListReportByType(payload);
       if (response.status == 200) {
-        console.log(response);
         this.reports = response.data.data.content;
         this.totalPages = response.data.data.totalPages;
       }
@@ -253,7 +256,6 @@ export default {
         type: "FEED",
       };
       const response = await this.getListReasonByType(payload);
-      console.log(response);
       if (response.status === 200) {
         const responseData = response.data.data;
         const formatResponse = responseData.map((data) => {
@@ -278,7 +280,6 @@ export default {
       this.dialogReason = true;
       this.imageDialog = report.photo;
       const response = await this.getDetailReasonOther(payload);
-      console.log({ response });
       if (response.status == 200) {
         this.reasonOthers = response.data.data.content;
       }
@@ -286,6 +287,7 @@ export default {
     openDialogImage(item) {
       this.dialogImage = true;
       this.imageDialog = item.photo;
+      this.mediaType = item.mediaType
     },
     openDialogPass(id) {
       this.dialogPass = true;
@@ -304,9 +306,9 @@ export default {
       this.imageDialog = "";
       this.reasonOthers = [];
       this.idReport = "";
+      this.mediaType = ''
     },
     async handleDeleteReport(item) {
-      console.log(item);
       const payload = {
         reportId: this.idReport,
         params: {
@@ -315,10 +317,8 @@ export default {
           value: item.name,
         },
       };
-      console.log(payload);
       this.loadingDelete = true;
       const response = await this.reportDelete(payload);
-      console.log("delete", response);
       if (response.status == 200) {
         this.loadingDelete = false;
         this.dialogDelete = false;
@@ -339,10 +339,8 @@ export default {
       const payload = {
         reportId: this.idReport,
       };
-      console.log(payload);
       this.loading = true;
       const response = await this.reportPassed(payload);
-      console.log("pass", response);
       if (response.status == 200) {
         this.loading = false;
         this.dialogPass = false;
