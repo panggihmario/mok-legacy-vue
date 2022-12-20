@@ -216,6 +216,7 @@ export default {
       };
       return this.getAvailabilitySubHashtag(payload)
         .then((response) => {
+          console.log(response)
           this.sortedHashtags[idx].available = response.data.available;
         })
         .catch((err) => { });

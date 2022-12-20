@@ -9,7 +9,8 @@
           v-bind="attrs"
           v-on="on"
         >
-          {{label}}
+          <!-- {{label}} -->
+          {{statusLabel}}
         </custom-button>
       </template>
       <v-list>
@@ -35,7 +36,7 @@
 <script>
 import selectDateVue from './selectDate.vue';
 import ProcessDate from "./selectProceedDate.vue"
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 export default {
   components : {
     selectDateVue,
@@ -60,13 +61,20 @@ export default {
       menu: false
     }
   },
+  computed : {
+    ...mapState({
+      statusLabel : state => state.post.statusLabel
+    })
+  },
   methods : {
     ...mapMutations({
-      setIsStatusProcess : 'post/setIsStatusProcess'
+      setIsStatusProcess : 'post/setIsStatusProcess',
+      setStatusLabel : 'post/setStatusLabel'
     }), 
     chooseHandler(item) {
       this.isShowCalendar = item.isShowCalendar
       this.label = item.text
+      this.setStatusLabel(item.text)
       this.setIsStatusProcess(item.isStatusProcess)
     }
   }

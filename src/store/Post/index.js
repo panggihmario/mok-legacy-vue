@@ -21,9 +21,13 @@ export default {
     channelCodeTrending: null,
     paramsDateTrending: [],
     displayDateTrending: "",
-    isStatusProcess : 'all'
+    isStatusProcess : 'all',
+    statusLabel : 'Status Proses'
   },
   mutations: {
+    setStatusLabel (state, payload) {
+      state.statusLabel = payload
+    },
     setIsStatusProcess (state , payload) {
       state.isStatusProcess = payload
     },
