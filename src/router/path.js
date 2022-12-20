@@ -7,9 +7,6 @@ import AccountManage from "../views/AccountManage";
 import Channel from "../views/Manager/Channel";
 import ChannelCreate from "../views/Manager/Channel/create.vue";
 import ChannelEdit from "../views/Manager/Channel/edit.vue";
-import Donation from "../views/Manager/Donation";
-import DonationCreate from "../views/Manager/Donation/create.vue";
-import DonationEdit from "../views/Manager/Donation/edit.vue";
 import ReportedPost from "../views/Manager/Reported/Post";
 import ReportedComment from "../views/Manager/Reported/Comment";
 import ReportedStory from "../views/Manager/Reported/Story";
@@ -109,41 +106,6 @@ const routes = [
         path: "/channel/:id",
         name: "channelEdit",
         component: ChannelEdit,
-      },
-      {
-        path: "/hashtag",
-        name: "trendingHashtag",
-        component: () => import("../views/Manager/Hashtag"),
-      },
-      {
-        path: "/manage/hashtag",
-        name: "manageHashtag",
-        component: () => import("../views/Manager/Hashtag/HashtagManage"),
-      },
-      {
-        path: "/manage/hashtag/detail",
-        name: "manageHashtagDetail",
-        component: () => import("../views/Manager/Hashtag/HashtagManage/detail.vue"),
-      },
-      {
-        path: "/manage/hashtag/create-new-trending",
-        name: "createHashtag",
-        component: () => import("../views/Manager/Hashtag/HashtagManage/CreateNewTrending"),
-      },
-      {
-        path: "/donation",
-        name: "donation",
-        component: Donation,
-      },
-      {
-        path: "/donation/create",
-        name: "donationCreate",
-        component: DonationCreate,
-      },
-      {
-        path: "/donation/:id",
-        name: "donationEdit",
-        component: DonationEdit,
       },
       {
         path: "/report/post",
