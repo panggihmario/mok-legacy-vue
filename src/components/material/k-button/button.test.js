@@ -6,23 +6,30 @@ import { describe, it, expect  } from "vitest";
 import Button from "./index.vue";
 import { mount } from "@vue/test-utils"
 
+const testValues = {
+  label : 'Click me',
+  size : 'md',
+  color : 'secondary',
+  loading : true
+}
+
 describe('reusable button component', () => {
   const wrapper = mount(Button,{
     slots: {
-      default: 'Click Me'
+      default: testValues.label
     }
   })
 
   it ('should render properly', () => {
     expect(wrapper).toBeTruthy()
-    expect(wrapper.html()).toContain('Click Me')
+    expect(wrapper.html()).toContain(testValues.label)
   })
   it ('should have props ', async() => {
     const button = wrapper.find('button')
-    await wrapper.setProps({size : 'md'})
-    await wrapper.setProps({color : 'secondary'})
-    expect(button.classes()).toContain('button__md')
-    expect(button.classes()).toContain('bg-secondary')
+    await wrapper.setProps({size : testValues.size})
+    await wrapper.setProps({color : testValues.color})
+    expect(button.classes()).toContain(`button__${testValues.size}`)
+    expect(button.classes()).toContain(`bg-${testValues.color}`)
   })
   it ('display loading ', async() => {
     const button = wrapper.find('button')
