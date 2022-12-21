@@ -23,7 +23,7 @@ describe('Custom component input', () => {
     expect(input.element.value).toBe('username')
   })
   it('should have props', async () => {
-    const input = wrapper.find('input')
+    const input = wrapper.find('#input')
     await wrapper.setProps({label : testProps.label})
     await wrapper.setProps({size : testProps.size})
     expect(wrapper.html()).toContain(testProps.label)
