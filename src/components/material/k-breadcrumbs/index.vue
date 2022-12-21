@@ -1,6 +1,6 @@
 <template>
   <div class="breadcrumbs flex">
-    <span v-for="(item, idx) in list" :key="idx">
+    <span v-for="(item , idx) in list" :key="idx">
       <span
         :class="[idx < list.length - 1 && 'text-color-primary cursor-pointer']"
         class="text-capitalize font-weight-500 text-color-grey"
@@ -14,12 +14,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 export default defineComponent({
   name: "k-breadcrumbs",
   props: {
     list: {
-      type: Array,
+      type: Array ,
       default: [{ name: "Foo" }, { name: "Bar" }],
     },
   },

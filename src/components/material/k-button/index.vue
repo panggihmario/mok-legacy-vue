@@ -2,6 +2,7 @@
   <button 
     :class="['button', `button__${size}`, `bg-${color}`]"
     :disabled="loading"
+    :bind="$attrs"
   >
     <Transition name="slide-fade">
       <div v-if="loading" class="button__loading">
