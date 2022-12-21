@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios"
 
-type Params = {[key : string] : string }
-
+type Params = {[key : string | number] : string }
+const { VITE_APP_BASE_URL } = import.meta.env;
 export const useApiStore = defineStore('api', {
   state: () => ({
-    url: 'https://test-api-main.kipaskipas.com/api/v1/'
+    url: VITE_APP_BASE_URL
   }),
   actions: {
     createInstanceWithToken() {
@@ -37,9 +37,7 @@ export const useApiStore = defineStore('api', {
     })
     },
     postApiWithoutToken (url : string , params : Params) {
-      return this.createInstanceWithoutToken().post(url, {
-        data : { ...params }
-      })
+      return this.createInstanceWithoutToken().post(url, params)
     },
     fetchApi (url : string, params : Params) {
       return this.createInstanceWithToken().get(url, {

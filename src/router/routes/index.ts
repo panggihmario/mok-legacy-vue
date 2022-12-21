@@ -2,21 +2,19 @@ import accountRoutes from "./account";
 import managerRoutes from "./manager";
 import contentRoutes from "./content";
 
-
 export interface childrenRoute  {
   path : string,
   name : string,
   component : () => void
 }
 
-interface parentRoute extends childrenRoute {
+export interface parentRoute extends childrenRoute {
   redirect? : string,
   meta : {
     requireAuth : boolean
   },
-  children : childrenRoute[]
+  children? : childrenRoute[]
 }
-
 
 const routes : parentRoute[] = [
   {
@@ -32,6 +30,14 @@ const routes : parentRoute[] = [
       ...managerRoutes,
       ...contentRoutes
     ]
+  },
+  {
+    path : '/login',
+    name : 'login',
+    component : () => import('../../pages/Authentication/login.vue'),
+    meta : {
+      requireAuth : false
+    }
   }
   
 ]

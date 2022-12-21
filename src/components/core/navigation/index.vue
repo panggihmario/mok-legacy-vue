@@ -1,5 +1,6 @@
 <template>
   <aside>
+    <div class="navigation__relative">
     <div class="navigation__profile">
       <div class="navigation__photo"></div>
       <div class="navigation__username text-center">Administrator</div>
@@ -25,7 +26,13 @@
         </li>
       </ul>
     </nav>
-
+    <div class="navigation__logout">
+      <k-button color="whitesnow" @click="logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+      </k-button>
+    </div>
+  </div>
   </aside>
 </template>
 
@@ -33,8 +40,12 @@
 import { reactive } from "vue";
 import menuModel from "./menuModel";
 import { item } from "./menuModel"
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../../../stores/authentication";
 export default {
   setup() {
+    const router = useRouter()
+    const store = useAuthStore()
     const menus: item[] = reactive(menuModel)
     const openItems = function (label : string) {
       menus.forEach(menu => {
@@ -46,9 +57,17 @@ export default {
       })
     }
 
+    const logout = function () {
+      store.removeAuthData()
+      router.push({
+        name : 'login'
+      })
+    }
+
     return {
       menus,
-      openItems
+      openItems,
+      logout
     }
   }
 }

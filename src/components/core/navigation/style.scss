@@ -10,6 +10,17 @@ aside {
 }
 
 .navigation {
+  &__relative {
+    position: relative;
+    height: 100vh;
+  }
+  &__logout {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
   &__profile {
     padding: 1.25rem;
     display: grid; 

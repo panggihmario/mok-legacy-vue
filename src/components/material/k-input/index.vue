@@ -2,7 +2,10 @@
   <div>
     <div class="input__container">
       <div class="input__label" :class="!!errorMessage && 'has-error'">{{ label }}</div>
-      <div class="input__box" :class="[`input__outline-${size}`, !!errorMessage && 'has-error']">
+      <div 
+        class="input__box" :class="[`input__outline-${size}`, !!errorMessage && 'has-error']"
+        id="input"
+      >
         <input 
           :type="type" 
           v-model="value" 
@@ -25,9 +28,7 @@
 
 <script lang="ts">
 type Size = 'md' | 'lg' | 'sm';
-import { storeToRefs } from 'pinia';
 import { defineComponent, PropType, computed, ref } from 'vue'
-import { useAuthStore } from '../../../stores/authentication';
 export default defineComponent({
   props: {
     label: {
@@ -59,9 +60,9 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const isOpen = ref(false)
-    const store = useAuthStore()
+    // const store = useAuthStore()
 
-    const { token } = storeToRefs(store)
+    // const { token } = storeToRefs(store)
 
     const value = computed({
       get() {
@@ -80,8 +81,8 @@ export default defineComponent({
       value,
       isOpen,
       showPassword,
-      store,
-      token
+      // store,
+      // token
     }
   }
 })
