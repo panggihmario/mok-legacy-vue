@@ -301,6 +301,8 @@ export default {
       this.setProcessDate([])
       this.setDisplayDate('')
       this.setDisplayProcessDate('')
+      this.setIsStatusProcess('all')
+      this.setStatusLabel('Status Proses')
       return this.onInitiateFetchFeeds()
         .then(() => {
           this.$router.push({
@@ -381,7 +383,8 @@ export default {
       setParamsDate : 'post/setParamsDate',
       setProcessDate : 'post/setProcessDate',
       setDisplayProcessDate : 'post/setDisplayProcessDate',
-      setIsStatusProcess : 'post/setIsStatusProcess'
+      setIsStatusProcess : 'post/setIsStatusProcess',
+      setStatusLabel : 'post/setStatusLabel'
     }),
     moveToCreatePost() {
       this.$router.push({
