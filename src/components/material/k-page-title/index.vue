@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="text-title font-weight-500">{{ title }}</span>
+    <span class="text-title font-weight-medium">{{ title }}</span>
     <k-breadcrumbs
       v-if="isBreadcrumbs"
       :list="listBreadCrumbs"
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue-demi";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "k-page-title",
@@ -32,18 +32,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .text-title {
-  font-size: 18px;
+  font-size: $text-2xl;
 }
-.mt {
-  &-10 {
-    margin-top: 10px;
-  }
-}
-.font {
-  &-weight {
-    &-500 {
-      font-weight: 500;
-    }
-  }
+.font-weight-medium {
+  font-weight: $font-medium;
 }
 </style>
