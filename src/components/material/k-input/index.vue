@@ -124,7 +124,7 @@ input {
   }
 
   &__label {
-    font-size: $text-xl;
+    font-size: $text-lg;
     font-weight: $font-medium;
     letter-spacing: 0.01;
     &.has-error {
@@ -159,14 +159,14 @@ input {
 
   &__large {
     height: $lg-height;
-    font-size: $text-xl;
+    font-size: $text-lg;
     font-weight: $font-medium;
     padding: 0 16px;
   }
 
   &__medium {
     height: $md-height;
-    font-size: $text-xl;
+    font-size: $text-lg;
     font-weight: $font-normal;
     padding-left: 10px;
   }
