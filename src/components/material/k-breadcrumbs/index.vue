@@ -12,13 +12,16 @@
   </div>
 </template>
 
+
+
 <script lang="ts">
 import { defineComponent } from "vue";
+
 export default defineComponent({
   name: "k-breadcrumbs",
   props: {
     list: {
-      type: Array ,
+      type: Array,
       default: [{ name: "Foo" }, { name: "Bar" }],
     },
   },

@@ -121,7 +121,7 @@ export default {
     }
 
     const loginApi = function (data: valueType) {
-      return store.postApiWithoutToken('/auth/login', { ...data })
+      return store.postApi('/auth/login', { ...data })
     }
 
     const validation = function (field: string) {
