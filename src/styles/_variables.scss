@@ -1,5 +1,13 @@
-.text-center {
-  text-align: center;
+.text {
+  &-left {
+    text-align: left;
+  }
+  &-center {
+    text-align: center;
+  }
+  &-right {
+    text-align: right;
+  }
 }
 
 .hidden {
@@ -8,4 +16,46 @@
 
 .pointer {
   cursor: pointer;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify {
+  &-start{
+    justify-content: start;
+  }
+  &-center{
+    justify-content: center;
+  }
+  &-end{
+    justify-content: end;
+  }
+}
+
+.align {
+  &-start{
+    align-items: start;
+  }
+  &-center{
+    align-items: center;
+  }
+  &-end{
+    align-items: end;
+  }
+}
+
+.text {
+  &-capitalize {
+    text-transform: capitalize;
+  }
+  &-color {
+    &-primary {
+      color: var(--primary-color) !important;
+    }
+    &-grey {
+      color: var(--grey-color);
+    }
+  }
 }
