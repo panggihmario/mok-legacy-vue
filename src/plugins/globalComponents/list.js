@@ -27,10 +27,10 @@ import CardTotalArticle from "../../components/material/Card/CardTotalArticle";
 import Autocomplete from "../../components/material/Autocomplete";
 
 export default [
-  {
-    name : 'k-select',
-    component : () => import("../../components/kipasMaterial/Select/index.vue")
-  },
+  // {
+  //   name : 'k-select',
+  //   component : () => import("../../components/kipasMaterial/Select/index.vue")
+  // },
   {
     name: "ValidationProvider",
     component: ValidationProvider,

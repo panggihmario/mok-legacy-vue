@@ -211,6 +211,17 @@ export default [
       },
     ],
   },
+  {
+    action: "fa-solid fa-database",
+    title: "Master",
+    items : [
+      {
+        title : 'Bank',
+        path : '/bank',
+        role : ["ROLE_ADMIN"]
+      }
+    ]
+  }
   // {
   //   title : 'RnD new feature',
   //   action: "post_add",
