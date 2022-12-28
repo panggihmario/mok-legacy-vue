@@ -2,15 +2,18 @@
   <v-menu
     transition="slide-y-transition"
     bottom
+    :disabled="disabled"
   >
     <template v-slot:activator="{on, attrs}">
-      <div @click="openOptions" class="select__wrapper">
+      <div 
+        class="select__wrapper"
+        v-bind="attrs"
+        v-on="on"
+      >
         <input
           readonly  
           class="select__input"
-          v-bind="attrs"
-          v-on="on"
-          v-model="selectedItem"
+          v-model="value[itemLabel]"
         />
         <v-icon 
           size="16px"
@@ -22,7 +25,6 @@
     </template>
     <v-list dense>
       <v-list-item-group
-        v-model="selectedItem"
         color="primary"
       >
         <v-list-item
@@ -47,14 +49,21 @@ export default {
       type : Array
     },
     item : {},
+    itemLabel : {
+      type : String
+    },
     value : {
-      type : Object
+      type : [Object, String] 
+    },
+    disabled : {
+      type : Boolean
     }
+  },
+  computed : {
   },
   data () {
     return {
       show : false,
-      selectedItem : null,
     }
   },
   methods : {
@@ -62,8 +71,7 @@ export default {
       this.show = !this.show
     },
     selectItem(item) {
-      console.log(item)
-      this.$emit('select', item)
+      this.$emit('input', item)
 
     }
   }
@@ -100,7 +108,7 @@ export default {
   &__wrapper {
     height: 32px;
     background: #FFFFFF;
-    border: 0.6px solid #BBBBBB;
+    border: 1px solid #BBBBBB;
     border-radius: 4px;
     cursor: pointer;
     display: grid;
@@ -112,6 +120,7 @@ export default {
     font-size: 11px;
     font-weight: 400;
     color: $charcoal;
+    width: 100%;
     cursor: pointer;
     &:focus {
       outline: none;

@@ -1,5 +1,11 @@
 <template>
-  <v-data-table :headers="headers"  hide-default-footer class="grey--text" :items="items">
+  <div>
+    {{ data }}
+    <v-data-table 
+    :headers="headers"  
+    hide-default-footer class="grey--text" 
+    :items="data.enablePayments"
+  >
     <template v-slot:footer>
       <div class="footer__table"></div>
     </template>
@@ -9,20 +15,31 @@
           <td> {{ item.name }} </td>
           <td> {{ item.key }} </td>
           <td>
-            <Options :item="item" />
+            <Options 
+              :item="item" 
+              :index="idx"
+            />
           </td>
         </tr>
       </tbody>
     </template>
   </v-data-table>
+  </div>
+ 
 </template>
 
 <script>
 import Options from "./options.vue"
+import { mapState } from "vuex"
 export default {
   components : {
     Options
   },
+  computed : {
+    ...mapState({
+      data : (state) => state.master.data
+    })
+  },  
   data() {
     return {
       itemSelect: [
@@ -33,23 +50,6 @@ export default {
         {
           value: 'non-active',
           label: 'Non Aktif'
-        }
-      ],
-      items: [
-        {
-          name: 'Bank BCA',
-          key: 'bca_va',
-          status: true
-        },
-        {
-          name: 'Bank Mandiri',
-          key: 'bca_va',
-          status: false
-        },
-        {
-          name: 'Permata Bank',
-          key: 'bca_va',
-          status: true
         }
       ],
       headers: [
@@ -73,7 +73,7 @@ export default {
           sortable: false,
           value: 'status',
           filterable: false,
-          width: 100
+          width: 180
         }
       ]
     }
@@ -86,12 +86,5 @@ export default {
   &__table {
     border-top: 1px solid #DDDDDD;
   }
-}
-
-.v-text-field--box .v-input__slot,
-.v-text-field--outline .v-input__slot {
-  min-height: auto !important;
-  display: flex !important;
-  align-items: center !important;
 }
 </style>
