@@ -52,6 +52,11 @@ export default {
       get () {
         if(this.data.customExpire) {
           return this.data.customExpire
+        }else{
+          return {
+            duration: 1,
+            unit: "day"
+          }
         }
       },
       set(data) {

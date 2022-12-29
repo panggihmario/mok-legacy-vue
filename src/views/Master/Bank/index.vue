@@ -10,8 +10,7 @@
         Tambah Bank
       </custom-button>
     </HeaderContent>
-    <TableData
-    />
+    <TableData/>
     <Duration />
     <dialogAddVue  
       :dialog="dialog" 

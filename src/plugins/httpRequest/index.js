@@ -10,8 +10,8 @@ const storeOss = new OSS({
   endpoint: process.env.VUE_APP_ENDPOINT,
 });
 
-// const BASE_URL = process.env.VUE_APP_BASE_URL;
-const BASE_URL = 'https://stg-api-main.kipaskipas.com/api/v1/'
+const BASE_URL = process.env.VUE_APP_BASE_URL;
+// const BASE_URL = 'https://stg-api-main.kipaskipas.com/api/v1/'
 const BASE_UPLOAD_URL = `${process.env.VUE_APP_UPLOAD}`;
 const BASE_TIKTOK_URL = process.env.VUE_APP_BASE_TIKTOK_URL;
 

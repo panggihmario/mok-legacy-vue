@@ -30,7 +30,7 @@
 
 <script>
 import Options from "./options.vue"
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 export default {
   components : {
     Options
@@ -40,6 +40,17 @@ export default {
       data : (state) => state.master.data
     })
   },  
+  mounted () {
+    this.handleFetchMasterBank()
+  },
+  methods : {
+    ...mapActions({
+      getMasterBank : 'master/getMasterBank'
+    }),
+    handleFetchMasterBank () {
+      return this.getMasterBank()
+    }
+  },
   data() {
     return {
       itemSelect: [

@@ -1,46 +1,44 @@
 import methods from "./actions"
 export default {
-  namespaced : true,
-  state : {
+  namespaced: true,
+  state: {
     data: {
-      enablePayments: [
-        {
-          id: "23421432455rtr3675",
-          name: "BCA",
-          key: "bca_va",
-          isActive : true
-        },
-        {
-          id: "23421432455rtr3675",
-          name: "Mandiri",
-          key: "mandiri_va",
-          isActive: true
-        },
-        {
-          id: "23421432455rtr3675",
-          name: "BRI",
-          key: "bri_va",
-          isActive: false
-        },
-        {
-          id: null,
-          name: "Maybank",
-          key: "maybank_va",
-          isActive: false
-        }
-      ],
-      customExpire: {
-        duration: 1,
-        unit: "day"
-      }
-    }
+      enablePayments: [],
+      customExpire: null
+    },
+    pathMasterBank : 'admin/enable/payments'
+
   },
-  mutations : {
-    setData (state, payload) {
+  mutations: {
+    setData(state, payload) {
+      console.log("===", payload)
       state.data = payload
     }
   },
-  actions : {
-    ...methods
+  actions: {
+    ...methods,
+    addMasterBank  ({state, dispatch}, payload) {
+      const params = {
+        url : state.pathMasterBank,
+        data : {
+          ...payload
+        }
+      }
+      return dispatch('postWithToken', params , {root : true})
+        .then(response => { return dispatch('getMasterBank')})
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getMasterBank ({state, dispatch, commit} ) {
+      const params = {
+        url : state.pathMasterBank
+      }
+      return dispatch('getWithToken', params , {root: true})
+        .then(response => {
+          const responseData = response.data.data
+          commit('setData', responseData)
+        })
+    }
   }
 }

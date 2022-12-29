@@ -20,6 +20,15 @@ const updateStatusData = function ({state, commit}, payload) {
   commit('setData', updatedData)
 }
 
+
+// const addMasterBank = function ({state, commit}, payload) {
+//   console.log(payload)
+//   state.params = {
+//     name : 'a'
+//   }
+// }
+
 export {
-  updateStatusData
+  updateStatusData,
+  // addMasterBank
 }
