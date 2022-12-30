@@ -12,7 +12,7 @@
       >
         <input
           readonly  
-          class="select__input"
+          class="select__input text-primary"
           v-model="value[itemLabel]"
         />
         <v-icon 

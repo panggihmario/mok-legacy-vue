@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ data }}
     <v-data-table 
     :headers="headers"  
     hide-default-footer class="grey--text" 

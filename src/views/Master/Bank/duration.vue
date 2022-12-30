@@ -1,14 +1,14 @@
 <template>
   <div class="duration__container">
     <div class="duration__title  duration__box">Duration Expired</div>
-    <v-checkbox v-model="checkboxDefault" hide-details dense>
+    <v-checkbox v-model="checkboxDefault" hide-details dense color="secondary" @click="onCheck">
       <template v-slot:label>
         <div class="duration__label">Durasi Expired Default
           <span class="duration__sublabel"> Durasi akan ditentukan sesuai bank masing-masing</span>
         </div>
       </template>
     </v-checkbox>
-    <v-checkbox v-model="checkboxCustom" hide-details dense>
+    <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
       <template v-slot:label>
         <div class="duration__label">Durasi Expired Custom
           <span class="duration__sublabel"> Durasi akan diterapkan pada semua bank</span>
@@ -16,43 +16,41 @@
       </template>
     </v-checkbox>
     <div class="duration__inputs">
-      <input 
-        class="duration__input" 
-        type="number" 
-        :disabled="isDisabled" 
-        v-model="duration"
-      />
+      <input class="duration__input" type="number" :disabled="isDisabled" v-model="duration" />
       <div style="width : 98px">
-        <k-select 
-          v-model="selected" 
-          :disabled="isDisabled" 
-          :items="items"
-          itemLabel="unit"
-        />
+        <k-select v-model="selected" :disabled="isDisabled" :items="items" itemLabel="unit" />
       </div>
     </div>
-    <div v-if="checkboxCustom" class="duration__box duration__actions" style="margin-top : 28px">
+    <div v-if="isReadySubmit" class="duration__box duration__actions" style="margin-top : 28px">
       <div class="duration__actions-box">
-        <custom-button size="small" plain>Batal</custom-button>
-        <custom-button size="small" color="secondary" >Simpan</custom-button>
+        <custom-button @click="onCancel" size="small" plain>Batal</custom-button>
+        <custom-button size="small" :loading="loading" color="secondary" @click="saveDuration">
+          Simpan
+        </custom-button>
       </div>
     </div>
+    <DialogSuccess label="Perubahan berhasil simpan" :dialogMessage="dialogMessage" />
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations  } from 'vuex'
-
+import { mapState, mapMutations, mapActions } from 'vuex'
+import DialogSuccess from './dialogSuccess.vue'
 export default {
-  computed : {
+  components: {
+    DialogSuccess
+  },
+  computed: {
     ...mapState({
-      data : (state) => state.master.data
+      isReadySubmit : (state) => state.master.isReadySubmit,
+      data: (state) => state.master.data,
+      tempExpireCustomData : (state) => state.master.tempExpireCustomData
     }),
-    selected : {
-      get () {
-        if(this.data.customExpire) {
+    selected: {
+      get() {
+        if (this.data.customExpire) {
           return this.data.customExpire
-        }else{
+        } else {
           return {
             duration: 1,
             unit: "day"
@@ -61,86 +59,125 @@ export default {
       },
       set(data) {
         const payload = {
-          ...this.data ,
-          customExpire : {
+          ...this.data,
+          customExpire: {
             ...this.data.customExpire,
-            unit : data.value
+            unit: data.value
           }
         }
+        this.setReadySubmit(true)
         this.setData(payload)
       }
     },
-    duration : {
-      get () {
-        if(this.data.customExpire) {
+    duration: {
+      get() {
+        if (this.data.customExpire) {
           return this.data.customExpire.duration
         }
       },
       set(value) {
         const payload = {
-          ...this.data ,
-          customExpire : {
+          ...this.data,
+          customExpire: {
             ...this.data.customExpire,
-            duration : value
+            duration: value
           }
         }
+        this.setReadySubmit(true)
         this.setData(payload)
       }
     }
-  }, 
-  methods : {
+  },
+  methods: {
     ...mapMutations({
-      setData : 'master/setData'
-    })
+      setData: 'master/setData',
+      setReadySubmit : 'master/setReadySubmit'
+    }),
+    ...mapActions({
+      addMasterBank: 'master/addMasterBank'
+    }),
+    saveDuration() {
+      const payloadData = this.data
+      this.loading = true
+      return this.addMasterBank(payloadData)
+        .then(() => {
+          this.loading = false
+          this.dialogMessage = true
+          setTimeout(() => {
+            this.dialogMessage = false
+            this.setReadySubmit(false)
+          }, 2500)
+        })
+    },
+    onCheck(e) {
+      this.setReadySubmit(true)
+      if (this.checkboxDefault) {
+        const payload = {
+          ...this.data,
+          customExpire: null
+        }
+        this.setData(payload)
+      }
+    },
+    onCheckCustom () {
+      this.setReadySubmit(true)
+    },
+    onCancel() {
+      this.setReadySubmit(false)
+    }
   },
   data() {
     return {
       checkboxDefault: true,
+      dialogMessage: false,
       checkboxCustom: false,
       isDisabled: true,
-      item : {
-        value : 'day',
-        label : 'days'
+      loading: false,
+      item: {
+        value: 'day',
+        label: 'days'
       },
-      items : [
+      items: [
         {
-          value : 'day',
-          label : 'days'
+          value: 'day',
+          label: 'days'
         },
         {
-          value : 'hour',
-          label :'hours'
+          value: 'hour',
+          label: 'hours'
         },
         {
-          value : 'minute',
-          label : 'minutes'
+          value: 'minute',
+          label: 'minutes'
         }
       ]
     }
   },
   watch: {
+    '$store.state.master.data': {
+      deep: true,
+      handler(newVal) {
+        if (newVal.customExpire) {
+          this.checkboxCustom = true
+        }
+      }
+    },
     checkboxDefault(value) {
       this.checkboxCustom = !value
       this.isDisabled = value
-      if(value) {
-        const payload = {
-          ...this.data ,
-          customExpire : null
-        }
-        this.setData(payload)
-      }else{
-        const payload = {
-          ...this.data ,
-          customExpire : {
-            duration : 1,
-            unit : 'day'
-          }
-        }
-        this.setData(payload)
-      }
     },
     checkboxCustom(value) {
       this.checkboxDefault = !value
+      if(value && this.tempExpireCustomData) {
+        const data = this.data
+        const tempData = {
+          ...data,
+          customExpire : {
+            ...this.tempExpireCustomData
+          }
+        }
+        this.setData(tempData)
+      }
     }
   }
 }
@@ -152,12 +189,14 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    
+
   }
+
   &__actions-box {
     display: flex;
     gap: 8px;
   }
+
   &__input {
     background: #FFFFFF;
     border: 1px solid #BBBBBB;

@@ -6,39 +6,25 @@ export default {
       enablePayments: [],
       customExpire: null
     },
-    pathMasterBank : 'admin/enable/payments'
+    pathMasterBank : 'admin/enable/payments',
+    tempExpireCustomData : null,
+    isReadySubmit : false
 
   },
   mutations: {
     setData(state, payload) {
-      console.log("===", payload)
       state.data = payload
+    },
+    setTempExpireCustomData (state, payload) {
+      state.tempExpireCustomData = payload
+    },
+    setReadySubmit (state, payload) {
+      state.isReadySubmit = payload
     }
   },
   actions: {
     ...methods,
-    addMasterBank  ({state, dispatch}, payload) {
-      const params = {
-        url : state.pathMasterBank,
-        data : {
-          ...payload
-        }
-      }
-      return dispatch('postWithToken', params , {root : true})
-        .then(response => { return dispatch('getMasterBank')})
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    getMasterBank ({state, dispatch, commit} ) {
-      const params = {
-        url : state.pathMasterBank
-      }
-      return dispatch('getWithToken', params , {root: true})
-        .then(response => {
-          const responseData = response.data.data
-          commit('setData', responseData)
-        })
-    }
+   
+    
   }
 }
