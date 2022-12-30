@@ -74,7 +74,7 @@ export default {
   font-size: 12px;
   font-weight: 500;
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid #BBBBBB;
   border-radius: 4px;
   &__error-label {
     color: $danger !important;
@@ -94,7 +94,7 @@ export default {
     font-size: 12px;
     font-weight: 500;
     background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid #BBBBBB;
     border-radius: 4px;
   }
   &__input-label {
