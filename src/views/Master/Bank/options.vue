@@ -49,11 +49,11 @@ export default {
       itemSelect: [
         {
           value: true,
-          label: 'Aktif'
+          label: 'Active'
         },
         {
           value: false,
-          label: 'Non Aktif'
+          label: 'Non Active'
         }
       ],
     }
