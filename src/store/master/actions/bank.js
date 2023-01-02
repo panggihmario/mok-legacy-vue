@@ -18,6 +18,7 @@ const updateStatusData = function ({state, commit, dispatch}, payload) {
     enablePayments : updatedTempEnablePayments
   }
   commit('setData', updatedData)
+  commit('setReadySubmit', true)
 }
 
 const getMasterBank = function ({state, dispatch, commit} ) {
@@ -30,6 +31,7 @@ const getMasterBank = function ({state, dispatch, commit} ) {
       const expireCustomData = responseData.customExpire
       commit('setData', responseData)
       commit('setTempExpireCustomData', expireCustomData )
+      return responseData
     })
 }
 

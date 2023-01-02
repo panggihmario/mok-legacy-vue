@@ -94,7 +94,8 @@ export default {
       setReadySubmit : 'master/setReadySubmit'
     }),
     ...mapActions({
-      addMasterBank: 'master/addMasterBank'
+      addMasterBank: 'master/addMasterBank',
+      getMasterBank : 'master/getMasterBank'
     }),
     saveDuration() {
       const payloadData = this.data
@@ -124,6 +125,14 @@ export default {
     },
     onCancel() {
       this.setReadySubmit(false)
+      return this.getMasterBank()
+        .then(res => {
+          if(res.customExpire) {
+            this.checkboxCustom = true
+          }else{
+            this.checkboxDefault = true
+          }
+        })
     }
   },
   data() {
