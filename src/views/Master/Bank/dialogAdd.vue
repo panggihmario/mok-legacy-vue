@@ -80,7 +80,7 @@ export default {
       const payload = {
         name : this.bankName,
         key : this.keyBank,
-        isActive : true
+        isActive : false
       }
       this.loading = true
       const tempData = structuredClone(this.data)

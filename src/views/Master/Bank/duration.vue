@@ -76,11 +76,17 @@ export default {
         }
       },
       set(value) {
+        let number 
+        if(Number(value) < 0) {
+          number = 0
+        }else{
+          number = value
+        }
         const payload = {
           ...this.data,
           customExpire: {
             ...this.data.customExpire,
-            duration: value
+            duration: number
           }
         }
         this.setReadySubmit(true)
