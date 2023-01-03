@@ -32,6 +32,7 @@ export default {
   mounted () {
     this.fetchDataChannel()
   },
+ 
   components: { 
     SelectUser,
     SelectChannel,

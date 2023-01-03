@@ -96,7 +96,9 @@ import Expand from "./expand/index.vue"
 import moment from "moment"
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
-
+  // beforeRouteLeave(to, from) {
+  //   console.log(to, "===", from)
+  // }, 
   components: {
     HeaderContent,
     Expand
@@ -194,6 +196,8 @@ export default {
       this.setParamsChannel([])
       this.setParamsDate([])
       this.setDisplayDate('')
+      this.setStatusLabel('Status Proses')
+      this.setIsStatusProcess('all')
       this.expand = false
       return this.onInitiateFetchFeeds(tab)
         .then(() => {
