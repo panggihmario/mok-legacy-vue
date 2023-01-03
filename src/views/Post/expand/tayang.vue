@@ -9,7 +9,6 @@
           v-bind="attrs"
           v-on="on"
         >
-          <!-- {{label}} -->
           {{statusLabel}}
         </custom-button>
       </template>
@@ -38,6 +37,9 @@ import selectDateVue from './selectDate.vue';
 import ProcessDate from "./selectProceedDate.vue"
 import { mapMutations, mapState } from 'vuex';
 export default {
+
+
+   
   components : {
     selectDateVue,
     ProcessDate
