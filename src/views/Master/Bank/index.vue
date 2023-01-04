@@ -1,17 +1,20 @@
 <template>
-  <div>
-    <HeaderContent :list="list" label="Bank">
+  <div id="pageBank">
+    <HeaderContent :list="list" label="Bank" id="headerBank" >
       <custom-button 
         color="secondary" 
         class="white--text" 
         size="small"
         @click="openDialog"
       >
-        Tambah Bank
+        Tambah Bank {{ heightContent }}
       </custom-button>
     </HeaderContent>
-    <TableData/>
-    <Duration />
+    <TableData 
+      id="contentBank" 
+      :height="heightContent"
+    />
+    <Duration id="footerBank" />
     <dialogAddVue  
       :dialog="dialog" 
       @closeDialog="closeDialog"
@@ -24,6 +27,7 @@ import HeaderContent from "@/containers/HeaderContent";
 import TableData from "./table.vue"
 import durationVue from "./duration.vue";
 import dialogAddVue from "./dialogAdd.vue";
+import { mapMutations, mapState, mapActions } from "vuex";
 export default {
   components: {
     HeaderContent,
@@ -31,8 +35,14 @@ export default {
     Duration: durationVue,
     dialogAddVue
   },
+  computed : {
+    ...mapState({
+      heightContent : (state) => state.master.heightContent
+    })
+  },
   data() {
     return {
+      height : 500,
       dialog : false,
       list: [
         {
@@ -46,12 +56,28 @@ export default {
       ],
     }
   },
+  mounted () {
+    this.getHeightElements()
+  },
   methods : {
+    ...mapMutations({
+      setHeightContent : 'master/setHeightContent'
+    }),
+    ...mapActions({
+      handleResizeContentHeight : 'master/handleResizeContentHeight'
+    }),
     openDialog() {
       this.dialog = true
     },
     closeDialog(value) {
       this.dialog = value
+    },
+    getHeightElements () {
+      const payload = {
+        isOpen : false,
+        differentHeight : 150
+      }
+      this.handleResizeContentHeight(payload)
     }
   }
 }

@@ -10,18 +10,19 @@
     </v-checkbox>
     <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
       <template v-slot:label>
-        <div class="duration__label">Durasi Expired Custom
-          <span class="duration__sublabel"> Durasi akan diterapkan pada semua bank</span>
-        </div>
-      </template>
-    </v-checkbox>
-    <div class="duration__inputs">
+        <div class="duration__inputs">
       <input class="duration__input" type="number" :disabled="isDisabled" v-model="duration" />
       <div style="width : 98px">
         <k-select v-model="selected" :disabled="isDisabled" :items="items" itemLabel="unit" />
       </div>
+      <div class="duration__label">
+          Durasi Expired Custom
+          <span class="duration__sublabel"> Durasi akan diterapkan pada semua bank</span>
+        </div>
     </div>
-    <div v-if="isReadySubmit" class="duration__box duration__actions" style="margin-top : 28px">
+      </template>
+    </v-checkbox>
+    <div v-if="isReadySubmit" class="duration__box duration__actions" style="margin-top : 10px">
       <div class="duration__actions-box">
         <custom-button @click="onCancel" size="small" plain>Batal</custom-button>
         <custom-button size="small" :loading="loading" color="secondary" @click="saveDuration">
@@ -228,7 +229,7 @@ export default {
   }
 
   &__container {
-    margin-top: 81px;
+    margin-top: 12px;
   }
 
   &__title {
@@ -259,8 +260,7 @@ export default {
   &__inputs {
     display: flex;
     gap: 6px;
-    margin-top: 20px;
-    padding-left: 30px;
+    align-items: center;
   }
 }
 </style>

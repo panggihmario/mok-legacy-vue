@@ -1,6 +1,7 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="Post Feed" marginBottom="16">
+    <HeaderContent 
+    :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -96,9 +97,6 @@ import Expand from "./expand/index.vue"
 import moment from "moment"
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
-  // beforeRouteLeave(to, from) {
-  //   console.log(to, "===", from)
-  // }, 
   components: {
     HeaderContent,
     Expand

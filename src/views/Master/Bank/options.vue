@@ -31,14 +31,16 @@ export default {
           }
         }else {
           return {
-            label : 'Non Aktive'
+            label : 'Non Active'
           }
         }
       },
       set(value ) {
+        console.log(value)
         const params = {
           index: this.index,
-          ...value
+          ...value,
+          key : 'isActive'
         }
         this.updateStatusData(params)
       }
