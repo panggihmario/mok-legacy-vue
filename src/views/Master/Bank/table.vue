@@ -1,52 +1,62 @@
 <template>
   <div>
-    <v-data-table 
-    :headers="headers"  
-    hide-default-footer class="grey--text" 
-    :items="data.enablePayments"
-  >
-    <template v-slot:footer>
-      <div class="footer__table"></div>
-    </template>
-    <template v-slot:body="{ items }">
-      <tbody>
-        <tr v-for="(item, idx) in items" :key="idx">
-          <td> {{ item.name }} </td>
-          <td> {{ item.key }} </td>
-          <td>
-            <Options 
-              :item="item" 
-              :index="idx"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </template>
-  </v-data-table>
+    {{ data.enablePayments }}
+    <v-data-table :headers="headers" hide-default-footer class="grey--text" :items="data.enablePayments"
+      :items-per-page="-1" fixed-header :height="height">
+      <template v-slot:footer>
+        <div class="footer__table"></div>
+      </template>
+      <template v-slot:body="{ items }">
+        <tbody>
+          <tr v-for="(item, idx) in items" :key="idx">
+            <td> 
+              <EditKey 
+                :item="item" 
+                :index="idx" 
+                keyObj="name"
+              />  
+            </td>
+            <td>
+              <EditKey 
+                :item="item" 
+                :index="idx" 
+                keyObj="key"
+              />
+            </td>
+            <td>
+              <Options :item="item" :index="idx" />
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-data-table>
   </div>
- 
+
 </template>
 
 <script>
 import Options from "./options.vue"
+import EditKey from "./editKey.vue"
 import { mapState, mapActions } from "vuex"
 export default {
-  components : {
-    Options
+  props: ['height'],
+  components: {
+    Options,
+    EditKey
   },
-  computed : {
+  computed: {
     ...mapState({
-      data : (state) => state.master.data
+      data: (state) => state.master.data
     })
-  },  
-  mounted () {
+  },
+  mounted() {
     this.handleFetchMasterBank()
   },
-  methods : {
+  methods: {
     ...mapActions({
-      getMasterBank : 'master/getMasterBank'
+      getMasterBank: 'master/getMasterBank'
     }),
-    handleFetchMasterBank () {
+    handleFetchMasterBank() {
       return this.getMasterBank()
     }
   },

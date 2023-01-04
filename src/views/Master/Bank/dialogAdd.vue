@@ -25,7 +25,11 @@
         Lihat dokumentasi kode bank
       </a>
       <div class="d-flex justify-end card__actions" >
-        <custom-button>Batalkan</custom-button>
+        <custom-button
+          @click="closeDialog"
+        >
+          Batalkan
+        </custom-button>
         <custom-button 
           @click="handleAddMasterBank" 
           color="secondary"
@@ -75,6 +79,8 @@ export default {
     }),
     closeDialog () {
       this.$emit('closeDialog', false)
+      this.bankName = ''
+      this.keyBank = ''
     },
     handleAddMasterBank(){
       const payload = {

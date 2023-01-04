@@ -5,7 +5,7 @@ const updateStatusData = function ({state, commit, dispatch}, payload) {
     if(payload.index === i) {
       return {
         ...item,
-        isActive : payload.value
+        [payload.key] : payload.value
       }
     }else{
       return {
@@ -18,6 +18,10 @@ const updateStatusData = function ({state, commit, dispatch}, payload) {
     enablePayments : updatedTempEnablePayments
   }
   commit('setData', updatedData)
+  const data = {
+    isOpen : true,
+    differentHeight : 150
+  }
   commit('setReadySubmit', true)
 }
 
