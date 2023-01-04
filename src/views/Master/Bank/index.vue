@@ -7,7 +7,7 @@
         size="small"
         @click="openDialog"
       >
-        Tambah Bank {{ heightContent }}
+        Tambah Bank 
       </custom-button>
     </HeaderContent>
     <TableData 
