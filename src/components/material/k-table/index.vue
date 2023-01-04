@@ -1,12 +1,33 @@
 <template>
-  <div>
-    <table>
-      <tr>
-        <th v-for="(list, idx) in headerList" :key="idx">{{ list }}</th>
-      </tr>
-      <tr v-for="(list, idx) in itemList" :key="idx">
-        <td v-for="key in itemKey" :key="key">{{ list[key] }}</td>
-      </tr>
+  <div class="overflow-scroll">
+    <table :style="`width: ${width}`">
+      <thead>
+        <tr :class="`bg-${headerColor}`">
+          <th
+            v-for="(list, idx) in headerList"
+            :key="idx"
+            class="text-capitalize"
+            :style="`width: ${list.width}; text-align: ${list.align}`"
+          >
+            <slot :name="`header-${list.label}`" :item="list">
+              {{ list.label }}
+            </slot>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(list, idx) in itemList" :key="idx">
+          <td
+            v-for="(key, idy) in itemKey"
+            :key="key"
+            :style="`text-align: ${headerList[idy].align}`"
+          >
+            <slot :name="`${headerList[idy].label}`" :item="list[key]">
+              {{ list[key] }}
+            </slot>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -15,15 +36,23 @@
 import { defineComponent, PropType } from "vue";
 
 type ItemList = {
-  [key: string]: any;
+  [key: string]: string | number;
 };
 
 export default defineComponent({
   name: "k-breadcrumbs",
   props: {
+    headerColor: {
+      type: String,
+      default: "whitesnow",
+    },
+    width: {
+      type: String,
+      default: "100%",
+    },
     headerList: {
-      type: Array,
-      default: ["id", "name"],
+      type: Array as PropType<ItemList[]>,
+      default: [],
     },
     itemList: {
       type: Array as PropType<ItemList[]>,
@@ -46,26 +75,32 @@ export default defineComponent({
 <style lang="scss" scoped>
 table {
   border-collapse: collapse;
-  width: 100%;
+  min-width: 800px;
   font-size: 12px;
+  color: var(--charcoal-color);
 }
 
 td,
 th {
   text-align: left;
   height: 48px;
-  padding: 0 16px;
+  padding: 12px 16px;
 }
 
-th {
-  background-color: var(--whitesnow-color);
-}
+// th {
+//   background-color: var(--whitesnow-color);
+// }
 
-tr:hover {
+tbody tr:hover {
   background-color: var(--whitesmoke-color);
 }
 
-tr:not(:first-child):not(:last-child) {
+tr:not(:last-child) {
   border-bottom: 1px solid var(--whitesmoke-color);
+}
+
+.overflow-scroll {
+  max-width: 100%;
+  overflow: auto;
 }
 </style>
