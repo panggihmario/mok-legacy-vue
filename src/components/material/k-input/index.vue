@@ -60,10 +60,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const isOpen = ref(false)
-    // const store = useAuthStore()
-
-    // const { token } = storeToRefs(store)
-
     const value = computed({
       get() {
         return props.modelValue
@@ -81,15 +77,13 @@ export default defineComponent({
       value,
       isOpen,
       showPassword,
-      // store,
-      // token
     }
   }
 })
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $sm-height : 28px;
 $md-height : 32px;
 $lg-height : 40px;
