@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ data.enablePayments }}
     <v-data-table :headers="headers" hide-default-footer class="grey--text" :items="data.enablePayments"
       :items-per-page="-1" fixed-header :height="height">
       <template v-slot:footer>
