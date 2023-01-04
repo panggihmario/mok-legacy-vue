@@ -1,6 +1,17 @@
 <template>
   <div class="duration__container">
-    <div class="duration__title  duration__box">Duration Expired</div>
+    <div class="duration__box">
+      <div class="duration__title  ">Duration Expired</div>
+      <div v-if="isReadySubmit" class="duration__actions-box">
+        <custom-button @click="onCancel" size="small" plain>
+          Batalkan Perubahan
+        </custom-button>
+        <custom-button size="small" :loading="loading" color="secondary" @click="saveDuration">
+          Simpan Seluruh Perubahan
+        </custom-button>
+      </div>
+    </div>
+
     <v-checkbox v-model="checkboxDefault" hide-details dense color="secondary" @click="onCheck">
       <template v-slot:label>
         <div class="duration__label">Durasi Expired Default
@@ -8,28 +19,23 @@
         </div>
       </template>
     </v-checkbox>
-    <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
-      <template v-slot:label>
-        <div class="duration__inputs">
-      <input class="duration__input" type="number" :disabled="isDisabled" v-model="duration" />
-      <div style="width : 98px">
-        <k-select v-model="selected" :disabled="isDisabled" :items="items" itemLabel="unit" />
-      </div>
-      <div class="duration__label">
-          Durasi Expired Custom
-          <span class="duration__sublabel"> Durasi akan diterapkan pada semua bank</span>
+    <div>
+      <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
+        <template v-slot:label>
+          <div class="duration__label">
+            Durasi Expired Custom
+            <span class="duration__sublabel"> Durasi akan diterapkan pada semua bank</span>
+          </div>
+        </template>
+      </v-checkbox>
+      <div class="duration__inputs">
+        <input class="duration__input" type="number" :disabled="isDisabled" v-model="duration" />
+        <div style="width : 98px">
+          <k-select v-model="selected" :disabled="isDisabled" :items="items" itemLabel="unit" />
         </div>
-    </div>
-      </template>
-    </v-checkbox>
-    <div v-if="isReadySubmit" class="duration__box duration__actions" style="margin-top : 10px">
-      <div class="duration__actions-box">
-        <custom-button @click="onCancel" size="small" plain>Batal</custom-button>
-        <custom-button size="small" :loading="loading" color="secondary" @click="saveDuration">
-          Simpan
-        </custom-button>
       </div>
     </div>
+
     <DialogSuccess label="Perubahan berhasil simpan" :dialogMessage="dialogMessage" />
   </div>
 </template>
@@ -43,9 +49,9 @@ export default {
   },
   computed: {
     ...mapState({
-      isReadySubmit : (state) => state.master.isReadySubmit,
+      isReadySubmit: (state) => state.master.isReadySubmit,
       data: (state) => state.master.data,
-      tempExpireCustomData : (state) => state.master.tempExpireCustomData
+      tempExpireCustomData: (state) => state.master.tempExpireCustomData
     }),
     selected: {
       get() {
@@ -77,10 +83,11 @@ export default {
         }
       },
       set(value) {
-        let number 
-        if(Number(value) < 0) {
+        console.log(value)
+        let number
+        if (Number(value) < 0) {
           number = 0
-        }else{
+        } else {
           number = value
         }
         const payload = {
@@ -92,17 +99,18 @@ export default {
         }
         this.setReadySubmit(true)
         this.setData(payload)
+        // this.checkboxCustom = true
       }
     }
   },
   methods: {
     ...mapMutations({
       setData: 'master/setData',
-      setReadySubmit : 'master/setReadySubmit'
+      setReadySubmit: 'master/setReadySubmit'
     }),
     ...mapActions({
       addMasterBank: 'master/addMasterBank',
-      getMasterBank : 'master/getMasterBank'
+      getMasterBank: 'master/getMasterBank'
     }),
     saveDuration() {
       const payloadData = this.data
@@ -127,16 +135,16 @@ export default {
         this.setData(payload)
       }
     },
-    onCheckCustom () {
+    onCheckCustom() {
       this.setReadySubmit(true)
     },
     onCancel() {
       this.setReadySubmit(false)
       return this.getMasterBank()
         .then(res => {
-          if(res.customExpire) {
+          if (res.customExpire) {
             this.checkboxCustom = true
-          }else{
+          } else {
             this.checkboxDefault = true
           }
         })
@@ -184,11 +192,11 @@ export default {
     },
     checkboxCustom(value) {
       this.checkboxDefault = !value
-      if(value && this.tempExpireCustomData) {
+      if (value && this.tempExpireCustomData) {
         const data = this.data
         const tempData = {
           ...data,
-          customExpire : {
+          customExpire: {
             ...this.tempExpireCustomData
           }
         }
@@ -242,6 +250,9 @@ export default {
     background-color: $whitesnow;
     height: 40px;
     padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &__label {
@@ -261,6 +272,7 @@ export default {
     display: flex;
     gap: 6px;
     align-items: center;
+    padding-left: 32px;
   }
 }
 </style>
