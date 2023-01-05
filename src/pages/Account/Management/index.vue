@@ -6,10 +6,29 @@
     >
     </k-page-title>
     <div style="margin-top: 32px"></div>
-    <k-select
+    <div class="container">
+      <k-select
       :items="items"
       labelText="title"
+      v-model="select"
+      size="lg"
     />
+    <k-select
+      :items="items"
+      outlined
+      labelText="title"
+      mode="outline"
+    />
+
+    <k-input 
+      placeholder="Username" 
+      data-test="username"
+      size="lg" 
+      v-model="name"
+    />
+    </div>
+    {{ select }}
+    
   </div>
 </template>
 
@@ -20,7 +39,8 @@ import { useRoute } from "vue-router";
 export default {
   setup() {
     const route = useRoute();
-
+    const name = ref('')
+    const select = ref({})
     const listBreadCrumbs = ref([
       { name: "Manage Account" },
       { name: "List Management" },
@@ -39,8 +59,18 @@ export default {
 
     return {
       listBreadCrumbs,
-      items
+      items,
+      name,
+      select
     };
   },
 };
 </script>
+
+<style>
+.container {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  gap: 20px;
+}
+</style>

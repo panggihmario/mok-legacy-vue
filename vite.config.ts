@@ -12,6 +12,7 @@ export default defineConfig({
           @import "./src/styles/_variables.scss";
           @import "./src/styles/_typography.scss";
           @import "./src/styles/_functions.scss";
+          @import "./src/styles/components/index.scss";
           `
       }
     }
