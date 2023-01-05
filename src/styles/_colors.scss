@@ -11,3 +11,32 @@ $grey90 : hsl(0, 0%, 90%);
 $gainsboro : hsl(0, 0%, 87%);
 $darkPrimary : hsl(349, 100%, 10%);
 $danger : hsl(7, 79%, 45%);
+
+.text-primary { color: $primary }
+.text-secondary { color: $secondary }
+.text-kellygreen { color: $kellygreen }
+.text-black { color: $black }
+.text-grey { color: $grey }
+.text-whitesnow { color: $whitesnow }
+.text-white { color: $white }
+.text-charcoal { color: $charcoal }
+.text-whitesmoke { color: $whitesmoke }
+.text-grey90 { color: $grey90 }
+.text-gainsboro { color: $gainsboro }
+.text-darkPrimary { color: $darkPrimary }
+.text-danger { color: $danger }
+
+.bg-primary { background-color: $primary }
+.bg-secondary { background-color: $secondary }
+.bg-kellygreen { background-color: $kellygreen }
+.bg-black { background-color: $black }
+.bg-grey { background-color: $grey }
+.bg-whitesnow { background-color: $whitesnow }
+.bg-white { background-color: $white }
+.bg-charcoal { background-color: $charcoal }
+.bg-whitesmoke { background-color: $whitesmoke }
+.bg-grey90 { background-color: $grey90 }
+.bg-gainsboro { background-color: $gainsboro }
+.bg-darkPrimary { background-color: $darkPrimary }
+.bg-danger { background-color: $danger }
+
