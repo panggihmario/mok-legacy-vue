@@ -3,7 +3,7 @@
  */
 
 import { describe, it , expect, vi } from "vitest";
-import { mount, shallowMount } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 import Login from "./login.vue"
 import { reactive } from "vue";
 import ComponentInput from "../../components/material/k-input/index.vue"

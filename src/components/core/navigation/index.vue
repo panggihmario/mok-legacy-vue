@@ -3,8 +3,8 @@
     <div class="navigation__relative">
     <div class="navigation__profile">
       <div class="navigation__photo"></div>
-      <div class="navigation__username text-center">Administrator</div>
-      <div class="navigation__role text-center"> Admin </div>
+      <div class="navigation__username text-center"> {{ profile.username }} </div>
+      <div class="navigation__role text-center"> {{ profile.role }} </div>
     </div>
     <nav>
       <ul>
@@ -57,6 +57,7 @@ export default {
       })
     }
 
+
     const logout = function () {
       store.removeAuthData()
       router.push({
@@ -67,7 +68,10 @@ export default {
     return {
       menus,
       openItems,
-      logout
+      logout,
+      store,
+      profile : JSON.parse(localStorage.getItem('profile')!)
+
     }
   }
 }
