@@ -23,7 +23,7 @@ const testValues = {
   ],
 };
 
-describe("reusable page title component", () => {
+describe("reusable page table component", () => {
   const wrapper = mount(Table);
 
   it("should render properly without props", () => {
