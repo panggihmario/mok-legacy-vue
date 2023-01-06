@@ -6,17 +6,22 @@
     >
     </k-page-title>
     <div style="margin-top: 32px"></div>
+
+    <Filter/>
+
     <div class="container">
       <k-select
-      :items="items"
-      labelText="title"
-      v-model="select"
-      size="lg"
+        :items="items"
+        labelText="title"
+        v-model="select"
+        placeholder="hello"
     />
     <k-select
       :items="items"
       outlined
       labelText="title"
+      size="lg"
+      v-model="select"
       mode="outline"
     />
 
@@ -35,8 +40,11 @@
 <script lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-
+import Filter from "./Filter/index.vue"
 export default {
+  components : {
+    Filter
+  },
   setup() {
     const route = useRoute();
     const name = ref('')

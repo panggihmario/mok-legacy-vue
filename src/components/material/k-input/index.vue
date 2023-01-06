@@ -46,6 +46,7 @@ export default defineComponent({
     },
     size: {
       type: String as PropType<Size>,
+      default : 'md'
     },
     name: {
       type: String

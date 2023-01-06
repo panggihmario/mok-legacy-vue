@@ -8,9 +8,6 @@ import { useApiStore } from './stores/api'
 
 const Main = createApp({
   extends : App,
-  beforeCreate() {
-    console.log('before')
-  }
 })
 const pinia = createPinia()
 
