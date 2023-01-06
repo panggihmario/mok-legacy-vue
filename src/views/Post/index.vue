@@ -1,6 +1,7 @@
 <template>
   <div>
-    <HeaderContent :list="list" label="Post Feed" marginBottom="16">
+    <HeaderContent 
+    :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -96,7 +97,6 @@ import Expand from "./expand/index.vue"
 import moment from "moment"
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
-
   components: {
     HeaderContent,
     Expand
@@ -194,6 +194,8 @@ export default {
       this.setParamsChannel([])
       this.setParamsDate([])
       this.setDisplayDate('')
+      this.setStatusLabel('Status Proses')
+      this.setIsStatusProcess('all')
       this.expand = false
       return this.onInitiateFetchFeeds(tab)
         .then(() => {
@@ -301,6 +303,8 @@ export default {
       this.setProcessDate([])
       this.setDisplayDate('')
       this.setDisplayProcessDate('')
+      this.setIsStatusProcess('all')
+      this.setStatusLabel('Status Proses')
       return this.onInitiateFetchFeeds()
         .then(() => {
           this.$router.push({
@@ -381,7 +385,8 @@ export default {
       setParamsDate : 'post/setParamsDate',
       setProcessDate : 'post/setProcessDate',
       setDisplayProcessDate : 'post/setDisplayProcessDate',
-      setIsStatusProcess : 'post/setIsStatusProcess'
+      setIsStatusProcess : 'post/setIsStatusProcess',
+      setStatusLabel : 'post/setStatusLabel'
     }),
     moveToCreatePost() {
       this.$router.push({

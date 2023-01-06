@@ -32,13 +32,13 @@
         <div class="filter__total">{{totalFeedBack}}</div>
       </div>
       <v-pagination 
-      :length="totalPages" 
-      prev-icon="mdi-menu-left" 
-      next-icon="mdi-menu-right" 
-      total-visible="5"
-      color="primary" 
-      v-model="currentPage"
-    />
+        :length="totalPages" 
+        prev-icon="mdi-menu-left" 
+        next-icon="mdi-menu-right" 
+        total-visible="7"
+        color="primary" 
+        v-model="currentPage"
+      />
     </div>
     
     <DetailDialogVue  
