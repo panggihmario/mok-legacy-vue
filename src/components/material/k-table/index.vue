@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-scroll">
+  <div class="overflow-auto">
     <table :style="`width: ${width}`">
       <thead>
         <tr :class="`bg-${headerColor}`">
@@ -20,9 +20,14 @@
           <td
             v-for="(key, idy) in itemKey"
             :key="key"
-            :style="`text-align: ${headerList[idy].align}`"
+            :style="`text-align: ${
+              headerList[idy] ? headerList[idy].align : '0'
+            }`"
           >
-            <slot :name="`${headerList[idy].label}`" :item="list[key]">
+            <slot
+              :name="`${headerList[idy] ? headerList[idy].label : 'default'}`"
+              :item="list[key]"
+            >
               {{ list[key] }}
             </slot>
           </td>
@@ -40,7 +45,7 @@ type ItemList = {
 };
 
 export default defineComponent({
-  name: "k-breadcrumbs",
+  name: "k-table",
   props: {
     headerColor: {
       type: String,
@@ -52,7 +57,7 @@ export default defineComponent({
     },
     headerList: {
       type: Array as PropType<ItemList[]>,
-      default: [],
+      default: [{ label: "foo", align: "left" }],
     },
     itemList: {
       type: Array as PropType<ItemList[]>,
@@ -99,7 +104,7 @@ tr:not(:last-child) {
   border-bottom: 1px solid var(--whitesmoke-color);
 }
 
-.overflow-scroll {
+.overflow-auto {
   max-width: 100%;
   overflow: auto;
 }
