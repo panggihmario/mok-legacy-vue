@@ -57,12 +57,11 @@ export default {
       return store
         .fetchApi("admin/accounts/users/search?value=&page=0", {})
         .then((res) => {
-          const responseData = res.data.data;
-          const content = responseData.content;
+          const content = res.content;
           itemList.value = content;
-          page.value = responseData.page;
-          totalPages.value = responseData.totalPages;
-          totalElements.value = responseData.totalElements;
+          page.value = res.page;
+          totalPages.value = res.totalPages;
+          totalElements.value = res.totalElements;
         })
         .catch((err) => {
           console.log({ err });

@@ -12,9 +12,9 @@
         <input 
           :type="type" 
           v-model="value" 
-          :placeholder="label" 
           :name="name" 
           @blur="$emit('validate')" 
+          v-bind="$attrs"
         />
         <div @click="showPassword" v-if="icon" class="input__icon">
           <i v-if="isOpen" class="fa-regular fa-eye has-error"></i>

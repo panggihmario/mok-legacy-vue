@@ -30,8 +30,8 @@ input {
 
   &__box {
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr max-content;
+    display: flex;
+    color: var(--charcoal-color);
   }
 
   &__label {
@@ -84,7 +84,7 @@ input {
     height: $md-height;
     font-size: $text-lg;
     font-weight: $font-normal;
-    padding-left: 0 10px;
+    padding: 9px
   }
   &__filled-lg {
     @extend .input__base;

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import axios from "axios"
-import router from "../router"
+import axios, { AxiosInstance, AxiosResponse } from "axios"
+import { useAuthStore } from "./authentication"
 type Params = {[key : string | number] : string }
 const { VITE_APP_BASE_URL } = import.meta.env;
 export const useApiStore = defineStore('api', {
@@ -16,27 +16,30 @@ export const useApiStore = defineStore('api', {
           "Content-Type": `application/json`,
         },
       })
+      this.interceptorRequest(instance)
+      this.interceptorResponse(instance)
       return instance
     },
-    interceptorRequest () {
-      this.createAxiosInstance().interceptors.request.use((config : any ) => {
+    interceptorRequest (instance: AxiosInstance | undefined ) {
+      instance?.interceptors.request.use( (config) => {
         const token = this.getTokenFromStorage()
         if(token) {
-          config.headers.Authorization = token
+          config.headers!.Authorization = token
         }
-        return config
-      },(error) => {
-        return Promise.reject(error)
-      })
+         return config;
+     }, function (error) {
+         return Promise.reject(error)
+     })
     },
-    interceptorResponse () {
-      this.createAxiosInstance().interceptors.response.use(
+    interceptorResponse (instance: AxiosInstance | undefined)  {
+      instance?.interceptors.response.use(
         (res) => {
           return res
         },
         (err) => {
           if(err.response.status === 401) {
-            router.push({name :'login'})
+            useAuthStore().removeAuthData()
+            return Promise.reject(err)
           }else{
             return Promise.reject(err)
           }
@@ -44,16 +47,22 @@ export const useApiStore = defineStore('api', {
       )
     },
     getTokenFromStorage : () => {
-      const token = JSON.parse(localStorage.getItem('token')!)
+      const token = JSON.parse(localStorage.getItem('adminKoanba')!)
       return `Bearer ${token}`
     },
     postApi (url : string , params : Params) {
       return this.createAxiosInstance().post(url, params)
     },
-    fetchApi (url : string , params : Params) {
+    fetchApi (url : string , params? : Params)  {
       return this.createAxiosInstance().get(url, {
         params : {...params}
       })
+      .then(response => this.printSuccess(response))
+      .catch(err => { throw err })
+    },
+    printSuccess (response: AxiosResponse<any, any>) {
+      const responseData = response.data.data
+      return responseData
     }
   }
 })
