@@ -2,7 +2,7 @@
   <div class="overflow-auto">
     <table :style="`width: ${width}`">
       <thead>
-        <tr :class="`bg-${headerColor}`">
+        <tr v-if="headerList.length > 0" :class="`bg-${headerColor}`">
           <th
             v-for="(list, idx) in headerList"
             :key="idx"
@@ -15,25 +15,27 @@
           </th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(list, idx) in itemList" :key="idx">
+      <tbody v-if="itemList.length > 0">
+        <tr v-for="(ulist, idx) in itemList" :key="idx">
           <td
-            v-for="(key, idy) in itemKey"
-            :key="key"
-            :style="`text-align: ${
-              headerList[idy] ? headerList[idy].align : '0'
-            }`"
+            v-if="ulist"
+            v-for="(hlist, idy) in headerList"
+            :key="hlist.name"
+            :style="`text-align: ${hlist.align}`"
           >
             <slot
-              :name="`${headerList[idy] ? headerList[idy].label : 'default'}`"
-              :item="list[key]"
+              :name="`${headerList[idy] ? headerList[idy].name : 'default'}`"
+              :item="hlist ? ulist[hlist.name] : 0"
             >
-              {{ list[key] }}
+              {{ ulist[hlist.name] }}
             </slot>
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-if="itemList.length < 1" class="text-center mt-4">
+      <span class="table-no-data">Tidak ada data</span>
+    </div>
   </div>
 </template>
 
@@ -57,7 +59,7 @@ export default defineComponent({
     },
     headerList: {
       type: Array as PropType<ItemList[]>,
-      default: [{ label: "foo", align: "left" }],
+      default: [{ label: "foo", name: "foo", align: "left" }],
     },
     itemList: {
       type: Array as PropType<ItemList[]>,
@@ -67,23 +69,19 @@ export default defineComponent({
       ],
     },
   },
-  setup(props) {
-
-    const itemKey: string[] = Object.keys(props.itemList[0]);
-
-    return {
-      itemKey,
-    };
-  },
+  setup() {},
 });
 </script>
 
 <style lang="scss" scoped>
+div {
+  color: var(--charcoal-color);
+}
+
 table {
   border-collapse: collapse;
   min-width: 800px;
   font-size: 12px;
-  color: var(--charcoal-color);
 }
 
 td,
@@ -108,5 +106,12 @@ tr:not(:last-child) {
 .overflow-auto {
   max-width: 100%;
   overflow: auto;
+}
+
+.table {
+  &-no-data {
+    font-size: $text-lg;
+    font-weight: $font-medium;
+  }
 }
 </style>
