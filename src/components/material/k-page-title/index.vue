@@ -1,11 +1,13 @@
 <template>
   <div>
     <span class="text-title font-weight-medium">{{ title }}</span>
-    <k-breadcrumbs
-      v-if="isBreadcrumbs"
-      :list="listBreadCrumbs"
-      class="mt-10"
-    ></k-breadcrumbs>
+    <div class="flex justify-between align-center mt-10">
+      <k-breadcrumbs
+        v-if="isBreadcrumbs"
+        :list="listBreadCrumbs"
+      ></k-breadcrumbs>
+      <slot></slot>
+    </div>
   </div>
 </template>
 

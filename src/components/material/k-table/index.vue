@@ -2,7 +2,7 @@
   <div class="overflow-auto">
     <table :style="`width: ${width}`">
       <thead>
-        <tr :class="`bg-${headerColor}`">
+        <tr v-if="headerList.length > 0" :class="`bg-${headerColor}`">
           <th
             v-for="(list, idx) in headerList"
             :key="idx"
@@ -15,9 +15,10 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="itemList.length > 0">
         <tr v-for="(list, idx) in itemList" :key="idx">
           <td
+            v-if="list"
             v-for="(key, idy) in itemKey"
             :key="key"
             :style="`text-align: ${
@@ -34,6 +35,9 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="itemList.length < 1" class="text-center mt-4">
+      <span class="table-no-data">Tidak ada data</span>
+    </div>
   </div>
 </template>
 
@@ -68,7 +72,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const itemKey: string[] = Object.keys(props.itemList[0]);
+    const itemKey: string[] = Object.keys(
+      props.itemList.length > 0 && props.itemList[0]
+    );
 
     return {
       itemKey,
@@ -78,11 +84,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+div {
+  color: var(--charcoal-color);
+}
+
 table {
   border-collapse: collapse;
   min-width: 800px;
   font-size: 12px;
-  color: var(--charcoal-color);
 }
 
 td,
@@ -107,5 +116,12 @@ tr:not(:last-child) {
 .overflow-auto {
   max-width: 100%;
   overflow: auto;
+}
+
+.table {
+  &-no-data {
+    font-size: $text-lg;
+    font-weight: $font-medium;
+  }
 }
 </style>

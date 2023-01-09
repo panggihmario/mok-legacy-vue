@@ -26,12 +26,14 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useApiStore } from "../../../stores/api";
 
 export default {
   setup() {
     const route = useRoute();
+    const store = useApiStore();
 
     const listBreadCrumbs = ref([
       { name: "Management Account" },
@@ -40,37 +42,25 @@ export default {
 
     const headerList = ref([
       { label: "no", width: "70px", align: "center" },
-      { label: "bar"},
+      { label: "bar" },
       { label: "status", width: "100px", align: "center" },
       { label: "action", width: "200px", align: "center" },
     ]);
 
-    const itemList = ref([
-      {
-        id: 1,
-        name: "Obviously, nothing changes since we haven’t compiled/transpiled anything, and the value of the custom property can be updated dynamically. So, for example, if we change the value of --value using something like JavaScript, the value will update in every instance where it is called using the var() function.",
-        status: "active",
-        action: "",
-      },
-      {
-        id: 2,
-        name: "Lorem ipsum dolor sit amet",
-        status: "active",
-        action: "",
-      },
-      {
-        id: 3,
-        name: "Lorem ipsum dolor sit amet",
-        status: "active",
-        action: "",
-      },
-      {
-        id: 4,
-        name: "Lorem ipsum dolor sit amet",
-        status: "active",
-        action: "",
-      },
-    ]);
+    const itemList = ref([]);
+
+    const getListItem = () => {
+      return store
+        .fetchApi("admin/accounts/users/", {})
+        .then((res) => {
+          console.log({ res });
+        })
+        .catch((err) => {
+          console.log({ err });
+        });
+    };
+
+    onMounted(getListItem);
 
     return {
       listBreadCrumbs,
