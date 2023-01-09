@@ -1,32 +1,32 @@
 <template>
   <div>
-    <k-page-title 
-      title="List Management Account" 
-      :listBreadCrumbs="listBreadCrumbs"
-    >
+    <k-page-title title="List Management Account" :listBreadCrumbs="listBreadCrumbs">
     </k-page-title>
     <div class="mt-40"></div>
 
-    <Filter/>
+    <Filter />
+    <k-table :headerList="headers"
+      :itemList="items"
+    >
+    </k-table>
 
-    
   </div>
 </template>
 
 <script lang="ts">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
 import { useApiStore } from "../../../stores/api"
-import { onMounted  } from "vue";
+import { onMounted } from "vue";
 import Filter from "./Filter/index.vue"
 export default {
-  components : {
+  components: {
     Filter
   },
   setup() {
     const apiStore = useApiStore()
     const name = ref('')
     const select = ref({})
+    const items = ref([])
     const listBreadCrumbs = ref([
       { name: "Manage Account" },
       { name: "List Management" },
@@ -37,19 +37,44 @@ export default {
       return apiStore.fetchApi(url)
         .then(response => {
           console.log(response)
+          const mapResponse = response.content.map((res: { username: any; role: any; enabled: any; }) => {
+            return {
+              user: res.username,
+              role: res.role,
+              status: res.enabled
+            }
+          })
+          items.value = mapResponse
+          console.log(mapResponse)
         })
         .catch(err => {
           // console.log(err)
         })
     }
 
-    onMounted(fetchManagementData)
+    const headers = [
+      {
+        label: 'User'
+      },
+      {
+        label: 'Role'
+      },
+      {
+        label: 'Status'
+      },
+      {
+        label: 'Manage'
+      }
+    ]
 
+    onMounted(fetchManagementData)
 
     return {
       listBreadCrumbs,
       name,
-      select
+      select,
+      headers,
+      items
     };
   },
 };
