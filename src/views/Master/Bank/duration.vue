@@ -20,7 +20,7 @@
       </template>
     </v-checkbox>
     <div>
-      <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
+      <v-checkbox v-model="checkboxCustom" hide-details color="secondary" dense>
         <template v-slot:label>
           <div class="duration__label">
             Durasi Expired Custom
@@ -99,7 +99,6 @@ export default {
         }
         this.setReadySubmit(true)
         this.setData(payload)
-        // this.checkboxCustom = true
       }
     }
   },
@@ -134,9 +133,6 @@ export default {
         }
         this.setData(payload)
       }
-    },
-    onCheckCustom() {
-      this.setReadySubmit(true)
     },
     onCancel() {
       this.setReadySubmit(false)
