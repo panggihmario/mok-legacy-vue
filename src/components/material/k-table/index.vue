@@ -16,20 +16,18 @@
         </tr>
       </thead>
       <tbody v-if="itemList.length > 0">
-        <tr v-for="(list, idx) in itemList" :key="idx">
+        <tr v-for="(ulist, idx) in itemList" :key="idx">
           <td
-            v-if="list"
-            v-for="(key, idy) in itemKey"
-            :key="key"
-            :style="`text-align: ${
-              headerList[idy] ? headerList[idy].align : '0'
-            }`"
+            v-if="ulist"
+            v-for="(hlist, idy) in headerList"
+            :key="hlist.name"
+            :style="`text-align: ${hlist.align}`"
           >
             <slot
-              :name="`${headerList[idy] ? headerList[idy].label : 'default'}`"
-              :item="list[key]"
+              :name="`${headerList[idy] ? headerList[idy].name : 'default'}`"
+              :item="hlist ? ulist[hlist.name] : 0"
             >
-              {{ list[key] }}
+              {{ ulist[hlist.name] }}
             </slot>
           </td>
         </tr>
@@ -61,7 +59,7 @@ export default defineComponent({
     },
     headerList: {
       type: Array as PropType<ItemList[]>,
-      default: [{ label: "foo", align: "left" }],
+      default: [{ label: "foo", name: "foo", align: "left" }],
     },
     itemList: {
       type: Array as PropType<ItemList[]>,
@@ -71,15 +69,7 @@ export default defineComponent({
       ],
     },
   },
-  setup(props) {
-    const itemKey: string[] = Object.keys(
-      props.itemList.length > 0 && props.itemList[0]
-    );
-
-    return {
-      itemKey,
-    };
-  },
+  setup() {},
 });
 </script>
 

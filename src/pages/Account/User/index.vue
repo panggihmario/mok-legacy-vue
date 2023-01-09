@@ -5,22 +5,21 @@
       :listBreadCrumbs="listBreadCrumbs"
     ></k-page-title>
     <div class="mt-40">
+      <div>
+        <span>Total User: {{ totalElements }}</span>
+      </div>
       <k-table :headerList="headerList" :itemList="itemList">
-        <template #header-status="{ item }">{{ item.label }}</template>
-        <template #foo="{ item }">
-          <span style="color: tomato">
-            {{ item }}
-          </span>
+        <template #isVerified="{ item }">
+          <span v-if="item">Verified</span>
+          <span v-else class="text-silver">Not Verified</span>
         </template>
-        <template #status="{ item }">
-          <span style="color: tomato">
-            {{ item }}
-          </span>
-        </template>
-        <template #action>
-          <k-button>action</k-button>
+        <template #manage>
+          <k-button>List Post</k-button>
+          <k-button class="ml-8">Edit User Info</k-button>
         </template>
       </k-table>
+
+      <k-pagination></k-pagination>
     </div>
   </div>
 </template>
@@ -35,25 +34,35 @@ export default {
     const route = useRoute();
     const store = useApiStore();
 
+    const page = ref(1);
+    const totalPages = ref(0);
+    const totalElements = ref(0);
+
     const listBreadCrumbs = ref([
       { name: "Management Account" },
       { name: route.name },
     ]);
 
     const headerList = ref([
-      { label: "no", width: "70px", align: "center" },
-      { label: "bar" },
-      { label: "status", width: "100px", align: "center" },
-      { label: "action", width: "200px", align: "center" },
+      { label: "user", name: "name", width: "180px" },
+      { label: "username", name: "username" },
+      { label: "account type", name: "accountType" },
+      { label: "verified account", name: "isVerified" },
+      { label: "manage", name: "manage", width: "280px", align: "center" },
     ]);
 
     const itemList = ref([]);
 
     const getListItem = () => {
       return store
-        .fetchApi("admin/accounts/users/", {})
+        .fetchApi("admin/accounts/users/search?value=&page=0", {})
         .then((res) => {
-          console.log({ res });
+          const responseData = res.data.data;
+          const content = responseData.content;
+          itemList.value = content;
+          page.value = responseData.page;
+          totalPages.value = responseData.totalPages;
+          totalElements.value = responseData.totalElements;
         })
         .catch((err) => {
           console.log({ err });
@@ -61,11 +70,20 @@ export default {
     };
 
     onMounted(getListItem);
+    const show = ref(false);
+    const showNotif = () => {
+      show.value = !show.value;
+    };
 
     return {
       listBreadCrumbs,
       headerList,
       itemList,
+      page,
+      totalPages,
+      totalElements,
+      show,
+      showNotif,
     };
   },
 };
