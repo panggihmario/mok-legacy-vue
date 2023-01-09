@@ -5,34 +5,10 @@
       :listBreadCrumbs="listBreadCrumbs"
     >
     </k-page-title>
-    <div style="margin-top: 32px"></div>
+    <div class="mt-40"></div>
 
     <Filter/>
 
-    <div class="container">
-      <k-select
-        :items="items"
-        labelText="title"
-        v-model="select"
-        placeholder="hello"
-    />
-    <k-select
-      :items="items"
-      outlined
-      labelText="title"
-      size="lg"
-      v-model="select"
-      mode="outline"
-    />
-
-    <k-input 
-      placeholder="Username" 
-      data-test="username"
-      size="lg" 
-      v-model="name"
-    />
-    </div>
-    {{ select }}
     
   </div>
 </template>
@@ -40,13 +16,15 @@
 <script lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useApiStore } from "../../../stores/api"
+import { onMounted  } from "vue";
 import Filter from "./Filter/index.vue"
 export default {
   components : {
     Filter
   },
   setup() {
-    const route = useRoute();
+    const apiStore = useApiStore()
     const name = ref('')
     const select = ref({})
     const listBreadCrumbs = ref([
@@ -54,20 +32,22 @@ export default {
       { name: "List Management" },
     ]);
 
-    const items = [
-      {
-        title : 'Foo',
-        value : 'foo'
-      },
-      {
-        title : 'Bar',
-        value : 'bar'
-      }
-    ]
+    const fetchManagementData = function () {
+      const url = 'admin/accounts/management'
+      return apiStore.fetchApi(url)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          // console.log(err)
+        })
+    }
+
+    onMounted(fetchManagementData)
+
 
     return {
       listBreadCrumbs,
-      items,
       name,
       select
     };

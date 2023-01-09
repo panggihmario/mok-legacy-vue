@@ -60,9 +60,6 @@ export default {
 
     const logout = function () {
       store.removeAuthData()
-      router.push({
-        name : 'login'
-      })
     }
 
     return {

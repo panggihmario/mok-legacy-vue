@@ -1,5 +1,6 @@
 import { defineStore  } from "pinia";
 import { reactive, ref } from "vue";
+import router from "../router";
 import { useApiStore } from "./api"
 type ResponseModel = {
   userName : string,
@@ -34,6 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('adminKoanba')
     localStorage.removeItem('profile')
     Object.assign(profile, initialState)
+    router.push({name : 'login'})
   }
 
   const getInfo = function () {
