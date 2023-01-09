@@ -120,7 +120,6 @@ export default defineComponent({
     color: var(--charcoal-color);
   }
   &__filled-md {
-    padding: 9px;
     @extend .input__base;
     @extend .input__medium;
     @extend .input__filled;

@@ -1,75 +1,80 @@
 <template>
   <div>
-    <k-page-title 
-      title="List Management Account" 
-      :listBreadCrumbs="listBreadCrumbs"
-    >
+    <k-page-title title="List Management Account" :listBreadCrumbs="listBreadCrumbs">
     </k-page-title>
-    <div style="margin-top: 32px"></div>
+    <div class="mt-40"></div>
 
-    <Filter/>
+    <Filter />
+    <k-table :headerList="headers"
+      :itemList="items"
+    >
+    </k-table>
 
-    <div class="container">
-      <k-select
-        :items="items"
-        labelText="title"
-        v-model="select"
-        placeholder="hello"
-    />
-    <k-select
-      :items="items"
-      outlined
-      labelText="title"
-      size="lg"
-      v-model="select"
-      mode="outline"
-    />
-
-    <k-input 
-      placeholder="Username" 
-      data-test="username"
-      size="lg" 
-      v-model="name"
-    />
-    </div>
-    {{ select }}
-    
   </div>
 </template>
 
 <script lang="ts">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useApiStore } from "../../../stores/api"
+import { onMounted } from "vue";
 import Filter from "./Filter/index.vue"
 export default {
-  components : {
+  components: {
     Filter
   },
   setup() {
-    const route = useRoute();
+    const apiStore = useApiStore()
     const name = ref('')
     const select = ref({})
+    const items = ref([])
     const listBreadCrumbs = ref([
       { name: "Manage Account" },
       { name: "List Management" },
     ]);
 
-    const items = [
+    const fetchManagementData = function () {
+      const url = 'admin/accounts/management'
+      return apiStore.fetchApi(url)
+        .then(response => {
+          console.log(response)
+          const mapResponse = response.content.map((res: { username: any; role: any; enabled: any; }) => {
+            return {
+              user: res.username,
+              role: res.role,
+              status: res.enabled
+            }
+          })
+          items.value = mapResponse
+          console.log(mapResponse)
+        })
+        .catch(err => {
+          // console.log(err)
+        })
+    }
+
+    const headers = [
       {
-        title : 'Foo',
-        value : 'foo'
+        label: 'User'
       },
       {
-        title : 'Bar',
-        value : 'bar'
+        label: 'Role'
+      },
+      {
+        label: 'Status'
+      },
+      {
+        label: 'Manage'
       }
     ]
 
+    onMounted(fetchManagementData)
+
     return {
       listBreadCrumbs,
-      items,
       name,
-      select
+      select,
+      headers,
+      items
     };
   },
 };

@@ -68,6 +68,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+
     const itemKey: string[] = Object.keys(props.itemList[0]);
 
     return {
