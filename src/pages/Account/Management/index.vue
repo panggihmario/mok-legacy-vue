@@ -5,8 +5,8 @@
     <div class="mt-40"></div>
 
     <Filter />
-    <k-table :headerList="headers"
-      :itemList="items"
+    <k-table :headers="headers"
+      :items="items"
     >
     </k-table>
 
@@ -47,19 +47,19 @@ export default {
     const headers = [
       {
         label: 'User',
-        name : 'username'
+        value : 'username'
       },
       {
         label: 'Role',
-        name : 'role'
+        value : 'role'
       },
       {
         label: 'Status',
-        name : 'status'
+        value : 'status'
       },
       {
         label: 'Manage',
-        name : 'action'
+        value : 'action'
       }
     ]
 
