@@ -15,11 +15,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     page: {
-      type: String || Number,
+      type: [String, Number],
       default: 1,
     },
     totalPage: {
-      type: String || Number,
+      type: [String, Number],
       default: 1,
     },
   },
