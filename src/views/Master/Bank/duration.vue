@@ -20,7 +20,7 @@
       </template>
     </v-checkbox>
     <div>
-      <v-checkbox v-model="checkboxCustom" hide-details color="secondary" dense>
+      <v-checkbox @click="onCheckCustom" v-model="checkboxCustom" hide-details color="secondary" dense>
         <template v-slot:label>
           <div class="duration__label">
             Durasi Expired Custom
@@ -59,8 +59,7 @@ export default {
           return this.data.customExpire
         } else {
           return {
-            duration: 1,
-            unit: "day"
+            unit: null
           }
         }
       },
@@ -83,7 +82,6 @@ export default {
         }
       },
       set(value) {
-        console.log(value)
         let number
         if (Number(value) < 0) {
           number = 0
@@ -144,6 +142,16 @@ export default {
             this.checkboxDefault = true
           }
         })
+    },
+    onCheckCustom() {
+      const payload = {
+        ...this.data,
+        customExpire: {
+          unit: 'day',
+          duration: 1
+        }
+      }
+      this.setData(payload)
     }
   },
   data() {
