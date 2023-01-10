@@ -18,8 +18,8 @@
           <k-button class="ml-8">Edit User Info</k-button>
         </template>
       </k-table>
-
-      <k-pagination></k-pagination>
+      {{ page }}
+      <k-pagination v-model="page"></k-pagination>
     </div>
   </div>
 </template>
@@ -34,7 +34,7 @@ export default {
     const route = useRoute();
     const store = useApiStore();
 
-    const page = ref(1);
+    const page = ref(10);
     const totalPages = ref(0);
     const totalElements = ref(0);
 
@@ -59,7 +59,6 @@ export default {
         .then((res) => {
           const content = res.content;
           itemList.value = content;
-          page.value = res.page;
           totalPages.value = res.totalPages;
           totalElements.value = res.totalElements;
         })
