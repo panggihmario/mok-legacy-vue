@@ -2,9 +2,9 @@
   <div class="overflow-auto">
     <table :style="`width: ${width}`">
       <thead>
-        <tr v-if="headerList.length > 0" :class="`bg-${headerColor}`">
+        <tr v-if="headers.length > 0" :class="`bg-${headerColor}`">
           <th
-            v-for="(list, idx) in headerList"
+            v-for="(list, idx) in headers"
             :key="idx"
             class="text-capitalize"
             :style="`width: ${list.width}; text-align: ${list.align}`"
@@ -15,25 +15,25 @@
           </th>
         </tr>
       </thead>
-      <tbody v-if="itemList.length > 0">
-        <tr v-for="(ulist, idx) in itemList" :key="idx">
+      <tbody v-if="items.length > 0">
+        <tr v-for="(ulist, idx) in items" :key="idx">
           <td
             v-if="ulist"
-            v-for="(hlist, idy) in headerList"
-            :key="hlist.name"
+            v-for="(hlist, idy) in headers"
+            :key="hlist.value"
             :style="`text-align: ${hlist.align}`"
           >
             <slot
-              :name="`${headerList[idy] ? headerList[idy].name : 'default'}`"
-              :item="hlist ? ulist[hlist.name] : 0"
+              :name="`${headers[idy] ? headers[idy].value : 'default'}`"
+              :item="hlist ? ulist[hlist.value] : 0"
             >
-              {{ ulist[hlist.name] }}
+              {{ ulist[hlist.value] }}
             </slot>
           </td>
         </tr>
       </tbody>
     </table>
-    <div v-if="itemList.length < 1" class="text-center mt-4">
+    <div v-if="items.length < 1" class="text-center mt-4">
       <span class="table-no-data">Tidak ada data</span>
     </div>
   </div>
@@ -42,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 
-type ItemList = {
+type ListData = {
   [key: string]: string | number;
 };
 
@@ -57,12 +57,12 @@ export default defineComponent({
       type: String,
       default: "100%",
     },
-    headerList: {
-      type: Array as PropType<ItemList[]>,
+    headers: {
+      type: Array as PropType<ListData[]>,
       default: [{ label: "foo", name: "foo", align: "left" }],
     },
-    itemList: {
-      type: Array as PropType<ItemList[]>,
+    items: {
+      type: Array as PropType<ListData[]>,
       default: [
         { id: 1, name: "Foo" },
         { id: 2, name: "Bar" },
@@ -87,13 +87,12 @@ table {
 td,
 th {
   text-align: left;
-  height: 48px;
   padding: 12px 16px;
 }
 
-// th {
-//   background-color: var(--whitesnow-color);
-// }
+th {
+  height: 48px;
+}
 
 tbody tr:hover {
   background-color: var(--whitesmoke-color);
