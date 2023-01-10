@@ -24,7 +24,7 @@
             :style="`text-align: ${head.align}`"
           >
             <slot :name="`${head ? head.value : 'default'}`" :item="item">
-              {{ head.value }}
+              {{ item[head.value] }}
             </slot>
           </td>
         </tr>
