@@ -8,9 +8,9 @@
       <div>
         <span>Total User: {{ totalElements }}</span>
       </div>
-      <k-table :headerList="headerList" :itemList="itemList">
+      <k-table :headers="headerList" :items="itemList">
         <template #isVerified="{ item }">
-          <span v-if="item">Verified</span>
+          <span v-if="item.isVerified">Verified</span>
           <span v-else class="text-silver">Not Verified</span>
         </template>
         <template #manage>
@@ -44,11 +44,11 @@ export default {
     ]);
 
     const headerList = ref([
-      { label: "user", name: "name", width: "180px" },
-      { label: "username", name: "username" },
-      { label: "account type", name: "accountType" },
-      { label: "verified account", name: "isVerified" },
-      { label: "manage", name: "manage", width: "280px", align: "center" },
+      { label: "user", value: "name", width: "180px" },
+      { label: "username", value: "username" },
+      { label: "account type", value: "accountType" },
+      { label: "verified account", value: "isVerified" },
+      { label: "manage", value: "manage", width: "280px", align: "center" },
     ]);
 
     const itemList = ref([]);
