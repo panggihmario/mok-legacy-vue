@@ -4,30 +4,27 @@
       <thead>
         <tr v-if="headers.length > 0" :class="`bg-${headerColor}`">
           <th
-            v-for="(list, idx) in headers"
+            v-for="(head, idx) in headers"
             :key="idx"
             class="text-capitalize"
-            :style="`width: ${list.width}; text-align: ${list.align}`"
+            :style="`width: ${head.width}; text-align: ${head.align}`"
           >
-            <slot :name="`header-${list.label}`" :item="list">
-              {{ list.label }}
+            <slot :name="`header-${head.label}`" :item="head">
+              {{ head.label }}
             </slot>
           </th>
         </tr>
       </thead>
       <tbody v-if="items.length > 0">
-        <tr v-for="(ulist, idx) in items" :key="idx">
+        <tr v-for="(item, idx) in items" :key="idx">
           <td
-            v-if="ulist"
-            v-for="(hlist, idy) in headers"
-            :key="hlist.value"
-            :style="`text-align: ${hlist.align}`"
+            v-if="item"
+            v-for="head in headers"
+            :key="head.value"
+            :style="`text-align: ${head.align}`"
           >
-            <slot
-              :name="`${headers[idy] ? headers[idy].value : 'default'}`"
-              :item="hlist ? ulist[hlist.value] : 0"
-            >
-              {{ ulist[hlist.value] }}
+            <slot :name="`${head ? head.value : 'default'}`" :item="item">
+              {{ head.value }}
             </slot>
           </td>
         </tr>

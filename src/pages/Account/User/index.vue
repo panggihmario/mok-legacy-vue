@@ -10,7 +10,7 @@
       </div>
       <k-table :headers="headerList" :items="itemList">
         <template #isVerified="{ item }">
-          <span v-if="item">Verified</span>
+          <span v-if="item.isVerified">Verified</span>
           <span v-else class="text-silver">Not Verified</span>
         </template>
         <template #manage>
