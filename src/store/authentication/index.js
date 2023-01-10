@@ -56,7 +56,6 @@ export default {
 				const id = response.data.accountId
 				const username = response.data.userName
 				const role = response.data.role
-				console.log(response)
 				const initialiseData = {
 					token,
 					accountId : id,
@@ -78,7 +77,6 @@ export default {
 			const id = state.accountId
 			return this._vm.$httpWithToken().get(`profile/${id}`)
 				.then(response => {
-					console.log(response)
 					const data = response.data.data
 					commit("setDataProfile", data)
 				})
