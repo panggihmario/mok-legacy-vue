@@ -37,15 +37,7 @@ export default {
       return apiStore.fetchApi(url)
         .then(response => {
           console.log(response)
-          const mapResponse = response.content.map((res: { username: any; role: any; enabled: any; }) => {
-            return {
-              user: res.username,
-              role: res.role,
-              status: res.enabled
-            }
-          })
-          items.value = mapResponse
-          console.log(mapResponse)
+          items.value = response.content
         })
         .catch(err => {
           // console.log(err)
@@ -54,16 +46,20 @@ export default {
 
     const headers = [
       {
-        label: 'User'
+        label: 'User',
+        name : 'username'
       },
       {
-        label: 'Role'
+        label: 'Role',
+        name : 'role'
       },
       {
-        label: 'Status'
+        label: 'Status',
+        name : 'status'
       },
       {
-        label: 'Manage'
+        label: 'Manage',
+        name : 'action'
       }
     ]
 
