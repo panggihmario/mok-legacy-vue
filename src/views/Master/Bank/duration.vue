@@ -100,6 +100,7 @@ export default {
       }
     }
   },
+
   methods: {
     ...mapMutations({
       setData: 'master/setData',
@@ -124,6 +125,8 @@ export default {
     },
     onCheck(e) {
       this.setReadySubmit(true)
+      this.checkboxCustom = false
+      this.checkboxDefault = true
       if (this.checkboxDefault) {
         const payload = {
           ...this.data,
@@ -144,6 +147,8 @@ export default {
         })
     },
     onCheckCustom() {
+      this.checkboxCustom = true
+      this.checkboxDefault = false
       if(this.data.customExpire) {
         const payload = {
           ...this.data,
@@ -195,15 +200,19 @@ export default {
       handler(newVal) {
         if (newVal.customExpire) {
           this.checkboxCustom = true
+          this.checkboxDefault = false
+        }else{
+          this.checkboxCustom = false
+          this.checkboxDefault = true
         }
       }
     },
     checkboxDefault(value) {
-      this.checkboxCustom = !value
+      // this.checkboxCustom = !value
       this.isDisabled = value
     },
     checkboxCustom(value) {
-      this.checkboxDefault = !value
+      // this.checkboxDefault = !value
       if (value && this.tempExpireCustomData) {
         const data = this.data
         const tempData = {
