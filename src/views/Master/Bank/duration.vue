@@ -144,14 +144,22 @@ export default {
         })
     },
     onCheckCustom() {
-      const payload = {
-        ...this.data,
-        customExpire: {
-          unit: 'day',
-          duration: 1
+      if(this.data.customExpire) {
+        const payload = {
+          ...this.data,
         }
+        this.setData(payload)
+      }else{
+          const payload = {
+          ...this.data,
+          customExpire: {
+            unit: 'day',
+            duration: 1
+          }
+        }
+        this.setData(payload)
       }
-      this.setData(payload)
+      
     }
   },
   data() {
