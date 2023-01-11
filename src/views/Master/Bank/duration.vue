@@ -59,8 +59,7 @@ export default {
           return this.data.customExpire
         } else {
           return {
-            duration: 1,
-            unit: "day"
+            unit: null
           }
         }
       },
@@ -83,7 +82,6 @@ export default {
         }
       },
       set(value) {
-        console.log(value)
         let number
         if (Number(value) < 0) {
           number = 0
@@ -99,7 +97,6 @@ export default {
         }
         this.setReadySubmit(true)
         this.setData(payload)
-        // this.checkboxCustom = true
       }
     }
   },
@@ -135,9 +132,6 @@ export default {
         this.setData(payload)
       }
     },
-    onCheckCustom() {
-      this.setReadySubmit(true)
-    },
     onCancel() {
       this.setReadySubmit(false)
       return this.getMasterBank()
@@ -148,6 +142,16 @@ export default {
             this.checkboxDefault = true
           }
         })
+    },
+    onCheckCustom() {
+      const payload = {
+        ...this.data,
+        customExpire: {
+          unit: 'day',
+          duration: 1
+        }
+      }
+      this.setData(payload)
     }
   },
   data() {
