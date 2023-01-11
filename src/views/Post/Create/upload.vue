@@ -52,7 +52,6 @@ export default {
       document.getElementById(id).click();
     },
     getImage(payload) {
-      // console.log(payload)
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
