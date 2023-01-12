@@ -1,13 +1,13 @@
 <template>
   <div class="breadcrumbs flex">
-    <span v-for="(item, idx) in list" :key="idx">
+    <span v-for="(item, idx) in items" :key="idx">
       <span
-        :class="[idx < list.length - 1 && 'text-color-primary pointer']"
+        :class="[idx < items.length - 1 && 'text-color-primary pointer']"
         class="text-capitalize text-color-grey"
       >
         {{ item.name }}
       </span>
-      <span v-if="idx < list.length - 1" class="px-12 text-color-grey">/</span>
+      <span v-if="idx < items.length - 1" class="px-12 text-color-grey">/</span>
     </span>
   </div>
 </template>
@@ -17,13 +17,13 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 
-type List = { name: String };
+type Items = { name: String };
 
 export default defineComponent({
   name: "k-breadcrumbs",
   props: {
-    list: {
-      type: Array as PropType<List[]>,
+    items: {
+      type: Array as PropType<Items[]>,
       default: [{ name: "Foo" }, { name: "Bar" }],
     },
   },

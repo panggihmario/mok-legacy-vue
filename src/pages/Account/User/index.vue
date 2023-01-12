@@ -1,14 +1,15 @@
 <template>
   <div>
-    <k-page-title
-      title="List User"
-      :listBreadCrumbs="listBreadCrumbs"
-    ></k-page-title>
+    <k-page-title title="List User" :breadCrumbs="breadCrumbs"></k-page-title>
     <div class="mt-40">
       <div>
         <span>Total User: {{ totalElements }}</span>
       </div>
-      <k-table :headers="headerList" :items="itemList">
+      <k-table
+        :headers="headerList"
+        :items="itemList"
+        :loading="loadingTable"
+      >
         <template #isVerified="{ item }">
           <span v-if="item.isVerified">Verified</span>
           <span v-else class="text-silver">Not Verified</span>
@@ -18,14 +19,15 @@
           <k-button class="ml-8">Edit User Info</k-button>
         </template>
       </k-table>
-      {{ page }}
-      <k-pagination v-model="page"></k-pagination>
+      <div class="flex justify-end mt-14">
+        <k-pagination v-model="page" :maxLength="totalPages"></k-pagination>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApiStore } from "../../../stores/api";
 
@@ -34,11 +36,17 @@ export default {
     const route = useRoute();
     const store = useApiStore();
 
+    const loadingTable = ref(false);
+
     const page = ref(10);
     const totalPages = ref(0);
     const totalElements = ref(0);
 
-    const listBreadCrumbs = ref([
+    watch(page, () => {
+      getListItem("", page.value);
+    });
+
+    const breadCrumbs = ref([
       { name: "Management Account" },
       { name: route.name },
     ]);
@@ -53,17 +61,23 @@ export default {
 
     const itemList = ref([]);
 
-    const getListItem = () => {
+    const getListItem = (value: string = "", page: number = 1) => {
+      loadingTable.value = true;
       return store
-        .fetchApi("admin/accounts/users/search?value=&page=0", {})
+        .fetchApi("admin/accounts/users/search", {
+          value: "",
+          page: `${page - 1}`,
+        })
         .then((res) => {
           const content = res.content;
           itemList.value = content;
           totalPages.value = res.totalPages;
           totalElements.value = res.totalElements;
+          loadingTable.value = false;
         })
         .catch((err) => {
           console.log({ err });
+          loadingTable.value = false;
         });
     };
 
@@ -74,9 +88,10 @@ export default {
     };
 
     return {
-      listBreadCrumbs,
+      breadCrumbs,
       headerList,
       itemList,
+      loadingTable,
       page,
       totalPages,
       totalElements,
