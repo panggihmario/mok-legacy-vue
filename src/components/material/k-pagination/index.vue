@@ -38,6 +38,7 @@ export default defineComponent({
         .map((v, i) => i + start);
     };
     const pagination = (currentPage: number, pageCount: number) => {
+      console.log(pageCount)
       let delta: number;
       if (pageCount <= 7) {
         // delta === 7: [1 2 3 4 5 6 7]
