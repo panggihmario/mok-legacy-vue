@@ -154,8 +154,8 @@ export default {
         .then(response => {
           let url
           const urlObject = new URL(response.url)
-          const tempUrl = `${urlObject.origin}/temp/${response.name}`
-          console.log('temp url', tempUrl)
+          // const tempUrl = `${urlObject.origin}/temp/${response.name}`
+          // console.log('temp url', tempUrl)
           if (process.env.VUE_APP_SERVER_STATUS === 'production') {
             url = `${this.asetKipas}/${response.name}`
             this.dataResponse.url = url
