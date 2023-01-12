@@ -1,6 +1,12 @@
 <template>
   <div>
     <k-page-title title="List Management Account" :listBreadCrumbs="listBreadCrumbs">
+      <k-button
+        color="kellygreen"
+        @click="moveToCreatePage"
+      >
+        Create Account
+      </k-button>
     </k-page-title>
     <div class="mt-40"></div>
 
@@ -9,21 +15,22 @@
       :items="items"
     >
     </k-table>
-
   </div>
 </template>
 
 <script lang="ts">
 import { ref } from "vue";
 import { useApiStore } from "../../../stores/api"
+import { useRouter } from "vue-router"
 import { onMounted } from "vue";
 import Filter from "./Filter/index.vue"
 export default {
   components: {
-    Filter
+    Filter,
   },
   setup() {
     const apiStore = useApiStore()
+    const router = useRouter()
     const name = ref('')
     const select = ref({})
     const items = ref([])
@@ -31,6 +38,10 @@ export default {
       { name: "Manage Account" },
       { name: "List Management" },
     ]);
+
+    const moveToCreatePage = function () {
+      router.push({name : 'createManagement'})
+    }
 
     const fetchManagementData = function () {
       const url = 'admin/accounts/management'
@@ -70,7 +81,8 @@ export default {
       name,
       select,
       headers,
-      items
+      items,
+      moveToCreatePage
     };
   },
 };
