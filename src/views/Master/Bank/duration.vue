@@ -83,8 +83,8 @@ export default {
       },
       set(value) {
         let number
-        if (Number(value) < 0) {
-          number = 0
+        if (Number(value) < 1) {
+          number = 1
         } else {
           number = value
         }
