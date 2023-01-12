@@ -1,151 +1,130 @@
 <template>
-  <div class="autocomplete" :class="`select-${idElement}`" >
-    <label class="autocomplete__label" > {{label}} </label>
-    <div class="input-wrapper">
-      <input
-        v-show="helper"
-        :value="itemValue"
-      />
-      <input
-        type="text"
-        class="autocomplete-input"
-        @click="openList"
-        v-model="search"
-        v-bind="$attrs"
-      />
-    </div>
-    <div 
-      class="autocomplete__popover" 
-      :class="isTop ?  'isTop' : 'isBottom' "
-      v-show="isOpen"
-    >
-      <div class="options">
-      <ul class="autocomplete-results" >
-        <li
-          class="autocomplete-result"
-          v-for="(item, i) in results"
-          :key="i"
-          @click="setResult(item)"
-          :class="{ 'is-active': item.id === itemId }"
+  <v-menu
+    transition="slide-y-transition"
+    bottom
+    :disabled="disabled"
+  >
+    <template v-slot:activator="{on, attrs}">
+      <div 
+        class="select__wrapper"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <input
+          readonly  
+          class="select__input text-primary"
+          v-model="value[itemLabel]"
+        />
+        <v-icon 
+          size="16px"
+          color="charcoal"
         >
-          {{ item.name }}
-        </li>
-      </ul>
+          fa-solod fa-caret-down
+        </v-icon>
       </div>
-    </div>
-  </div>
+    </template>
+    <v-list dense>
+      <v-list-item-group
+        color="primary"
+      >
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          @click="selectItem(item)"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="item.label"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+  </v-menu>
 </template>
+
 
 <script>
 export default {
-  props: {
-    items: {
-      type: Array,
-      require: false,
-      default: () => [],
+  props : {
+    items : {
+      type : Array
     },
-    itemText : {
+    item : {},
+    itemLabel : {
       type : String
     },
     value : {
-      type : [Object, String]
+      type : [Object, String] 
     },
-    pos : {
-      type : String
-    },
-    label : {
-      type : String
+    disabled : {
+      type : Boolean
     }
   },
   computed : {
-    itemValue () {
-      if(this.value) {
-        const getValue = this.value[this.itemText]
-        this.search = getValue
-        return this.value[this.itemText]
-      }
-    }
   },
-  watch : {
-    search : function (val) {
-      const query = val.toLowerCase();
-      if (val === "") {
-        this.results = this.items
-      } else {
-        const search = (text) =>
-        this.items.filter((item) => item[this.itemText].toLowerCase().includes(text));
-        const result = search(query);
-        this.results = result
-      }
-    },
-    value : function (val) {
-      this.search = val.name
-    }
-  },
-  mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-    this.checkPosition()
-  },
-  beforeMount() {
-    this.idElement = this._uid
-  },
-  destroyed() {
-    document.removeEventListener("click", this.handleClickOutside);
-  },
-  data() {
+  data () {
     return {
-      search: "",
-      results: [],
-      isOpen: false,
-      arrowCounter: -1,
-      itemId : '',
-      selectedItem : {},
-      helper : false,
-      idElement : '',
-      isTop : false
-    };
+      show : false,
+    }
   },
-  methods: {
-    checkPosition () {
-      const heightView = window.innerHeight
-      const centerView = heightView / 2
-      const el = document.querySelector(`.select-${this.idElement}`)
-      const positionElement = el.offsetTop
-      if(positionElement > centerView) {
-        this.isTop = true
-      }else { 
-        this.isTop = false
-      }
+  methods : {
+    openOptions () {
+      this.show = !this.show
     },
-    filterResults() {
-      this.results = this.items.filter(
-        (item) => item.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-      );
-    },
-    openList() {
-      this.isOpen = !this.isOpen;
-      this.results = this.items
-    },
-    onChange() {
-      this.$emit('input', this.selectedItem)
-    },
-    setResult(item) {
-      this.search = item.name;
-      this.itemId = item.id
-      this.isOpen = false;
-      this.selectedItem = item
+    selectItem(item) {
       this.$emit('input', item)
-    },
-    handleClickOutside(event) {
-      if (!this.$el.contains(event.target)) {
-        this.isOpen = false;
-        this.arrowCounter = -1;
-      }
-    },
-  },
-};
+
+    }
+  }
+}
 </script>
 
-<style src="./style.scss" lang="scss" scoped>
-</style>
+<style lang="scss">
+.select {
+  &__option {
+    font-size: 11px;
+    font-weight: 400;
+    color: $charcoal;
+  }
+  &__options {
+    position: absolute;
+    display: inline-block;
+    min-height: 40px;
+    z-index: 8;
+    transition: all 0.4s;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    background-color: white;
+    border: 1px solid #DDDDDD;
+    border-radius: 8px;
 
+    padding: 10px;
+    top: 35px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
+    border-radius: 4px;
+  }
+  &__wrapper {
+    height: 32px;
+    background: #FFFFFF;
+    border: 1px solid #BBBBBB;
+    border-radius: 4px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    padding: 0 10px;
+    position: relative;
+  }
+  &__input {
+    font-size: 11px;
+    font-weight: 400;
+    color: $charcoal;
+    width: 100%;
+    cursor: pointer;
+    &:focus {
+      outline: none;
+    }
+  }
+}
+</style>

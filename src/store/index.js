@@ -17,9 +17,11 @@ import trending from "./trending";
 import tiktok from "./tiktok";
 import masterCategory from "./master/category";
 import manageHashtag from "./manage/hashtag";
+import master from "./master"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  strict: true,
   modules: {
     authentication,
     channel,
@@ -38,6 +40,7 @@ export default new Vuex.Store({
     tiktok,
     masterCategory,
     manageHashtag,
+    master
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
