@@ -54,6 +54,10 @@ export default defineComponent({
       type: String,
       default: "100%",
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     headers: {
       type: Array as PropType<ListData[]>,
       default: [{ label: "foo", name: "foo", align: "left" }],

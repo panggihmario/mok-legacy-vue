@@ -4,7 +4,7 @@
     <div class="flex justify-between align-center mt-10">
       <k-breadcrumbs
         v-if="isBreadcrumbs"
-        :list="listBreadCrumbs"
+        :items="breadCrumbs"
       ></k-breadcrumbs>
       <slot></slot>
     </div>
@@ -25,7 +25,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    listBreadCrumbs: {
+    breadCrumbs: {
       type: Array,
     },
   },
