@@ -1,6 +1,9 @@
 <template>
   <div>
-    <k-page-title title="List Management Account" :listBreadCrumbs="listBreadCrumbs">
+    <k-page-title 
+      title="List Management Account" 
+      :breadCrumbs="listBreadCrumbs"
+    >
       <k-button
         color="kellygreen"
         @click="moveToCreatePage"

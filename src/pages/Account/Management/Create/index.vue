@@ -2,7 +2,7 @@
   <div>
     <k-page-title
       title="Create Management User"
-      :listBreadCrumbs="breadcrumbs"
+      :breadCrumbs="breadcrumbs"
     >
 
     </k-page-title>

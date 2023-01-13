@@ -27,7 +27,8 @@ const {
   VITE_APP_ACCESS_KEY_ID_OSS,
   VITE_APP_ACCESS_KEY_SECRET,
   VITE_APP_BUCKET_OSS,
-  VITE_APP_ENDPOINT
+  VITE_APP_ENDPOINT,
+  VITE_APP_SERVER_STATUS
 } = import.meta.env;
 
 const storeOss = new OSS({
@@ -36,6 +37,8 @@ const storeOss = new OSS({
   bucket: VITE_APP_BUCKET_OSS,
   endpoint: VITE_APP_ENDPOINT,
 });
+
+const urlMedia = 'https://asset.kipaskipas.com'
 
 const props = defineProps({
   type: String,
@@ -95,12 +98,12 @@ const saveFileToOss = function (file: File, type: string, dimensions: Dimensions
   const filePath = `/img/media/${currentDateEpoch}.${fileType}`
   return storeOss.put(filePath, file)
     .then(resp => {
-      console.log(resp)
+      const urlResponse = VITE_APP_SERVER_STATUS === 'production' ? `${urlMedia}/${resp.name}` : resp.url  
       if (type === 'video') {
-        dataResponse.url = resp.url
+        dataResponse.url = urlResponse
         return createThumbnail(file, 0.0)
       } else {
-        dataResponse.url = resp.url
+        dataResponse.url = urlResponse
         return {
           large: resp.url,
           medium: resp.url,
@@ -122,6 +125,7 @@ const createThumbnail = function (file: File, seekTo: number) {
   const currentDateEpoch = moment(new Date).valueOf()
   const filePath = `/img/media/${currentDateEpoch}.jpg`
   let response : {
+    name: string;
     url : string
   }
   return drawImageOnCanvas(file, seekTo)
@@ -134,10 +138,11 @@ const createThumbnail = function (file: File, seekTo: number) {
     return storeOss.putACL(filePath, 'public-read')
   })
   .then(() => {
+    const urlResponse = VITE_APP_SERVER_STATUS === 'production' ? `${urlMedia}/${response.name}` : response.url  
     return {
-      large: response.url,
-      medium: response.url,
-      small: response.url
+      large: urlResponse,
+      medium: urlResponse,
+      small: urlResponse
     }
   })
 }
