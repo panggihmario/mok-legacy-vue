@@ -1,31 +1,25 @@
 <template>
-  <div>
-    <!-- Trigger/Open The Modal -->
-    <button @click="changeModalStatus(true)">Open Modal</button>
-
-    <!-- The Modal -->
-    <div :class="showModal ? 'modal' : 'hidden'">
-      <!-- Modal content -->
-      <div class="modal-content">
-        <div class="flex justify-end pt-12 pr-12">
-          <span
-            class="fa-solid fa-xmark pointer"
-            style="font-size: 18px"
-            @click="changeModalStatus(false)"
-          ></span>
-        </div>
-        <div class="overflow px-28 pb-28">
-          <slot>
-            <div>Custom Template</div>
-          </slot>
-        </div>
+  <div :class="showModal ? 'modal' : 'hidden'" hidden>
+    <!-- Modal content -->
+    <div class="modal-content" :style="`width: ${width}`">
+      <div class="flex justify-end pt-12 pr-12">
+        <span
+          class="fa-solid fa-xmark pointer"
+          style="font-size: 18px"
+          @click="changeModalStatus(false)"
+        ></span>
+      </div>
+      <div class="overflow px-28 pb-28">
+        <slot>
+          <div>Custom Template</div>
+        </slot>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -33,10 +27,22 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    width: {
+      type: String,
+      default: "800px",
+    },
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
     const showModal = ref(false);
+
+    watch(
+      () => props.modelValue,
+      () => {
+        showModal.value = props.modelValue;
+      }
+    );
+
     const changeModalStatus = (value: boolean) => {
       showModal.value = value;
       emit("update:modelValue", value);
@@ -68,34 +74,18 @@ export default defineComponent({
   &-content {
     background-color: #fefefe;
     margin: auto;
-    width: 80%;
     max-height: 80%;
     border-radius: 16px;
     box-shadow: 0px 4px 24px rgba(253, 82, 154, 0.06);
   }
 }
 
+.hidden {
+  display: hidden;
+}
+
 .overflow {
   max-height: 600px;
   overflow: auto;
-}
-
-.hidden {
-  display: none;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
 }
 </style>

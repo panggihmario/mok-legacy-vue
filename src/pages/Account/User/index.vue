@@ -5,44 +5,45 @@
       <div>
         <span>Total User: {{ totalElements }}</span>
       </div>
-      <k-table
-        :headers="headerList"
-        :items="itemList"
-        :loading="loadingTable"
-      >
+      <k-table :headers="headerList" :items="itemList" :loading="loadingTable">
         <template #isVerified="{ item }">
           <span v-if="item.isVerified">Verified</span>
           <span v-else class="text-silver">Not Verified</span>
         </template>
-        <template #manage>
-          <k-button>List Post</k-button>
-          <k-button class="ml-8">Edit User Info</k-button>
+        <template #manage="{ item }">
+          <k-button @click="changePage(`user/${item.id}`)">List Post</k-button>
+          <k-button class="ml-8" @click="openModalDetail(item)"
+            >Edit User Info</k-button
+          >
         </template>
       </k-table>
       <div class="flex justify-end mt-14">
         <k-pagination v-model="page" :maxLength="totalPages"></k-pagination>
       </div>
-      <k-modal v-model="isShowModal"></k-modal>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useApiStore } from "../../../stores/api";
 
 export default {
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const store = useApiStore();
 
     const loadingTable = ref(false);
+    const loadingDetail = ref(false);
     const isShowModal = ref(false);
 
     const page = ref(1);
     const totalPages = ref(0);
     const totalElements = ref(0);
+
+    type Item = { [key: string]: any };
 
     watch(page, () => {
       getListItem("", page.value);
@@ -50,7 +51,7 @@ export default {
 
     const breadCrumbs = ref([
       { name: "Management Account" },
-      { name: route.name },
+      { name: "List User" },
     ]);
 
     const headerList = ref([
@@ -62,6 +63,8 @@ export default {
     ]);
 
     const itemList = ref([]);
+
+    const itemDetail = ref({});
 
     const getListItem = (value: string = "", page: number = 1) => {
       loadingTable.value = true;
@@ -83,6 +86,29 @@ export default {
         });
     };
 
+    const getDetailItem = (id: string) => {
+      isShowModal.value = true;
+      loadingDetail.value = true;
+      return store
+        .fetchApi(`admin/accounts/users/${id}`, {})
+        .then((res) => {
+          itemDetail.value = res;
+          loadingDetail.value = false;
+        })
+        .catch((err) => {
+          console.log({ err });
+          loadingDetail.value = false;
+        });
+    };
+
+    const openModalDetail = (item: Item) => {
+      getDetailItem(item.id);
+    };
+
+    const changePage = (path: string) => {
+      router.push(path);
+    };
+
     onMounted(getListItem);
     const show = ref(false);
     const showNotif = () => {
@@ -93,11 +119,15 @@ export default {
       breadCrumbs,
       headerList,
       itemList,
+      itemDetail,
       loadingTable,
+      loadingDetail,
       isShowModal,
       page,
       totalPages,
       totalElements,
+      openModalDetail,
+      changePage,
       show,
       showNotif,
     };

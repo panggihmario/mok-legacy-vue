@@ -7,12 +7,10 @@
     ></div>
     <div
       v-for="(n, idx) in rangePage"
-      class="flex justify-center align-center page pointer"
+      class="flex justify-center align-center page page-number pointer"
       :class="{ active: n == page }"
       @click="
-        n != '...'
-          ? changePage(n)
-          : changePage(idx == 1 ? page - 1 : page + 1)
+        n != '...' ? changePage(n) : changePage(idx == 1 ? page - 1 : page + 1)
       "
     >
       {{ n }}
@@ -123,6 +121,10 @@ export default defineComponent({
   background-color: var(--whitesmoke-color);
   color: var(--charcoal-color);
   border-radius: 4px;
+  &-number {
+    font-size: $text-lg;
+    font-weight: $font-medium;
+  }
 }
 .active {
   background-color: var(--primary-color);
