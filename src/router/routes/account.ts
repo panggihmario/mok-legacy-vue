@@ -7,6 +7,11 @@ const accountRoutes : childrenRoute[]  = [
     component: () => import('../../pages/Account/Management/index.vue')
   },
   {
+    path : '/management/create',
+    name : 'createManagement',
+    component: () => import('../../pages/Account/Management/Create/index.vue')
+  },
+  {
     path: '/user',
     name: 'user',
     component: () => import('../../pages/Account/User/index.vue')
