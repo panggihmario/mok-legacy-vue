@@ -36,12 +36,16 @@
             style="background-color: black; height: 456px"
           >
             <img
-              v-if="postDetail.post.medias[0].type == 'image'"
+              v-if="
+                postDetail.post ? postDetail.post.medias[0].type == 'image' : ''
+              "
               :src="postDetail.post ? postDetail.post.medias[0].url : ''"
               style="max-width: 100%; max-height: 100%"
             />
             <video
-              v-else-if="postDetail.post.medias[0].type == 'video'"
+              v-else-if="
+                postDetail.post ? postDetail.post.medias[0].type == 'video' : ''
+              "
               :src="postDetail.post ? postDetail.post.medias[0].url : ''"
               style="max-width: 100%; max-height: 100%"
               controls
