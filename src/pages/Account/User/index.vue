@@ -22,6 +22,7 @@
       <div class="flex justify-end mt-14">
         <k-pagination v-model="page" :maxLength="totalPages"></k-pagination>
       </div>
+      <k-modal v-model="isShowModal"></k-modal>
     </div>
   </div>
 </template>
@@ -37,8 +38,9 @@ export default {
     const store = useApiStore();
 
     const loadingTable = ref(false);
+    const isShowModal = ref(false);
 
-    const page = ref(10);
+    const page = ref(1);
     const totalPages = ref(0);
     const totalElements = ref(0);
 
@@ -92,6 +94,7 @@ export default {
       headerList,
       itemList,
       loadingTable,
+      isShowModal,
       page,
       totalPages,
       totalElements,

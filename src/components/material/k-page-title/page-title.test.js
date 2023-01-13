@@ -9,7 +9,7 @@ import { mount } from "@vue/test-utils";
 const testValues = {
   title: "Title",
   isBreadcrumbs: true,
-  listBreadCrumbs: [{ name: "Foo" }, { name: "Bar" }],
+  breadCrumbs: [{ name: "Foo" }, { name: "Bar" }],
 };
 
 describe("reusable page title component", () => {
@@ -25,10 +25,10 @@ describe("reusable page title component", () => {
   });
   it("should have breadcrumbs", async () => {
     await wrapper.setProps({ isBreadcrumbs: testValues.isBreadcrumbs });
-    await wrapper.setProps({ listBreadCrumbs: testValues.listBreadCrumbs });
+    await wrapper.setProps({ breadCrumbs: testValues.breadCrumbs });
 
     const kbread = wrapper.find("k-breadcrumbs");
 
-    expect(kbread.attributes()).toHaveProperty("list");
+    expect(kbread.attributes()).toHaveProperty("items");
   });
 });

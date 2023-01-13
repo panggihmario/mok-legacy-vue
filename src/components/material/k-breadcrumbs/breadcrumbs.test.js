@@ -7,7 +7,7 @@ import Breadcrumbs from "./index.vue";
 import { mount } from "@vue/test-utils";
 
 const testValues = {
-  list: [{ name: "foo" }],
+  items: [{ name: "foo" }],
 };
 
 describe("reusable breadcrumbs component", () => {
@@ -17,8 +17,8 @@ describe("reusable breadcrumbs component", () => {
     expect(wrapper).toBeTruthy();
   });
   it("should have props", async () => {
-    await wrapper.setProps({ list: testValues.list });
-    testValues.list.map((li) => {
+    await wrapper.setProps({ items: testValues.items });
+    testValues.items.map((li) => {
       expect(wrapper.html()).toContain(li.name);
     });
   });
