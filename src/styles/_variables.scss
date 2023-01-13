@@ -26,6 +26,21 @@
   display: flex;
 }
 
+.gap {
+  &-8 {
+    gap: 8px;
+  }
+  &-10 {
+    gap: 10px;
+  }
+  &-12 {
+    gap: 12px;
+  }
+  &-14 {
+    gap: 14px;
+  }
+}
+
 .justify {
   &-start{
     justify-content: start;

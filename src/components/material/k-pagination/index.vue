@@ -1,23 +1,36 @@
 <template>
-  <div class="flex">
+  <div class="flex gap-10">
     <div
-      v-for="n in rangePage"
-      class="flex justify-center align-center page pointer mx-4"
-      :class="{ active: n == cPage }"
-      @click="n != '...' ? changePage(n) : null"
+      class="flex justify-center align-center fa-solid fa-caret-left page pointer"
+      :class="{ disable: page == 1 }"
+      @click="page == 1 ? null : changePage(page - 1)"
+    ></div>
+    <div
+      v-for="(n, idx) in rangePage"
+      class="flex justify-center align-center page pointer"
+      :class="{ active: n == page }"
+      @click="
+        n != '...'
+          ? changePage(n)
+          : changePage(idx == 1 ? page - 1 : page + 1)
+      "
     >
       {{ n }}
     </div>
+    <div
+      class="flex justify-center align-center fa-solid fa-caret-right page pointer"
+      :class="{ disable: page == maxLength }"
+      @click="page == maxLength ? null : changePage(page + 1)"
+    ></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeMount, ref } from "vue";
+import { defineComponent, ref, toRef, watch } from "vue";
 
 export default defineComponent({
   props: {
-    modelValue: Number,
-    page: {
+    modelValue: {
       type: Number,
       default: 1,
     },
@@ -28,9 +41,14 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    const cPage = ref(props.page);
+    const page = ref(1);
     const rangePage = ref([]);
     const loading = ref(false);
+
+    watch(
+      () => props.maxLength,
+      () => pagination(1, props.maxLength)
+    );
 
     const getRange = (start: number, end: number) => {
       return Array(end - start + 1)
@@ -83,21 +101,13 @@ export default defineComponent({
     };
 
     const changePage = (e: number) => {
-      cPage.value = e;
+      page.value = e;
       pagination(e, props.maxLength);
       emit("update:modelValue", e);
     };
 
-    onMounted(() => {
-      loading.value = true;
-      pagination(1, props.maxLength);
-      setTimeout(() => {
-        loading.value = false;
-      }, 1000);
-    });
-
     return {
-      cPage,
+      page,
       rangePage,
       loading,
       changePage,
@@ -118,5 +128,10 @@ export default defineComponent({
 .active {
   background-color: var(--primary-color);
   color: var(--white-color);
+}
+.disable {
+  background-color: var(--whitesmoke-color);
+  color: var(--silver-color);
+  cursor: default;
 }
 </style>
