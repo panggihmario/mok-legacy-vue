@@ -17,7 +17,7 @@ export const useApiStore = defineStore('api', {
         },
       })
       this.interceptorRequest(instance)
-      this.interceptorResponse(instance)
+      // this.interceptorResponse(instance)
       return instance
     },
     interceptorRequest (instance: AxiosInstance | undefined ) {
