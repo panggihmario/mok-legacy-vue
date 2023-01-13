@@ -17,17 +17,17 @@
 <script lang="ts" setup>
 import OSS from 'ali-oss';
 import moment from "moment"
-import { defineProps, toRefs, reactive } from 'vue';
+import { toRefs, reactive } from 'vue';
 import { ResponseUpload } from "@/models"
 interface Dimensions {
-  height : number,
-  width : number
+  height: number,
+  width: number
 }
-const { 
-    VITE_APP_ACCESS_KEY_ID_OSS,
-    VITE_APP_ACCESS_KEY_SECRET,
-    VITE_APP_BUCKET_OSS,
-    VITE_APP_ENDPOINT
+const {
+  VITE_APP_ACCESS_KEY_ID_OSS,
+  VITE_APP_ACCESS_KEY_SECRET,
+  VITE_APP_BUCKET_OSS,
+  VITE_APP_ENDPOINT
 } = import.meta.env;
 
 const storeOss = new OSS({
@@ -41,22 +41,22 @@ const props = defineProps({
   type: String,
   label: String,
   id: String,
-  minVideoHeight : {
-    type : Number,
-    default : 200
+  minVideoHeight: {
+    type: Number,
+    default: 200
   }
 })
 
 // type-based
 const emit = defineEmits<{
-  (e: 'getResponse', response : ResponseUpload): void
+  (e: 'getResponse', response: ResponseUpload): void
 }>()
 
 const { minVideoHeight } = toRefs(props)
 const response = reactive({
-  status : 'loading',
-  message : '',
-  media : {}
+  status: 'loading',
+  message: '',
+  media: {}
 })
 
 const handleClick = function () {
@@ -71,35 +71,35 @@ const onLoad = async function (e: Event) {
   emit('getResponse', response)
   const dimensions = await getDimension(typeMedia, file)
   const isValidMedia = validationMedia(typeMedia, dimensions as Dimensions)
-  if(isValidMedia) {
+  if (isValidMedia) {
     return saveFileToOss(file, typeMedia, dimensions as Dimensions)
-  }else {
+  } else {
     printError(file)
   }
   console.log(dimensions)
 }
 
-const saveFileToOss = function (file : File, type : string, dimensions: Dimensions) {
+const saveFileToOss = function (file: File, type: string, dimensions: Dimensions) {
   let dataResponse = {
     id: null,
     type,
     url: "",
     thumbnail: {},
     metadata: {
-      width: dimensions.width,
-      height: dimensions.height,
+      ...dimensions,
       size: file.size
     }
   }
   const currentDateEpoch = moment(new Date).valueOf()
   const fileType = file.type.split("/")[1]
   const filePath = `/img/media/${currentDateEpoch}.${fileType}`
-  return storeOss.put(filePath,file)
+  return storeOss.put(filePath, file)
     .then(resp => {
       console.log(resp)
-      if(type === 'video'){
-
-      }else {
+      if (type === 'video') {
+        dataResponse.url = resp.url
+        return createThumbnail(file, 0.0)
+      } else {
         dataResponse.url = resp.url
         return {
           large: resp.url,
@@ -109,13 +109,91 @@ const saveFileToOss = function (file : File, type : string, dimensions: Dimensio
       }
     })
     .then(thumbnail => {
-      dataResponse.thumbnail = {...thumbnail}
-      response.status = 'success',
+      dataResponse.thumbnail = { ...thumbnail }
+      response.status = 'success'
       response.message = 'success upload'
-      response.media = {...dataResponse}
+      response.media = { ...dataResponse }
       emit('getResponse', response)
       return storeOss.putACL(filePath, 'public-read')
     })
+}
+
+const createThumbnail = function (file: File, seekTo: number) {
+  const currentDateEpoch = moment(new Date).valueOf()
+  const filePath = `/img/media/${currentDateEpoch}.jpg`
+  let response : {
+    url : string
+  }
+  return drawImageOnCanvas(file, seekTo)
+  .then((base64data => {
+    const d = dataURLtoFile(base64data, `${+new Date()}.jpg`)
+    return storeOss.put(filePath, d)
+  }))
+  .then((resp) => {
+    response = resp
+    return storeOss.putACL(filePath, 'public-read')
+  })
+  .then(() => {
+    return {
+      large: response.url,
+      medium: response.url,
+      small: response.url
+    }
+  })
+}
+
+const dataURLtoFile = function (dataurl: any , filename: string) {
+  let arr = dataurl.split(',')
+  let mime = arr[0].match(/:(.*?);/)[1]
+  let bstr = atob(arr[1])
+  let n = bstr.length
+  let u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
+const drawImageOnCanvas = function (file: File, seekTo: number) {
+  return new Promise((resolve, reject) => {
+    const videoPlayer = document.createElement('video');
+    videoPlayer.setAttribute('src', URL.createObjectURL(file));
+    videoPlayer.crossOrigin = "anonymous";
+    videoPlayer.load();
+    videoPlayer.addEventListener('error', (ex) => {
+      reject(`error when loading video file ${ex}`);
+    });
+
+    videoPlayer.addEventListener('loadedmetadata', () => {
+
+      if (videoPlayer.duration < seekTo) {
+        reject("video is too short.");
+        return;
+      }
+      setTimeout(() => {
+        videoPlayer.currentTime = seekTo;
+      }, 200);
+      videoPlayer.addEventListener('seeked', () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = videoPlayer.videoWidth;
+        canvas.height = videoPlayer.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+        ctx?.canvas.toBlob(
+          blob => {
+            var reader = new FileReader();
+            reader.readAsDataURL(blob as any);
+            reader.onloadend = function () {
+              var base64data = reader.result;
+              resolve(base64data)
+            }
+          },
+          "image/jpeg",
+          0.75 /* quality */
+        );
+      });
+    });
+  });
 }
 
 const getDimension = function (typeMedia: string, file: File) {
@@ -131,7 +209,7 @@ const dimensionImage = function (file: File) {
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (evt) => {
-      let img : HTMLImageElement  = new Image();
+      let img: HTMLImageElement = new Image();
       img.onload = () => {
         const params = {
           height: img.height,
@@ -140,16 +218,29 @@ const dimensionImage = function (file: File) {
         }
         resolve(params)
       };
-      img.src  = evt.target!.result as string
-    } 
+      img.src = evt.target!.result as string
+    }
   })
 }
 
 const dimensionVideo = function (file: File) {
-
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const $video = document.createElement("video");
+    $video.src = url;
+    $video.addEventListener("loadedmetadata", function () {
+      console.log(this)
+      const params = {
+        height: $video.videoHeight,
+        width: $video.videoWidth,
+        duration: $video.duration
+      }
+      resolve(params)
+    })
+  })
 }
 
-const validationMedia = function (typeMedia : string, dimensions : Dimensions) {
+const validationMedia = function (typeMedia: string, dimensions: Dimensions) {
   if (typeMedia === "video") {
     const heightVideo = dimensions.height;
     if (heightVideo < minVideoHeight.value) {
@@ -162,7 +253,7 @@ const validationMedia = function (typeMedia : string, dimensions : Dimensions) {
   }
 }
 
-const printError = function (file : File) {
+const printError = function (file: File) {
   response.status = 'failed'
   response.message = `Minimum height ${file.type} is ${minVideoHeight.value}`
   emit('getResponse', response)
