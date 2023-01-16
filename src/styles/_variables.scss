@@ -24,6 +24,12 @@
 
 .flex {
   display: flex;
+  &-wrap {
+    flex-wrap: wrap;
+  }
+  &-nowrap {
+    flex-wrap: nowrap;
+  }
 }
 
 .gap {
@@ -38,6 +44,9 @@
   }
   &-14 {
     gap: 14px;
+  }
+  &-56 {
+    gap: 56px;
   }
 }
 

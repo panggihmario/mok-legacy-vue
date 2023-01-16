@@ -7,12 +7,10 @@
     ></div>
     <div
       v-for="(n, idx) in rangePage"
-      class="flex justify-center align-center page pointer"
+      class="flex justify-center align-center page page-number pointer"
       :class="{ active: n == page }"
       @click="
-        n != '...'
-          ? changePage(n)
-          : changePage(idx == 1 ? page - 1 : page + 1)
+        n != '...' ? changePage(n) : changePage(idx == 1 ? page - 1 : page + 1)
       "
     >
       {{ n }}
@@ -45,6 +43,13 @@ export default defineComponent({
     const rangePage = ref([]);
     const loading = ref(false);
 
+    watch(
+      () => props.modelValue,
+      () => {
+        page.value = props.modelValue;
+        pagination(props.modelValue, props.maxLength);
+      }
+    );
     watch(
       () => props.maxLength,
       () => pagination(1, props.maxLength)
@@ -123,6 +128,10 @@ export default defineComponent({
   background-color: var(--whitesmoke-color);
   color: var(--charcoal-color);
   border-radius: 4px;
+  &-number {
+    font-size: $text-lg;
+    font-weight: $font-medium;
+  }
 }
 .active {
   background-color: var(--primary-color);

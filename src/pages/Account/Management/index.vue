@@ -21,7 +21,6 @@
       </template>
     </k-table>
     <div style="margin-top: 30px;" class="flex justify-end">
-      {{ page }}
       <k-pagination v-model="page" :maxLength="totalPages"></k-pagination>
     </div>
   </div>
