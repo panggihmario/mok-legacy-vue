@@ -29,7 +29,7 @@
     </div>
 
     <k-modal v-model="isShowModalDetail" width="720px">
-      <div class="flex">
+      <div class="flex post">
         <div style="width: 50%">
           <div
             class="flex justify-center align-center"
@@ -37,19 +37,53 @@
           >
             <img
               v-if="
-                postDetail.post ? postDetail.post.medias[0].type == 'image' : ''
+                postDetail.post
+                  ? postDetail.post.medias[indexPostDetail].type == 'image'
+                  : ''
               "
-              :src="postDetail.post ? postDetail.post.medias[0].url : ''"
+              :src="
+                postDetail.post
+                  ? postDetail.post.medias[indexPostDetail].url
+                  : ''
+              "
               style="max-width: 100%; max-height: 100%"
             />
             <video
               v-else-if="
-                postDetail.post ? postDetail.post.medias[0].type == 'video' : ''
+                postDetail.post
+                  ? postDetail.post.medias[indexPostDetail].type == 'video'
+                  : ''
               "
-              :src="postDetail.post ? postDetail.post.medias[0].url : ''"
+              :src="
+                postDetail.post
+                  ? postDetail.post.medias[indexPostDetail].url
+                  : ''
+              "
               style="max-width: 100%; max-height: 100%"
               controls
             ></video>
+          </div>
+          <div class="flex align-center gap-8 mt-22">
+            <div
+              class="nav-btn fa fa-chevron-left"
+              :class="{ disable: indexPostDetail <= 0 }"
+              @click="indexPostDetail <= 0 ? null : changeIndexPostDetail(-1)"
+            ></div>
+            <div
+              class="nav-btn fa fa-chevron-right"
+              :class="{
+                disable: postDetail.post
+                  ? indexPostDetail >= postDetail.post.medias.length - 1
+                  : null,
+              }"
+              @click="
+                postDetail.post
+                  ? indexPostDetail == postDetail.post.medias.length - 1
+                    ? null
+                    : changeIndexPostDetail(1)
+                  : null
+              "
+            ></div>
           </div>
         </div>
         <div class="px-24" style="width: 50%">
@@ -93,6 +127,7 @@ export default defineComponent({
     const loadingPostList = ref(false);
     const postDetail: Item = ref([]);
     const loadingPostDetail = ref(false);
+    const indexPostDetail = ref(0);
     const isShowModalDetail = ref(false);
 
     const getUserDetail = () => {
@@ -127,6 +162,11 @@ export default defineComponent({
     const openModalDetail = (item: Item) => {
       postDetail.value = item;
       isShowModalDetail.value = true;
+      indexPostDetail.value = 0;
+    };
+
+    const changeIndexPostDetail = (idx: number) => {
+      indexPostDetail.value += idx;
     };
 
     onMounted(getUserDetail);
@@ -139,9 +179,11 @@ export default defineComponent({
       loadingPostList,
       postDetail,
       loadingPostDetail,
+      indexPostDetail,
       postTotal,
       isShowModalDetail,
       openModalDetail,
+      changeIndexPostDetail,
     };
   },
 });
@@ -149,6 +191,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .post {
+  color: var(--charcoal-color);
   &-total {
     font-size: $text-xl;
     font-weight: $font-medium;
@@ -171,6 +214,25 @@ export default defineComponent({
       padding: 13px 12px;
       border-radius: 6px;
     }
+  }
+}
+
+.disable {
+  color: var(--silver-color);
+  cursor: default !important;
+}
+
+.nav {
+  &-btn {
+    height: 24px;
+    width: 24px;
+    background-color: var(--whitesmoke-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: $font-bolder;
+    cursor: pointer;
   }
 }
 </style>

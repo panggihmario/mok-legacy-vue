@@ -1,20 +1,27 @@
 <template>
-  <div :class="showModal ? 'modal' : 'hidden'" hidden>
-    <!-- Modal content -->
-    <div class="modal-content" :style="`width: ${width}`">
-      <div class="flex justify-end pt-12 pr-12">
-        <span
-          class="fa-solid fa-xmark pointer"
-          style="font-size: 18px"
-          @click="changeModalStatus(false)"
-        ></span>
+  <div
+    id="modal"
+    :class="showModal ? 'modal' : 'hidden'"
+    hidden
+    @click="windowClick"
+  >
+    <transition name="bounce">
+      <!-- Modal content -->
+      <div v-if="showModal" class="modal-content" :style="`width: ${width}`">
+        <div class="flex justify-end pt-12 pr-12">
+          <span
+            class="fa-solid fa-xmark pointer"
+            style="font-size: 18px"
+            @click="changeModalStatus(false)"
+          ></span>
+        </div>
+        <div class="overflow px-28 pb-28">
+          <slot>
+            <div>Custom Template</div>
+          </slot>
+        </div>
       </div>
-      <div class="overflow px-28 pb-28">
-        <slot>
-          <div>Custom Template</div>
-        </slot>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -30,6 +37,10 @@ export default defineComponent({
     width: {
       type: String,
       default: "800px",
+    },
+    persistent: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ["update:modelValue"],
@@ -48,9 +59,17 @@ export default defineComponent({
       emit("update:modelValue", value);
     };
 
+    const windowClick = (e: Event) => {
+      let modal = document.getElementById("modal");
+      if (e.target == modal && !props.persistent) {
+        changeModalStatus(false);
+      }
+    };
+
     return {
       showModal,
       changeModalStatus,
+      windowClick,
     };
   },
 });
@@ -87,5 +106,23 @@ export default defineComponent({
 .overflow {
   max-height: 600px;
   overflow: auto;
+}
+
+.bounce-enter-active {
+  animation: bounce-in 0.3s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
