@@ -7,19 +7,23 @@
   >
     <transition name="bounce">
       <!-- Modal content -->
-      <div v-if="showModal" class="modal-content" :style="`width: ${width}`">
-        <div class="flex justify-end pt-12 pr-12">
-          <span
-            class="fa-solid fa-xmark pointer"
-            style="font-size: 18px"
-            @click="changeModalStatus(false)"
-          ></span>
+      <div v-if="showModal" class="flex align-center gap-56 ma-auto">
+        <!-- <div class="modal-nav-arrow fa fa-arrow-left"></div> -->
+        <div class="modal-content" :style="`width: ${width}`">
+          <div class="flex justify-end pt-12 pr-12">
+            <span
+              class="fa-solid fa-xmark pointer"
+              style="font-size: 18px"
+              @click="changeModalStatus(false)"
+            ></span>
+          </div>
+          <div class="overflow px-28 pb-28">
+            <slot>
+              <div>Custom Template</div>
+            </slot>
+          </div>
         </div>
-        <div class="overflow px-28 pb-28">
-          <slot>
-            <div>Custom Template</div>
-          </slot>
-        </div>
+        <!-- <div class="modal-nav-arrow fa fa-arrow-right"></div> -->
       </div>
     </transition>
   </div>
@@ -89,13 +93,26 @@ export default defineComponent({
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+  backdrop-filter: blur(4px);
   &-content {
     background-color: #fefefe;
-    margin: auto;
+    // margin: auto;
     max-height: 80%;
     border-radius: 16px;
     box-shadow: 0px 4px 24px rgba(253, 82, 154, 0.06);
+  }
+  &-nav-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 77px;
+    height: 77px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    font-weight: $font-bolder;
+    border-radius: 100%;
   }
 }
 

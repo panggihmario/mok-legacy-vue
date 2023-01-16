@@ -1,5 +1,8 @@
 // MARGIN
 .ma {
+  &-auto {
+    margin: auto;
+  }
   &-2 {
     margin: 0.125rem;
   }
