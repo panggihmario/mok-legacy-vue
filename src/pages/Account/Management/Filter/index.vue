@@ -1,38 +1,27 @@
 <template>
-  <div class="flex justify-between">
-    <div class="flex" style="gap : 30px">
-      <div class="flex align-center" style="gap : 8px">
-        <div :class="filter.label">Sort</div>
-        <div>
-          <k-select :items="items" labelText="title" v-model="select" placeholder="Role" />
-        </div>
-      </div>
-      <div class="flex align-center" style="gap : 8px">
-        <div :class="filter.label" >Filter</div>
-        <div>
-          <k-select :items="items" labelText="title" v-model="select" placeholder="Role" />
-        </div>
-      </div>
-    </div>
+  <div class="flex justify-end">
+   
 
-    <k-input placeholder="Search" v-model="searchValue" />
+    <k-input 
+      placeholder="Search" 
+      v-model="searchValue" 
+      v-on:keyup.enter="onEnter"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue';
-  const select = ref({})
   const searchValue = ref('')
-  const items = [
-    {
-      title: 'Foo',
-      value: 'foo'
-    },
-    {
-      title: 'Bar',
-      value: 'bar'
-    }
-  ]
+  const emit = defineEmits<{
+   ( e : 'onEnter' , value : string) : void
+  }>()
+  const onEnter = function () {
+    emit('onEnter', searchValue.value)
+  }
+  
+
+
 </script>
 
 <style lang="scss" module="filter">

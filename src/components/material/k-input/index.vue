@@ -33,6 +33,7 @@
 type Size = 'md' | 'lg' | 'sm';
 import { defineComponent, PropType, computed, ref } from 'vue'
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     label: {
       type: String
