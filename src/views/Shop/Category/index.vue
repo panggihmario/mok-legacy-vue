@@ -4,35 +4,34 @@
 			label="Kategori Produk"
 			:list="crumbs"
 			labelAction="Create Categori"
-			@click="handleClick"
 		/>
+		<div :class="cat.header" class="d-flex">
+			<div>Search</div>
+			<k-input size="sm" />
+		</div>
 		<v-data-table
 			:headers="headers"
 			hide-default-footer
 			:items="data"
-		/>
-		<v-dialog
-			v-model="dialogCategory"
-			max-width="500"
+			class="grey--text"
 		>
-			<v-card>
-				<div class="dialog__container" >
-					<div class="charcoal--text dialog__label">Informasi Kategori</div>
-					<custom-input
-						placeholder="Category Name"
-					/>
-					<div :style="{ width : '100%' }" class="d-flex justify-end">
-						<custom-button @click="cancel" color="carmine" outlined >Cancel</custom-button>
-						<custom-button  @click="createCategory" color="carmine" class="ml-4 white--text">Buat Kategori</custom-button>
-					</div>
-				</div>
-			</v-card>
-		</v-dialog>
+		<template v-slot:item.action="{ item }">
+      <v-chip
+        color="secondary"
+        dark
+				class="my-handle"
+      >
+				button
+      </v-chip>
+		</template>
+		</v-data-table>
+
 	</div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import Sortable from 'sortablejs';
 export default {
 	components : {
 		HeaderContent
@@ -46,49 +45,100 @@ export default {
 					disabled : true
 				}
 			],
+			dragNdrop: [],
 			data  :[
 				{
+					icon : 'ICON',
 					categoryProduct : 'Fashion Pria',
 					date : '02/02/2020',
-					totalProduct : '123'
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
+				},
+				{
+					icon : 'ICON',
+					categoryProduct : 'Fashion Wanita',
+					date : '02/02/2020',
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
+				},
+				{
+					icon : 'ICON',
+					categoryProduct : 'Sepatu Pria',
+					date : '02/02/2020',
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
+				},
+				{
+					icon : 'ICON',
+					categoryProduct : 'Sepatu Wanita',
+					date : '02/02/2020',
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
+				},
+				{
+					icon : 'ICON',
+					categoryProduct : 'Motor',
+					date : '02/02/2020',
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
+				},
+				{
+					icon : 'ICON',
+					categoryProduct : 'Toys',
+					date : '02/02/2020',
+					detail : 'Detail dari kategori ini contohnya : “Kategori ini mencakup: Jendela, Kusen, Kaca Jendela, Kunci Jendela, Pasir, Semen,'
 				}
 			],
 			headers : [
 				{
-					text : 'Kategory Produk',
-					value : 'categoryProduct'
+					text : 'Icon',
+					value : 'icon',
+					class: "whitesnow",
 				},
 				{
-					text : 'Dibuat Pada',
-					value : 'date'
+					text : 'Nama Kategori',
+					value : 'categoryProduct',
+					class: "whitesnow",
 				},
 				{
-					text : 'Jumlah Product',
-					value : 'totalProduct'
+					text : 'Tgl Dibuat',
+					value : 'date',
+					class: "whitesnow",
+				},
+				{
+					text : 'Detail Kategori',
+					value : 'detail',
+					class: "whitesnow",
+				},
+				{
+					text : 'Action',
+					value : 'action',
+					class: "whitesnow",
 				}
 			]
 		}
 	},
+	mounted() {
+		this.initSortable()
+	},
 	methods : {
-		handleClick (){
-			this.dialogCategory = true
-		},
-		cancel () {
-			this.dialogCategory = false
-		},
-		createCategory () {
-			this.dialogCategory = false
-		}
+		initSortable () {
+			let table = document.querySelector("tbody")
+			const _self = this
+			_self.dragNdrop = JSON.parse(JSON.stringify(_self.data))
+			Sortable.create(table , {
+				handle: ".my-handle",
+				easing: "cubic-bezier(1, 0, 0, 1)",
+				onEnd({
+					newIndex, oldIndex
+				}) {
+					_self.dragNdrop.splice(newIndex, 0, ..._self.dragNdrop.splice(oldIndex, 1))
+				}
+			})
+
+		},	
 	}
 }
 </script>
 
-<style lang="sass" scoped>
-.dialog
-	&__container
-		padding: 32px
-	&__label
-		font-size: 20px
-		font-weight: 500
-		margin-bottom: 20px
+<style lang="scss" module="cat">
+.header {
+		height: 34px;
+		background-color: #EEEEEE;
+	}
 </style>

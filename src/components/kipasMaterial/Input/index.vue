@@ -115,5 +115,9 @@ export default {
     height: 32px;
     padding: 9px;
   }
+  &__input-sm {
+    height: 25px;
+    padding: 6px;
+  }
 }
 </style>
