@@ -16,6 +16,7 @@ import EditorArticle from "../views/Article/Editor/Article";
 import CategoryNews from "../views/Article/Category";
 import CategoryNewsEdit from "../views/Article/Category/edit.vue";
 import Category from "../views/Shop/Category";
+import CategoryCreate from "../views/Shop/Category/create";
 import Seller from "../views/Shop/Seller";
 import ReportedSeller from "../views/Shop/ReportedSeller";
 import DetailReportedSeller from "../views/Shop/ReportedSeller/detail.vue";
@@ -201,6 +202,11 @@ const routes = [
         path: "/category",
         name: "category",
         component: Category,
+      },
+      {
+        path: "/category/create",
+        name: "createCategory",
+        component: CategoryCreate,
       },
       {
         path: "/seller",
