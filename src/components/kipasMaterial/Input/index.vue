@@ -4,13 +4,15 @@
       <label v-if="label" class="input__label" :class="errors.length > 0 && 'input__error-label' " > {{label}} </label>
       <input 
         :type="type" 
-        :class="[`kipas__input-${size}` , { 'input__error' :  errors.length > 0 }]"
+        :class="[`kipas__input-${size}` , { 'input__error' :  errors.length > 0 }, `kipas__${model}`]"
         class="input"
         v-bind="$attrs"
         :value="value"
         v-on="inputListener"
       >
-      <div class="input__error-label" > {{errors[0]}} </div>
+      <div  
+        :style="!rules && 'display : none' "
+        class="input__error-label" > {{errors[0]}} </div>
     </div>
 </ValidationProvider>
 </template>
@@ -44,8 +46,9 @@ export default {
     name : {
       type : String
     },
-    rules : {
-      type : String
+    model : {
+      type : String,
+      default : 'outline'
     }
   },
   computed : {
@@ -89,12 +92,20 @@ export default {
   }
 }
 .kipas {
+  &__outline {
+    background: #FFFFFF;
+    border: 1px solid #BBBBBB;
+  }
+  &__flat {
+    background: #FFFFFF;
+    border: none;
+  }
   &__input {
     outline: none;
     font-size: 12px;
     font-weight: 500;
-    background: #FFFFFF;
-    border: 1px solid #BBBBBB;
+    // background: #FFFFFF;
+    // border: 1px solid #BBBBBB;
     border-radius: 4px;
   }
   &__input-label {
@@ -116,7 +127,7 @@ export default {
     padding: 9px;
   }
   &__input-sm {
-    height: 25px;
+    height: 24px;
     padding: 6px;
   }
 }
