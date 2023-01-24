@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios, { AxiosInstance, AxiosResponse } from "axios"
 import { useAuthStore } from "./authentication"
-type Params = {[key : string | number] : string }
+type Params = {[key : string | number] : string | Number }
 const { VITE_APP_BASE_URL } = import.meta.env;
 export const useApiStore = defineStore('api', {
   state: () => ({
