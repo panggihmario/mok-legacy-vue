@@ -212,6 +212,22 @@ export default [
     ],
   },
   {
+    action: "fas fa-hand-holding-usd",
+    title: "Penggalangan Dana",
+    items : [
+      {
+        title : 'List Penggalangan Dana',
+        path : '/donations',
+        role : ["ROLE_ADMIN"]
+      },
+      {
+        title : 'Kategori',
+        path : '/donation-category',
+        role : ["ROLE_ADMIN"]
+      }
+    ]
+  },
+  {
     action: "fa-solid fa-database",
     title: "Master",
     items : [

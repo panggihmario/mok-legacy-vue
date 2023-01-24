@@ -203,6 +203,7 @@ export default {
     font-size: 10px
   &__button
     border-radius: $border-radius-root
+    background: #F9F9F9
   &__core
     display: none
 </style>

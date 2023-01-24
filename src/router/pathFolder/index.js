@@ -3,13 +3,15 @@ import pathNews from "./news.js"
 import pathUser from "./user.js"
 import socmedRoute from "./managerSocmed"
 import pathMaster from "./master"
+import donationRoute from "./donation"
 
 const allpath = [
   ...pathPost,
   ...pathNews,
   ...pathUser,
   ...socmedRoute,
-  ...pathMaster
+  ...pathMaster,
+  ...donationRoute
 ]
 
 export default allpath
