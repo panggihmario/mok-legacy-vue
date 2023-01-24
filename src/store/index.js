@@ -18,6 +18,7 @@ import tiktok from "./tiktok";
 import masterCategory from "./master/category";
 import manageHashtag from "./manage/hashtag";
 import master from "./master"
+import helper from "./helper"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -40,7 +41,8 @@ export default new Vuex.Store({
     tiktok,
     masterCategory,
     manageHashtag,
-    master
+    master,
+    helper
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,

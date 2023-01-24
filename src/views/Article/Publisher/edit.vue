@@ -131,6 +131,7 @@ export default {
       const id = this.$route.params.id;
       const response = await this.getNewsById(id);
       if (response.status === 200) {
+        console.log({response})
         const responseData = response.data.data;
         this.propsImage =
           responseData.medias.length > 0
