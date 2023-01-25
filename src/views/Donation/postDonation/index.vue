@@ -1,9 +1,6 @@
 <template>
   <div>
-    <HeaderContent
-      label="Tambah Penggalangan Dana"
-      :list="crumbs"
-    />
+    <HeaderContent label="Tambah Penggalangan Dana" :list="crumbs" />
     <div :class="d.columns">
       <div :class="d.first">
         <k-input label="judul donasi" />
@@ -11,37 +8,37 @@
           <div>
             <div>
               <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
-              <custom-upload 
-                text 
-                color="primary"
-                title="Upload Foto Donasi"
-              />
+              <custom-upload text color="primary" title="Upload Foto Donasi" />
             </div>
           </div>
           <div>
             <div>
               <div :class="d['upload-label']"> Video Donasi </div>
-              <custom-upload
-                text 
-                color="primary"
-                title="Upload Video"
-              />
+              <custom-upload text color="primary" title="Upload Video" />
             </div>
           </div>
         </div>
-        <k-textarea
-        title="Deskripsi"
-        />
+        <k-textarea title="Deskripsi" />
       </div>
       <div :class="d.second">
-        <CurrencyInput
-    v-model="amount"
-    :options="{ currency: 'IDR', locale: 'id', currencyDisplay : 'hidden' }"
-    prefix="Rp"
-  />
-  <k-checkbox/>
+        <div :class="d.box">
+          <CurrencyInput 
+          label="Target Donasi" 
+          v-model="amount"
+          :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" 
+        />
+        <k-checkbox v-model="isAmount" label="Tidak ada limit" @click="onClick" />
+        </div>
+        
+        <div :class="d.box">
+          <k-date title="Berakir pada" />
+          <k-checkbox v-model="isAmount" label="Tidak ada batas waktu" @click="onClick" />
+        </div>
+        <k-select title="Kategori" :items="items" v-model="item"/>
+        <k-select title="Provinsi" :items="items" v-model="item"/>
+        <k-map title="Lokasi" />
       </div>
-      </div>
+    </div>
   </div>
 </template>
 
@@ -50,14 +47,37 @@ import HeaderContent from "@/containers/HeaderContent";
 import CurrencyInput from './currencyInput.vue'
 export default {
 
-  components : {
+  components: {
     HeaderContent,
     CurrencyInput
   },
-  data () {
+  methods: {
+    onClick(e) {
+      console.log("e")
+    }
+  },
+  data() {
     return {
-      amount : 0,
-
+      amount: 0,
+      isAmount: false,
+      item: {
+        value: 'day',
+        label: 'days'
+      },
+      items: [
+        {
+          value: 'day',
+          label: 'days'
+        },
+        {
+          value: 'hour',
+          label: 'hours'
+        },
+        {
+          value: 'minute',
+          label: 'minutes'
+        }
+      ],
       crumbs: [
         {
           text: "List Penggalangan Dana",
@@ -79,18 +99,22 @@ export default {
   display: flex;
   gap: 40px;
 }
-.subcolumns  {
+
+.subcolumns {
   display: flex;
   height: 9.375rem;
   gap: 10px;
 }
+
 .subcolumns div:nth-child(1) {
   flex: 1 1 78%;
 }
-.subcolumns div:nth-child(2){
+
+.subcolumns div:nth-child(2) {
   flex: 1 1 22%;
 }
-.subcolumns > div  {
+
+.subcolumns>div {
   border-radius: 5px;
   border: 1px dashed #BBBBBB;
   display: flex;
@@ -98,19 +122,30 @@ export default {
   align-items: center;
   text-align: center;
 }
+
 .columns .first {
   flex: 1 1 60%;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+
 .columns .second {
   flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
+
 .upload-label {
   font-size: 12px;
   font-weight: 400;
   color: $charcoal;
   margin-bottom: 8px;
+}
+.box {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
 }
 </style>

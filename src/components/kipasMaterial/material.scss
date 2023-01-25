@@ -1,0 +1,46 @@
+input:focus {
+  outline: none;
+}
+input {
+  width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.field {
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $charcoal;
+  }
+  &__input {
+    display: flex;
+    outline: none;
+    font-size: 12px;
+    font-weight: 500;
+    background: $truewhite;
+    border: 1px solid $silver;
+    border-radius: 4px;
+    padding: 9px;
+    height: 32px;
+  }
+  &__container {
+    display: grid;
+    gap: 8px;
+  }
+}
+
+.map {
+  &__card {
+    padding: 16px;
+  }
+  &__title {
+    text-align: center;
+  }
+  &__box {
+    height: 380px;
+    margin-top: 16px;
+  }
+}
