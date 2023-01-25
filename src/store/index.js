@@ -17,8 +17,10 @@ import trending from "./trending";
 import tiktok from "./tiktok";
 import masterCategory from "./master/category";
 import manageHashtag from "./manage/hashtag";
-import master from "./master"
-import helper from "./helper"
+import master from "./master";
+import productCategory from "./product/category";
+import helper from "./helper";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -42,7 +44,8 @@ export default new Vuex.Store({
     masterCategory,
     manageHashtag,
     master,
-    helper
+    productCategory,
+    helper,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
