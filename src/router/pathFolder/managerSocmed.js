@@ -19,21 +19,21 @@ const socmedRoute = [
     name: "createHashtag",
     component: () => import("../../views/Manager/Hashtag/HashtagManage/CreateNewTrending"),
   },
-  {
-    path: "/donation",
-    name: "donation",
-    component: () => import("../../views/Manager/Donation/index.vue"),
-  },
-  {
-    path: "/donation/create",
-    name: "donationCreate",
-    component: () => import("../../views/Manager/Donation/create.vue"),
-  },
-  {
-    path: "/donation/:id",
-    name: "donationEdit",
-    component: () => import("../../views/Manager/Donation/edit.vue"),
-  },
+  // {
+  //   path: "/donation",
+  //   name: "donation",
+  //   component: () => import("../../views/Manager/Donation/index.vue"),
+  // },
+  // {
+  //   path: "/donation/create",
+  //   name: "donationCreate",
+  //   component: () => import("../../views/Manager/Donation/create.vue"),
+  // },
+  // {
+  //   path: "/donation/:id",
+  //   name: "donationEdit",
+  //   component: () => import("../../views/Manager/Donation/edit.vue"),
+  // },
   {
     path : '/feedback/:page',
     name : 'feedback',

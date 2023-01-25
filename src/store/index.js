@@ -19,6 +19,7 @@ import masterCategory from "./master/category";
 import manageHashtag from "./manage/hashtag";
 import master from "./master";
 import productCategory from "./product/category";
+import helper from "./helper";
 
 Vue.use(Vuex);
 
@@ -44,6 +45,7 @@ export default new Vuex.Store({
     manageHashtag,
     master,
     productCategory,
+    helper,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
