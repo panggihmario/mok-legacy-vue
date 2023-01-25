@@ -7,17 +7,25 @@
     />
     <div>
       <div class="d-flex gap-14">
-        <div v-if="dataPayload.icon == ''" class="category-box-no-img"></div>
+        <div
+          v-if="dataPayload.params.icon == ''"
+          class="category-box-no-img"
+        ></div>
         <div v-else class="category-box-img">
           <div class="d-flex justify-end">
             <div
               class="d-flex justify-center align-center clear-icon"
-              @click="dataPayload.icon = ''"
+              @click="dataPayload.params.icon = ''"
             >
               <span class="fa fa-times"></span>
             </div>
           </div>
-          <img :src="dataPayload.icon" alt="" width="100%" height="100%" />
+          <img
+            :src="dataPayload.params.icon"
+            alt=""
+            width="100%"
+            height="100%"
+          />
         </div>
         <div>
           <custom-upload
@@ -41,15 +49,14 @@
     </div>
 
     <div class="category-box-input mt-6">
-      <custom-input
-        v-model="dataPayload.categoryName"
-        label="Nama Kategori"
-        outlined
-        colorbg="white"
-        height="29px"
-      ></custom-input>
+      <div class="mb-4">
+        <k-input
+          v-model="dataPayload.params.name"
+          label="Nama Kategori"
+        ></k-input>
+      </div>
       <custom-textarea
-        v-model="dataPayload.categoryDetail"
+        v-model="dataPayload.params.description"
         label="Detail Kategori"
         outlined
         color="white"
@@ -58,22 +65,32 @@
     </div>
 
     <div class="d-flex" style="gap: 8px;">
-      <custom-button>Batalkan</custom-button>
+      <custom-button @click="changePage('category')">Batalkan</custom-button>
       <custom-button
         color="secondary"
         :disabled="
-          dataPayload.icon == '' ||
-            dataPayload.categoryName == '' ||
-            dataPayload.categoryDetail == ''
+          dataPayload.params.icon == '' ||
+            dataPayload.params.categoryName == '' ||
+            dataPayload.params.categoryDetail == ''
         "
+        :loading="loading"
+        @click="actionHandleClick"
         >Simpan ke Daftar Kategori</custom-button
       >
     </div>
+
+    <v-snackbar top right v-model="alertSuccess" color="success">
+      Create Success
+    </v-snackbar>
+    <v-snackbar top right v-model="alertError" color="error">
+      {{ errorMessage }}
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -91,15 +108,76 @@ export default {
         },
       ],
       dataPayload: {
-        icon: "",
-        categoryName: "",
-        categoryDetail: "",
+        id: "",
+        params: {
+          icon: "",
+          name: "",
+          description: "",
+        },
       },
+      loading: false,
+      alertSuccess: false,
+      alertError: false,
+      errorMessage: "",
     };
   },
+  mounted() {
+    this.handleGetDataLocal();
+  },
   methods: {
+    ...mapActions({
+      createCategory: "productCategory/createCategory",
+      editCategory: "productCategory/editCategory",
+    }),
     getResponseUpload(data) {
-      this.dataPayload.icon = data.response.url;
+      this.dataPayload.params.icon = data.response.url;
+    },
+    handleGetDataLocal() {
+      if (this.$route.name == "editCategory") {
+        const data = JSON.parse(localStorage.getItem("detail-category"));
+        this.dataPayload.id = data.id;
+        this.dataPayload.params.icon = data.icon;
+        this.dataPayload.params.name = data.name;
+        this.dataPayload.params.description = data.description;
+      }
+    },
+    actionCreateCategory() {
+      this.loading = true;
+      return this.createCategory(this.dataPayload.params)
+        .then((res) => {
+          this.loading = false;
+          this.alertSuccess = true;
+          this.changePage("/category");
+        })
+        .catch((err) => {
+          this.errorMessage = err.response.data.data;
+          this.loading = false;
+          this.alertError = true;
+        });
+    },
+    actionEditCategory() {
+      this.loading = true;
+      return this.editCategory(this.dataPayload)
+        .then((res) => {
+          this.loading = false;
+          this.alertSuccess = true;
+          this.changePage("/category");
+        })
+        .catch((err) => {
+          this.errorMessage = err.response.data.data;
+          this.loading = false;
+          this.alertError = true;
+        });
+    },
+    actionHandleClick() {
+      if (this.dataPayload.id == "") {
+        this.actionCreateCategory();
+      } else {
+        this.actionEditCategory();
+      }
+    },
+    changePage(v) {
+      this.$router.push(v);
     },
   },
 };
@@ -115,6 +193,7 @@ export default {
       border-radius: 4px;
     }
     &-img {
+      position: relative;
       height: 100px;
       width: 100px;
       background-color: $black;
@@ -128,9 +207,9 @@ export default {
 }
 
 .clear-icon {
-  margin: 4px;
-  position: fixed;
-  z-index: 100;
+  position: absolute;
+  top: 4px;
+  right: 4px;
   background-color: $danger;
   color: white;
   font-size: 8px;
@@ -147,4 +226,5 @@ li {
 .gap-14 {
   gap: 14px;
 }
+
 </style>

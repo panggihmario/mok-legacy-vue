@@ -209,6 +209,11 @@ const routes = [
         component: CategoryCreate,
       },
       {
+        path: "/category/:id",
+        name: "editCategory",
+        component: CategoryCreate,
+      },
+      {
         path: "/seller",
         name: "seller",
         component: Seller,
