@@ -10,17 +10,36 @@
         <div :class="d.subcolumns">
           <div>
             <div>
-              <div> Gambar Donasi di MOK</div>
-              <custom-upload text color="primary"/>
+              <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
+              <custom-upload 
+                text 
+                color="primary"
+                title="Upload Foto Donasi"
+              />
             </div>
           </div>
           <div>
-            right
+            <div>
+              <div :class="d['upload-label']"> Video Donasi </div>
+              <custom-upload
+                text 
+                color="primary"
+                title="Upload Video"
+              />
+            </div>
           </div>
         </div>
+        <k-textarea
+        title="Deskripsi"
+        />
       </div>
       <div :class="d.second">
-
+        <CurrencyInput
+    v-model="amount"
+    :options="{ currency: 'IDR', locale: 'id', currencyDisplay : 'hidden' }"
+    prefix="Rp"
+  />
+  <k-checkbox/>
       </div>
       </div>
   </div>
@@ -28,12 +47,17 @@
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
+import CurrencyInput from './currencyInput.vue'
 export default {
+
   components : {
     HeaderContent,
+    CurrencyInput
   },
   data () {
     return {
+      amount : 0,
+
       crumbs: [
         {
           text: "List Penggalangan Dana",
@@ -82,5 +106,11 @@ export default {
 }
 .columns .second {
   flex: 1 1 40%;
+}
+.upload-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: $charcoal;
+  margin-bottom: 8px;
 }
 </style>
