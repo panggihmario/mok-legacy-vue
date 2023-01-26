@@ -74,8 +74,8 @@ export default {
 
 .input {
   outline: none;
-  font-size: 12px;
-  font-weight: 500;
+  @extend .utils;
+  color: $charcoal;
   background: #FFFFFF;
   border: 1px solid #BBBBBB;
   border-radius: 4px;

@@ -4,6 +4,8 @@
     <textarea 
       :class="area.input"
       :rows="rows"
+      :value="value"
+      v-on="inputListener"
     />
   </div>
 </template>
@@ -22,6 +24,20 @@ export default {
     rows : {
       type : String,
       default : "20"
+    },
+    value: {
+      type: [String, Number, Object],
+      require : true
+    },
+  },
+  computed : {
+    inputListener () {
+      const vm = this
+      return Object.assign({}, this.$listeners, {
+        input : function(event) {
+          vm.$emit('input', event.target.value)
+        }
+      })
     }
   }
 }
