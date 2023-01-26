@@ -71,33 +71,34 @@ export default {
           text: "Nama Kategori",
           value: "name",
           class: "whitesnow",
+          sortable: false,
         },
         {
           text: "Tgl Dibuat",
           value: "date",
           class: "whitesnow",
+          sortable: false,
         },
         {
           text: "Detail Kategori",
           value: "description",
           class: "whitesnow",
+          sortable: false,
         },
         {
           text: "Action",
           value: "action",
           class: "whitesnow",
+          sortable: false,
         },
       ],
       dragNdrop: [],
     };
   },
   watch: {
-    dragNdrop() {
-      console.log("dnd", this.dragNdrop);
-    },
-  },
-  mounted() {
-    this.initSortable();
+    data() {
+      this.initSortable();
+    }
   },
   methods: {
     initSortable() {
@@ -113,6 +114,7 @@ export default {
             0,
             ..._self.dragNdrop.splice(oldIndex, 1)
           );
+          _self.$emit("onChangeData", _self.dragNdrop)
         },
       });
     },
@@ -126,7 +128,7 @@ export default {
 
 <style lang="scss">
 .my-handle {
-  cursor: url(../../../assets/hand.png), auto;
+  // cursor: url(../../../assets/hand.png), auto;
   /* cursor: grab; */
 }
 /* .my-handle:active{

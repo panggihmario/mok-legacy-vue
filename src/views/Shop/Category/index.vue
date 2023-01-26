@@ -24,17 +24,20 @@
         <div :class="cat.alert">
           Ada perubahan urutan kategori yang belum kamu simpan!
         </div>
-        <custom-button size="x-small" color="whitesnow">
+        <custom-button @click="onCancel" size="x-small" color="whitesnow">
           Batalkan Perubahan
         </custom-button>
-        <custom-button size="x-small" color="secondary">
+        <custom-button @click="onSave" size="x-small" color="secondary">
           Simpan Perubahan Urutan Kategori
         </custom-button>
       </div>
     </div>
 
     <div style="max-height: 600px; overflow: auto;">
-      <Table :data="search != '' ? dataTableSearch : dataTable" />
+      <Table 
+        :data="search != '' ? dataTableSearch : dataTable" 
+        @onChangeData="onChangeData"
+      />
     </div>
     <span :class="cat.total"
       >Total Kategori:
@@ -68,6 +71,7 @@ export default {
       search: "",
       dataTable: [],
       dataTableSearch: [],
+      payloadReorder : []
     };
   },
   watch: {
@@ -85,13 +89,38 @@ export default {
   methods: {
     ...mapActions({
       getListCategory: "productCategory/getListCategory",
+      reorderCategory : "productCategory/reorderCategory"
     }),
+    onSave() {
+      return this.reorderCategory(this.payloadReorder)
+        .then((res) => {
+          return this.handleGetListCategory()
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
+    },
+    onCancel() {
+      this.dataTable = []
+      this.isChanged = false
+      this.handleGetListCategory()
+    },
+    onChangeData(updatedData) {
+      this.isChanged = true
+      const payload = updatedData.map(d=> {
+        return {
+          id : d.id,
+          sequence : d.sequence
+        }
+      })
+      this.payloadReorder = payload
+    },
     handleGetListCategory() {
       localStorage.removeItem("detail-category");
       return this.getListCategory()
-        .then((res) => {
-          this.dataTable = res.data;
-        })
+        .then((res) => { 
+          console.log({res})
+          this.dataTable = res.data})
         .catch((err) => {
           console.log({ err });
         });

@@ -149,7 +149,7 @@ export default {
       const fileType = file.type.split("/")[1]
       this.dataResponse = data
       const currentDateEpoch = moment(new Date).valueOf()
-      const filePath = `/img/media/${currentDateEpoch}.${fileType}`
+      const filePath = `/img/tmp/media/${currentDateEpoch}.${fileType}`
       return this.$storeOss.put(filePath, file)
         .then(response => {
           let url
@@ -198,7 +198,7 @@ export default {
     },
     createThumbnail(file, seekTo) {
       const currentDateEpoch = moment(new Date).valueOf()
-      const filePath = `/img/media/${currentDateEpoch}.jpg`
+      const filePath = `/img/tmp/media/${currentDateEpoch}.jpg`
       let response
       return this.drawImageOnCanvas(file, seekTo)
         .then((base64data => {
