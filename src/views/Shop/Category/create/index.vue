@@ -55,13 +55,11 @@
           label="Nama Kategori"
         ></k-input>
       </div>
-      <custom-textarea
+      <k-textarea
         v-model="dataPayload.params.description"
-        label="Detail Kategori"
-        outlined
-        color="white"
-        height="97px"
-      ></custom-textarea>
+        title="Detail Kategori"
+        rows="6"
+      ></k-textarea>
     </div>
 
     <div class="d-flex" style="gap: 8px;">

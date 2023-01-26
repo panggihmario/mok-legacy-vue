@@ -16,5 +16,13 @@ export default [
   {
     registeredAs : 'k-checkbox',
     name : () => import('./Checkbox/index.vue')
+  },
+  {
+    registeredAs : 'k-date',
+    name : () => import('./DatePicker')
+  },
+  {
+    registeredAs : 'k-map',
+    name : () => import('./GoogleMap')
   }
 ]

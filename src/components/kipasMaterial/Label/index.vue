@@ -1,5 +1,5 @@
 <template>
-  <div :class="x.label"> {{ title }} </div>
+  <div class="field__label"> {{ title }} </div>
 </template>
 
 <script>
@@ -12,10 +12,6 @@ export default {
 }
 </script>
 
-<style lang="scss" module="x">
-.label {
-  font-size: 12px;
-  font-weight: 600;
-  color: $charcoal;
-}
+<style lang="scss" src="../material.scss">
+
 </style>
