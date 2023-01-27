@@ -28,11 +28,11 @@
           />
         </div>
         <div>
-          <custom-upload
+          <upload-oss
             id="create"
             color="secondary"
             @response="getResponseUpload"
-          ></custom-upload>
+          ></upload-oss>
           <ul class="mt-4">
             <li>
               Gunakan rasio 1:1
@@ -136,6 +136,7 @@ export default {
       editCategory: "productCategory/editCategory",
     }),
     getResponseUpload(data) {
+      console.log(data)
       this.dataPayload.params.icon = data.response.url;
     },
     handleGetDataLocal() {
