@@ -1,58 +1,32 @@
 <template>
-  <div>
-    <div class="field__container pointer">
-      <Label :title="title" />
-      <div @click="openMap" class="field__input">
-        <input readonly class="pointer" />
-        <v-icon color="primary" size="15px">fas fa-map-marker-alt</v-icon>
-      </div>
-    </div>
-    <!-- <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div> -->
-    <!-- <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div> -->
-    <!-- <div id="map" class="map__box"></div> -->
-    <v-dialog width="564" v-model="isMap">
-      <Map/>
-      <!-- <v-card class="map__card">
-        <div class="map__title">Pin Lokasi</div>
-        <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div>
-        <div id="map" class="map__box"></div>
-      </v-card> -->
-    </v-dialog>
-  </div>
+  <v-card class="map__card">
+    <div class="map__title">Pin Lokasi</div>
+    <div class="field__input">
 
+      <input id="autocomplete" ref="autocomplete" v-model="address" />
+    </div>
+    <div id="map" class="map__box"></div>
+  </v-card>
 </template>
 
 <script>
 import Label from "../Label"
-import Map from "./map.vue"
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import axios from "axios";
 export default {
-  components: {
-    Label, Map
+  components : {
+    Label
   },
-  props: {
-    title: String
+  props : {
+    title : String
   },
   setup(props, { emit }) {
     const address = ref("");
     const autocomplete = ref(null)
     const isMap = ref(false)
     const coordinate = reactive({
-      latitude: "",
-      longitude: ""
+      latitude : "", 
+      longitude : ""
     })
 
     const openMap = function () {
@@ -68,7 +42,7 @@ export default {
           getAddressFrom(latitude, longitude);
           showUserLocationOnTheMap(latitude, longitude);
         });
-
+        
       } else {
         console.log("your browser does not support geolocation Api");
       }
@@ -82,7 +56,7 @@ export default {
         .get(
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`
         )
-        .then((response) => {
+        .then((response) => { 
           address.value = response.data.results[0].formatted_address;
         })
         .catch((err) => {
@@ -100,7 +74,7 @@ export default {
       let marker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, longitude),
         map: position,
-        draggable: true,
+        draggable : true,
         clickable: true,
         crossOnDrag: false,
         optimized: false,
@@ -112,7 +86,7 @@ export default {
         let lng = actual.getPosition().lng();
         getAddressFrom(lat, lng)
       })
-
+      
     };
 
     const init = function () {
@@ -121,17 +95,16 @@ export default {
       );
       auto.addListener("place_changed", () => {
         let place = auto.getPlace()
-        console.log({place})
         const latitude = place.geometry.location.lat()
         const longitude = place.geometry.location.lng()
         showUserLocationOnTheMap(latitude, longitude)
       })
-      // onLocation()
+      onLocation()
     };
 
     const closeDialog = function () {
       emit('closeDialog')
-    }
+    } 
 
     const saveCoordinate = function () {
       emit("saveCoordinate", coordinate)
@@ -139,9 +112,9 @@ export default {
 
     onMounted(init)
     // onMounted(() => {
-    // new google.maps.places.Autocomplete(
-    //   document.getElementById("autocomplete")
-    // )
+    //   new google.maps.places.Autocomplete(
+    //     document.getElementById("autocomplete")
+    //   )
     // })
     return {
       onLocation,
@@ -157,13 +130,19 @@ export default {
 }
 </script>
 
-<style lang="scss" src="../material.scss">
-
-</style>
+<style lang="scss" src="../material.scss"></style>
 
 <style lang="scss">
 .pac-container {
-  z-index: 1000 !important;
-
+  z-index: 10000 !important;
+}
+.pac-item {
+  padding: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  &:hover {
+    background-color: $primarylowtint;
+  }
 }
 </style>
