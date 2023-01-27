@@ -149,13 +149,12 @@ export default {
       const fileType = file.type.split("/")[1]
       this.dataResponse = data
       const currentDateEpoch = moment(new Date).valueOf()
-      const filePath = `/img/media/${currentDateEpoch}.${fileType}`
+      const filePath = `/img/tmp/media/${currentDateEpoch}.${fileType}`
       return this.$storeOss.put(filePath, file)
         .then(response => {
+          this.loadingUpload = false
           let url
           const urlObject = new URL(response.url)
-          const tempUrl = `${urlObject.origin}/temp/${response.name}`
-          console.log('temp url', tempUrl)
           if (process.env.VUE_APP_SERVER_STATUS === 'production') {
             url = `${this.asetKipas}/${response.name}`
             this.dataResponse.url = url
@@ -195,10 +194,13 @@ export default {
           this.$emit('response', result)
           return this.$storeOss.putACL(filePath, 'public-read')
         })
+        .catch(err => {
+          console.log(err)
+        })
     },
     createThumbnail(file, seekTo) {
       const currentDateEpoch = moment(new Date).valueOf()
-      const filePath = `/img/media/${currentDateEpoch}.jpg`
+      const filePath = `/img/tmp/media/${currentDateEpoch}.jpg`
       let response
       return this.drawImageOnCanvas(file, seekTo)
         .then((base64data => {

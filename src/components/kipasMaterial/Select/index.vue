@@ -1,37 +1,21 @@
 <template>
-  <v-menu
-    transition="slide-y-transition"
-    bottom
-    :disabled="disabled"
-  >
-    <template v-slot:activator="{on, attrs}">
-      <div 
-        class="select__wrapper"
-        v-bind="attrs"
-        v-on="on"
-      >
-        <input
-          readonly  
-          class="select__input text-primary"
-          v-model="value[itemLabel]"
-        />
-        <v-icon 
-          size="16px"
-          color="charcoal"
-        >
-          fa-solod fa-caret-down
-        </v-icon>
+  <v-menu transition="slide-y-transition" bottom :disabled="disabled">
+
+    <template v-slot:activator="{ on, attrs }">
+      <div>
+        <Label v-if="title" style="margin-bottom: 8px;" :title="title"></Label>
+        <div class="select__wrapper" v-bind="attrs" v-on="on">
+          <input readonly class="select__input text-primary" v-model="value[itemLabel]" />
+          <v-icon size="16px" color="charcoal">
+            fa-solod fa-caret-down
+          </v-icon>
+        </div>
       </div>
+
     </template>
     <v-list dense>
-      <v-list-item-group
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          @click="selectItem(item)"
-        >
+      <v-list-item-group color="primary">
+        <v-list-item v-for="(item, i) in items" :key="i" @click="selectItem(item)">
           <v-list-item-content>
             <v-list-item-title v-text="item.label"></v-list-item-title>
           </v-list-item-content>
@@ -43,31 +27,38 @@
 
 
 <script>
+import Label from "../Label"
 export default {
-  props : {
-    items : {
-      type : Array
+  components: {
+    Label
+  },
+  props: {
+    items: {
+      type: Array
     },
-    item : {},
-    itemLabel : {
-      type : String
+    title: {
+      type: String
     },
-    value : {
-      type : [Object, String] 
+    item: {},
+    itemLabel: {
+      type: String
     },
-    disabled : {
-      type : Boolean
+    value: {
+      type: [Object, String]
+    },
+    disabled: {
+      type: Boolean
     }
   },
-  computed : {
+  computed: {
   },
-  data () {
+  data() {
     return {
-      show : false,
+      show: false,
     }
   },
-  methods : {
-    openOptions () {
+  methods: {
+    openOptions() {
       this.show = !this.show
     },
     selectItem(item) {
@@ -85,6 +76,7 @@ export default {
     font-weight: 400;
     color: $charcoal;
   }
+
   &__options {
     position: absolute;
     display: inline-block;
@@ -105,6 +97,7 @@ export default {
     box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
     border-radius: 4px;
   }
+
   &__wrapper {
     height: 32px;
     background: #FFFFFF;
@@ -116,12 +109,14 @@ export default {
     padding: 0 10px;
     position: relative;
   }
+
   &__input {
     font-size: 11px;
     font-weight: 400;
     color: $charcoal;
     width: 100%;
     cursor: pointer;
+
     &:focus {
       outline: none;
     }

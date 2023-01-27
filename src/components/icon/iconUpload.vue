@@ -15,7 +15,8 @@
   </svg>
 </template>
 
-<style lang="sass">
-	.svg
-		fill: currentColor
+<style lang="scss">
+	.svg {
+    fill: currentColor
+  }
 </style>
