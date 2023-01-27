@@ -28,11 +28,11 @@
           />
         </div>
         <div>
-          <custom-upload
+          <upload-oss
             id="create"
             color="secondary"
             @response="getResponseUpload"
-          ></custom-upload>
+          ></upload-oss>
           <ul class="mt-4">
             <li>
               Gunakan rasio 1:1
@@ -53,7 +53,9 @@
         <k-input
           v-model="dataPayload.params.name"
           label="Nama Kategori"
+          :isError="isErrorDuplicate"
         ></k-input>
+        <span class="alert-exist">{{ errorMessage }}</span>
       </div>
       <k-textarea
         v-model="dataPayload.params.description"
@@ -62,8 +64,8 @@
       ></k-textarea>
     </div>
 
-    <div class="d-flex" style="gap: 8px;">
-      <custom-button @click="changePage('category')">Batalkan</custom-button>
+    <div class="d-flex mt-4" style="gap: 8px;">
+      <custom-button @click="changePage('/category')">Batalkan</custom-button>
       <custom-button
         color="secondary"
         :disabled="
@@ -117,7 +119,13 @@ export default {
       alertSuccess: false,
       alertError: false,
       errorMessage: "",
+      isErrorDuplicate: false,
     };
+  },
+  watch: {
+    "dataPayload.params.name"() {
+      this.isErrorDuplicate = false;
+    },
   },
   mounted() {
     this.handleGetDataLocal();
@@ -128,6 +136,7 @@ export default {
       editCategory: "productCategory/editCategory",
     }),
     getResponseUpload(data) {
+      console.log(data)
       this.dataPayload.params.icon = data.response.url;
     },
     handleGetDataLocal() {
@@ -150,7 +159,11 @@ export default {
         .catch((err) => {
           this.errorMessage = err.response.data.data;
           this.loading = false;
-          this.alertError = true;
+          if (err.response.data.message == "Data already exists") {
+            this.isErrorDuplicate = true;
+          } else {
+            this.alertError = true;
+          }
         });
     },
     actionEditCategory() {
@@ -225,4 +238,9 @@ li {
   gap: 14px;
 }
 
+.alert-exist {
+  font-size: 10px;
+  color: $warning;
+  font-weight: 600px;
+}
 </style>
