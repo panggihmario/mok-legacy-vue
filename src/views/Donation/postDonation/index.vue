@@ -1,44 +1,49 @@
 <template>
   <div>
     <HeaderContent label="Tambah Penggalangan Dana" :list="crumbs" />
-    <div :class="d.columns">
-      <div :class="d.first">
-        <k-input label="judul donasi" />
-        <div :class="d.subcolumns">
-          <div>
+    <form @submit.prevent="onSubmit">
+      <div :class="d.columns">
+        <div :class="d.first">
+          <k-input label="judul donasi" v-model="payloadDonation.title" />
+          <div :class="d.subcolumns">
             <div>
-              <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
-              <custom-upload text color="primary" title="Upload Foto Donasi" />
+              <div>
+                <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
+                <upload-oss text color="primary" title="Upload Foto Donasi" />
+              </div>
+            </div>
+            <div>
+              <div>
+                <div :class="d['upload-label']"> Video Donasi </div>
+                <upload-oss text color="primary" title="Upload Video" />
+              </div>
             </div>
           </div>
-          <div>
-            <div>
-              <div :class="d['upload-label']"> Video Donasi </div>
-              <custom-upload text color="primary" title="Upload Video" />
-            </div>
+          <k-textarea title="Deskripsi" v-model="payloadDonation.description" />
+        </div>
+        <div :class="d.second">
+          <div :class="d.box">
+            <CurrencyInput label="Target Donasi" v-model="payloadDonation.targetAmount"
+              :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" />
+            <k-checkbox v-model="isAmount" label="Tidak ada limit" @click="onClick" />
+          </div>
+
+          <div :class="d.box">
+            <k-date title="Berakir pada" />
+            <k-checkbox v-model="isAmount" label="Tidak ada batas waktu" @click="onClick" />
+          </div>
+          <k-select title="Kategori" :items="items" v-model="item" />
+          <k-select title="Provinsi" :items="items" v-model="item" />
+          <k-map title="Lokasi" />
+          <k-select title="Initiator" :items="items" v-model="item" />
+          <k-input label="Nama Wali / Penerima Donasi" />
+          <div class="d-flex" style="gap : 8px">
+            <custom-button>Batalkan</custom-button>
+            <custom-button type="submit" color="primary">Publikasikan Donasi</custom-button>
           </div>
         </div>
-        <k-textarea title="Deskripsi" />
       </div>
-      <div :class="d.second">
-        <div :class="d.box">
-          <CurrencyInput 
-          label="Target Donasi" 
-          v-model="amount"
-          :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" 
-        />
-        <k-checkbox v-model="isAmount" label="Tidak ada limit" @click="onClick" />
-        </div>
-        
-        <div :class="d.box">
-          <k-date title="Berakir pada" />
-          <k-checkbox v-model="isAmount" label="Tidak ada batas waktu" @click="onClick" />
-        </div>
-        <k-select title="Kategori" :items="items" v-model="item"/>
-        <k-select title="Provinsi" :items="items" v-model="item"/>
-        <k-map title="Lokasi" />
-      </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -52,6 +57,9 @@ export default {
     CurrencyInput
   },
   methods: {
+    onSubmit() {
+      console.log('on submit' , this.payloadDonation)
+    },
     onClick(e) {
       console.log("e")
     }
@@ -60,6 +68,16 @@ export default {
     return {
       amount: 0,
       isAmount: false,
+      payloadDonation: {
+        title: '',
+        description: '',
+        targetAmount: 0,
+        organizer: {},
+        verifier: {},
+        recipientName: '',
+        media: [],
+        expiredAt: null
+      },
       item: {
         value: 'day',
         label: 'days'
@@ -143,6 +161,7 @@ export default {
   color: $charcoal;
   margin-bottom: 8px;
 }
+
 .box {
   display: flex;
   gap: 6px;

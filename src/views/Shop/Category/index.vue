@@ -123,6 +123,7 @@ export default {
       localStorage.removeItem("detail-category");
       return this.getListCategory()
         .then((res) => {
+          console.log({res})
           const data = res.data;
           this.dataTable = data;
           data.map((item) => {
