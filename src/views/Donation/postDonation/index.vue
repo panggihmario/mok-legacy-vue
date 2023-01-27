@@ -9,13 +9,13 @@
             <div>
               <div>
                 <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
-                <custom-upload text color="primary" title="Upload Foto Donasi" />
+                <upload-oss text color="primary" title="Upload Foto Donasi" />
               </div>
             </div>
             <div>
               <div>
                 <div :class="d['upload-label']"> Video Donasi </div>
-                <custom-upload text color="primary" title="Upload Video" />
+                <upload-oss text color="primary" title="Upload Video" />
               </div>
             </div>
           </div>
