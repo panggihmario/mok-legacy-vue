@@ -13,6 +13,7 @@
           size="x-small"
           color="secondary"
           @click="movePage('category/create')"
+					:disabled="isChanged"
         >
           <v-icon left dark size="12px">
             fa-solid fa-plus
@@ -34,8 +35,8 @@
     </div>
 
     <div style="max-height: 600px; overflow: auto;">
-      <Table 
-        :data="search != '' ? dataTableSearch : dataTable" 
+      <Table
+        :data="search != '' ? dataTableSearch : dataTable"
         @onChangeData="onChangeData"
       />
     </div>
@@ -71,7 +72,8 @@ export default {
       search: "",
       dataTable: [],
       dataTableSearch: [],
-      payloadReorder : []
+      payloadReorder: [],
+      sequenceBeforeChange: [],
     };
   },
   watch: {
@@ -89,38 +91,44 @@ export default {
   methods: {
     ...mapActions({
       getListCategory: "productCategory/getListCategory",
-      reorderCategory : "productCategory/reorderCategory"
+      reorderCategory: "productCategory/reorderCategory",
     }),
     onSave() {
+      this.dataTable = [];
       return this.reorderCategory(this.payloadReorder)
         .then((res) => {
-          return this.handleGetListCategory()
+          this.isChanged = false;
+          return this.handleGetListCategory();
         })
-        .catch(err => {
-          console.log(err.response)
-        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     },
     onCancel() {
-      this.dataTable = []
-      this.isChanged = false
-      this.handleGetListCategory()
+      this.dataTable = [];
+      this.isChanged = false;
+      this.handleGetListCategory();
     },
     onChangeData(updatedData) {
-      this.isChanged = true
-      const payload = updatedData.map(d=> {
+      this.isChanged = true;
+      const payload = updatedData.map((d, idx) => {
         return {
-          id : d.id,
-          sequence : d.sequence
-        }
-      })
-      this.payloadReorder = payload
+          id: d.id,
+          sequence: this.sequenceBeforeChange[idx],
+        };
+      });
+      this.payloadReorder = payload;
     },
     handleGetListCategory() {
       localStorage.removeItem("detail-category");
       return this.getListCategory()
-        .then((res) => { 
-          console.log({res})
-          this.dataTable = res.data})
+        .then((res) => {
+          const data = res.data;
+          this.dataTable = data;
+          data.map((item) => {
+            this.sequenceBeforeChange.push(item.sequence);
+          });
+        })
         .catch((err) => {
           console.log({ err });
         });

@@ -8,6 +8,11 @@ const donationRoute = [
     path : '/donations/create',
     name : 'createDonation',
     component : () => import("@/views/Donation/postDonation/index.vue")
+  },
+  {
+    path : '/donation-category',
+    name : 'donationCategory',
+    component : () => import("@/views/Donation/category/index.vue")
   }
 ]
 
