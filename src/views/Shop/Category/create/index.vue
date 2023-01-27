@@ -167,6 +167,8 @@ export default {
     },
     actionEditCategory() {
       this.loading = true;
+      const data = JSON.parse(localStorage.getItem("detail-category"));
+      this.dataPayload.params.sequence = data.sequence;
       return this.editCategory(this.dataPayload)
         .then((res) => {
           this.loading = false;
