@@ -55,12 +55,14 @@ export default {
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
+      const typeMedia = payload.response.type
       if(payload.status === 'success' ){
-        this.image = payload.response.thumbnail.medium
+        this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
         const params = {
           position,
           response : payload.response
         }
+        console.log(payload)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }

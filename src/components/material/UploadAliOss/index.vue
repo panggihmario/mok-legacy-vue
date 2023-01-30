@@ -8,9 +8,11 @@
       <v-icon :color="color" left>$upload</v-icon>
       <span class="text-capitalize upload__label" :class="`${color}--text`">Upload Foto</span>
     </v-btn>
-    <div id="output"
-      style="display: inline-block; top: 4px; position: relative ;border: dotted 1px #ccc; padding: 2px;"></div>
-
+    <!-- <div 
+      id="output"
+      style="display: inline-block; 
+      top: 4px; 
+      position: relative ;border: dotted 1px #ccc; padding: 2px;"></div> -->
     <input @change="onLoad" class="upload__core" :id="id" type="file" />
   </div>
 </template>
@@ -155,16 +157,21 @@ export default {
           this.loadingUpload = false
           let url
           const urlObject = new URL(response.url)
+          const nameUrl = response.name.split('/')
+          nameUrl.splice(1,1)
+          const pathTemp = nameUrl.join('/')
+          const pathThumbnail = `${urlObject.origin}/${pathTemp}`
           if (process.env.VUE_APP_SERVER_STATUS === 'production') {
             url = `${this.asetKipas}/${response.name}`
+            const thumbProd = `${this.asetKipas}/${pathTemp}`
             this.dataResponse.url = url
             if (type === 'video') {
               return this.createThumbnail(file, 0.0)
             } else {
               return {
-                large: url,
-                medium: url,
-                small: url
+                large: thumbProd,
+                medium: thumbProd,
+                small: thumbProd
               }
             }
           } else {
@@ -173,9 +180,9 @@ export default {
               return this.createThumbnail(file, 0.0)
             } else {
               return {
-                large: response.url,
-                medium: response.url,
-                small: response.url
+                large: pathThumbnail,
+                medium: pathThumbnail,
+                small: pathThumbnail
               }
             }
           }
@@ -212,19 +219,24 @@ export default {
           return this.$storeOss.putACL(filePath, 'public-read')
         })
         .then(() => {
-          let url
+          const urlObject = new URL(response.url)
+          const nameUrl = response.name.split('/')
+          nameUrl.splice(1,1)
+          const pathTemp = nameUrl.join('/')
+          const pathThumbnail = `${urlObject.origin}/${pathTemp}`
           if (process.env.VUE_APP_SERVER_STATUS === "production") {
-            url = `${this.asetKipas}/${response.name}`
+            const url = `${this.asetKipas}/${response.name}`
+            const thumbUrl = `${this.asetKipas}/${pathTemp}`
             return {
               large: url,
-              medium: url,
-              small: url
+              medium: thumbUrl,
+              small: thumbUrl
             }
           } else {
             return {
               large: response.url,
-              medium: response.url,
-              small: response.url
+              medium: pathThumbnail,
+              small: pathThumbnail
             }
           }
         })
