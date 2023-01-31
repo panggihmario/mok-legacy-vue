@@ -3,32 +3,14 @@
     <div class="field__container pointer">
       <Label :title="title" />
       <div @click="openMap" class="field__input">
-        <input readonly class="pointer" />
+        <input readonly class="pointer" v-model="address" />
         <v-icon color="primary" size="15px">fas fa-map-marker-alt</v-icon>
       </div>
     </div>
-    <!-- <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div> -->
-    <!-- <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div> -->
-    <!-- <div id="map" class="map__box"></div> -->
     <v-dialog width="564" v-model="isMap">
-      <Map/>
-      <!-- <v-card class="map__card">
-        <div class="map__title">Pin Lokasi</div>
-        <div class="field__input">
-      <input
-      style="z-index: 99999 !important"
-      id="autocomplete" ref="autocomplete" v-model="address" />
-    </div>
-        <div id="map" class="map__box"></div>
-      </v-card> -->
+      <Map
+        @saveLocation="getLocation"
+      />
     </v-dialog>
   </div>
 
@@ -37,7 +19,7 @@
 <script>
 import Label from "../Label"
 import Map from "./map.vue"
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import axios from "axios";
 export default {
   components: {
@@ -54,6 +36,11 @@ export default {
       latitude: "",
       longitude: ""
     })
+
+    const getLocation = function (params) {
+      address.value = params.address
+      isMap.value = false
+    } 
 
     const openMap = function () {
       isMap.value = true
@@ -129,29 +116,17 @@ export default {
       // onLocation()
     };
 
-    const closeDialog = function () {
-      emit('closeDialog')
-    }
-
-    const saveCoordinate = function () {
-      emit("saveCoordinate", coordinate)
-    }
 
     onMounted(init)
-    // onMounted(() => {
-    // new google.maps.places.Autocomplete(
-    //   document.getElementById("autocomplete")
-    // )
-    // })
+
     return {
       onLocation,
       address,
       autocomplete,
-      closeDialog,
       coordinate,
-      saveCoordinate,
       openMap,
-      isMap
+      isMap,
+      getLocation
     };
   },
 }
