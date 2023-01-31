@@ -18,11 +18,11 @@
         >Upload Foto</span
       >
     </v-btn>
-    <!-- <div
+    <!-- <div 
       id="output"
-      style="display: inline-block; top: 4px; position: relative ;border: dotted 1px #ccc; padding: 2px;"
-    ></div> -->
-
+      style="display: inline-block; 
+      top: 4px; 
+      position: relative ;border: dotted 1px #ccc; padding: 2px;"></div> -->
     <input @change="onLoad" class="upload__core" :id="id" type="file" />
   </div>
 </template>
@@ -165,30 +165,34 @@ export default {
         metadata: {
           width: dimensions.width,
           height: dimensions.height,
-          size: file.size,
-        },
-      };
-      const fileType = file.type.split("/")[1];
-      this.dataResponse = data;
-      const currentDateEpoch = moment(new Date()).valueOf();
-      const filePath = `/img/tmp/media/${currentDateEpoch}.${fileType}`;
-      return this.$storeOss
-        .put(filePath, file)
-        .then((response) => {
-          this.loadingUpload = false;
-          let url;
-          const urlObject = new URL(response.url);
-          if (process.env.VUE_APP_SERVER_STATUS === "production") {
-            url = `${this.asetKipas}/${response.name}`;
-            this.dataResponse.url = url;
-            if (type === "video") {
-              return this.createThumbnail(file, 0.0);
+          size: file.size
+        }
+      }
+      const fileType = file.type.split("/")[1]
+      this.dataResponse = data
+      const currentDateEpoch = moment(new Date).valueOf()
+      const filePath = `/img/tmp/media/${currentDateEpoch}.${fileType}`
+      return this.$storeOss.put(filePath, file)
+        .then(response => {
+          this.loadingUpload = false
+          let url
+          const urlObject = new URL(response.url)
+          const nameUrl = response.name.split('/')
+          nameUrl.splice(1,1)
+          const pathTemp = nameUrl.join('/')
+          const pathThumbnail = `${urlObject.origin}/${pathTemp}`
+          if (process.env.VUE_APP_SERVER_STATUS === 'production') {
+            url = `${this.asetKipas}/${response.name}`
+            const thumbProd = `${this.asetKipas}/${pathTemp}`
+            this.dataResponse.url = url
+            if (type === 'video') {
+              return this.createThumbnail(file, 0.0)
             } else {
               return {
-                large: url,
-                medium: url,
-                small: url,
-              };
+                large: thumbProd,
+                medium: thumbProd,
+                small: thumbProd
+              }
             }
           } else {
             this.dataResponse.url = response.url;
@@ -196,10 +200,10 @@ export default {
               return this.createThumbnail(file, 0.0);
             } else {
               return {
-                large: response.url,
-                medium: response.url,
-                small: response.url,
-              };
+                large: pathThumbnail,
+                medium: pathThumbnail,
+                small: pathThumbnail
+              }
             }
           }
         })
@@ -234,20 +238,25 @@ export default {
           return this.$storeOss.putACL(filePath, "public-read");
         })
         .then(() => {
-          let url;
+          const urlObject = new URL(response.url)
+          const nameUrl = response.name.split('/')
+          nameUrl.splice(1,1)
+          const pathTemp = nameUrl.join('/')
+          const pathThumbnail = `${urlObject.origin}/${pathTemp}`
           if (process.env.VUE_APP_SERVER_STATUS === "production") {
-            url = `${this.asetKipas}/${response.name}`;
+            const url = `${this.asetKipas}/${response.name}`
+            const thumbUrl = `${this.asetKipas}/${pathTemp}`
             return {
               large: url,
-              medium: url,
-              small: url,
-            };
+              medium: thumbUrl,
+              small: thumbUrl
+            }
           } else {
             return {
               large: response.url,
-              medium: response.url,
-              small: response.url,
-            };
+              medium: pathThumbnail,
+              small: pathThumbnail
+            }
           }
         });
     },
