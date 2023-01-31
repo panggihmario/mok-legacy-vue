@@ -31,9 +31,12 @@
           <upload-oss
             id="create"
             color="secondary"
+            typeAllowed="png"
+            :maxSize="1000000"
+            isSquareRatio
             @response="getResponseUpload"
           ></upload-oss>
-          <ul class="mt-4">
+          <ul class="mt-2">
             <li>
               Gunakan rasio 1:1
             </li>
@@ -44,6 +47,9 @@
               Gunakan ekstensi .png
             </li>
           </ul>
+          <div v-if="isErrorUpload" class="error-upload mt-2">
+            <span>Gambar kategori harus memenuhi kriteria diatas</span>
+          </div>
         </div>
       </div>
     </div>
@@ -55,13 +61,20 @@
           label="Nama Kategori"
           :isError="isErrorDuplicate"
         ></k-input>
-        <span class="alert-exist">{{ errorMessage }}</span>
+        <span v-if="isErrorDuplicate" class="alert-exist"
+          >Nama kategori sudah tersedia, silahkan gunakan nama lain!
+        </span>
       </div>
       <k-textarea
         v-model="dataPayload.params.description"
         title="Detail Kategori"
         rows="6"
+        :isError="isErrorEmptyDescription"
+        @blur="checkDescriptionEmpty"
       ></k-textarea>
+      <span v-if="isErrorEmptyDescription" class="alert-exist">
+        Detail kategori tidak boleh kosong
+      </span>
     </div>
 
     <div class="d-flex mt-4" style="gap: 8px;">
@@ -70,8 +83,8 @@
         color="secondary"
         :disabled="
           dataPayload.params.icon == '' ||
-            dataPayload.params.categoryName == '' ||
-            dataPayload.params.categoryDetail == ''
+            dataPayload.params.name == '' ||
+            dataPayload.params.description == ''
         "
         :loading="loading"
         @click="actionHandleClick"
@@ -119,12 +132,17 @@ export default {
       alertSuccess: false,
       alertError: false,
       errorMessage: "",
+      isErrorUpload: false,
       isErrorDuplicate: false,
+      isErrorEmptyDescription: false,
     };
   },
   watch: {
     "dataPayload.params.name"() {
       this.isErrorDuplicate = false;
+    },
+    "dataPayload.params.description"() {
+      this.isErrorEmptyDescription = false;
     },
   },
   mounted() {
@@ -136,8 +154,12 @@ export default {
       editCategory: "productCategory/editCategory",
     }),
     getResponseUpload(data) {
-      console.log(data)
-      this.dataPayload.params.icon = data.response.url;
+      if (data.status == "success") {
+        this.isErrorUpload = false;
+        this.dataPayload.params.icon = data.response.url;
+      } else if (data.status == "failed") {
+        this.isErrorUpload = true;
+      }
     },
     handleGetDataLocal() {
       if (this.$route.name == "editCategory") {
@@ -168,6 +190,8 @@ export default {
     },
     actionEditCategory() {
       this.loading = true;
+      const data = JSON.parse(localStorage.getItem("detail-category"));
+      this.dataPayload.params.sequence = data.sequence;
       return this.editCategory(this.dataPayload)
         .then((res) => {
           this.loading = false;
@@ -185,6 +209,13 @@ export default {
         this.actionCreateCategory();
       } else {
         this.actionEditCategory();
+      }
+    },
+    checkDescriptionEmpty() {
+      if (this.dataPayload.params.description == "") {
+        this.isErrorEmptyDescription = true;
+      } else {
+        this.isErrorEmptyDescription = false;
       }
     },
     changePage(v) {
@@ -242,5 +273,13 @@ li {
   font-size: 10px;
   color: $warning;
   font-weight: 600px;
+}
+
+.error-upload {
+  background-color: $primarylowtint;
+  color: $warning;
+  font-size: 9px;
+  padding: 4px;
+  border-radius: 2px;
 }
 </style>
