@@ -12,7 +12,7 @@
         :type="type"
         :class="[
           `kipas__input-${size}`,
-          { input__error: errors.length > 0 },
+          { 'input__error': errors.length > 0 },
           `kipas__${model}`,
           { 'input__error': isError },
         ]"
