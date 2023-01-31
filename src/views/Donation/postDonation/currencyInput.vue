@@ -6,7 +6,8 @@
       <input
         ref="inputRef"
         type="text"
-        />
+        :value="value"
+      />
     </div>
   </div>
   
