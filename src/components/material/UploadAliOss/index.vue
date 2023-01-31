@@ -3,10 +3,20 @@
     <div>
       <label-field :class="label && 'mb-5'">{{ label }}</label-field>
     </div>
-    <v-btn height="29px" :outlined="!text" :text="text" elevation="0" :color="color" class="upload__button"
-      @click="handleUpload" :loading="loadingUpload">
+    <v-btn
+      height="29px"
+      :outlined="!text"
+      :text="text"
+      elevation="0"
+      :color="color"
+      class="upload__button"
+      @click="handleUpload"
+      :loading="loadingUpload"
+    >
       <v-icon :color="color" left>$upload</v-icon>
-      <span class="text-capitalize upload__label" :class="`${color}--text`">Upload Foto</span>
+      <span class="text-capitalize upload__label" :class="`${color}--text`"
+        >Upload Foto</span
+      >
     </v-btn>
     <!-- <div 
       id="output"
@@ -18,18 +28,18 @@
 </template>
 
 <script>
-import moment from "moment"
+import moment from "moment";
 export default {
   data() {
     return {
       loadingUpload: false,
-      asetKipas: 'https://asset.kipaskipas.com',
+      asetKipas: "https://asset.kipaskipas.com",
       media: {
         size: "",
         width: "",
         height: "",
       },
-      height: '',
+      height: "",
       result: {
         status: "before upload",
         response: null,
@@ -40,9 +50,9 @@ export default {
         type: "",
         url: "",
         thumbnail: {},
-        metadata: {}
+        metadata: {},
       },
-      file: ""
+      file: "",
     };
   },
   props: {
@@ -54,6 +64,9 @@ export default {
       default: 200,
     },
     label: {
+      type: String,
+    },
+    typeAllowed: {
       type: String,
     },
     typeUpload: {
@@ -68,6 +81,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    maxSize: {
+      type: Number,
+    },
+    isSquareRatio: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     dimensionVideo(file) {
@@ -75,15 +95,14 @@ export default {
         const url = URL.createObjectURL(file);
         const $video = document.createElement("video");
         $video.src = url;
-        $video.addEventListener("loadedmetadata", function () {
+        $video.addEventListener("loadedmetadata", function() {
           const params = {
             height: this.videoHeight,
-            width: this.videoWidth
-          }
-          resolve(params)
-        })
-      }
-      )
+            width: this.videoWidth,
+          };
+          resolve(params);
+        });
+      });
     },
     dimensionImage(file) {
       return new Promise((resolve, reject) => {
@@ -96,20 +115,20 @@ export default {
               height: img.height,
               width: img.width,
               // size : file.size
-            }
-            resolve(params)
+            };
+            resolve(params);
             this.media.width = img.width;
             this.media.height = img.height;
           };
           img.src = evt.target.result;
-        }
-      })
+        };
+      });
     },
     getDimension(typeMedia, file) {
       if (typeMedia === "video") {
         return this.dimensionVideo(file);
       } else {
-        return this.dimensionImage(file)
+        return this.dimensionImage(file);
       }
     },
     async onLoad(e) {
@@ -117,25 +136,26 @@ export default {
         status: "loading",
         response: {},
       };
-      const file = e.target.files[0]
-      this.file = file
-      const type = file.type.split("/")
+      const file = e.target.files[0];
+      this.file = file;
+      const type = file.type.split("/");
       const typeMedia = type[0];
       // console.time('validationMedia')
       // console.time('getDimension')
       const dimensions = await this.getDimension(typeMedia, file);
       this.loadingUpload = true;
       this.$emit("response", result);
-      const isValid = this.validationMedia(typeMedia, dimensions);
+      const isValid = this.validationMedia(typeMedia, dimensions, file);
       // console.timeEnd('validationMedia')
       // console.timeEnd('getDimension')
       if (isValid) {
         // console.time('saveFileToAliOss')
-        return this.saveFileToAliOss(file, typeMedia, dimensions)
+        return this.saveFileToAliOss(file, typeMedia, dimensions);
         // console.timeEnd('saveFileToAliOss')
       } else {
-        const tempResult = this.printError(file)
-        this.$emit('response', tempResult)
+        const tempResult = this.printError(file);
+        this.$emit("response", tempResult);
+        this.loadingUpload = false;
       }
     },
     saveFileToAliOss(file, type, dimensions) {
@@ -175,9 +195,9 @@ export default {
               }
             }
           } else {
-            this.dataResponse.url = response.url
-            if (type === 'video') {
-              return this.createThumbnail(file, 0.0)
+            this.dataResponse.url = response.url;
+            if (type === "video") {
+              return this.createThumbnail(file, 0.0);
             } else {
               return {
                 large: pathThumbnail,
@@ -186,37 +206,36 @@ export default {
               }
             }
           }
-
         })
-        .then(thumbnail => {
+        .then((thumbnail) => {
           const temp = {
             ...this.dataResponse,
-            thumbnail
-          }
-          this.dataResponse = temp
+            thumbnail,
+          };
+          this.dataResponse = temp;
           let result = {
             response: temp,
-            status: 'success'
-          }
-          this.$emit('response', result)
-          return this.$storeOss.putACL(filePath, 'public-read')
+            status: "success",
+          };
+          this.$emit("response", result);
+          return this.$storeOss.putACL(filePath, "public-read");
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     createThumbnail(file, seekTo) {
-      const currentDateEpoch = moment(new Date).valueOf()
-      const filePath = `/img/tmp/media/${currentDateEpoch}.jpg`
-      let response
+      const currentDateEpoch = moment(new Date()).valueOf();
+      const filePath = `/img/tmp/media/${currentDateEpoch}.jpg`;
+      let response;
       return this.drawImageOnCanvas(file, seekTo)
-        .then((base64data => {
-          const d = this.dataURLtoFile(base64data, `${+new Date()}.jpg`)
-          return this.$storeOss.put(filePath, d)
-        }))
+        .then((base64data) => {
+          const d = this.dataURLtoFile(base64data, `${+new Date()}.jpg`);
+          return this.$storeOss.put(filePath, d);
+        })
         .then((resp) => {
-          response = resp
-          return this.$storeOss.putACL(filePath, 'public-read')
+          response = resp;
+          return this.$storeOss.putACL(filePath, "public-read");
         })
         .then(() => {
           const urlObject = new URL(response.url)
@@ -239,20 +258,19 @@ export default {
               small: pathThumbnail
             }
           }
-        })
+        });
     },
     drawImageOnCanvas(file, seekTo) {
       return new Promise((resolve, reject) => {
-        const videoPlayer = document.createElement('video');
-        videoPlayer.setAttribute('src', URL.createObjectURL(file));
+        const videoPlayer = document.createElement("video");
+        videoPlayer.setAttribute("src", URL.createObjectURL(file));
         videoPlayer.crossOrigin = "anonymous";
         videoPlayer.load();
-        videoPlayer.addEventListener('error', (ex) => {
+        videoPlayer.addEventListener("error", (ex) => {
           reject("error when loading video file", ex);
         });
 
-        videoPlayer.addEventListener('loadedmetadata', () => {
-
+        videoPlayer.addEventListener("loadedmetadata", () => {
           if (videoPlayer.duration < seekTo) {
             reject("video is too short.");
             return;
@@ -260,20 +278,20 @@ export default {
           setTimeout(() => {
             videoPlayer.currentTime = seekTo;
           }, 200);
-          videoPlayer.addEventListener('seeked', () => {
+          videoPlayer.addEventListener("seeked", () => {
             const canvas = document.createElement("canvas");
             canvas.width = videoPlayer.videoWidth;
             canvas.height = videoPlayer.videoHeight;
             const ctx = canvas.getContext("2d");
             ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
             ctx.canvas.toBlob(
-              blob => {
+              (blob) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function () {
+                reader.onloadend = function() {
                   var base64data = reader.result;
-                  resolve(base64data)
-                }
+                  resolve(base64data);
+                };
               },
               "image/jpeg",
               0.75 /* quality */
@@ -283,10 +301,10 @@ export default {
       });
     },
     dataURLtoFile(dataurl, filename) {
-      let arr = dataurl.split(',')
-      let mime = arr[0].match(/:(.*?);/)[1]
-      let bstr = atob(arr[1])
-      let n = bstr.length
+      let arr = dataurl.split(",");
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
       let u8arr = new Uint8Array(n);
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
@@ -295,12 +313,12 @@ export default {
     },
     printError(file) {
       const result = {
-        status: 'failed',
-        message: `Minimum height ${file.type} is ${this.minVideoHeight}`
-      }
-      return result
+        status: "failed",
+        message: `Minimum height ${file.type} is ${this.minVideoHeight}`,
+      };
+      return result;
     },
-    validationMedia(typeMedia, dimensions) {
+    validationMedia(typeMedia, dimensions, file) {
       const minVideoHeight = this.minVideoHeight;
       if (typeMedia === "video") {
         const heightVideo = dimensions.height;
@@ -310,6 +328,18 @@ export default {
           return true;
         }
       } else {
+        if (this.typeAllowed && !file.type.includes(this.typeAllowed)) {
+          return false;
+        }
+        if (this.maxSize && file.size > this.maxSize) {
+          return false;
+        }
+        if (
+          this.isSquareRatio == true &&
+          dimensions.height != dimensions.width
+        ) {
+          return false;
+        }
         return true;
       }
     },
