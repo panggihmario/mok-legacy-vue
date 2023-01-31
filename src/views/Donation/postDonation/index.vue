@@ -51,15 +51,26 @@
           <div :class="d.box">
             <CurrencyInput label="Target Donasi" v-model="payloadDonation.targetAmount"
               :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" />
-            <k-checkbox v-model="isAmount" label="Tidak ada limit" @click="onClick" />
+            <k-checkbox  v-model="isAmount" label="Tidak ada limit" />
           </div>
 
           <div :class="d.box">
-            <k-date title="Berakir pada" />
-            <k-checkbox v-model="isAmount" label="Tidak ada batas waktu" @click="onClick" />
+            <k-date @epochDate="getEpoch" title="Berakir pada" />
+            <k-checkbox v-model="isEnded" label="Tidak ada batas waktu" @click="onClick" />
           </div>
-          <k-select title="Kategori" :items="items" v-model="item" />
-          <k-select title="Provinsi" :items="items" v-model="item" />
+          <k-select 
+            title="Kategori" 
+            :items="items" 
+            v-model="item" 
+          />
+          <k-select 
+            title="Provinsi" 
+            itemLabel="name"
+            :items="provinces" 
+            v-model="payloadDonation.province" 
+            height="300"
+            @scroll-end="getMoreProvinces"
+          />
           <k-map title="Lokasi" />
           <k-select title="Initiator" :items="items" v-model="item" />
           <k-input label="Nama Wali / Penerima Donasi" />
@@ -76,15 +87,64 @@
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import CurrencyInput from './currencyInput.vue'
+import { mapActions  } from "vuex";
 export default {
-
   components: {
     HeaderContent,
     CurrencyInput
   },
+  watch : {
+    isAmount(value) {
+      if(value) {
+        this.payloadDonation.targetAmount = 0
+      }
+    },
+    isEnded(value) {
+      if(value) {
+        this.payloadDonation.expiredAt = null
+      }
+    }
+  },
+  mounted() {
+    this.handleProvince()
+  },
   methods: {
+    ...mapActions({
+      getProvince : 'area/getProvince'
+    }),
+    getMoreProvinces() {
+      if(this.page <= this.totalPages - 1) {
+        const payload = {
+        page : this.page
+      }
+      return this.getProvince(payload)
+        .then(response => {
+          this.page ++
+          response.content.forEach(cont => {
+            this.provinces.push(cont)
+          })
+          
+        })
+      }else{
+        return
+      }
+    },
+    handleProvince() {
+      const payload = {
+        page : 0
+      }
+      return this.getProvince(payload)
+        .then(response => {
+          this.provinces = response.content
+          this.totalPages = response.totalPages
+        })
+    },
     onSubmit() {
-      console.log('on submit', this.payloadDonation)
+      const payload = {
+        ...this.payloadDonation,
+        media : [...this.medias]
+      }
+      console.log('on submit', payload)
     },
     onVideo() {
       const video = document.getElementById('video-donation')
@@ -95,35 +155,43 @@ export default {
         this.isPlay = false
         video.pause()
       }
-      
     },
-    onClick(e) {
+    onClick() {
       console.log("e")
+      this.payloadDonation.targetAmount = 0
     },
     getResponseImage(media) {
       this.showImageDonation = media.response.url
-      console.log(media)
-      this.payloadDonation.media.push(media.response)
-      this.$set(this.payloadDonation.media, 0, media.response)
+      this.$set(this.medias, 0, media.response)
     },
     getResponseVideo(media) {
       this.showVideoDonation = media.response.url
-      this.payloadDonation.media.push(media.response)
+      this.$set(this.medias, 1, media.response)
     },
     onClearImage() {
       this.showImageDonation = ''
+      this.medias.splice(0, 1)
     },
     onClearVideo () {
       this.showVideoDonation = ''
+      this.medias.splice(1, 1)
+    },
+    getEpoch(value) {
+      this.payloadDonation.expiredAt = value
     }
   },
   data() {
     return {
       amount: 0,
+      totalPages : 0,
+      page : 1,
+      provinces : [],
       isAmount: false,
+      isEnded : false,
       showImageDonation: '',
       showVideoDonation: "",
       isPlay : false,
+      medias : [],
       payloadDonation: {
         title: '',
         description: '',
@@ -132,7 +200,8 @@ export default {
         verifier: {},
         recipientName: '',
         media: [],
-        expiredAt: null
+        expiredAt: null,
+        province : {}
       },
       item: {
         value: 'day',
