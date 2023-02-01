@@ -10,7 +10,7 @@
       </template>
       <v-date-picker 
         v-model="date" 
-        @change="menu = false"
+        @change="onChange"
         color="primary"
       />    
     </v-menu>
@@ -34,6 +34,15 @@ export default {
     showDate() {
       return this.date ? moment(this.date).format('DD/MM/YYYY') : ''
     }
+  },
+  methods : {
+    onChange() {
+      this.menu = false
+      const localtz = moment(this.date).utcOffset() 
+      const localUtc = localtz / 60
+      const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
+      this.$emit('epochDate', epochDate)
+    },
   },
   props: {
     title: {

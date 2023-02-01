@@ -13,15 +13,30 @@
       </div>
 
     </template>
-    <v-list dense>
-      <v-list-item-group color="primary">
-        <v-list-item v-for="(item, i) in items" :key="i" @click="selectItem(item)">
-          <v-list-item-content>
-            <v-list-item-title v-text="item.label"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <v-card
+    class="mx-auto"
+    max-width="400"
+  >
+    <v-virtual-scroll 
+      :items="items" 
+      @scroll.native="scrolling"
+      :item-height="50" min-height="100" :height="height">
+      <template v-slot:default="{ item }">
+        <v-list dense>
+          <v-list-item-group color="primary">
+            <v-list-item @click="selectItem(item)">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item[itemLabel] }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </template>
+    </v-virtual-scroll>
+</v-card>
+
   </v-menu>
 </template>
 
@@ -32,16 +47,22 @@ export default {
   components: {
     Label
   },
+  
   props: {
     items: {
       type: Array
+    },
+    height : {
+      type : String,
+      default : '150',
     },
     title: {
       type: String
     },
     item: {},
     itemLabel: {
-      type: String
+      type: String,
+      default: 'label'
     },
     value: {
       type: [Object, String]
@@ -58,6 +79,15 @@ export default {
     }
   },
   methods: {
+    scrolling (event) {
+        const element = event.currentTarget || event.target
+        if (element && element.scrollHeight - element.scrollTop === element.clientHeight) {
+           this.$emit('scroll-end')
+        }
+    },
+    endIntersect(entries, observer, isIntersecting) {
+      console.log(entries, observer, isIntersecting)
+    },
     openOptions() {
       this.show = !this.show
     },

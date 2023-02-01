@@ -25,6 +25,7 @@ input {
     border-radius: 4px;
     padding: 9px;
     height: 32px;
+    gap: 5px;
   }
   &__container {
     display: grid;
@@ -35,12 +36,21 @@ input {
 .map {
   &__card {
     padding: 16px;
+    display: grid;
+    gap: 24px;
   }
   &__title {
     text-align: center;
+    font-size: 16px;
+    color: $charcoal;
+    font-weight: 700;
   }
   &__box {
     height: 380px;
     margin-top: 16px;
+  }
+  &__action {
+    display: flex;
+    justify-content: flex-end;
   }
 }
