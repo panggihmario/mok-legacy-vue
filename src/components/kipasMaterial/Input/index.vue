@@ -12,17 +12,30 @@
         :type="type"
         :class="[
           `kipas__input-${size}`,
-          { 'input__error': errors.length > 0 },
+          { input__error: errors.length > 0 },
           `kipas__${model}`,
-          { 'input__error': isError },
+          { input__error: isError },
         ]"
         class="input"
         v-bind="$attrs"
         :value="value"
+        :maxlength="counter"
         v-on="inputListener"
       />
       <div :style="!rules && 'display : none'" class="input__error-label">
         {{ errors[0] }}
+      </div>
+      <div
+        v-if="counter"
+        class="d-flex justify-space-between font-10"
+        :class="{ 'warning--text': value.length > counter }"
+      >
+        <div>
+          <span v-if="isError && errorMessage" class="warning--text">{{
+            errorMessage
+          }}</span>
+        </div>
+        <span>{{ value.length }}/{{ counter }}</span>
       </div>
     </div>
   </ValidationProvider>
@@ -30,11 +43,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      hasError: false,
-    };
-  },
   props: {
     type: {
       type: String,
@@ -61,9 +69,32 @@ export default {
       type: String,
       default: "outline",
     },
+    counter: {
+      type: Number,
+    },
     isError: {
       type: Boolean,
       default: false,
+    },
+    errorMessage: {
+      type: String,
+    },
+  },
+  data() {
+    return {
+      hasError: false,
+      isErrorCounter: false,
+    };
+  },
+  watch: {
+    value() {
+      if (this.value.length > this.counter) {
+        this.isErrorCounter = true;
+        this.$emit("errorCounter", true);
+      } else {
+        this.isErrorCounter = false;
+        this.$emit("errorCounter", false);
+      }
     },
   },
   computed: {
