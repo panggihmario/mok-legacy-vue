@@ -3,7 +3,7 @@
     :headers="headers"
     hide-default-footer
     :items="data"
-    class="grey--text font-12"
+    class="grey--text"
     :items-per-page="-1"
   >
     <template v-slot:header.icon="{ header }" class="d-flex">
@@ -15,7 +15,7 @@
               fas fa-info-circle
             </v-icon>
           </template>
-          <div style="font-size : 11px">
+          <div style="font-size: 11px">
             <div>
               Hanya kategori urutan pertama sampai urutan ke sebelas yang akan
               ditampilkan di menu shop aplikasi Kipaskipas.
@@ -32,8 +32,23 @@
     <template v-slot:item.icon="{ item }">
       <v-img :src="item.icon" height="30px" width="30px"></v-img>
     </template>
+    <template v-slot:item.name="{ item }">
+      <div class="ellipsis font-12" style="max-width: 150px;">
+        {{ item.name }}
+      </div>
+    </template>
+    <template v-slot:item.totalProduct="{ item }">
+      <span class="font-12">
+        {{ item.totalProduct }}
+      </span>
+    </template>
+    <template v-slot:item.modifyAt="{ item }">
+      <span class="font-12">
+        {{ formattingDate(item.modifyAt) }}
+      </span>
+    </template>
     <template v-slot:item.description="{ item }">
-      <div class="ellipsis" style="max-width: 510px;">
+      <div class="ellipsis font-12" style="max-width: 510px;">
         <span>
           {{ item.description }}
         </span>
@@ -54,6 +69,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import Sortable from "sortablejs";
 
 export default {
@@ -74,8 +90,14 @@ export default {
           sortable: false,
         },
         {
+          text: "Jumlah Produk",
+          value: "totalProduct",
+          class: "whitesnow",
+          sortable: false,
+        },
+        {
           text: "Tgl Dibuat",
-          value: "date",
+          value: "modifyAt",
           class: "whitesnow",
           sortable: false,
         },
@@ -89,6 +111,7 @@ export default {
           text: "Action",
           value: "action",
           class: "whitesnow",
+          align: "center",
           sortable: false,
         },
       ],
@@ -98,7 +121,7 @@ export default {
   watch: {
     data() {
       this.initSortable();
-    }
+    },
   },
   methods: {
     initSortable() {
@@ -114,13 +137,16 @@ export default {
             0,
             ..._self.dragNdrop.splice(oldIndex, 1)
           );
-          _self.$emit("onChangeData", _self.dragNdrop)
+          _self.$emit("onChangeData", _self.dragNdrop);
         },
       });
     },
     moveEditPage(item) {
       localStorage.setItem("detail-category", JSON.stringify(item));
       this.$router.push(`category/${item.id}`);
+    },
+    formattingDate(v) {
+      return moment(v).format("DD-MM-YYYY");
     },
   },
 };
@@ -137,7 +163,8 @@ export default {
 
 .font {
   &-12 {
-    font-size: 12px;
+    font-size: 11px !important;
+		font-weight: 500;
   }
 }
 

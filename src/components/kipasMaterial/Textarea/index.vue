@@ -2,11 +2,24 @@
   <div class="input__container">
     <Label :title="title" />
     <textarea
-      :class="['input', {'input__error': isError}]"
+      :class="['input', { input__error: isError || isErrorCounter }]"
       :rows="rows"
       :value="value"
       v-on="inputListener"
+      :maxlength="counter"
     />
+    <div
+      v-if="counter"
+      class="d-flex justify-space-between font-10"
+      :class="{ 'warning--text': value.length > counter }"
+    >
+      <div>
+        <span v-if="isError && errorMessage" class="warning--text">{{
+          errorMessage
+        }}</span>
+      </div>
+      <span>{{ value.length }}/{{ counter }}</span>
+    </div>
   </div>
 </template>
 
@@ -28,9 +41,31 @@ export default {
       type: [String, Number, Object],
       require: true,
     },
+    counter: {
+      type: Number,
+    },
     isError: {
       type: Boolean,
       default: false,
+    },
+    errorMessage: {
+      type: String,
+    },
+  },
+  data() {
+    return {
+      isErrorCounter: false,
+    };
+  },
+  watch: {
+    value() {
+      if (this.value.length > this.counter) {
+        this.isErrorCounter = true;
+        this.$emit("errorCounter", true);
+      } else {
+        this.isErrorCounter = false;
+        this.$emit("errorCounter", false);
+      }
     },
   },
   computed: {
@@ -67,5 +102,9 @@ export default {
     display: grid;
     gap: 8px;
   }
+}
+
+.font-10 {
+  font-size: 10px;
 }
 </style>

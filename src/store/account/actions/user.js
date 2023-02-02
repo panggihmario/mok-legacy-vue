@@ -22,7 +22,20 @@ function deleteFeed ({dispatch}, payload) {
 
 }
 
+const getUsersbyRole = function ({state, dispatch}, payload) {
+  const data = {
+    url : `${state.pathAccount}/users-roles`,
+    params : {
+      ...payload
+    }
+  }
+  return dispatch('getWithToken', data , {root : true})
+    .then(response => dispatch('printSuccess', response))
+    .catch(err => { throw err })
+}
+
 export {
   fetchFeedByUserId,
-  deleteFeed
+  deleteFeed,
+  getUsersbyRole
 }
