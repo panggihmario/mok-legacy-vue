@@ -4,6 +4,35 @@ export default {
 		pathDonation: 'admin/donations'
 	},
 	actions: {
+		fetchListDonationCategory({dispatch} , payload) {
+			const data = {
+				url : 'admin/donation-categories',
+				params : {
+					...payload
+				}
+			}
+			return dispatch('getWithToken', data , {root : true})
+				.then(response => {
+					const responseData = response.data.data
+					return responseData
+				})
+				.catch(err => { throw err })
+		},
+		postDonation({state, dispatch}, payload) {
+			const params = {
+				url : `${state.pathDonation}`,
+				data : {
+					...payload
+				}
+			}
+			return dispatch("postWithToken", params, { root: true })
+				.then((response) => {
+					return response;
+				})
+				.catch((err) => {
+					throw err;
+				})
+		},
 		async getListOrganizer({ state }, payload) {
 			let response;
 			try {

@@ -40,6 +40,7 @@ export default {
     const getLocation = function (params) {
       address.value = params.address
       isMap.value = false
+      emit('getLocation', params)
     } 
 
     const openMap = function () {
