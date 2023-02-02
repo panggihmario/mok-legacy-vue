@@ -56,27 +56,39 @@
 
           <div :class="d.box">
             <k-date @epochDate="getEpoch" title="Berakir pada" />
-            <k-checkbox v-model="isEnded" label="Tidak ada batas waktu" @click="onClick" />
+            <k-checkbox v-model="isEnded" label="Tidak ada batas waktu"  />
           </div>
           <k-select 
             title="Kategori" 
-            :items="items" 
-            v-model="item" 
+            :items="categories" 
+            v-model="category" 
+            itemLabel="name"
           />
           <k-select 
             title="Provinsi" 
             itemLabel="name"
             :items="provinces" 
-            v-model="payloadDonation.province" 
+            v-model="province" 
             height="300"
             @scroll-end="getMoreProvinces"
           />
-          <k-map title="Lokasi" />
-          <k-select title="Initiator" :items="items" v-model="item" />
-          <k-input label="Nama Wali / Penerima Donasi" />
+          <k-map title="Lokasi" @getLocation="getLocation"  />
+          <k-select 
+            title="Initiator" 
+            :items="initiators" 
+            v-model="initiator" 
+            itemLabel="username"
+          />
+          <k-input v-model="payloadDonation.recipientName" label="Nama Wali / Penerima Donasi" />
           <div class="d-flex" style="gap : 8px">
             <custom-button>Batalkan</custom-button>
-            <custom-button type="submit" color="primary">Publikasikan Donasi</custom-button>
+            <custom-button 
+              type="submit" 
+              color="primary"
+              :disabled="isDisabled"
+            >
+              Publikasikan Donasi
+              </custom-button>
           </div>
         </div>
       </div>
@@ -88,10 +100,29 @@
 import HeaderContent from "@/containers/HeaderContent";
 import CurrencyInput from './currencyInput.vue'
 import { mapActions  } from "vuex";
+import * as yup from 'yup';
 export default {
   components: {
     HeaderContent,
     CurrencyInput
+  },
+  computed : {
+    isForm () {
+      const dataForm = {
+        ...this.payloadDonation,
+        medias : [...this.medias],
+        organizer : {
+          id : this.initiator.accountId
+        },
+        donationCategory : {
+          id : this.category.id
+        },
+        province : {
+          id : this.province.id
+        }
+      }
+      return dataForm
+    }
   },
   watch : {
     isAmount(value) {
@@ -103,15 +134,60 @@ export default {
       if(value) {
         this.payloadDonation.expiredAt = null
       }
+    },
+    isForm(value) {
+      let schema = yup.object().shape({
+        title: yup.string().required(),
+        description : yup.string().required(),
+        recipientName : yup.string().required(),
+        latitude : yup.string().required(),
+        longitude : yup.string().required(),
+        medias : yup.array().min(2),
+        organizer : yup.object().shape({
+          id : yup.string().required()
+        }),
+        donationCategory : yup.object().shape({
+          id : yup.string().required()
+        }),
+        province : yup.object().shape({
+          id : yup.string().required()
+        }),
+      })
+      schema.isValid(value)
+        .then(valid => {
+          this.isDisabled = valid
+        })
     }
   },
   mounted() {
     this.handleProvince()
+    this.handleUserByRole()
+    this.handleDonationCategory()
   },
   methods: {
     ...mapActions({
-      getProvince : 'area/getProvince'
+      getProvince : 'area/getProvince',
+      getUsersbyRole : 'account/getUsersbyRole',
+      fetchListDonationCategory : 'donation/fetchListDonationCategory',
+      postDonation : 'donation/postDonation'
     }),
+    handleDonationCategory () {
+      return this.fetchListDonationCategory()
+        .then(response => {
+          const content = response.content
+          console.log(content)
+          this.categories = content
+        })
+    },
+    handleUserByRole() {
+      const payload = {
+        role : 'INITIATOR'
+      }
+      return this.getUsersbyRole(payload)
+        .then(response => {
+          this.initiators = response
+        })
+    },
     getMoreProvinces() {
       if(this.page <= this.totalPages - 1) {
         const payload = {
@@ -142,9 +218,26 @@ export default {
     onSubmit() {
       const payload = {
         ...this.payloadDonation,
-        media : [...this.medias]
+        medias : [...this.medias],
+        organizer : {
+          id : this.initiator.accountId
+        },
+        donationCategory : {
+          id : this.category.id
+        },
+        province : {
+          id : this.province.id
+        }
       }
       console.log('on submit', payload)
+      return this.postDonation(payload)
+        .then(response => {
+          console.log(response)
+        })
+    },
+    getLocation (params) {
+      this.payloadDonation.latitude = params.coordinate.latitude
+      this.payloadDonation.longitude = params.coordinate.longitude
     },
     onVideo() {
       const video = document.getElementById('video-donation')
@@ -155,10 +248,6 @@ export default {
         this.isPlay = false
         video.pause()
       }
-    },
-    onClick() {
-      console.log("e")
-      this.payloadDonation.targetAmount = 0
     },
     getResponseImage(media) {
       this.showImageDonation = media.response.url
@@ -184,8 +273,14 @@ export default {
     return {
       amount: 0,
       totalPages : 0,
+      isDisabled : true,
       page : 1,
       provinces : [],
+      province : {},
+      initiators : [],
+      initiator : {},
+      categories : [],
+      category : {},
       isAmount: false,
       isEnded : false,
       showImageDonation: '',
@@ -196,12 +291,10 @@ export default {
         title: '',
         description: '',
         targetAmount: 0,
-        organizer: {},
-        verifier: {},
         recipientName: '',
-        media: [],
         expiredAt: null,
-        province : {}
+        latitude: "",
+        longitude : "",
       },
       item: {
         value: 'day',
@@ -237,146 +330,4 @@ export default {
 }
 </script>
 
-<style lang="scss" module="d">
-.columns {
-  display: flex;
-  gap: 40px;
-}
-
-.subcolumns {
-  display: flex;
-  // grid-template-columns: 78% 22%;
-  // flex-wrap: wrap;
-  height: 9.375rem;
-  gap: 10px;
-}
-
-.subcolumns div:nth-child(1) {
-  flex: 1 1 80%;
-}
-
-.subcolumns div:nth-child(2) {
-  flex: 1 1 20%;
-  // position: relative;
-}
-
-.subcolumns>div {
-  border-radius: 5px;
-  display: block;
-  border: 1px dashed #BBBBBB;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.subcolumns .videobox {
-  position: relative;
-}
-
-.subcolumns .hasMedia {
-  border: none;
-  overflow: hidden;
-  border-radius: 5px;
-  position: relative;
-  height: inherit;
-  display: block;
-}
-
-.subcolumns .hasVideo {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  // border: none;
-  overflow: hidden;
-  border-radius: 5px;
-}
-
-.boxvideo {
-  position: relative;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.actionsVideo {
-  position: absolute;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-}
-
-.columns .first {
-  flex: 1 1 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.columns .second {
-  flex: 1 1 40%;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.upload-label {
-  font-size: 12px;
-  font-weight: 400;
-  color: $charcoal;
-  margin-bottom: 8px;
-}
-
-.box {
-  display: flex;
-  gap: 6px;
-  flex-direction: column;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.video {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: fill;
-}
-
-.hasMedia .btn-del {
-  z-index: 1;
-  position: absolute;
-  background-color: white;
-  color: $charcoal;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  padding: 10px 24px;
-  border-radius: 6px;
-  bottom: 8px;
-  left: 8px;
-  cursor: pointer;
-}
-
-.hasVideo .btn-del-video {
-  z-index: 10;
-  position: absolute;
-  bottom: 8px;
-  background-color: white;
-  color: $charcoal;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  // left: 15%;
-}
-</style>
+<style lang="scss" module="d" src="../donation.scss"></style>

@@ -218,6 +218,7 @@ export default {
             status: "success",
           };
           this.$emit("response", result);
+          console.log(temp)
           return this.$storeOss.putACL(filePath, "public-read");
         })
         .catch((err) => {

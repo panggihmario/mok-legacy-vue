@@ -2,3 +2,144 @@
   display: flex;
   gap: .5rem;
 }
+
+.columns {
+  display: flex;
+  gap: 40px;
+}
+
+.subcolumns {
+  display: flex;
+  // grid-template-columns: 78% 22%;
+  // flex-wrap: wrap;
+  height: 9.375rem;
+  gap: 10px;
+}
+
+.subcolumns div:nth-child(1) {
+  flex: 1 1 80%;
+}
+
+.subcolumns div:nth-child(2) {
+  flex: 1 1 20%;
+  // position: relative;
+}
+
+.subcolumns>div {
+  border-radius: 5px;
+  display: block;
+  border: 1px dashed #BBBBBB;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.subcolumns .videobox {
+  position: relative;
+}
+
+.subcolumns .hasMedia {
+  border: none;
+  overflow: hidden;
+  border-radius: 5px;
+  position: relative;
+  height: inherit;
+  display: block;
+}
+
+.subcolumns .hasVideo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  // border: none;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.boxvideo {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.actionsVideo {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.columns .first {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columns .second {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.upload-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: $charcoal;
+  margin-bottom: 8px;
+}
+
+.box {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: fill;
+}
+
+.hasMedia .btn-del {
+  z-index: 1;
+  position: absolute;
+  background-color: white;
+  color: $charcoal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 10px 24px;
+  border-radius: 6px;
+  bottom: 8px;
+  left: 8px;
+  cursor: pointer;
+}
+
+.hasVideo .btn-del-video {
+  z-index: 10;
+  position: absolute;
+  bottom: 8px;
+  background-color: white;
+  color: $charcoal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
