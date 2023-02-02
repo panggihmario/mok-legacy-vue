@@ -59,22 +59,22 @@
         <k-input
           v-model="dataPayload.params.name"
           label="Nama Kategori"
+          :counter="200"
           :isError="isErrorDuplicate"
+          errorMessage="Nama kategori sudah tersedia, silahkan gunakan nama lain!"
+          @errorCounter="(v) => (isErrorCounterName = v)"
         ></k-input>
-        <span v-if="isErrorDuplicate" class="alert-exist"
-          >Nama kategori sudah tersedia, silahkan gunakan nama lain!
-        </span>
       </div>
       <k-textarea
         v-model="dataPayload.params.description"
         title="Detail Kategori"
         rows="6"
+        :counter="200"
         :isError="isErrorEmptyDescription"
+        errorMessage="Detail kategori tidak boleh kosong"
         @blur="checkDescriptionEmpty"
+        @errorCounter="(v) => (isErrorCounterCategory = v)"
       ></k-textarea>
-      <span v-if="isErrorEmptyDescription" class="alert-exist">
-        Detail kategori tidak boleh kosong
-      </span>
     </div>
 
     <div class="d-flex mt-4" style="gap: 8px;">
@@ -84,7 +84,9 @@
         :disabled="
           dataPayload.params.icon == '' ||
             dataPayload.params.name == '' ||
-            dataPayload.params.description == ''
+            dataPayload.params.description == '' ||
+            isErrorCounterName ||
+            isErrorCounterCategory
         "
         :loading="loading"
         @click="actionHandleClick"
@@ -135,6 +137,8 @@ export default {
       isErrorUpload: false,
       isErrorDuplicate: false,
       isErrorEmptyDescription: false,
+      isErrorCounterName: false,
+      isErrorCounterCategory: false,
     };
   },
   watch: {
@@ -201,7 +205,11 @@ export default {
         .catch((err) => {
           this.errorMessage = err.response.data.data;
           this.loading = false;
-          this.alertError = true;
+          if (err.response.data.data.includes("already exists")) {
+            this.isErrorDuplicate = true;
+          } else {
+            this.alertError = true;
+          }
         });
     },
     actionHandleClick() {
