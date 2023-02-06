@@ -6,7 +6,7 @@
     class="grey--text"
     :items-per-page="-1"
   >
-    <template v-slot:header.icon="{ header }" class="d-flex">
+    <template v-slot:header.icon="{ header }">
       <div>
         {{ header.text }}
         <v-tooltip max-width="300" nudge-bottom="50" right>
@@ -30,7 +30,9 @@
     </template>
 
     <template v-slot:item.icon="{ item }">
-      <v-img :src="item.icon" height="30px" width="30px"></v-img>
+      <div style="width: 60px;">
+        <v-img :src="item.icon" height="30px" width="30px"></v-img>
+      </div>
     </template>
     <template v-slot:item.name="{ item }">
       <div class="ellipsis font-12" style="max-width: 150px;">
@@ -38,14 +40,14 @@
       </div>
     </template>
     <template v-slot:item.totalProduct="{ item }">
-      <span class="font-12">
+      <div class="font-12" style="width: 120px;">
         {{ item.totalProduct }}
-      </span>
+      </div>
     </template>
     <template v-slot:item.modifyAt="{ item }">
-      <span class="font-12">
+      <div class="font-12" style="width: 100px;">
         {{ formattingDate(item.modifyAt) }}
-      </span>
+      </div>
     </template>
     <template v-slot:item.description="{ item }">
       <div class="ellipsis font-12" style="max-width: 510px;">
@@ -55,7 +57,7 @@
       </div>
     </template>
     <template v-slot:item.action="{ item }">
-      <div class="d-flex" style="gap : 10px">
+      <div class="d-flex" style="gap: 10px">
         <custom-button
           color="whitesnow"
           size="x-small"
@@ -164,7 +166,7 @@ export default {
 .font {
   &-12 {
     font-size: 11px !important;
-		font-weight: 500;
+    font-weight: 500;
   }
 }
 
