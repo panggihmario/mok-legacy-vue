@@ -22,12 +22,13 @@
       @scroll.native="scrolling"
       :item-height="50" min-height="100" :height="height">
       <template v-slot:default="{ item }">
+
         <v-list dense>
           <v-list-item-group color="primary">
             <v-list-item @click="selectItem(item)">
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ item[itemLabel] }}
+                  {{ item[itemLabel] }} 
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
