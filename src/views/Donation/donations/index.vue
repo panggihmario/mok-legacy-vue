@@ -18,7 +18,9 @@
         </custom-button>
       </div>
     </HeaderContent>
-    <Tabledonation/>
+    <Tabledonation
+      :items="donations"
+    />
   </div>
 </template>
 
@@ -39,32 +41,34 @@ export default {
           disabled: true,
         },
       ],
+      donations : []
     }
   },
   mounted () {
-    this.handleResponse()
+    this.handleDonations()
   },
   methods : {
     ...mapActions({
       getListDonation: "donation/getListDonation",
       deleteDonation: "donation/deleteDonation",
+      fetchDonations : 'donation/fetchDonations'
     }),
     openFormDonation() {
       this.$router.push({
         name : 'createDonation'
       })
     },
-    async handleResponse() {
+    handleDonations () {
       const payload = {
-        page: 0,
-      };
-      const response = await this.getListDonation(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        console.log(responseData)
-        // this.formatingResponseData(responseData);
+        page : 0
       }
-    },
+      return this.fetchDonations(payload)
+        .then(response => {
+          console.log(response)
+          const content = response.content
+          this.donations = content
+        })
+    }
   }
 }
 </script>
