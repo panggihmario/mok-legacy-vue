@@ -5,6 +5,7 @@ import channel from "./channel";
 import news from "./news";
 import post from "./Post";
 import donation from "./donation";
+import donationCategory from "./donation/category";
 import account from "./account";
 import complaint from "./complaint";
 import report from "./report";
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     news,
     post,
     donation,
+    donationCategory,
     account,
     complaint,
     report,

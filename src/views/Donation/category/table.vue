@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="data">
+  <v-data-table :headers="headers" :items="data" hide-default-footer>
     <template v-slot:item.icon="{ item }">
       <v-img
         :src="item.icon"
@@ -7,6 +7,11 @@
         height="32px"
         style="border-radius: 4px;"
       ></v-img>
+    </template>
+    <template v-slot:item.manage="{ item, index }">
+      <v-btn icon @click="actionEdit(index)">
+        <v-icon x-small>fa-edit</v-icon>
+      </v-btn>
     </template>
   </v-data-table>
 </template>
@@ -16,12 +21,6 @@ export default {
   props: {
     data: {
       type: Array,
-      default: () => [
-        {
-          icon: "https://dummyimage.com/200x200/000/000",
-          name: "",
-        },
-      ],
     },
   },
   data() {
@@ -36,7 +35,7 @@ export default {
         },
         {
           text: "Nama Kategori",
-          value: "Name",
+          value: "name",
           class: "whitesnow",
           sortable: false,
         },
@@ -44,10 +43,17 @@ export default {
           text: "Manage",
           value: "manage",
           class: "whitesnow",
+          align: "center",
+          width: "150",
           sortable: false,
         },
       ],
     };
+  },
+  methods: {
+    actionEdit(idx) {
+      this.$emit("actionEdit", idx);
+    },
   },
 };
 </script>
