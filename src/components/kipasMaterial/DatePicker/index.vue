@@ -4,7 +4,7 @@
     <v-menu v-model="menu" max-width="290" :close-on-content-click="false">
       <template v-slot:activator="{ on, attrs }">
         <div class="field__input">
-          <input :value="showDate" readonly placeholder="dd/mm/yy" v-bind="attrs" v-on="on" />
+          <input :value="showDate" readonly :placeholder="placeholder" v-bind="attrs" v-on="on" />
           <v-icon size="15px">fa-regular fa-calendar</v-icon>
         </div>
       </template>
@@ -41,13 +41,17 @@ export default {
       const localtz = moment(this.date).utcOffset() 
       const localUtc = localtz / 60
       const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
-      this.$emit('epochDate', epochDate)
+      const milisecondEpoch = epochDate * 1000
+      this.$emit('epochDate', milisecondEpoch)
     },
   },
   props: {
     title: {
       type: String
     },
+    placeholder : {
+      type : String
+    }
   }
 }
 </script>

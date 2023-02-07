@@ -4,6 +4,32 @@ export default {
 		pathDonation: 'admin/donations'
 	},
 	actions: {
+		fetchDonations({state, dispatch}, payload) {
+			const data = {
+				url : `${state.pathDonation}`,
+				params : {
+					...payload,
+					size : 10
+				}
+			}
+			return dispatch('getWithToken', data , {root : true})
+				.then(response => {
+					const responseData = response.data.data
+					return responseData
+				})
+				.catch(err => { throw err })
+		},
+		fetchDetailDonation ({state, dispatch}, payload) {
+			const data = {
+				url : `${state.pathDonation}/${payload}`
+			}
+			return dispatch('getWithToken', data , {root : true})
+				.then(response => {
+					const responseData = response.data.data
+					return responseData
+				})
+				.catch(err => { throw err })
+		},
 		fetchListDonationCategory({dispatch} , payload) {
 			const data = {
 				url : 'admin/donation-categories',
@@ -33,72 +59,61 @@ export default {
 					throw err;
 				})
 		},
-		async getListOrganizer({ state }, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathDonation}/organizers/search?name=${payload}`)
-				return response
-			} catch (error) {
-				return error
+		putStatusDonation ({state, dispatch}, payload) {
+			const params = {
+				url : `${state.pathDonation}/${payload.id}/update-status`,
+				data : {
+					...payload.params
+				}
 			}
+			return dispatch('putWithToken', params , { root : true})
+				.then(response => { return response })
+				.catch(err => { throw err })
 		},
-		async getListVerifier ({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathDonation}/verifiers/search?name=${payload}`)
-				return response
-			} catch (error) {
-				return error
+		postActivity ({state, dispatch}, payload) {
+			const params = {
+				url : `${state.pathDonation}/activity/${payload.id}`,
+				data : {
+					...payload.params
+				}
 			}
+			return dispatch('postWithToken', params , { root : true})
+				.then(response => { return response })
+				.catch(err => { throw err })
 		},
-		async createDonation({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().post(state.pathDonation, payload)
-					return response
-			} catch (error) {
-				return error
+		fetchActivity ({dispatch}, payload) {
+			const data = {
+				url : `donations/${payload.id}/activity`,
+				params : {
+					...payload.params,
+					size : 10
+				}
 			}
-		},
-		async getListDonation({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathDonation}`, {
-					params : {
-						page : payload.page
-					}
+			return dispatch('getWithToken', data , {root : true})
+				.then(response => {
+					const responseData = response.data.data
+					return responseData
 				})
-				return response
-			} catch (error) {
-				return error
-			}
+				.catch(err => { throw err })
 		},
-		async getDonationById ({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().get(`${state.pathDonation}/${payload}`)
-				return response
-			} catch (error) {
-				return error
+		putActivity ({state,dispatch}, payload) {
+			const params = {
+				url : `${state.pathDonation}/activity/${payload.id}`,
+				data : {
+					...payload.params
+				}
 			}
+			return dispatch('putWithToken', params , { root : true})
+				.then(response => { return response })
+				.catch(err => { throw err })
 		},
-		async editDonation ({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().put(`${state.pathDonation}/${payload.id}`, payload.params)
-				return response
-			} catch (error) {
-				return error
+		deleteActivity({state, dispatch}, payload) {
+			const params = {
+				url : `${state.pathDonation}/activity/${payload}`,
 			}
-		},
-		async deleteDonation ({state}, payload) {
-			let response;
-			try {
-				response = await this._vm.$httpWithToken().delete(`${state.pathDonation}/${payload}`)
-				return response
-			} catch (error) {
-				return error
-			}
-		},
+			return dispatch('deleteWithToken', params, {root : true})
+				.then(response => { return response })
+				.catch(err => { throw err })
+		}
 	}
 }

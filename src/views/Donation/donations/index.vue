@@ -18,7 +18,16 @@
         </custom-button>
       </div>
     </HeaderContent>
-    <Tabledonation/>
+    <Tabledonation
+      :items="donations"
+    />
+    <div class="d-flex justify-end mt-2">
+    <v-pagination
+      v-model="page"
+      :length="totalPages"
+      @input="onInput"
+    ></v-pagination>
+  </div>
   </div>
 </template>
 
@@ -33,38 +42,56 @@ export default {
   },
   data () {
     return {
+      page : 1,
+      totalPages : 0,
       crumbs: [
         {
           text: "Penggalangan Dana",
           disabled: true,
         },
       ],
+      donations : []
     }
   },
   mounted () {
-    this.handleResponse()
+    this.handleDonations()
   },
   methods : {
     ...mapActions({
       getListDonation: "donation/getListDonation",
       deleteDonation: "donation/deleteDonation",
+      fetchDonations : 'donation/fetchDonations'
     }),
+    onInput(e) {
+      const payload = {
+        page : e - 1
+      }
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    },
     openFormDonation() {
       this.$router.push({
         name : 'createDonation'
       })
     },
-    async handleResponse() {
+    handleDonations () {
       const payload = {
-        page: 0,
-      };
-      const response = await this.getListDonation(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        console.log(responseData)
-        // this.formatingResponseData(responseData);
+        page : 0
       }
-    },
+      return this.fetchDonations(payload)
+        .then(response => {
+          console.log(response)
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    }
   }
 }
 </script>

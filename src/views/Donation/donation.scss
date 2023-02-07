@@ -3,6 +3,12 @@
   gap: .5rem;
 }
 
+.alert {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+}
+
 .columns {
   display: flex;
   gap: 40px;
@@ -10,8 +16,6 @@
 
 .subcolumns {
   display: flex;
-  // grid-template-columns: 78% 22%;
-  // flex-wrap: wrap;
   height: 9.375rem;
   gap: 10px;
 }
@@ -22,7 +26,6 @@
 
 .subcolumns div:nth-child(2) {
   flex: 1 1 20%;
-  // position: relative;
 }
 
 .subcolumns>div {
@@ -54,7 +57,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  // border: none;
   overflow: hidden;
   border-radius: 5px;
 }
@@ -142,4 +144,242 @@
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.list {
+  font-size: 12px;
+  font-weight: 500;
+}
+.ellipsis {
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.menu-container {
+  background-color: $truewhite;
+  box-shadow: 2px 4px 10px rgba(33, 83, 205, 0.25);
+  border-radius: 8px;
+}
+.menu-box {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.dialog {
+  padding: 28px 38px;
+  position: relative;
+}
+
+.dialog-title {
+  color: $black;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.dialog-content {
+  color: $charcoal;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 23px;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.dialog-warning {
+  position: absolute;
+  top : 28px;
+  left: 10px;
+}
+
+.detail {
+  &__line {
+    width: 100%;
+    height: 1px;
+    background-color: $whitesmoke;
+  }
+  &__container {
+    display: grid;
+    gap: 24px;
+  }
+  &__amount {
+    display: grid;
+    grid-template-columns: 1fr  1fr;
+    gap: 18px;
+    .amount-colect {
+      background-color: $secondary;
+      color: $truewhite;
+      padding: 8px;
+    }
+    .amount-withdraw {
+      background-color: $primary;
+      color: $truewhite;
+      padding: 8px;
+    }
+    .amount-title {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .amount-balance {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .amount-target {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+  &__description {
+    color: $greys;
+    font-weight: 500; 
+    font-size: 12px;
+    margin-top: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid $whitesmoke;
+  }
+  &__initiator {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    .initiator-title {
+      color: $secondary;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .initiator-name {
+      color: $charcoal;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+  &__header {
+    display: flex;
+    gap: 24px;
+    height: 230px;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: fill;
+    }
+    .detail-iconvideo {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      justify-content: center;
+    }
+    .first {
+      width: 328px;
+    }
+    .second {
+      width: 122px;
+      position: relative;
+    }
+    .third {
+      flex : 1;
+    }
+  }
+  &__location {
+    display: flex;
+    color: $charcoal;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  &__header-content {
+    display: grid;
+    gap: 24px;
+    .detail-title {
+      color: $charcoal;
+      font-size: 18px;
+      font-weight: 700;
+      width: 100%;
+    }
+    .detail-time {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      gap: 12px;
+      background-color: $whitesnow;
+      padding: 4px;
+      .detail-time-icon {
+        padding: 5px 9px;
+        border-radius: 8px;
+        background-color: $primarylowtint;
+      }
+      .detail-duration {
+        flex: 1;
+      }
+    }
+  }
+}
+
+
+.activity {
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  &__dialog-title {
+    font-size: 14px;
+    font-weight: 800;
+  }
+  &__dialog-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &__content-box {
+    border: 1px solid $whitesmoke;
+    border-radius: 6px;
+  }
+  &__dates {
+    font-size: 11px;
+    font-weight: 700;
+    color: $greys;
+  }
+  &__description {
+    color: $greys;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  &__icons {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  &__icon {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $whitesmoke;
+    border-radius: 3px;
+  }
 }

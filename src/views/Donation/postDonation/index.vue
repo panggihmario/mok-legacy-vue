@@ -55,7 +55,11 @@
           </div>
 
           <div :class="d.box">
-            <k-date @epochDate="getEpoch" title="Berakir pada" />
+            <k-date 
+              @epochDate="getEpoch" 
+              title="Berakir pada" 
+              :placeholder="placeholderDate"
+            />
             <k-checkbox v-model="isEnded" label="Tidak ada batas waktu"  />
           </div>
           <k-select 
@@ -81,11 +85,12 @@
           />
           <k-input v-model="payloadDonation.recipientName" label="Nama Wali / Penerima Donasi" />
           <div class="d-flex" style="gap : 8px">
-            <custom-button>Batalkan</custom-button>
+            <custom-button @click="onCancel">Batalkan</custom-button>
             <custom-button 
               type="submit" 
               color="primary"
               :disabled="isDisabled"
+              :loading="isLoading"
             >
               Publikasikan Donasi
               </custom-button>
@@ -93,6 +98,20 @@
         </div>
       </div>
     </form>
+    <v-alert
+      dense
+      type="error"
+      :class="d.alert"
+      :value="errorStatus"
+    > {{ errorMessage }}  </v-alert>
+    <v-alert
+      dense
+      type="success"
+      :value="successStatus"
+      :class="d.alert"
+    >
+    {{ sucessMessage }} 
+  </v-alert> 
   </div>
 </template>
 
@@ -111,7 +130,7 @@ export default {
       const dataForm = {
         ...this.payloadDonation,
         medias : [...this.medias],
-        organizer : {
+        initiator : {
           id : this.initiator.accountId
         },
         donationCategory : {
@@ -133,6 +152,9 @@ export default {
     isEnded(value) {
       if(value) {
         this.payloadDonation.expiredAt = null
+        this.placeholderDate = 'Tidak dibatasi'
+      }else { 
+        this.placeholderDate = 'dd/mm/yy'
       }
     },
     isForm(value) {
@@ -143,7 +165,7 @@ export default {
         latitude : yup.string().required(),
         longitude : yup.string().required(),
         medias : yup.array().min(2),
-        organizer : yup.object().shape({
+        initiator : yup.object().shape({
           id : yup.string().required()
         }),
         donationCategory : yup.object().shape({
@@ -155,7 +177,9 @@ export default {
       })
       schema.isValid(value)
         .then(valid => {
-          this.isDisabled = valid
+          if(valid) {
+            this.isDisabled = false
+          }
         })
     }
   },
@@ -171,11 +195,15 @@ export default {
       fetchListDonationCategory : 'donation/fetchListDonationCategory',
       postDonation : 'donation/postDonation'
     }),
+    onCancel() {
+      this.$router.push({
+        name : 'donations'
+      })
+    },
     handleDonationCategory () {
       return this.fetchListDonationCategory()
         .then(response => {
           const content = response.content
-          console.log(content)
           this.categories = content
         })
     },
@@ -219,7 +247,7 @@ export default {
       const payload = {
         ...this.payloadDonation,
         medias : [...this.medias],
-        organizer : {
+        initiator : {
           id : this.initiator.accountId
         },
         donationCategory : {
@@ -229,10 +257,27 @@ export default {
           id : this.province.id
         }
       }
-      console.log('on submit', payload)
+      this.isLoading = true
       return this.postDonation(payload)
-        .then(response => {
-          console.log(response)
+        .then((response) => {
+          this.successStatus = true
+          this.sucessMessage = response.data.message
+          setTimeout(() => {
+            this.isLoading = false
+            this.$router.push({
+              name : 'donations'
+            })
+            this.successStatus = false
+            this.sucessMessage = ""
+          },2000)
+        })
+        .catch(err => {
+          this.errorStatus = true
+          this.errorMessage = err.response ? err.response.data.message : 'Create Failed'
+          setTimeout(() => {
+            this.errorStatus = false
+            this.errorMessage = ''
+          }, 2000)
         })
     },
     getLocation (params) {
@@ -272,6 +317,12 @@ export default {
   data() {
     return {
       amount: 0,
+      placeholderDate : 'dd/mm/yy',
+      errorMessage : '',
+      sucessMessage : '',
+      errorStatus : false,
+      successStatus : false,
+      isLoading : false,
       totalPages : 0,
       isDisabled : true,
       page : 1,
