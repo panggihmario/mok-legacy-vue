@@ -13,7 +13,7 @@
     </div>
     <div :class="d['amount-withdraw']">
       <div :class="d['amount-title']">Penarikan Dana</div>
-      <div :class="d['amount-balance']">{{ item.amountWithdraw }}</div>
+      <div :class="d['amount-balance']">Rp {{ item.amountWithdraw.toLocaleString('id') }}</div>
       <v-progress-linear
         v-model="value"
         color="white"
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import moment  from 'moment'
 export default {
   props : {
     item : {
@@ -36,7 +37,8 @@ export default {
       const target = this.item.targetAmount
       const percent = (collect / target) * 100
       return percent
-    }
+    },
+  
   },
   data () {
     return {

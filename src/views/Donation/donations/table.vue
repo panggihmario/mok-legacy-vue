@@ -41,6 +41,7 @@
         </tbody>
       </template>
     </v-data-table>
+  
   </div>
 </template>
 
@@ -69,6 +70,8 @@ export default {
   },
   data () {
     return {
+      page : 1,
+      totalPages : 0,
       headers :[
         {
           text : 'Judul Penggalangan Dana',
@@ -89,27 +92,27 @@ export default {
           width: "100",
         },
         {
-          text : 'Tgl',
-          value : 'judul',
+          text : 'Tgl Selesai',
+          value : 'expiredAt',
           class: "whitesnow",
           width: "100",
         },
         {
           text : 'Target Dana Terkumpul',
-          value : 'judul',
+          value : 'targetAmount',
           class: "whitesnow",
           width: "150",
         },
         {
           text : 'Status',
-          value : 'judul',
+          value : 'status',
           class: "whitesnow",
           width: "100",
           align : 'center'
         },
         {
           text : 'Manage',
-          value : 'judul',
+          value : 'actions',
           class: "whitesnow",
           width: "100",
           align : 'center'

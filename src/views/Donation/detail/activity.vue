@@ -10,7 +10,7 @@
     </div>
 
 
-    <v-timeline align-top dense>
+    <v-timeline v-if="activites.length > 0" align-top dense>
       <v-timeline-item v-for="(ac, idx) in activites" :key="idx" color="whitesmoke" small>
         <v-row class="pt-1">
           <v-col cols="2">

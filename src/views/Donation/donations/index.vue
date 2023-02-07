@@ -21,6 +21,13 @@
     <Tabledonation
       :items="donations"
     />
+    <div class="d-flex justify-end mt-2">
+    <v-pagination
+      v-model="page"
+      :length="totalPages"
+      @input="onInput"
+    ></v-pagination>
+  </div>
   </div>
 </template>
 
@@ -35,6 +42,8 @@ export default {
   },
   data () {
     return {
+      page : 1,
+      totalPages : 0,
       crumbs: [
         {
           text: "Penggalangan Dana",
@@ -53,6 +62,18 @@ export default {
       deleteDonation: "donation/deleteDonation",
       fetchDonations : 'donation/fetchDonations'
     }),
+    onInput(e) {
+      const payload = {
+        page : e - 1
+      }
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    },
     openFormDonation() {
       this.$router.push({
         name : 'createDonation'
@@ -66,6 +87,8 @@ export default {
         .then(response => {
           console.log(response)
           const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
           this.donations = content
         })
     }

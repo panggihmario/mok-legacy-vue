@@ -42,8 +42,7 @@ export default {
       const localUtc = localtz / 60
       const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
       const milisecondEpoch = epochDate * 1000
-      console.log(milisecondEpoch)
-      // this.$emit('epochDate', milisecondEpoch)
+      this.$emit('epochDate', milisecondEpoch)
     },
   },
   props: {

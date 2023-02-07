@@ -49,7 +49,9 @@ export default {
         initiator : '',
         targetAmount : 0,
         amountCollected : 0,
-        amountWithdraw : 0
+        amountWithdraw : 0,
+        createAt : '',
+        expiredAt : ''
       },
     }
   },
@@ -86,7 +88,9 @@ export default {
             video,
             targetAmount : response.targetAmount,
             amountCollected : response.amountCollected,
-            amountWithdraw : response.amountWithdraw
+            amountWithdraw : response.amountWithdraw,
+            createAt : response.createAt,
+            expiredAt : response.expiredAt
           })
         })
         .catch(err => {

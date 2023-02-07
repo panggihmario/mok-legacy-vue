@@ -88,7 +88,7 @@ export default {
       const payload = {
         id : this.item.id,
         params : {
-          status : 'Inactive'
+          status : 'INACTIVE'
         }
       }
       this.loading = true
