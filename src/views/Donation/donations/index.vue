@@ -5,10 +5,10 @@
       :list="crumbs"
     >
       <div :class="d.header">
-        <custom-button size="x-medium" >
+        <custom-button size="x-medium" v-if="!isExpand" @click="openExpand" >
           Filter Data
         </custom-button>
-        <k-input/>
+        <k-input @keyup.enter="onEnter" v-model="keyword"/>
         <custom-button 
           size="x-medium" 
           color="primary"
@@ -18,6 +18,11 @@
         </custom-button>
       </div>
     </HeaderContent>
+    <Expand 
+      v-if="isExpand"
+      @onCancel="onCloseExpand"
+      @onFilter="onFilter"
+    />
     <Tabledonation
       :items="donations"
     />
@@ -34,16 +39,20 @@
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import Tabledonation from "./table.vue"
+import Expand from "./expand.vue"
 import { mapActions } from "vuex";
 export default {
   components : {
     HeaderContent,
-    Tabledonation
+    Tabledonation,
+    Expand
   },
   data () {
     return {
       page : 1,
       totalPages : 0,
+      keyword : '',
+      isExpand : false,
       crumbs: [
         {
           text: "Penggalangan Dana",
@@ -62,9 +71,48 @@ export default {
       deleteDonation: "donation/deleteDonation",
       fetchDonations : 'donation/fetchDonations'
     }),
-    onInput(e) {
+    onFilter(params) {
       const payload = {
-        page : e - 1
+        ...params,
+        page : this.page - 1
+      }
+      console.log(payload)
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+        .catch (err => {
+          console.log(err.response)
+        })
+    },
+    openExpand() {
+      this.isExpand = true
+    },  
+    onCloseExpand() {
+      this.isExpand = false
+      this.handleDonations()
+    },
+    onEnter() {
+      const payload = {
+        page : this.page - 1,
+        search : this.keyword
+      }
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    },
+    onInput(e) {
+      this.page = e
+      const payload = {
+        page : e - 1,
+        search : this.keyword
       }
       return this.fetchDonations(payload)
         .then(response => {

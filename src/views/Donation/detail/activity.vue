@@ -15,8 +15,8 @@
         <v-row class="pt-1">
           <v-col cols="2">
             <div :class="d['activity__dates']">
-              <div>13 Jun 2022 </div>
-              <div>13:32 WIB</div>
+              <div>{{ formated(ac.createAt) }}</div>
+              <div> {{ formatedHour(ac.createAt) }} </div>
             </div>
             <div :class="d['activity__icons']">
               <div :class="d['activity__icon']" @click="openDialogConfirm(ac)">
@@ -71,6 +71,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -85,6 +86,14 @@ export default {
     this.handleActivity()
   },
   methods: {
+    formated(epoch) {
+      const humanDate = moment(epoch).format('DD MMM YYYY')
+      return humanDate
+    },
+    formatedHour(epoch) {
+      const hourDate = moment(epoch).format('HH:mm')
+      return hourDate
+    },
     openDialog() {
       this.isDialog = true
     },

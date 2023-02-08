@@ -217,6 +217,15 @@
     display: grid;
     grid-template-columns: 1fr  1fr;
     gap: 18px;
+    .amount-list {
+      height: 186px;
+      overflow: scroll;
+      border: 1px solid $whitesmoke;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: $greys;
+    }
     .amount-colect {
       background-color: $secondary;
       color: $truewhite;
@@ -381,5 +390,20 @@
     align-items: center;
     background-color: $whitesmoke;
     border-radius: 3px;
+  }
+}
+
+.expand {
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: $whitesmoke;
+    padding: 6px 10px;
+  }
+  &__title {
+    font-size: 12px;
+    font-weight: 400;
+    color: $charcoal;
   }
 }

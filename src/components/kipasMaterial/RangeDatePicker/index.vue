@@ -8,18 +8,10 @@
       @input="onClick"
     >
       <template v-slot:activator="{ on, attrs }">
-        <custom-input
-          v-bind="attrs"
-          hide-details
-          v-on="on"
-          dense
-          readonly
-          placeholder="Dipublish Pada"
-          v-model="displayDate"
-          class="expand__field"
-        ></custom-input>
+        <div class="field__input">
+          <input v-model="displayProcessDate"  readonly :placeholder="placeholder" v-bind="attrs" v-on="on" />
+        </div>
       </template>
-
       <v-card class="dt__card" flat>
         <v-row>
           <v-col cols="6">
@@ -28,7 +20,6 @@
               v-model="choosenDate"
               no-title
               range
-              :max="maxDate"
             >
             </v-date-picker>
 
@@ -77,8 +68,12 @@
 
 <script>
 import moment from "moment";
-import { mapMutations, mapState } from "vuex";
 export default {
+  props : {
+    placeholder : {
+      type : String
+    }
+  },
   data: () => ({
     fav: true,
     menu: false,
@@ -86,12 +81,10 @@ export default {
     hints: true,
     selectedDate: "",
     dates: [],
+    displayProcessDate : '',
+    paramsProcess : []
   }),
   computed: {
-    ...mapState({
-      paramsDate: (state) => state.post.paramsDate,
-      displayDate: (state) => state.post.displayDate,
-    }),
     fromDate() {
       if (this.choosenDate.length > 0) {
         return this.formatter(this.choosenDate[0]);
@@ -127,24 +120,19 @@ export default {
     },
     choosenDate: {
       get() {
-        return this.paramsDate;
+        return this.paramsProcess;
       },
       set(value) {
-        this.setParamsDate(value)
         const after = this.checkRangeDate(value);
         if (after[1] && after[0]) {
-          this.setParamsDate(after);
+          this.paramsProcess = after
         } else {
-          this.setParamsDate(value);
+          this.paramsProcess = value
         }
       },
     },
   },
   methods: {
-    ...mapMutations({
-      setParamsDate: "post/setParamsDate",
-      setDisplayDate: "post/setDisplayDate",
-    }),
     checkRangeDate(value) {
       const [first, second] = value;
       const mFirst = moment(first);
@@ -157,7 +145,7 @@ export default {
     },
     onReset() {
       this.choosenDate = [];
-      this.setDisplayDate("");
+      this.displayProcessDate = ''
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
@@ -166,19 +154,40 @@ export default {
     closeMenu() {
       this.menu = false;
       this.onClick();
+      this.convertEpoch()
+    },
+    convertEpoch() {
+      const [startDate, endDate] = this.choosenDate
+      const epochStartDate = moment(startDate, "YYYY-MM-DD").add(7, 'hours').unix()
+      const miliSecondStartDate = epochStartDate * 1000
+      let end
+      let epochEndDate
+      if(endDate) {
+        end = moment(endDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
+        epochEndDate = end * 1000
+      }else{
+        end = moment(startDate, "YYYY-MM-DD HH:mm").endOf("day").add(7, 'hours').unix()
+        epochEndDate = end * 1000
+      }
+      const payload = {
+        startAt : miliSecondStartDate ? miliSecondStartDate : '',
+        endAt : epochEndDate ? epochEndDate : ''
+      }
+      this.$emit('getRangeDate', payload)
     },
     onClick() {
+      
       if (this.choosenDate.length > 0) {
         const d = this.choosenDate;
         const from = this.formatter(d[0]);
-        this.setDisplayDate(from);
+        this.displayProcessDate = from
         if (this.choosenDate.length > 1) {
           const afterCheckRangeDate = this.checkRangeDate(this.choosenDate);
           const start = this.formatter(afterCheckRangeDate[0]);
           const end = this.formatter(afterCheckRangeDate[1]);
           const fullDate = `${start} - ${end}`;
-          this.setDisplayDate(fullDate);
-          this.setParamsDate(afterCheckRangeDate);
+          this.displayProcessDate = fullDate
+          this.paramsProcess = afterCheckRangeDate
         }
       }
     },
@@ -186,6 +195,29 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped src="./expand.scss"  >
+<style lang="scss" scoped>
+.dt {
+  &__card {
+    padding: 16px;
+    background-color: $whitesnow;
+  }
+  &__box-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__text-button {
+    font-size: 9px;
+    font-weight: 500;
+  }
+}
+.warning-sign {
+  font-size: 12px;
+  font-weight: 500;
+  color: #777777;
+}
+</style>
+
+<style lang="scss" src="../material.scss" >
 
 </style>
