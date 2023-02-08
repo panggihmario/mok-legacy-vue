@@ -10,8 +10,12 @@ const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
 module.exports = {
-
-							
+	devServer: {
+    host: '0.0.0.0',
+    port: 8085, // CHANGE YOUR PORT HERE!
+    https: true,
+    hotOnly: false,
+  },
 	parallel: false,
 	chainWebpack: (config) => {
     if (process.env.NODE_ENV === 'test') {

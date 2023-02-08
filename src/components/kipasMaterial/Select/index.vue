@@ -5,7 +5,7 @@
       <div>
         <Label v-if="title" style="margin-bottom: 8px;" :title="title"></Label>
         <div class="select__wrapper" v-bind="attrs" v-on="on">
-          <input readonly class="select__input text-primary" v-model="value[itemLabel]" />
+          <input :placeholder="placeholder" readonly class="select__input text-primary" v-model="value[itemLabel]" />
           <v-icon size="16px" color="charcoal">
             fa-solod fa-caret-down
           </v-icon>
@@ -13,34 +13,25 @@
       </div>
 
     </template>
-    <v-card
-    class="mx-auto"
-    max-width="400"
-  >
-    <v-virtual-scroll 
-      :items="items" 
-      @scroll.native="scrolling"
-      :item-height="50" min-height="100" :height="height">
-      <template v-slot:default="{ item }">
-
-        <v-list dense>
-          <v-list-item-group color="primary">
-            <v-list-item @click="selectItem(item)">
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ item[itemLabel] }} 
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </template>
-    </v-virtual-scroll>
-</v-card>
-
+    <v-card class="mx-auto" max-width="600">
+      <v-virtual-scroll :items="items" @scroll.native="scrolling" :item-height="50" min-height="100" :height="height">
+        <template v-slot:default="{ item }">
+          <v-list dense>
+            <v-list-item-group color="primary">
+              <v-list-item @click="selectItem(item)">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item[itemLabel] }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </template>
+      </v-virtual-scroll>
+    </v-card>
   </v-menu>
 </template>
-
 
 <script>
 import Label from "../Label"
@@ -48,14 +39,14 @@ export default {
   components: {
     Label
   },
-  
+
   props: {
     items: {
       type: Array
     },
-    height : {
-      type : String,
-      default : '150',
+    height: {
+      type: String,
+      default: '150',
     },
     title: {
       type: String
@@ -70,6 +61,9 @@ export default {
     },
     disabled: {
       type: Boolean
+    },
+    placeholder : {
+      type : String
     }
   },
   computed: {
@@ -80,21 +74,17 @@ export default {
     }
   },
   methods: {
-    scrolling (event) {
-        const element = event.currentTarget || event.target
-        if (element && element.scrollHeight - element.scrollTop === element.clientHeight) {
-           this.$emit('scroll-end')
-        }
-    },
-    endIntersect(entries, observer, isIntersecting) {
-      console.log(entries, observer, isIntersecting)
+    scrolling(event) {
+      const element = event.currentTarget || event.target
+      if (element && element.scrollHeight - element.scrollTop === element.clientHeight) {
+        this.$emit('scroll-end')
+      }
     },
     openOptions() {
       this.show = !this.show
     },
     selectItem(item) {
       this.$emit('input', item)
-
     }
   }
 }

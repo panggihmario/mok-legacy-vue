@@ -5,10 +5,10 @@
       :list="crumbs"
     >
       <div :class="d.header">
-        <custom-button size="x-medium" >
+        <custom-button size="x-medium" v-if="!isExpand" @click="openExpand" >
           Filter Data
         </custom-button>
-        <k-input/>
+        <k-input @keyup.enter="onEnter" v-model="keyword"/>
         <custom-button 
           size="x-medium" 
           color="primary"
@@ -18,53 +18,128 @@
         </custom-button>
       </div>
     </HeaderContent>
-    <Tabledonation/>
+    <Expand 
+      v-if="isExpand"
+      @onCancel="onCloseExpand"
+      @onFilter="onFilter"
+    />
+    <Tabledonation
+      :items="donations"
+    />
+    <div class="d-flex justify-end mt-2">
+    <v-pagination
+      v-model="page"
+      :length="totalPages"
+      @input="onInput"
+    ></v-pagination>
+  </div>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
 import Tabledonation from "./table.vue"
+import Expand from "./expand.vue"
 import { mapActions } from "vuex";
 export default {
   components : {
     HeaderContent,
-    Tabledonation
+    Tabledonation,
+    Expand
   },
   data () {
     return {
+      page : 1,
+      totalPages : 0,
+      keyword : '',
+      isExpand : false,
       crumbs: [
         {
           text: "Penggalangan Dana",
           disabled: true,
         },
       ],
+      donations : []
     }
   },
   mounted () {
-    this.handleResponse()
+    this.handleDonations()
   },
   methods : {
     ...mapActions({
       getListDonation: "donation/getListDonation",
       deleteDonation: "donation/deleteDonation",
+      fetchDonations : 'donation/fetchDonations'
     }),
+    onFilter(params) {
+      const payload = {
+        ...params,
+        page : this.page - 1
+      }
+      console.log(payload)
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+        .catch (err => {
+          console.log(err.response)
+        })
+    },
+    openExpand() {
+      this.isExpand = true
+    },  
+    onCloseExpand() {
+      this.isExpand = false
+      this.handleDonations()
+    },
+    onEnter() {
+      const payload = {
+        page : this.page - 1,
+        search : this.keyword
+      }
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    },
+    onInput(e) {
+      this.page = e
+      const payload = {
+        page : e - 1,
+        search : this.keyword
+      }
+      return this.fetchDonations(payload)
+        .then(response => {
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    },
     openFormDonation() {
       this.$router.push({
         name : 'createDonation'
       })
     },
-    async handleResponse() {
+    handleDonations () {
       const payload = {
-        page: 0,
-      };
-      const response = await this.getListDonation(payload);
-      if (response.status === 200) {
-        const responseData = response.data.data;
-        console.log(responseData)
-        // this.formatingResponseData(responseData);
+        page : 0
       }
-    },
+      return this.fetchDonations(payload)
+        .then(response => {
+          console.log(response)
+          const content = response.content
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
+          this.donations = content
+        })
+    }
   }
 }
 </script>
