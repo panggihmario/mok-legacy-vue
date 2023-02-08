@@ -21,9 +21,9 @@
           <v-icon color="black" size="10px">fas fa-file-signature</v-icon>
           <div>Update Kabar Terkini</div>
         </div>
-        <div :class="m['menu-box']" class="primary--text" @click="onActive" >
+        <div v-if="item.status === 'Active' " :class="m['menu-box']" class="primary--text" @click="onActive" >
           <v-icon color="primary" size="10px">fas fa-power-off</v-icon>
-          <div> Nonaktifkan Penggalangan Dana</div>
+          <div> Nonaktifkan Penggalangan Dana </div>
         </div>
       </div>
     </v-menu>
@@ -88,7 +88,7 @@ export default {
       const payload = {
         id : this.item.id,
         params : {
-          status : 'INACTIVE'
+          status : 'Inactive'
         }
       }
       this.loading = true

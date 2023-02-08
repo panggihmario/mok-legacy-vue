@@ -24,5 +24,9 @@ export default [
   {
     registeredAs : 'k-map',
     name : () => import('./GoogleMap')
+  },
+  {
+    registeredAs : 'k-range-date',
+    name : () => import('./RangeDatePicker')
   }
 ]
