@@ -7,6 +7,7 @@
         ref="inputRef"
         type="text"
         :value="value"
+        :disabled="isDisable"
       />
     </div>
   </div>
@@ -21,7 +22,8 @@ export default {
   props: {
     value: Number, // Vue 2: value
     options: Object,
-    label :String
+    label :String,
+    isDisable : Boolean
   },
   setup(props) {
     const { inputRef } = useCurrencyInput(props.options)
