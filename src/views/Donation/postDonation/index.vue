@@ -4,7 +4,7 @@
     <form @submit.prevent="onSubmit">
       <div :class="d.columns">
         <div :class="d.first">
-          <k-input label="judul donasi" v-model="payloadDonation.title" />
+          <k-input label="Judul Donasi" v-model="payloadDonation.title" />
           <div :class="d.subcolumns">
             <div v-if="showImageDonation" :class="d.hasMedia">
               <img :src="showImageDonation" :class="d.image" />
@@ -49,16 +49,23 @@
         </div>
         <div :class="d.second">
           <div :class="d.box">
-            <CurrencyInput label="Target Donasi" v-model="payloadDonation.targetAmount"
-              :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" />
+            <CurrencyInput 
+              label="Target Donasi" 
+              v-model="payloadDonation.targetAmount"
+              :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" 
+              :isDisable="isDisableCurrency"
+            />
             <k-checkbox  v-model="isAmount" label="Tidak ada limit" />
           </div>
 
           <div :class="d.box">
             <k-date 
               @epochDate="getEpoch" 
-              title="Berakir pada" 
+              title="Berakir Pada" 
               :placeholder="placeholderDate"
+              :isDisable="isDisableDate"
+              :minDate="minDate"
+              :value="payloadDonation.expiredAt"
             />
             <k-checkbox v-model="isEnded" label="Tidak ada batas waktu"  />
           </div>
@@ -120,12 +127,17 @@ import HeaderContent from "@/containers/HeaderContent";
 import CurrencyInput from './currencyInput.vue'
 import { mapActions  } from "vuex";
 import * as yup from 'yup';
+import moment from "moment"
 export default {
   components: {
     HeaderContent,
     CurrencyInput
   },
   computed : {
+    minDate () {
+      const currentDate = moment().format('YYYY-MM-DD')
+      return currentDate
+    },
     isForm () {
       const dataForm = {
         ...this.payloadDonation,
@@ -147,14 +159,19 @@ export default {
     isAmount(value) {
       if(value) {
         this.payloadDonation.targetAmount = 0
+        this.isDisableCurrency = true
+      }else{
+        this.isDisableCurrency = false
       }
     },
     isEnded(value) {
       if(value) {
         this.payloadDonation.expiredAt = null
         this.placeholderDate = 'Tidak dibatasi'
+        this.isDisableDate = true
       }else { 
         this.placeholderDate = 'dd/mm/yy'
+        this.isDisableDate = false
       }
     },
     isForm(value) {
@@ -273,6 +290,7 @@ export default {
         })
         .catch(err => {
           this.errorStatus = true
+          this.isLoading = false
           this.errorMessage = err.response ? err.response.data.message : 'Create Failed'
           setTimeout(() => {
             this.errorStatus = false
@@ -317,6 +335,8 @@ export default {
   data() {
     return {
       amount: 0,
+      isDisableCurrency : false,
+      isDisableDate : false,
       placeholderDate : 'dd/mm/yy',
       errorMessage : '',
       sucessMessage : '',

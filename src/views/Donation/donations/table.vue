@@ -35,7 +35,7 @@
               </div>
             </td>
             <td> 
-              <Menu :item="item" />
+              <Menu @refreshData="refreshData" :item="item" />
             </td>
           </tr>
         </tbody>
@@ -58,6 +58,9 @@ export default {
     }
   },
   methods : {
+    refreshData() {
+      this.$emit('refreshData')
+    },
     convertToHumanDate(payload) {
       if(payload) {
         const cek = moment(payload).format("DD/MM/YYYY");

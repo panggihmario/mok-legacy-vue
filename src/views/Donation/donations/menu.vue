@@ -77,7 +77,6 @@ export default {
       })
     },
     onActive () {
-      console.log('on active')
       this.menu = false
       this.dialog = true
     },
@@ -94,9 +93,9 @@ export default {
       this.loading = true
       return this.putStatusDonation(payload)
         .then((res) => {
-          console.log(res)
           this.loading = false
           this.dialog = false
+          this.$emit('refreshData')
         })
         .catch(err => {
           console.log(err.response)

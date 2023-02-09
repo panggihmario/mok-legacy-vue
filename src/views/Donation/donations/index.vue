@@ -25,6 +25,7 @@
     />
     <Tabledonation
       :items="donations"
+      @refreshData="refreshData"
     />
     <div class="d-flex justify-end mt-2">
     <v-pagination
@@ -51,6 +52,7 @@ export default {
     return {
       page : 1,
       totalPages : 0,
+      params : {},
       keyword : '',
       isExpand : false,
       crumbs: [
@@ -71,12 +73,15 @@ export default {
       deleteDonation: "donation/deleteDonation",
       fetchDonations : 'donation/fetchDonations'
     }),
+    refreshData() {
+      this.handleDonations()
+    },
     onFilter(params) {
+      this.params = {...params}
       const payload = {
         ...params,
         page : this.page - 1
       }
-      console.log(payload)
       return this.fetchDonations(payload)
         .then(response => {
           const content = response.content
@@ -111,8 +116,9 @@ export default {
     onInput(e) {
       this.page = e
       const payload = {
+        ...this.params,
         page : e - 1,
-        search : this.keyword
+        search : this.keyword,
       }
       return this.fetchDonations(payload)
         .then(response => {
@@ -129,11 +135,10 @@ export default {
     },
     handleDonations () {
       const payload = {
-        page : 0
+        page : this.page - 1
       }
       return this.fetchDonations(payload)
         .then(response => {
-          console.log(response)
           const content = response.content
           const totalPages = response.totalPages
           this.totalPages = totalPages

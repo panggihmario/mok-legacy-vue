@@ -4,7 +4,7 @@
     <v-menu v-model="menu" max-width="290" :close-on-content-click="false">
       <template v-slot:activator="{ on, attrs }">
         <div class="field__input">
-          <input :value="showDate" readonly :placeholder="placeholder" v-bind="attrs" v-on="on" />
+          <input :disabled="isDisable" :value="showDate" readonly :placeholder="placeholder" v-bind="attrs" v-on="on" />
           <v-icon size="15px">fa-regular fa-calendar</v-icon>
         </div>
       </template>
@@ -12,6 +12,7 @@
         v-model="date" 
         @change="onChange"
         color="primary"
+        :min="minDate"
       />    
     </v-menu>
   </div>
@@ -24,10 +25,18 @@ export default {
   components: {
     Label
   },
+  watch : {
+    value (d) {
+      if(!d) {
+        this.date = ''
+      }
+
+    }
+  },
   data() {
     return {
       menu: false,
-      date: ''
+      date: '',
     }
   },
   computed : {
@@ -51,6 +60,15 @@ export default {
     },
     placeholder : {
       type : String
+    },
+    isDisable : {
+      type : Boolean
+    },
+    minDate : {
+      type : String
+    },
+    value : {
+      type : String | Number
     }
   }
 }
