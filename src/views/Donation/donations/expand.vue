@@ -39,7 +39,7 @@ export default {
     onFilter() {
       const payload = {
         status : this.item.label,
-        expiredAt : this.dates.endAt,
+        endAt : this.dates.endAt,
         createAt : this.dates.startAt
       }
       this.$emit('onFilter', payload)
