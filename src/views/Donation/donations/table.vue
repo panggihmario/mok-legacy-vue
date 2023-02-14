@@ -27,7 +27,7 @@
               <div :class="table.list">{{  convertToHumanDate(item.expiredAt) }} </div>
             </td>
             <td> 
-              <div :class="table.list">Rp {{ item.targetAmount.toLocaleString('id') }}</div>   
+              <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
             </td>
             <td> 
               <div :class="table.list" class="d-flex justify-center">

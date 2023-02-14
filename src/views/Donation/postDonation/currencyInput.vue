@@ -16,7 +16,7 @@
 
 <script>
 import { useCurrencyInput } from 'vue-currency-input'
-
+import { watchDebounced } from "@vueuse/core";
 export default {
   name: 'CurrencyInput',
   props: {
@@ -25,8 +25,12 @@ export default {
     label :String,
     isDisable : Boolean
   },
-  setup(props) {
-    const { inputRef } = useCurrencyInput(props.options)
+  setup(props, {emit}) {
+    const { inputRef, numberValue } = useCurrencyInput(props.options, false)
+
+    watchDebounced(numberValue, (value) => emit("update:value", value), {
+      debounce: 1000,
+    });
     return { inputRef }
   }
 }

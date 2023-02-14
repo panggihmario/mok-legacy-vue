@@ -52,7 +52,12 @@
             <CurrencyInput 
               label="Target Donasi" 
               v-model="payloadDonation.targetAmount"
-              :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" 
+              :options="{ 
+                currency: 'IDR', 
+                locale: 'id', 
+                currencyDisplay: 'hidden' ,
+                hideGroupingSeparatorOnFocus: false,
+              }" 
               :isDisable="isDisableCurrency"
             />
             <k-checkbox  v-model="isAmount" label="Tidak ada limit" />
