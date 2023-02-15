@@ -4,7 +4,11 @@
     <form @submit.prevent="onSubmit">
       <div :class="d.columns">
         <div :class="d.first">
-          <k-input label="Judul Donasi" v-model="payloadDonation.title" />
+          <k-input 
+            :counter="100" 
+            label="Judul Donasi" 
+            v-model="payloadDonation.title" 
+          />
           <div :class="d.subcolumns">
             <div v-if="showImageDonation" :class="d.hasMedia">
               <img :src="showImageDonation" :class="d.image" />
@@ -15,8 +19,15 @@
             <div v-else>
               <div>
                 <div :class="d['upload-label']"> Gambar Donasi di MOK</div>
-                <upload-oss id="donation-image" text color="primary" title="Upload Foto Donasi"
-                  @response="getResponseImage" />
+                <upload-oss 
+                  id="donation-image" 
+                  text 
+                  color="primary" 
+                  title="Upload Foto Donasi"
+                  @response="getResponseImage" 
+                  :typeAllowed="['jpeg','png']"
+                />
+                <div v-if="errorMessageImage"  :class="d['upload-error']">{{ errorMessageImage }}</div>
               </div>
             </div>
             <div :class="d.videobox">
@@ -39,20 +50,36 @@
                 </div>
               </div>
               <div v-else>
-                <div :class="d['upload-label']"> Video Donasi </div>
-                <upload-oss @response="getResponseVideo" id="donation-video" text color="primary"
-                  title="Upload Video" />
+                <div v-if="!errorMessageVideo" :class="d['upload-label']"> Video Donasi </div>
+                <upload-oss 
+                  @response="getResponseVideo" 
+                  id="donation-video" 
+                  text 
+                  color="primary"
+                  :typeAllowed="['mp4', '3gp']"
+                  title="Upload Video" 
+                />
+                <div v-if="errorMessageVideo"  :class="d['upload-error']">{{ errorMessageVideo }}</div>
               </div>
             </div>
           </div>
-          <k-textarea title="Deskripsi" v-model="payloadDonation.description" />
+          <k-textarea 
+            title="Deskripsi" 
+            v-model="payloadDonation.description" 
+            :counter="1000"
+          />
         </div>
         <div :class="d.second">
           <div :class="d.box">
             <CurrencyInput 
               label="Target Donasi" 
               v-model="payloadDonation.targetAmount"
-              :options="{ currency: 'IDR', locale: 'id', currencyDisplay: 'hidden' }" 
+              :options="{ 
+                currency: 'IDR', 
+                locale: 'id', 
+                currencyDisplay: 'hidden' ,
+                hideGroupingSeparatorOnFocus: false,
+              }" 
               :isDisable="isDisableCurrency"
             />
             <k-checkbox  v-model="isAmount" label="Tidak ada limit" />
@@ -74,6 +101,8 @@
             :items="categories" 
             v-model="category" 
             itemLabel="name"
+            rules="required"
+            errorMessage="Pilih satu kategori donasi"
           />
           <k-select 
             title="Provinsi" 
@@ -82,15 +111,29 @@
             v-model="province" 
             height="300"
             @scroll-end="getMoreProvinces"
+            rules="required"
+            errorMessage="Pilih profinsi lokasi yayasan/pusat penggalangan dana"
           />
-          <k-map title="Lokasi" @getLocation="getLocation"  />
-          <k-select 
-            title="Initiator" 
+          <k-map 
+            title="Lokasi" 
+            @getLocation="getLocation"  
+            rules="required"
+            errorMessage="Tentukan titik lokasi yayasan/pusat penggalangan dana"
+          />
+          <k-autocomplete 
             :items="initiators" 
             v-model="initiator" 
-            itemLabel="username"
+            itemText="username"
+            label="Initiator"
+            errorMessage="Pilih satu verified user yang bertindak sebagai initiator/penanggung jawab"
+            rules="required"
+           />
+          <k-input 
+            v-model="payloadDonation.recipientName" 
+            label="Nama Wali / Penerima Donasi"
+            rules="required" 
+            errorMessage="Nama penerima donasi tidak boleh kosong"
           />
-          <k-input v-model="payloadDonation.recipientName" label="Nama Wali / Penerima Donasi" />
           <div class="d-flex" style="gap : 8px">
             <custom-button @click="onCancel">Batalkan</custom-button>
             <custom-button 
@@ -313,12 +356,26 @@ export default {
       }
     },
     getResponseImage(media) {
-      this.showImageDonation = media.response.url
-      this.$set(this.medias, 0, media.response)
+      if(media.status === 'success') {
+        this.showImageDonation = media.response.url
+        this.$set(this.medias, 0, media.response)
+      }
+      if(media.status === 'failed') {
+        this.errorMessageImage = media.message
+      }else{
+        this.errorMessageImage = ''
+      }
     },
     getResponseVideo(media) {
-      this.showVideoDonation = media.response.url
-      this.$set(this.medias, 1, media.response)
+      if(media.status === 'success') {
+        this.showVideoDonation = media.response.url
+        this.$set(this.medias, 1, media.response)
+      }
+      if(media.status === 'failed') {
+        this.errorMessageVideo = media.message
+      }else{
+        this.errorMessageVideo = ''
+      }
     },
     onClearImage() {
       this.showImageDonation = ''
@@ -335,6 +392,8 @@ export default {
   data() {
     return {
       amount: 0,
+      errorMessageVideo : '',
+      errorMessageImage : '',
       isDisableCurrency : false,
       isDisableDate : false,
       placeholderDate : 'dd/mm/yy',

@@ -15,7 +15,7 @@
     >
       <v-icon :color="color" left>$upload</v-icon>
       <span class="text-capitalize upload__label" :class="`${color}--text`"
-        >Upload Foto</span
+        > {{ title }} </span
       >
     </v-btn>
     <!-- <div 
@@ -67,7 +67,7 @@ export default {
       type: String,
     },
     typeAllowed: {
-      type: String,
+      type: [String, Array],
     },
     typeUpload: {
       type: String,
@@ -88,6 +88,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    title : {
+      type : String,
+      default : 'Upload Foto'
+    }
   },
   methods: {
     dimensionVideo(file) {
@@ -140,18 +144,13 @@ export default {
       this.file = file;
       const type = file.type.split("/");
       const typeMedia = type[0];
-      // console.time('validationMedia')
-      // console.time('getDimension')
+      console.log(file)
       const dimensions = await this.getDimension(typeMedia, file);
       this.loadingUpload = true;
       this.$emit("response", result);
       const isValid = this.validationMedia(typeMedia, dimensions, file);
-      // console.timeEnd('validationMedia')
-      // console.timeEnd('getDimension')
       if (isValid) {
-        // console.time('saveFileToAliOss')
         return this.saveFileToAliOss(file, typeMedia, dimensions);
-        // console.timeEnd('saveFileToAliOss')
       } else {
         const tempResult = this.printError(file);
         this.$emit("response", tempResult);
@@ -313,23 +312,28 @@ export default {
       return new File([u8arr], filename, { type: mime });
     },
     printError(file) {
+      let message
+      if(this.minVideoHeight) {
+        message = `Minimum height is ${this.minVideoHeight}`
+      }
+      if(this.typeAllowed) {
+        message = `Hanya boleh ${this.typeAllowed.join(' ')}`
+      }
       const result = {
         status: "failed",
-        message: `Minimum height ${file.type} is ${this.minVideoHeight}`,
+        message,
       };
       return result;
     },
     validationMedia(typeMedia, dimensions, file) {
       const minVideoHeight = this.minVideoHeight;
-      if (typeMedia === "video") {
-        const heightVideo = dimensions.height;
-        if (heightVideo < minVideoHeight) {
+      const type = file.type.split('/')
+      const isInclude = this.typeAllowed.includes(type[1])
+      const heightVideo = dimensions.height;
+        if ( this.minVideoHeight && heightVideo < minVideoHeight) {
           return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.typeAllowed && !file.type.includes(this.typeAllowed)) {
+        } 
+        if (this.typeAllowed && !isInclude) {
           return false;
         }
         if (this.maxSize && file.size > this.maxSize) {
@@ -342,7 +346,6 @@ export default {
           return false;
         }
         return true;
-      }
     },
     handleUpload() {
       document.getElementById(this.id).click();

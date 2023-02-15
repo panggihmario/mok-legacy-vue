@@ -4,6 +4,7 @@
     <v-text-field
       solo
       flat
+
       class="field"
       v-bind="$attrs"
       :value="value"
@@ -57,6 +58,7 @@ export default {
 .field
   border-radius: $border-radius-root
   font-size: 11px
+  // border: 1px solid red
   &__label
     font-size: $font-size-12
     font-weight: 500

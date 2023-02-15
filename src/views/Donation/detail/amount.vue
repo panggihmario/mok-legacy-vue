@@ -88,6 +88,7 @@ export default {
       }
       return this.fetchBalanceHistory(payload)
         .then(response => {
+         
           this.debits = response
         })
     },
