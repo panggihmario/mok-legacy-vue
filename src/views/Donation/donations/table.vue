@@ -13,6 +13,7 @@
           <tr
             v-for="item in items"
             :key="item.id"
+            @click="openDetail(item)"
           >
             <td> 
               <div :class="[table.list, table.ellipsis]">{{ item.title }} </div>
@@ -60,6 +61,14 @@ export default {
   methods : {
     refreshData() {
       this.$emit('refreshData')
+    },
+    openDetail(item) {
+      this.$router.push({
+        name : 'detailDonation',
+        params : {
+          id : item.id
+        }
+      })
     },
     convertToHumanDate(payload) {
       if(payload) {

@@ -67,7 +67,6 @@ export default {
       putStatusDonation : 'donation/putStatusDonation'
     }), 
     onUpdate () {
-      console.log('on update')
       this.menu = false
       this.$router.push({
         name : 'detailDonation',
