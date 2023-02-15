@@ -3,20 +3,10 @@
     <div>
       <label-field :class="label && 'mb-5'">{{ label }}</label-field>
     </div>
-    <v-btn
-      height="29px"
-      :outlined="!text"
-      :text="text"
-      elevation="0"
-      :color="color"
-      class="upload__button"
-      @click="handleUpload"
-      :loading="loadingUpload"
-    >
+    <v-btn height="29px" :outlined="!text" :text="text" elevation="0" :color="color" class="upload__button"
+      @click="handleUpload" :loading="loadingUpload">
       <v-icon :color="color" left>$upload</v-icon>
-      <span class="text-capitalize upload__label" :class="`${color}--text`"
-        > {{ title }} </span
-      >
+      <span class="text-capitalize upload__label" :class="`${color}--text`"> {{ title }} </span>
     </v-btn>
     <!-- <div 
       id="output"
@@ -88,9 +78,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    title : {
-      type : String,
-      default : 'Upload Foto'
+    title: {
+      type: String,
+      default: 'Upload Foto'
     }
   },
   methods: {
@@ -99,7 +89,7 @@ export default {
         const url = URL.createObjectURL(file);
         const $video = document.createElement("video");
         $video.src = url;
-        $video.addEventListener("loadedmetadata", function() {
+        $video.addEventListener("loadedmetadata", function () {
           const params = {
             height: this.videoHeight,
             width: this.videoWidth,
@@ -144,7 +134,6 @@ export default {
       this.file = file;
       const type = file.type.split("/");
       const typeMedia = type[0];
-      console.log(file)
       const dimensions = await this.getDimension(typeMedia, file);
       this.loadingUpload = true;
       this.$emit("response", result);
@@ -177,7 +166,7 @@ export default {
           let url
           const urlObject = new URL(response.url)
           const nameUrl = response.name.split('/')
-          nameUrl.splice(1,1)
+          nameUrl.splice(1, 1)
           const pathTemp = nameUrl.join('/')
           const pathThumbnail = `${urlObject.origin}/${pathTemp}`
           if (process.env.VUE_APP_SERVER_STATUS === 'production') {
@@ -217,7 +206,6 @@ export default {
             status: "success",
           };
           this.$emit("response", result);
-          console.log(temp)
           return this.$storeOss.putACL(filePath, "public-read");
         })
         .catch((err) => {
@@ -240,7 +228,7 @@ export default {
         .then(() => {
           const urlObject = new URL(response.url)
           const nameUrl = response.name.split('/')
-          nameUrl.splice(1,1)
+          nameUrl.splice(1, 1)
           const pathTemp = nameUrl.join('/')
           const pathThumbnail = `${urlObject.origin}/${pathTemp}`
           if (process.env.VUE_APP_SERVER_STATUS === "production") {
@@ -288,7 +276,7 @@ export default {
               (blob) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function() {
+                reader.onloadend = function () {
                   var base64data = reader.result;
                   resolve(base64data);
                 };
@@ -313,10 +301,10 @@ export default {
     },
     printError(file) {
       let message
-      if(this.minVideoHeight) {
+      if (this.minVideoHeight) {
         message = `Minimum height is ${this.minVideoHeight}`
       }
-      if(this.typeAllowed) {
+      if (this.typeAllowed) {
         message = `Hanya boleh ${this.typeAllowed.join(' ')}`
       }
       const result = {
@@ -326,13 +314,10 @@ export default {
       return result;
     },
     validationMedia(typeMedia, dimensions, file) {
-      const minVideoHeight = this.minVideoHeight;
       const type = file.type.split('/')
-      const isInclude = this.typeAllowed.includes(type[1])
-      const heightVideo = dimensions.height;
-        if ( this.minVideoHeight && heightVideo < minVideoHeight) {
-          return false;
-        } 
+      const typeFile = type[1]
+      if(this.typeAllowed) {
+        const isInclude = this.typeAllowed.includes(typeFile)
         if (this.typeAllowed && !isInclude) {
           return false;
         }
@@ -346,6 +331,18 @@ export default {
           return false;
         }
         return true;
+      }else{
+        if (typeMedia === "video") {
+          const heightVideo = dimensions.height;
+          if (heightVideo < this.minVideoHeight) {
+            return false;
+          } else {
+            return true;
+          }
+        }else{
+          return true
+        }
+      }
     },
     handleUpload() {
       document.getElementById(this.id).click();
