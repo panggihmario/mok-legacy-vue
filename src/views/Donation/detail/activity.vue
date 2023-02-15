@@ -53,7 +53,7 @@
 
 
     <!-- DIALOG -->
-    <v-dialog width="959" v-model="isDialog">
+    <v-dialog  v-model="isDialog" >
       <v-card class="pa-4">
         <div :class="d['activity__dialog-title']" class="mb-2">Update Kabar Terkini</div>
         <div :class="d['activity__dialog-subtitle']" class="mb-1">Tulis Kabar Terkini</div>
@@ -107,6 +107,7 @@ export default {
       return humanDate
     },
     formatedHour(epoch) {
+      
       const hourDate = moment(epoch).format('HH:mm')
       return hourDate
     },
