@@ -42,7 +42,7 @@
                     <upload-oss
                       id="create"
                       color="secondary"
-                      typeAllowed="png"
+                      :typeAllowed="['png']"
                       :maxSize="1000000"
                       isSquareRatio
                       @response="getResponseUpload"
