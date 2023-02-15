@@ -28,5 +28,9 @@ export default [
   {
     registeredAs : 'k-range-date',
     name : () => import('./RangeDatePicker')
+  },
+  {
+    registeredAs : 'k-autocomplete',
+    name : () => import('./AutoComplete')
   }
 ]

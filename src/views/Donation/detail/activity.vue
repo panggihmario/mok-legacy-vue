@@ -18,7 +18,7 @@
               <div>{{ formated(ac.createAt) }}</div>
               <div> {{ formatedHour(ac.createAt) }} </div>
             </div>
-            <div :class="d['activity__icons']">
+            <div v-if="ac.type === 'ARTICLE' " :class="d['activity__icons']">
               <div :class="d['activity__icon']" @click="openDialogConfirm(ac)">
                 <v-icon size="12px">fas fa-trash</v-icon>
               </div>
@@ -28,7 +28,23 @@
 
             </div>
           </v-col>
-          <v-col :class="d['activity__content-box']">
+          <v-col v-if="ac.type === 'WITHDRAW' ">
+            <div :class="d['activity__withdraw-box']">
+              <div :class="d['activity__withdraw-border']">
+                <div :class="d['activity__withdraw-label']">Penarikan Dana</div>
+                <div  :class="d['activity__withdraw-content']">{{ ac.amount }}</div>
+              </div>
+              <div :class="d['activity__withdraw-border']">
+                <div  :class="d['activity__withdraw-label']">Dana Ditarik Oleh</div>
+                <div  :class="d['activity__withdraw-content']">{{ ac.withdrawByName }}</div>
+              </div>
+              <div>
+                <div  :class="d['activity__withdraw-label']">Dana Diterima Oleh</div>
+                <div  :class="d['activity__withdraw-content']">{{ ac.recipientName }}</div>
+              </div>
+            </div>
+          </v-col>
+          <v-col v-else :class="d['activity__content-box']">
             <div :class="d['activity__description']" v-html="ac.description"></div>
           </v-col>
         </v-row>

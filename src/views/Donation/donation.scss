@@ -99,6 +99,13 @@
   margin-bottom: 8px;
 }
 
+.upload-error {
+  font-size: 11px;
+  font-weight: 400;
+  color: $warning;
+  padding: 0 20px;
+}
+
 .box {
   display: flex;
   gap: 6px;
@@ -261,6 +268,7 @@
   &__initiator {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
     .initiator-title {
       color: $secondary;
       font-size: 11px;
@@ -270,6 +278,7 @@
       color: $charcoal;
       font-size: 12px;
       font-weight: 500;
+      word-break: break-all;
     }
   }
   &__header {
@@ -350,6 +359,29 @@
 
 
 .activity {
+  &__withdraw-box {
+    background-color: $whitesnow;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &__withdraw-border {
+    border-right: 1px solid $gainsboro;
+  }
+  &__withdraw-label {
+    color: $greys;
+    font-size: 12px;
+    font-weight: 400;
+  } 
+  &__withdraw-content {
+    word-break: break-all;
+    font-size: 12px;
+    font-weight: 700;
+    color: $black;
+  }
   &__title {
     font-size: 16px;
     font-weight: 700;

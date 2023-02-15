@@ -1,10 +1,11 @@
 <template>
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="kipas__input-container">
+      <!-- :class="errors.length > 0 && 'input__error-label'" -->
       <label
         v-if="label"
         class="input__label"
-        :class="errors.length > 0 && 'input__error-label'"
+        
       >
         {{ label }}
       </label>
@@ -14,7 +15,6 @@
           `kipas__input-${size}`,
           { input__error: errors.length > 0 },
           `kipas__${model}`,
-          { input__error: isError },
         ]"
         class="input"
         v-bind="$attrs"
@@ -22,8 +22,8 @@
         :maxlength="counter"
         v-on="inputListener"
       />
-      <div :style="!rules && 'display : none'" class="input__error-label">
-        {{ errors[0] }}
+      <div v-if="errors.length > 0" class="input__error-label">
+        {{ errorMessage ? errorMessage : errors[0] }}
       </div>
       <div
         v-if="counter"
@@ -35,7 +35,10 @@
             errorMessage
           }}</span>
         </div>
-        <span>{{ value.length }}/{{ counter }}</span>
+        <span>
+          <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
+        </span>
+        
       </div>
     </div>
   </ValidationProvider>
@@ -47,6 +50,9 @@ export default {
     type: {
       type: String,
       default: "text",
+    },
+    errorMessage : {
+      type : String
     },
     label: {
       type: String,
@@ -113,23 +119,25 @@ export default {
 <style lang="scss" scoped>
 .utils {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
+  color: $black;
 }
 
 .input {
   outline: none;
   @extend .utils;
-  color: $charcoal;
   background: #ffffff;
   border: 1px solid #bbbbbb;
   border-radius: 4px;
   &__error-label {
     color: $warning !important;
     @extend .utils;
+    transition: 0.5s ease-in-out;
   }
   &__label {
     @extend .utils;
     color: $charcoal;
+    font-weight: 600;
   }
   &__error {
     border: 1px solid $warning !important;
@@ -147,9 +155,7 @@ export default {
   &__input {
     outline: none;
     font-size: 12px;
-    font-weight: 500;
-    // background: #FFFFFF;
-    // border: 1px solid #BBBBBB;
+    font-weight: 400;
     border-radius: 4px;
   }
   &__input-label {

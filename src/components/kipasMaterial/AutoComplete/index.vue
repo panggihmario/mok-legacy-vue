@@ -1,39 +1,30 @@
 <template>
-  <div class="autocomplete" :class="`select-${idElement}`" >
-    <label class="autocomplete__label" > {{label}} </label>
-    <div class="input-wrapper">
-      <input
-        v-show="helper"
-        :value="itemValue"
-      />
-      <input
-        type="text"
-        class="autocomplete-input"
-        @click="openList"
-        v-model="search"
-        v-bind="$attrs"
-      />
-    </div>
-    <div 
-      class="autocomplete__popover" 
-      :class="isTop ?  'isTop' : 'isBottom' "
-      v-show="isOpen"
-    >
-      <div class="options">
-      <ul class="autocomplete-results" >
-        <li
-          class="autocomplete-result"
-          v-for="(item, i) in results"
-          :key="i"
-          @click="setResult(item)"
-          :class="{ 'is-active': item.id === itemId }"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
+    <div class="autocomplete" :class="`select-${idElement}`">
+      <label class="autocomplete__label"> {{ label }} </label>
+      <div class="input-wrapper">
+        <div v-show="helper">{{ itemValue }}</div>
+
+        <input type="text" class="autocomplete-input" @click="openList" v-model="search" v-bind="$attrs" />
+      </div>
+      <div class="auto__error-message" v-if="errors.length > 0">
+        {{ errorMessage }}
+      </div>
+      <div class="autocomplete__popover" :class="isTop ? 'isTop' : 'isBottom'" v-show="isOpen">
+        <v-list dense>
+          <v-list-item-group  v-for="(item, i) in results" :key="i">
+            <v-list-item @click="setResult(item)">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item[itemText] }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
       </div>
     </div>
-  </div>
+  </ValidationProvider>
 </template>
 
 <script>
@@ -44,41 +35,55 @@ export default {
       require: false,
       default: () => [],
     },
-    itemText : {
-      type : String
+    itemText: {
+      type: String
     },
-    value : {
-      type : [Object, String]
+    value: {
+      type: [Object, String]
     },
-    pos : {
-      type : String
+    pos: {
+      type: String
     },
-    label : {
-      type : String
+    label: {
+      type: String
+    },
+    rules: {
+      type: String
+    },
+    name: {
+      type: String
+    },
+    errorMessage: {
+      type: String
     }
   },
-  computed : {
-    itemValue () {
-      if(this.value) {
+  computed: {
+    itemValue() {
+      if (this.value) {
         const getValue = this.value[this.itemText]
         this.search = getValue
         return this.value[this.itemText]
       }
     }
   },
-  watch : {
-    search : function (val) {
-      const query = val.toLowerCase();
-      if (val === "") {
-        this.results = this.items
+  watch: {
+    search: function (val) {
+      if (val) {
+        const query = val.toLowerCase();
+        if (val === "") {
+          this.results = this.items
+        } else {
+          const search = (text) =>
+            this.items.filter((item) => item[this.itemText].toLowerCase().includes(text));
+          const result = search(query);
+          this.results = result
+        }
       } else {
-        const search = (text) =>
-        this.items.filter((item) => item[this.itemText].toLowerCase().includes(text));
-        const result = search(query);
-        this.results = result
+        this.results = this.items
       }
+
     },
-    value : function (val) {
+    value: function (val) {
       this.search = val.name
     }
   },
@@ -98,22 +103,22 @@ export default {
       results: [],
       isOpen: false,
       arrowCounter: -1,
-      itemId : '',
-      selectedItem : {},
-      helper : false,
-      idElement : '',
-      isTop : false
+      itemId: '',
+      selectedItem: {},
+      helper: false,
+      idElement: '',
+      isTop: false
     };
   },
   methods: {
-    checkPosition () {
+    checkPosition() {
       const heightView = window.innerHeight
       const centerView = heightView / 2
       const el = document.querySelector(`.select-${this.idElement}`)
       const positionElement = el.offsetTop
-      if(positionElement > centerView) {
+      if (positionElement > centerView) {
         this.isTop = true
-      }else { 
+      } else {
         this.isTop = false
       }
     },
@@ -126,11 +131,8 @@ export default {
       this.isOpen = !this.isOpen;
       this.results = this.items
     },
-    onChange() {
-      this.$emit('input', this.selectedItem)
-    },
     setResult(item) {
-      this.search = item.name;
+      this.search = item[this.itemText];
       this.itemId = item.id
       this.isOpen = false;
       this.selectedItem = item
@@ -147,5 +149,6 @@ export default {
 </script>
 
 <style src="./style.scss" lang="scss" scoped>
+
 </style>
 

@@ -12,21 +12,29 @@ input {
 .field {
   &__label {
     font-size: 12px;
-    font-weight: 600;
-    color: $charcoal;
+    font-weight: 400;
+    color: $black;
+  }
+  &__error {
+    border: 1px solid $warning !important ;
+  } 
+  &__error-message {
+    color: $warning;
+    font-size: 12px;
+    font-weight: 400;
   }
   &__input {
     display: flex;
     outline: none;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     background: $truewhite;
     border: 1px solid $silver;
     border-radius: 4px;
     padding: 9px;
     height: 32px;
     gap: 5px;
-    color: $charcoal;
+    color: $black;
   }
   &__container {
     display: grid;

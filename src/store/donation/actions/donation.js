@@ -4,7 +4,8 @@ export default {
       url : `${state.pathDonation}`,
       params : {
         ...payload,
-        size : 10
+        size : 10,
+        sort : 'createAt,desc'
       }
     }
     return dispatch('getWithToken', data , {root : true})

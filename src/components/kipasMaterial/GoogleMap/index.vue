@@ -1,18 +1,23 @@
 <template>
-  <div>
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="field__container pointer">
       <Label :title="title" />
-      <div @click="openMap" class="field__input">
+      <div @click="openMap" class="field__input" :class="[
+        { 'field__error': errors.length > 0 }
+      ]">
         <input readonly class="pointer" v-model="address" />
         <v-icon color="primary" size="15px">fas fa-map-marker-alt</v-icon>
       </div>
+      <div class="field__error-message" v-if="!isMap && errors.length > 0">
+        {{ errorMessage }}
+      </div>
     </div>
+
+
     <v-dialog width="564" v-model="isMap">
-      <Map
-        @saveLocation="getLocation"
-      />
+      <Map @saveLocation="getLocation" />
     </v-dialog>
-  </div>
+  </ValidationProvider>
 
 </template>
 
@@ -26,7 +31,16 @@ export default {
     Label, Map
   },
   props: {
-    title: String
+    title: String,
+    name: {
+      type: String
+    },
+    rules: {
+      type: String
+    },
+    errorMessage: {
+      type: String
+    }
   },
   setup(props, { emit }) {
     const address = ref("");
@@ -41,7 +55,7 @@ export default {
       address.value = params.address
       isMap.value = false
       emit('getLocation', params)
-    } 
+    }
 
     const openMap = function () {
       isMap.value = true
@@ -109,7 +123,7 @@ export default {
       );
       auto.addListener("place_changed", () => {
         let place = auto.getPlace()
-        console.log({place})
+        console.log({ place })
         const latitude = place.geometry.location.lat()
         const longitude = place.geometry.location.lng()
         showUserLocationOnTheMap(latitude, longitude)

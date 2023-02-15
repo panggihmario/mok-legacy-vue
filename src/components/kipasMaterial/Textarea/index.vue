@@ -18,7 +18,9 @@
           errorMessage
         }}</span>
       </div>
-      <span>{{ value.length }}/{{ counter }}</span>
+      <span>
+          <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
+        </span>
     </div>
   </div>
 </template>

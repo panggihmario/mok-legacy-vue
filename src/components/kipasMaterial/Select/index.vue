@@ -1,16 +1,28 @@
 <template>
   <v-menu transition="slide-y-transition" bottom :disabled="disabled">
-
     <template v-slot:activator="{ on, attrs }">
-      <div>
-        <Label v-if="title" style="margin-bottom: 8px;" :title="title"></Label>
-        <div class="select__wrapper" v-bind="attrs" v-on="on">
-          <input :placeholder="placeholder" readonly class="select__input text-primary" v-model="value[itemLabel]" />
-          <v-icon size="16px" color="charcoal">
-            fa-solod fa-caret-down
-          </v-icon>
+      <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
+        <div class="select__container">
+          <Label v-if="title"  :title="title"></Label>
+          <div 
+            :class="[
+              'select__wrapper',
+              {'select__error' : errors.length > 0}
+            ]" 
+            v-bind="attrs" 
+            v-on="on"
+          >
+            <input :placeholder="placeholder" readonly class="select__input text-primary" v-model="value[itemLabel]" />
+            <v-icon size="16px" color="charcoal">
+              fa-solod fa-caret-down
+            </v-icon>
+          </div>
+          <div class="select__error-message" v-if="errors.length > 0">
+            {{ errorMessage }}
+          </div>
         </div>
-      </div>
+       
+      </ValidationProvider>
 
     </template>
     <v-card class="mx-auto" max-width="600">
@@ -64,6 +76,15 @@ export default {
     },
     placeholder : {
       type : String
+    },
+    name : {
+      type : String
+    },
+    rules : {
+      type : String
+    },
+    errorMessage : {
+      type : String
     }
   },
   computed: {
@@ -92,12 +113,24 @@ export default {
 
 <style lang="scss">
 .select {
+  &__container {
+    display: grid;
+    gap: 8px;
+  }
   &__option {
     font-size: 11px;
     font-weight: 400;
     color: $charcoal;
   }
-
+  &__error {
+    border: 1px solid $warning !important;
+  }
+  &__error-message {
+    color: $warning;
+    font-size: 12px;
+    font-weight: 400;
+    transition: 0.5s ease-in-out;
+  }
   &__options {
     position: absolute;
     display: inline-block;
@@ -110,7 +143,6 @@ export default {
     background-color: white;
     border: 1px solid #DDDDDD;
     border-radius: 8px;
-
     padding: 10px;
     top: 35px;
     overflow-y: auto;
@@ -132,9 +164,9 @@ export default {
   }
 
   &__input {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
-    color: $charcoal;
+    color: $black;
     width: 100%;
     cursor: pointer;
 
