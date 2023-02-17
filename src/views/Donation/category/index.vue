@@ -65,6 +65,8 @@
                   label="Nama Kategori"
                   placeholder="Masukan nama kategori"
                   v-model="dataPayload.params.name"
+                  :isError="isErrorSubmit"
+                  errorMessage="Sudah ada kategori dengan nama ini"
                 ></k-input>
               </section>
               <section class="d-flex" style="gap: 8px">
@@ -96,9 +98,9 @@
     <v-snackbar top right v-model="isSuccessSubmit" color="success">
       Create Success
     </v-snackbar>
-    <v-snackbar top right v-model="isErrorSubmit" color="error">
+    <!-- <v-snackbar top right v-model="isErrorSubmit" color="error">
       {{ errorSubmitMessage }}
-    </v-snackbar>
+    </v-snackbar> -->
   </div>
 </template>
 
