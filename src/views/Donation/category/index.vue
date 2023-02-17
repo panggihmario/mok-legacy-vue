@@ -211,7 +211,6 @@ export default {
           this.handleGetListCategory();
         })
         .catch((err) => {
-          console.log(err.response);
           this.isErrorSubmit = true;
           this.errorSubmitMessage = err.response.data.data;
           setTimeout(() => {
