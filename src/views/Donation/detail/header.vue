@@ -26,7 +26,7 @@
             </div>
             <div class="d-flex justify-space-between" :class="d['detail-duration']">
               <div>Waktu pengumpulan dana</div>
-              <div>{{ reminder }} hari</div>
+              <div>{{ reminder }}</div>
             </div>
           </div>
           <div :class="d['detail__initiator']">
@@ -61,7 +61,12 @@ export default {
     reminder () {
       const createAt = this.item.createAt
       const expiredAt = this.item.expiredAt
-      const rest = moment(expiredAt).diff(moment(createAt), 'days')
+      let rest
+      if(expiredAt) {
+        rest = `${moment(expiredAt).diff(moment(createAt), 'days')} hari`
+      }else{
+        rest = '-'
+      }
       return rest
     }
   },

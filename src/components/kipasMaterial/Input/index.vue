@@ -15,6 +15,7 @@
           `kipas__input-${size}`,
           { input__error: errors.length > 0 },
           `kipas__${model}`,
+          { input__error : isError}
         ]"
         class="input"
         v-bind="$attrs"
@@ -22,7 +23,7 @@
         :maxlength="counter"
         v-on="inputListener"
       />
-      <div v-if="errors.length > 0" class="input__error-label">
+      <div v-if="errors.length > 0 || isError " class="input__error-label">
         {{ errorMessage ? errorMessage : errors[0] }}
       </div>
       <div
@@ -136,8 +137,8 @@ export default {
   }
   &__label {
     @extend .utils;
-    color: $charcoal;
-    font-weight: 600;
+    color: $black;
+    font-weight: 500;
   }
   &__error {
     border: 1px solid $warning !important;

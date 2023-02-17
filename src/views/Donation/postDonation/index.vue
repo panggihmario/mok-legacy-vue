@@ -88,7 +88,7 @@
           <div :class="d.box">
             <k-date 
               @epochDate="getEpoch" 
-              title="Berakir Pada" 
+              title="Berakhir Pada" 
               :placeholder="placeholderDate"
               :isDisable="isDisableDate"
               :minDate="minDate"
@@ -224,7 +224,7 @@ export default {
         recipientName : yup.string().required(),
         latitude : yup.string().required(),
         longitude : yup.string().required(),
-        medias : yup.array().min(2),
+        medias : yup.array().min(2).required(),
         initiator : yup.object().shape({
           id : yup.string().required()
         }),
@@ -239,6 +239,8 @@ export default {
         .then(valid => {
           if(valid) {
             this.isDisabled = false
+          }else{
+            this.isDisabled = true
           }
         })
     }

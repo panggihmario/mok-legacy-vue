@@ -56,8 +56,8 @@ input:focus {
 }
 .label {
   font-size: 12px;
-  font-weight: 600;
-  color: $charcoal;
+  font-weight: 500;
+  color: $black;
   letter-spacing: 0.01em;
 }
 .container {

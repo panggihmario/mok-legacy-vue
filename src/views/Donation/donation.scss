@@ -439,3 +439,16 @@
     color: $charcoal;
   }
 }
+
+.no-data {
+  &-label {
+    color: $charcoal;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &-sublabel {
+    color: $greys;
+    font-size: 11px;
+    font-weight: 400;
+  }
+}
