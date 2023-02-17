@@ -26,9 +26,12 @@
     <Tabledonation
       :items="donations"
       @refreshData="refreshData"
+      :statusFind="statusFind"
+      :isLoading="isLoading"
     />
     <div class="d-flex justify-end mt-2">
     <v-pagination
+      v-if="totalPages > 1"
       v-model="page"
       :length="totalPages"
       @input="onInput"
@@ -52,8 +55,10 @@ export default {
     return {
       page : 1,
       totalPages : 0,
+      statusFind : '',
       params : {},
       keyword : '',
+      isLoading : false,
       isExpand : false,
       crumbs: [
         {
@@ -77,20 +82,23 @@ export default {
       this.handleDonations()
     },
     onFilter(params) {
+      this.statusFind = 'filter'
       this.params = {...params}
       const payload = {
         ...params,
         page : this.page - 1
       }
+      this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
           this.totalPages = totalPages
           this.donations = content
         })
         .catch (err => {
-          console.log(err.response)
+          this.isLoading = false
         })
     },
     openExpand() {
@@ -98,20 +106,25 @@ export default {
     },  
     onCloseExpand() {
       this.isExpand = false
+      this.statusFind = ''
       this.handleDonations()
     },
     onEnter() {
+      this.statusFind = this.keyword.length > 0 ? 'search' : ''
       const payload = {
         page : this.page - 1,
         search : this.keyword
       }
+      this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
           this.totalPages = totalPages
           this.donations = content
         })
+        .catch(() => { this.isLoading = false })
     },
     onInput(e) {
       this.page = e
@@ -120,13 +133,16 @@ export default {
         page : e - 1,
         search : this.keyword,
       }
+      this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
           this.totalPages = totalPages
           this.donations = content
         })
+        .catch(() => { this.isLoading = false })
     },
     openFormDonation() {
       this.$router.push({
@@ -137,13 +153,16 @@ export default {
       const payload = {
         page : this.page - 1
       }
+      this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
           this.totalPages = totalPages
           this.donations = content
         })
+        .catch(() => { this.isLoading = false })
     }
   }
 }

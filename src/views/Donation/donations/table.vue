@@ -7,42 +7,50 @@
       disable-filtering
       class="grey--text"
       :items="items"
+      @click:row="openDetail"
+      :loading="isLoading"
     >
-      <template v-slot:body="{ items }">
-        <tbody>
-          <tr
-            v-for="item in items"
-            :key="item.id"
-            @click="openDetail(item)"
+      <template v-slot:item.title="{item}">
+        <div :class="[table.list, table.ellipsis]">{{ item.title }} </div>
+      </template>
+      <template v-slot:item.username="{item}">
+        <div :class="table.list">{{ item.initiator.username }}</div>   
+      </template>
+      <template v-slot:item.createAt="{item}">
+        <div :class="table.list">{{ convertToHumanDate(item.createAt) }}</div>
+      </template>
+      <template v-slot:item.expiredAt="{item}">
+        <div :class="table.list">{{  convertToHumanDate(item.expiredAt) }} </div>
+      </template>
+      <template v-slot:item.targetAmount="{item}">
+        <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
+      </template>
+      <template v-slot:item.status="{ item }">
+        <div :class="table.list" class="d-flex justify-center">
+          {{ item.status }} 
+        </div>
+      </template>
+      <template v-slot:item.actions="{item}">
+        <Menu @refreshData="refreshData" :item="item" />
+      </template>
+      <template v-slot:no-data>
+        <div>
+          <div :class="table['no-data-label']">Donasi tidak ditemukan.</div>
+          <div 
+            v-if="statusFind === 'search' "
+            :class="table['no-data-sublabel']"
           >
-            <td> 
-              <div :class="[table.list, table.ellipsis]">{{ item.title }} </div>
-            </td>
-            <td> 
-              <div :class="table.list">{{ item.initiator.username }}</div>   
-            </td>
-            <td>
-              <div :class="table.list">{{ convertToHumanDate(item.createAt) }}</div>
-            </td>
-            <td>
-              <div :class="table.list">{{  convertToHumanDate(item.expiredAt) }} </div>
-            </td>
-            <td> 
-              <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
-            </td>
-            <td> 
-              <div :class="table.list" class="d-flex justify-center">
-                {{ item.status }} 
-              </div>
-            </td>
-            <td> 
-              <Menu @refreshData="refreshData" :item="item" />
-            </td>
-          </tr>
-        </tbody>
+            Gunakan kata kunci lain terkait donasi yang ingin kamu temukan
+          </div>
+          <div 
+            v-if="statusFind === 'filter' "
+            :class="table['no-data-sublabel']"
+          >
+            Gunakan filter lain untuk menemukan hasil yang kamu mau
+          </div>
+        </div>
       </template>
     </v-data-table>
-  
   </div>
 </template>
 
@@ -56,6 +64,12 @@ export default {
   props : {
     items : {
       type : Array
+    },
+    statusFind : {
+      type : String
+    },
+    isLoading : {
+      type : Boolean
     }
   },
   methods : {
@@ -93,13 +107,13 @@ export default {
         },
         {
           text : 'Initiator',
-          value : 'judul',
+          value : 'username',
           class: "whitesnow",
           width: "100",
         },
         {
           text : 'Tgl Mulai',
-          value : 'judul',
+          value : 'createAt',
           class: "whitesnow",
           width: "100",
         },

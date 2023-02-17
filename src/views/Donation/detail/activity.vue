@@ -120,6 +120,7 @@ export default {
     },
     onCloseDeleteDialog() {
       this.isDelete = false
+      this.detailContent = {}
     },
     closeDialog() {
       this.isDialog = false
@@ -130,6 +131,7 @@ export default {
       return this.deleteActivity(id)
         .then(() => {
           this.isDelete = false
+          this.detailContent = {}
           this.handleActivity()
         })
     },
@@ -153,7 +155,6 @@ export default {
       }
       return this.fetchActivity(payload)
         .then(response => {
-          console.log(response)
           const content = response.content
           this.activites = content
         })
