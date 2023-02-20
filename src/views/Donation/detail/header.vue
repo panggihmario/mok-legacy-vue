@@ -24,7 +24,10 @@
             <div :class="d['detail-time-icon']">
               <v-icon size="10px" color="primary">far fa-clock</v-icon>
             </div>
-            <div class="d-flex justify-space-between" :class="d['detail-duration']">
+            <div v-if="isEnded" class="d-flex justify-space-between" :class="d['detail-duration']">
+              <div>Sudah Berakhir</div>
+            </div>
+            <div v-else class="d-flex justify-space-between" :class="d['detail-duration']">
               <div>Waktu pengumpulan dana</div>
               <div>{{ reminder }}</div>
             </div>
@@ -63,7 +66,13 @@ export default {
       const expiredAt = this.item.expiredAt
       let rest
       if(expiredAt) {
-        rest = `${moment(expiredAt).diff(moment(createAt), 'days')} hari`
+        const total = moment(expiredAt).diff(moment(createAt), 'days')
+        rest = `${total} hari`
+        if(total < 1) {
+          this.isEnded = true
+        }else {
+          this.isEnded = false
+        }
       }else{
         rest = '-'
       }
@@ -72,7 +81,8 @@ export default {
   },
   data () {
     return {
-      isPlay : false
+      isPlay : false,
+      isEnded : false
     }
   },
   methods : {
