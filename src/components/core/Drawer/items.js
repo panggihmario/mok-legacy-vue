@@ -122,6 +122,11 @@ export default [
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
+      {
+        title: "Douyin Mirroring",
+        path: "/post/douyin",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
     ],
   },
   {

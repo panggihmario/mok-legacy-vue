@@ -66,6 +66,7 @@ export default {
       const id = this.$route.params.id
       return this.fetchDetailDonation(id)
         .then(response => {
+          console.log(response)
           const medias = response.medias
           let image,video
           medias.forEach(media => {
@@ -89,7 +90,8 @@ export default {
             amountCollected : response.amountCollected,
             amountWithdraw : response.amountWithdraw,
             createAt : response.createAt,
-            expiredAt : response.expiredAt
+            expiredAt : response.expiredAt,
+            status : response.status
           })
         })
         .catch(err => {

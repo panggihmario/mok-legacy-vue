@@ -4,6 +4,7 @@ export default {
     pathAccount: "account",
     pathDiscover: "discover",
     pathDownloadNoWatermark: "download-no-watermark",
+    pathDouyin:"douyin",
     previewTiktokData: {},
     previewTiktokPayload: {
       id: null,
@@ -28,6 +29,20 @@ export default {
       const data = {
         url: `${state.pathAccount}/detail`,
         params: payload,
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getUserDetailDouyin({ state }) {
+      const data = {
+        url: `${state.pathDouyin}/${state.pathAccount}/detail`,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -87,6 +102,23 @@ export default {
     getFeedExplore({ state }, payload) {
       const data = {
         url: `${state.pathDiscover}/explore`,
+        params: {
+          ...payload,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getFeedExploreDouyin({ state }, payload) {
+      const data = {
+        url: `${state.pathDouyin}/explore`,
         params: {
           ...payload,
         },
