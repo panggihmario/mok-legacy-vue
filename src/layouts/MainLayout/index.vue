@@ -11,6 +11,9 @@
     <Preview-Tiktok-Data
       v-if="previewTiktok && page === 'postTiktok'"
     ></Preview-Tiktok-Data>
+    <Preview-Douyin-Data
+      v-if="previewTiktok && page === 'postDouyin'"
+    ></Preview-Douyin-Data>
   </div>
 </template>
 
@@ -19,12 +22,14 @@ import { mapState } from "vuex";
 import DrawerNews from "../../components/core/Drawer/news";
 import DrawerDetail from "../Product/drawer";
 import PreviewTiktokData from "../../views/Post/Tiktok/previewTiktokData.vue";
+import PreviewDouyinData from "../../views/Post/Tiktok/douyin/preview.vue";
 
 export default {
   components: {
     DrawerNews,
     DrawerDetail,
     PreviewTiktokData,
+    PreviewDouyinData,
   },
   mounted() {
     this.page = this.$route.meta.page;
@@ -48,13 +53,15 @@ export default {
         return "auto-space-right";
       } else if (this.previewTiktok && this.page === "postTiktok") {
         return "auto-space-right-tiktok";
+      } else if (this.previewTiktok && this.page === "postDouyin") {
+        return "auto-space-right-tiktok";
       } else {
         return "auto-space";
       }
     },
   },
   watch: {
-    $route: function() {
+    $route: function () {
       const positionMeta = this.$route.meta.page;
       this.page = positionMeta;
     },

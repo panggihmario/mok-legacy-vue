@@ -13,6 +13,14 @@ const pathPost = [
     },
   },
   {
+    path: "/post/douyin",
+    name: "listDouyin",
+    component: () => import("../../views/Post/Tiktok/douyin"),
+    meta: {
+      page: "postDouyin",
+    },
+  },
+  {
     path: "/post/user/:tab/:page",
     name: "listUser",
     component: () => import("../../views/Post/UserAll"),

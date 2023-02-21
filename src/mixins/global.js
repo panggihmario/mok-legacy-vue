@@ -47,20 +47,14 @@ export default {
       let val = (value / 1).toFixed(0).replace(".", ",");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     },
-    formatThousandToKMB(value) {
-      let val;
-      let kmb;
-      if (value > 1000000000) {
-        val = value / 1000000000;
-        kmb = "B";
-      } else if (value > 1000000) {
-        val = value / 1000000;
-        kmb = "M";
-      } else if (value > 1000) {
-        val = value / 1000;
-        kmb = "K";
-      }
-      return val + kmb;
+    formatThousandToKMB(num) {
+      return Math.abs(num) > 999999999
+        ? Math.sign(num) * (Math.abs(num) / 1000000000).toFixed(1) + "B"
+        : Math.abs(num) > 999999
+        ? Math.sign(num) * (Math.abs(num) / 1000000).toFixed(1) + "M"
+        : Math.abs(num) > 999
+        ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "K"
+        : Math.sign(num) * Math.abs(num);
     },
   },
 };
