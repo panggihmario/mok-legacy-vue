@@ -24,7 +24,7 @@
             <div :class="d['detail-time-icon']">
               <v-icon size="10px" color="primary">far fa-clock</v-icon>
             </div>
-            <div v-if="isEnded" class="d-flex justify-space-between" :class="d['detail-duration']">
+            <div v-if="isEnded || item.status === 'Inactive'" class="d-flex justify-space-between" :class="d['detail-duration']">
               <div>Sudah Berakhir</div>
             </div>
             <div v-else class="d-flex justify-space-between" :class="d['detail-duration']">
