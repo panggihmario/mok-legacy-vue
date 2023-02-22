@@ -4,7 +4,7 @@ export default {
     pathAccount: "account",
     pathDiscover: "discover",
     pathDownloadNoWatermark: "download-no-watermark",
-    pathDouyin:"douyin",
+    pathDouyin: "douyin",
     previewTiktokData: {},
     previewTiktokPayload: {
       id: null,
@@ -138,6 +138,22 @@ export default {
         url: `${state.pathDownloadNoWatermark}`,
         params: {
           url: payload,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    getDouyinVideoNoWatermark({ state }, payload) {
+      let data = {
+        url: `${state.pathDouyin}/${state.pathDownloadNoWatermark}`,
+        params: {
+          id: payload,
         },
       };
       return this._vm
