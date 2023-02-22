@@ -1,14 +1,12 @@
 <template>
   <div>
     <HeaderContent label="Douyin Mirroring" :list="crumbs" />
-    <section class="whitesmoke pa-3">
-      <div v-if="loadingListDouyin" class="d-flex justify-center">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
-      </div>
-      <div v-else class="d-flex flex-wrap" style="gap: 4px">
+
+    <section v-if="loadingListDouyin" class="d-flex justify-center">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </section>
+    <section v-else class="whitesmoke pa-3">
+      <div class="d-flex flex-wrap" style="gap: 4px">
         <div
           v-for="(item, idx) in listDouyin"
           :key="idx"
@@ -24,6 +22,13 @@
         </div>
       </div>
     </section>
+
+    <v-snackbar v-model="previewTiktokSuccess" top right timeout="3000" color="success">
+      <div class="d-flex justify-space-between align-center">
+        <span>Success Post</span>
+        <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -48,11 +53,25 @@ export default {
       listDouyin: [],
       focusIndex: null,
       loadingListDouyin: false,
+      alertSuccess: true,
+      alertFailed: false,
+      errorMessage: "",
     };
   },
   watch: {
     dataTokenDouyin() {
       this.handleGetFeedExploreDouyin();
+    },
+    previewTiktok() {
+      if (this.previewTiktok == false) {
+        this.focusIndex = null;
+        this.setPreviewTiktokData({});
+      }
+    },
+    previewTiktokSuccess() {
+      if (this.previewTiktokSuccess == true) {
+        this.alertSuccess = true;
+      }
     },
   },
   computed: {
@@ -106,6 +125,14 @@ export default {
         this.changeStatusPreviewTiktok(true);
         this.setPreviewTiktokData(d.item);
       }
+    },
+    movePageDraft() {
+      this.$router.push({
+        name: "draft",
+        params: {
+          page: 1,
+        },
+      });
     },
   },
 };

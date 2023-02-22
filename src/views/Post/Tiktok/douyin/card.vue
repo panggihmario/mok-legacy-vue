@@ -3,7 +3,9 @@
     class="d-flex flex-column align-center card font-12 pa-2 cursor-pointer"
     @click="openDrawerPreview(index, data)"
   >
-    <img :src="data.item_cover" alt="" style="width: 100%" />
+    <div class="d-flex justify-center align-center black" style="height: 302px">
+      <img :src="data.item_cover" alt="" style="width: 100%" />
+    </div>
     <div
       class="d-flex flex-column justify-space-between mt-3"
       style="height: 80px; width: 100%"
@@ -50,7 +52,7 @@ export default {
 
 <style lang="scss">
 .card {
-  width: 200px;
+  width: 206px;
 }
 
 .ellipsis-second-line {
