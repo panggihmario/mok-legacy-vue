@@ -89,3 +89,7 @@ Vue.prototype.$fetchWithToken = getWithToken;
 Vue.prototype.$storeOss = storeOss
 
 Vue.prototype.$fetchTiktokWithoutToken = getTiktokWithoutToken;
+
+export {
+  storeOss
+}

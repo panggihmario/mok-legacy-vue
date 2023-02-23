@@ -1,106 +1,168 @@
 <template>
-  <ValidationProvider  v-slot="{ errors }" :name="name" :rules="rules" >
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="kipas__input-container">
-      <label v-if="label" class="input__label" :class="errors.length > 0 && 'input__error-label' " > {{label}} </label>
-      <input 
-        :type="type" 
-        :class="[`kipas__input-${size}` , { 'input__error' :  errors.length > 0 }]"
+      <!-- :class="errors.length > 0 && 'input__error-label'" -->
+      <label
+        v-if="label"
+        class="input__label"
+        
+      >
+        {{ label }}
+      </label>
+      <input
+        :type="type"
+        :class="[
+          `kipas__input-${size}`,
+          { input__error: errors.length > 0 },
+          `kipas__${model}`,
+          { input__error : isError}
+        ]"
         class="input"
         v-bind="$attrs"
         :value="value"
+        :maxlength="counter"
         v-on="inputListener"
+      />
+      <div v-if="errors.length > 0 || isError " class="input__error-label">
+        {{ errorMessage ? errorMessage : errors[0] }}
+      </div>
+      <div
+        v-if="counter"
+        class="d-flex justify-space-between font-10"
+        :class="{ 'warning--text': value.length > counter }"
       >
-      <div class="input__error-label" > {{errors[0]}} </div>
+        <div>
+          <span v-if="isError && errorMessage" class="warning--text">{{
+            errorMessage
+          }}</span>
+        </div>
+        <span>
+          <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
+        </span>
+        
+      </div>
     </div>
-</ValidationProvider>
+  </ValidationProvider>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      hasError : false
-    }
-  },
-  props : {
-    type : {
-      type : String,
-      default : 'text'
+  props: {
+    type: {
+      type: String,
+      default: "text",
     },
-    label : {
+    errorMessage : {
       type : String
+    },
+    label: {
+      type: String,
     },
     value: {
       type: [String, Number, Object],
-      require : true
+      require: true,
     },
     rules: {
-      type: String
+      type: String,
     },
-    size : {
-      type : String,
-      default : 'md',
+    size: {
+      type: String,
+      default: "md",
     },
-    name : {
-      type : String
+    name: {
+      type: String,
     },
-    rules : {
-      type : String
-    }
+    model: {
+      type: String,
+      default: "outline",
+    },
+    counter: {
+      type: Number,
+    },
+    isError: {
+      type: Boolean,
+      default: false,
+    },
+    errorMessage: {
+      type: String,
+    },
   },
-  computed : {
-    inputListener () {
-      const vm = this
+  data() {
+    return {
+      hasError: false,
+      isErrorCounter: false,
+    };
+  },
+  watch: {
+    value() {
+      if (this.value.length > this.counter) {
+        this.isErrorCounter = true;
+        this.$emit("errorCounter", true);
+      } else {
+        this.isErrorCounter = false;
+        this.$emit("errorCounter", false);
+      }
+    },
+  },
+  computed: {
+    inputListener() {
+      const vm = this;
       return Object.assign({}, this.$listeners, {
-        input : function(event) {
-          vm.$emit('input', event.target.value)
-        }
-      })
-    }
-  }
-}
+        input: function(event) {
+          vm.$emit("input", event.target.value);
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .utils {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
+  color: $black;
 }
-
-
 
 .input {
   outline: none;
-  font-size: 12px;
-  font-weight: 500;
-  background: #FFFFFF;
-  border: 1px solid #BBBBBB;
+  @extend .utils;
+  background: #ffffff;
+  border: 1px solid #bbbbbb;
   border-radius: 4px;
   &__error-label {
-    color: $danger !important;
+    color: $warning !important;
     @extend .utils;
+    transition: 0.5s ease-in-out;
   }
   &__label {
     @extend .utils;
-    color: $charcoal;
+    color: $black;
+    font-weight: 500;
   }
   &__error {
-    border: 1px solid $danger;
+    border: 1px solid $warning !important;
   }
 }
 .kipas {
+  &__outline {
+    background: #ffffff;
+    border: 1px solid #bbbbbb;
+  }
+  &__flat {
+    background: #ffffff;
+    border: none;
+  }
   &__input {
     outline: none;
     font-size: 12px;
-    font-weight: 500;
-    background: #FFFFFF;
-    border: 1px solid #BBBBBB;
+    font-weight: 400;
     border-radius: 4px;
   }
   &__input-label {
     font-size: 12px;
     font-weight: 600;
-    color: #4A4A4A;
+    color: #4a4a4a;
     letter-spacing: 0.01em;
   }
   &__input-container {
@@ -114,6 +176,10 @@ export default {
   &__input-md {
     height: 32px;
     padding: 9px;
+  }
+  &__input-sm {
+    height: 24px;
+    padding: 6px;
   }
 }
 </style>

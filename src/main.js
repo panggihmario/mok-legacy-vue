@@ -7,7 +7,8 @@ import './plugins'
 import vuetify from './plugins/vuetify/index'
 import i18n from './plugins/localization'
 
-Vue.config.productionTip = false
+
+
 
 new Vue({
 	store,

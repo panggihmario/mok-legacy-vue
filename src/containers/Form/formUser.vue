@@ -23,20 +23,34 @@
         <v-col cols="6">
           <custom-input
             :label="$t('input.name')"
-            background-color="whitesnow"
             v-model="data.name"
             :value="data.name"
             rules="required"
             name="Name"
+            dense
           />
-          <custom-select
-            :label="$t('input.gender')"
-            name="Gender"
-            :items="genderType"
-            v-model="data.gender"
-            :value="data.gender"
-            rules="required"
-          />
+          <div>
+            <custom-select
+              :label="$t('input.gender')"
+              name="Gender"
+              :items="genderType"
+              v-model="data.gender"
+              :value="data.gender"
+              rules="required"
+              dense
+            />
+            <custom-select
+              v-if="type === 'edit'"
+              :label="$t('input.chooseAccount')"
+              placeholder="Pilih jenis akun"
+              v-model="data.role"
+              :items="listAccountType"
+              :value="data.role"
+              name="Account"
+              dense
+            />
+          </div>
+          
           <custom-input
             :label="$t('input.username')"
             name="Username"
@@ -142,6 +156,9 @@ export default {
     type: {
       type: String,
     },
+    listAccountType : {
+      type : Array
+    }
   },
   data() {
     return {

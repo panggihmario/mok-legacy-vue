@@ -58,14 +58,7 @@
                 append-icon="mdi-calendar"
               />
             </div>
-            <!-- <div class="mb-2"></div> -->
             <div>
-              <!-- <custom-button
-                color="warning"
-                size="small"
-                @click="onReset"
-              >Reset Tanggal</custom-button>
-              <div class="warning-sign">{{showWarning}} </div> -->
               <div class="d-flex justify-end">
                 <v-btn class="mr-4" small @click="onReset" text color="warning">
                   <div class="dt__text-button">Reset</div>

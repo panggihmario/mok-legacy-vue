@@ -15,7 +15,7 @@
     >
       <v-icon :color="color" left>$upload</v-icon>
       <span class="text-capitalize upload__label" :class="`${color}--text`"
-        >Upload Foto</span
+        >{{ title }}</span
       >
     </v-btn>
     <input @change="onLoad" class="upload__core" :id="id" type="file" />
@@ -43,6 +43,10 @@ export default {
   props: {
     id: {
       type: [String, Number],
+    },
+    title : {
+      type : String,
+      default : 'Upload Foto'
     },
     minVideoHeight: {
       type: Number,
@@ -203,6 +207,7 @@ export default {
     font-size: 10px
   &__button
     border-radius: $border-radius-root
+    background: #F9F9F9
   &__core
     display: none
 </style>

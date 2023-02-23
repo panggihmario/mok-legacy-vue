@@ -13,6 +13,7 @@
 </template>
 <script>
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
+// import Font from '@ckeditor/ckeditor5-font/src/font';
 import EssentialsPlugin from "@ckeditor/ckeditor5-essentials/src/essentials";
 import BoldPlugin from "@ckeditor/ckeditor5-basic-styles/src/bold";
 import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
@@ -56,6 +57,7 @@ export default {
       editor: ClassicEditor,
       editorConfig: {
         extraPlugins: [this.MyCustomUploadAdapterPlugin],
+        
         plugins: [
           EssentialsPlugin,
           BoldPlugin,
@@ -70,35 +72,36 @@ export default {
           ImageUpload,
           SimpleUploadAdapter,
           ImageToolbar,
-          // ImageStyle,
-          MediaEmbed
+          ImageStyle,
+          MediaEmbed,
           // Image
         ],
-        image: {
-          toolbar: [
-            "imageTextAlternative",
-            "|",
-            // "imageStyle:full",
-            // "imageStyle:side",
-          ],
-          styles : [ 'full', 'side' ],
-          resizeUnit: "%",
-          resizeOptions: [
-            {
-              name: "imageResize:original",
-              value: null,
-            },
-            {
-              name: "imageResize:50",
-              value: "50",
-            },
-            {
-              name: "imageResize:75",
-              value: "75",
-            },
-          ],
-        },
-        toolbar: [
+        // image: {
+        //   toolbar: [
+        //     "imageTextAlternative",
+        //     "|",
+        //     // "imageStyle:full",
+        //     // "imageStyle:side",
+        //   ],
+        //   styles : [ 'full', 'side' ],
+        //   resizeUnit: "%",
+        //   resizeOptions: [
+        //     {
+        //       name: "imageResize:original",
+        //       value: null,
+        //     },
+        //     {
+        //       name: "imageResize:50",
+        //       value: "50",
+        //     },
+        //     {
+        //       name: "imageResize:75",
+        //       value: "75",
+        //     },
+        //   ],
+        // },
+        toolbar: {
+          items :[
           "bold",
           "italic",
           "alignment",
@@ -108,6 +111,7 @@ export default {
           "link",
           'mediaEmbed'
         ],
+        }
       },
     };
   },

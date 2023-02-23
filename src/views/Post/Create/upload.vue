@@ -56,7 +56,8 @@ export default {
       const idUpload = this.id.split('-')
       const position = idUpload[1]
       if(payload.status === 'success' ){
-        this.image = payload.response.thumbnail.medium
+        const typeMedia = payload.response.type
+        this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
         const params = {
           position,
           response : payload.response

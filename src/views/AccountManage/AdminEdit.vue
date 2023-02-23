@@ -106,7 +106,6 @@ export default {
         this.loading = false;
         this.alertError = true;
         if (response.response) {
-          console.log(response.response)
           this.errorMessage = response.response.data.data;
         } else {
           this.errorMessage = "Failed Edit Account";

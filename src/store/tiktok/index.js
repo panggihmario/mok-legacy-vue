@@ -4,6 +4,7 @@ export default {
     pathAccount: "account",
     pathDiscover: "discover",
     pathDownloadNoWatermark: "download-no-watermark",
+    pathDouyin: "douyin",
     previewTiktokData: {},
     previewTiktokPayload: {
       id: null,
@@ -28,6 +29,20 @@ export default {
       const data = {
         url: `${state.pathAccount}/detail`,
         params: payload,
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getUserDetailDouyin({ state }) {
+      const data = {
+        url: `${state.pathDouyin}/${state.pathAccount}/detail`,
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
@@ -101,11 +116,44 @@ export default {
           throw err;
         });
     },
+    getFeedExploreDouyin({ state }, payload) {
+      const data = {
+        url: `${state.pathDouyin}/explore`,
+        params: {
+          ...payload,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          const responseData = response.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     getTiktokVideoNoWatermark({ state }, payload) {
       let data = {
         url: `${state.pathDownloadNoWatermark}`,
         params: {
           url: payload,
+        },
+      };
+      return this._vm
+        .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    getDouyinVideoNoWatermark({ state }, payload) {
+      let data = {
+        url: `${state.pathDouyin}/${state.pathDownloadNoWatermark}`,
+        params: {
+          id: payload,
         },
       };
       return this._vm

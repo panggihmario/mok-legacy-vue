@@ -122,6 +122,11 @@ export default [
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
+      {
+        title: "Douyin Mirroring",
+        path: "/post/douyin",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
     ],
   },
   {
@@ -210,6 +215,22 @@ export default [
         role: ["ROLE_ADMIN", "ROLE_ADMIN_FINANCE"],
       },
     ],
+  },
+  {
+    action: "fas fa-hand-holding-usd",
+    title: "Penggalangan Dana",
+    items : [
+      {
+        title : 'List Penggalangan Dana',
+        path : '/donations',
+        role : ["ROLE_ADMIN"]
+      },
+      {
+        title : 'Kategori',
+        path : '/donation-category',
+        role : ["ROLE_ADMIN"]
+      }
+    ]
   },
   {
     action: "fa-solid fa-database",

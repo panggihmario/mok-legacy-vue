@@ -1,6 +1,15 @@
 $height : 40px;
+.auto {
+  &__error-message {
+    color: $warning;
+    font-size: 12px;
+    font-weight: 400;
+  }
+}
 .autocomplete {
   position: relative;
+  display: grid;
+  gap: 8px;
   &__popover {
     position: absolute;
     min-height: $height;
@@ -13,22 +22,22 @@ $height : 40px;
     border: 1px solid #DDDDDD;
     border-radius: 8px;
     overflow-y: hidden;
+    box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
   }
   &__label {
-    color: #4A4A4A;
-    font-size: 10px;
+    color: $black;
+    font-size: 12px;
     font-weight: 500;
-    margin-bottom: 8px;
   }
   .options {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
     border: none;
   }
   .input-wrapper {
-    border: 1px solid #DDDDDD;
+    border: 1px solid $silver;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
   }
 }
 
@@ -68,7 +77,7 @@ input::placeholder {
 .autocomplete-input {
   border: none;
   padding: 5px 10px;
-  height: $height;
+  height: 32px;
   font-size: 12px;
   font-weight: 400;
   &:focus {
