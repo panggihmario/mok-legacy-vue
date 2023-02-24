@@ -181,15 +181,15 @@ export default {
       items: [
         {
           value: 'day',
-          label: 'days'
+          unit: 'days'
         },
         {
           value: 'hour',
-          label: 'hours'
+          unit: 'hours'
         },
         {
           value: 'minute',
-          label: 'minutes'
+          unit: 'minutes'
         }
       ]
     }

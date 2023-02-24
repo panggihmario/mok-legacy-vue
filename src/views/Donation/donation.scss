@@ -1,0 +1,454 @@
+.header{
+  display: flex;
+  gap: .5rem;
+}
+
+.alert {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+}
+
+.columns {
+  display: flex;
+  gap: 40px;
+}
+
+.subcolumns {
+  display: flex;
+  height: 9.375rem;
+  gap: 10px;
+}
+
+.subcolumns div:nth-child(1) {
+  flex: 1 1 80%;
+}
+
+.subcolumns div:nth-child(2) {
+  flex: 1 1 20%;
+}
+
+.subcolumns>div {
+  border-radius: 5px;
+  display: block;
+  border: 1px dashed #BBBBBB;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.subcolumns .videobox {
+  position: relative;
+}
+
+.subcolumns .hasMedia {
+  border: none;
+  overflow: hidden;
+  border-radius: 5px;
+  position: relative;
+  height: inherit;
+  display: block;
+}
+
+.subcolumns .hasVideo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.boxvideo {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.actionsVideo {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.columns .first {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columns .second {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.upload-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: $charcoal;
+  margin-bottom: 8px;
+}
+
+.upload-error {
+  font-size: 11px;
+  font-weight: 400;
+  color: $warning;
+  padding: 0 20px;
+}
+
+.box {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: fill;
+}
+
+.hasMedia .btn-del {
+  z-index: 1;
+  position: absolute;
+  background-color: white;
+  color: $charcoal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 10px 24px;
+  border-radius: 6px;
+  bottom: 8px;
+  left: 8px;
+  cursor: pointer;
+}
+
+.hasVideo .btn-del-video {
+  z-index: 10;
+  position: absolute;
+  bottom: 8px;
+  background-color: white;
+  color: $charcoal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.list {
+  font-size: 12px;
+  font-weight: 500;
+}
+.ellipsis {
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.menu-container {
+  background-color: $truewhite;
+  box-shadow: 2px 4px 10px rgba(33, 83, 205, 0.25);
+  border-radius: 8px;
+}
+.menu-box {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.dialog {
+  padding: 28px 38px;
+  position: relative;
+}
+
+.dialog-title {
+  color: $black;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.dialog-content {
+  color: $charcoal;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 23px;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.dialog-warning {
+  position: absolute;
+  top : 28px;
+  left: 10px;
+}
+
+.detail {
+  &__line {
+    width: 100%;
+    height: 1px;
+    background-color: $whitesmoke;
+  }
+  &__container {
+    display: grid;
+    gap: 24px;
+  }
+  &__amount {
+    display: grid;
+    grid-template-columns: 1fr  1fr;
+    gap: 18px;
+    .amount-list {
+      height: 186px;
+      overflow: scroll;
+      border: 1px solid $whitesmoke;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: $greys;
+    }
+    .amount-colect {
+      background-color: $secondary;
+      color: $truewhite;
+      padding: 8px;
+    }
+    .amount-withdraw {
+      background-color: $primary;
+      color: $truewhite;
+      padding: 8px;
+    }
+    .amount-title {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .amount-balance {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .amount-target {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+  &__description {
+    color: $greys;
+    font-weight: 500; 
+    font-size: 12px;
+    margin-top: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid $whitesmoke;
+  }
+  &__initiator {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    .initiator-title {
+      color: $secondary;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .initiator-name {
+      color: $charcoal;
+      font-size: 12px;
+      font-weight: 500;
+      word-break: break-all;
+    }
+  }
+  &__header {
+    display: flex;
+    gap: 24px;
+    height: 230px;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: fill;
+    }
+    .detail-iconvideo {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      justify-content: center;
+    }
+    .first {
+      width: 328px;
+    }
+    .second {
+      width: 122px;
+      position: relative;
+    }
+    .third {
+      flex : 1;
+    }
+  }
+  &__location {
+    display: flex;
+    color: $charcoal;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  &__header-content {
+    display: grid;
+    gap: 24px;
+    .detail-title {
+      color: $charcoal;
+      font-size: 18px;
+      font-weight: 700;
+      width: 100%;
+    }
+    .detail-time {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      gap: 12px;
+      background-color: $whitesnow;
+      padding: 4px;
+      .detail-time-icon {
+        padding: 5px 9px;
+        border-radius: 8px;
+        background-color: $primarylowtint;
+      }
+      .detail-duration {
+        flex: 1;
+      }
+    }
+  }
+}
+
+
+.activity {
+  &__withdraw-box {
+    background-color: $whitesnow;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &__withdraw-border {
+    border-right: 1px solid $gainsboro;
+  }
+  &__withdraw-label {
+    color: $greys;
+    font-size: 12px;
+    font-weight: 400;
+  } 
+  &__withdraw-content {
+    word-break: break-all;
+    font-size: 12px;
+    font-weight: 700;
+    color: $black;
+  }
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  &__dialog-title {
+    font-size: 14px;
+    font-weight: 800;
+  }
+  &__dialog-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &__content-box {
+    border: 1px solid $whitesmoke;
+    border-radius: 6px;
+  }
+  &__dates {
+    font-size: 11px;
+    font-weight: 700;
+    color: $greys;
+  }
+  &__description {
+    color: $greys;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  &__icons {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  &__icon {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $whitesmoke;
+    border-radius: 3px;
+  }
+}
+
+.expand {
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: $whitesmoke;
+    padding: 6px 10px;
+  }
+  &__title {
+    font-size: 12px;
+    font-weight: 400;
+    color: $charcoal;
+  }
+}
+
+.no-data {
+  &-label {
+    color: $charcoal;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &-sublabel {
+    color: $greys;
+    font-size: 11px;
+    font-weight: 400;
+  }
+}

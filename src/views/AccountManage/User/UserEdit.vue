@@ -6,6 +6,8 @@
       :loading="loading"
       @onSubmit="onSubmit"
       @deleteUser="handleDelete"
+      :listAccountType="listAccountType"
+      type="edit"
     />
     <v-snackbar top right v-model="alertError" color="error">
       Edit Failed
@@ -30,6 +32,7 @@ export default {
       loading: false,
       alertError: false,
       alertSuccess: false,
+      listAccountType : [],
       oldPassword: "",
       items: [
         {
@@ -66,7 +69,13 @@ export default {
       getAccountById: "account/getAccountById",
       updateAccount: "account/updateAccount",
       deleteUser: "account/deleteUser",
+      getListRole: "account/getListRole",
     }),
+    handleGetListRole() {
+      return this.getListRole().then((response) => {
+        this.listAccountType = response.data.data
+      });
+    },
     handleDelete() {
       const id = this.$route.params.id;
       return this.deleteUser(id).then(() => {
@@ -110,6 +119,7 @@ export default {
       const response = await this.getAccountById(params);
       if (response.status === 200) {
         const responseData = response.data.data;
+        console.log(responseData)
         const tempData = { ...this.data };
         const dataById = {
           ...tempData,
@@ -131,6 +141,7 @@ export default {
   },
   mounted() {
     this.handleResponseById();
+    this.handleGetListRole()
   },
 };
 </script>
