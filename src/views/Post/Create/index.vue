@@ -6,29 +6,44 @@
           Submit Post
         </custom-button>
       </HeaderContent>
-      <div class="d-flex mb-4">
-        <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
-          <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" />
-        </div>
-      </div>
       <div style="width: 584px">
-        <custom-textarea label="Caption" name="Caption" counter v-model="description" :value="description"
-          rules="required|max:1000" />
+        <div class="d-flex mb-4">
+          <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
+            <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" />
+          </div>
+        </div>
+        <k-textarea title="Caption" v-model="description" :counter="1000" rules="required" rows="8" />
+        <!-- <custom-textarea label="Caption" name="Caption" counter v-model="description" :value="description"
+          rules="required|max:1000" /> -->
+        <v-row>
+          <!-- <v-col cols="6">
+            <custom-autocomplete :value="channel" v-model="channel" :items="channels" item-text="name" label="Channel"
+              return-object />
+          </v-col> -->
+          <v-col cols="6">
+            <k-autocomplete 
+            :items="channels" 
+            v-model="channel" 
+            itemText="name"
+            label="Channel"
+            rules="required"
+           />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <k-input 
+            label="Link dari postingan ini" 
+            v-model="title" 
+          />
+          </v-col>
+          <v-col cols="6" style="margin-top : auto">
+            <k-input 
+            v-model="title" 
+          />
+          </v-col>
+        </v-row>
       </div>
-
-      <div style="width: 250px">
-        <custom-autocomplete
-          :value="channel"
-          v-model="channel"
-          :items="channels"
-          item-text="name"
-          label="Channel"
-          return-object
-        />
-      </div>
-
-
-
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
       </v-snackbar>
@@ -51,9 +66,10 @@ export default {
   data() {
     return {
       description: "",
+      title: '',
       testUrl: "",
       file: "",
-      urlUpload : "https://test-api-upload.kipaskipas.com/api/v1",
+      urlUpload: "https://test-api-upload.kipaskipas.com/api/v1",
       visibleThumbnail: false,
       list: [
         {
@@ -83,6 +99,9 @@ export default {
     }),
     saveImageOnPayload(params) {
       this.$set(this.medias, params.position, params.response);
+    },
+    emitedFilter(value) {
+      this.channels = value
     },
     submitForm() {
       this.loading = true;
@@ -131,7 +150,7 @@ export default {
             id: d.id,
           };
         });
-        this.channels = formatResponse;
+        this.channels = responseData;
       } else {
         return response;
       }

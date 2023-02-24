@@ -1,7 +1,6 @@
 <template>
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="kipas__input-container">
-      <!-- :class="errors.length > 0 && 'input__error-label'" -->
       <label
         v-if="label"
         class="input__label"

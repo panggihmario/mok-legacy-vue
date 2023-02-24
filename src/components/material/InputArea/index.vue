@@ -45,6 +45,6 @@ export default {
 
 <style lang="sass" scoped>
 .field-area
-	font-size: $font-size-root
+	font-size:12px
 	border-radius: $border-radius-root
 </style>

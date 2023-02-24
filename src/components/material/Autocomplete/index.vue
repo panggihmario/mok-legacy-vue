@@ -6,9 +6,9 @@
       :value="value"
       v-bind="$attrs"
       v-on="inputListener"
-			solo
-			flat
+			outlined
 			class="field"
+      dense
 			:background-color="background"
     >
       <slot></slot>
