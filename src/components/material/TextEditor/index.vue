@@ -131,7 +131,9 @@ export default {
 .ck-editor__editable {
   min-height: 300px;
   border-radius: 10px;
+  transition: 0.5s ease;
 }
+
 </style>
 
 <style lang="sass" scoped>
