@@ -23,10 +23,31 @@
                   {{ item.description }}
                 </div>
               </td>
-              <td class="font-12 grey--text font-weight-medium">{{ item.channel.name }}</td>
-              <td class="font-12 grey--text font-weight-medium">{{ item.createBy }}</td>
-              <td class="font-12 grey--text font-weight-medium">{{ formatingDate(item.createAt) }}</td>
-              <td class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium">
+              <td class="font-12 grey--text font-weight-medium">
+                {{ item.channel.name }}
+              </td>
+              <td class="font-12 grey--text font-weight-medium">
+                {{ item.createBy }}
+              </td>
+              <td class="font-12 grey--text font-weight-medium">
+                <div class="d-flex align-center">
+                  <v-icon
+                    size="46px"
+                    :color="item.isHlsReady ? 'green' : 'red'"
+                    style="margin-right: -16px"
+                    >mdi-circle-small</v-icon
+                  >
+                  <span :class="item.isHlsReady ? 'green--text' : 'red--text'"
+                    >HLS</span
+                  >
+                </div>
+              </td>
+              <td class="font-12 grey--text font-weight-medium">
+                {{ formatingDate(item.createAt) }}
+              </td>
+              <td
+                class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium"
+              >
                 <custom-button
                   class="mr-2"
                   size="x-small"
@@ -35,8 +56,8 @@
                 >
                   Push Notif
                 </custom-button>
-                <v-icon 
-                  size="15px" 
+                <v-icon
+                  size="15px"
                   color="warning"
                   @click="openDialogDelete(item.id)"
                 >
@@ -66,7 +87,7 @@
         @input="changePage"
       ></v-pagination>
     </div>
-  
+
     <v-dialog v-model="dialogPost" width="880">
       <v-btn
         rounded
@@ -89,7 +110,12 @@
               <div class="col">
                 <div
                   class="black"
-                  style="width: 362px; height: 456px; border-radius: 8px; overflow: hidden;"
+                  style="
+                    width: 362px;
+                    height: 456px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                  "
                 >
                   <video
                     v-if="
@@ -97,9 +123,7 @@
                         'mp4'
                       )
                     "
-                    :id="
-                      `videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`
-                    "
+                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
                     controls
                     :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
                     alt=""
@@ -134,7 +158,7 @@
                 <div
                   v-if="
                     tableItemsDialog.medias &&
-                      tableItemsDialog.medias.length > 1
+                    tableItemsDialog.medias.length > 1
                   "
                 >
                   <v-btn
@@ -192,8 +216,8 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-dialog>
-    <DialogDelete 
-      :dialogDelete="dialogDelete" 
+    <DialogDelete
+      :dialogDelete="dialogDelete"
       @closeDialogDelete="closeDialogDelete"
       @handleDelete="handleDelete"
     />
@@ -264,12 +288,12 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-import DialogDelete from "./dialogDelete.vue"
+import DialogDelete from "./dialogDelete.vue";
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
-  components : {
-    DialogDelete
-  },  
+  components: {
+    DialogDelete,
+  },
   data() {
     return {
       tableHeaders: [
@@ -277,6 +301,7 @@ export default {
         { text: "Caption", class: "whitesnow" },
         { text: "Channel", class: "whitesnow" },
         { text: "User", class: "whitesnow" },
+        { text: "", class: "whitesnow" },
         { text: "Dipublish Pada", class: "whitesnow" },
         { text: "Action", class: "whitesnow", align: "center" },
       ],
@@ -292,8 +317,8 @@ export default {
       dialogPushNotifId: "",
       alertSuccess: false,
       alertError: false,
-      dialogDelete : false,
-      idPost : ''
+      dialogDelete: false,
+      idPost: "",
     };
   },
   watch: {
@@ -323,26 +348,26 @@ export default {
     ...mapActions({
       fetchPostAllUserDetailById: "post/fetchPostAllUserDetailById",
       postFeedAsTrendingById: "post/postFeedAsTrendingById",
-      deleteFeed : 'account/deleteFeed'
+      deleteFeed: "account/deleteFeed",
     }),
-    handleDelete () {
-      const idPost = this.idPost
+    handleDelete() {
+      const idPost = this.idPost;
       return this.deleteFeed(idPost)
         .then(() => {
-          this.idPost = ""
-          this.dialogDelete = false
-          this.$emit("resetData")
+          this.idPost = "";
+          this.dialogDelete = false;
+          this.$emit("resetData");
         })
         .catch(() => {
-          this.idPost = ""
-        })
+          this.idPost = "";
+        });
     },
-    openDialogDelete (idPost) {
-      this.idPost = idPost
-      this.dialogDelete = true
+    openDialogDelete(idPost) {
+      this.idPost = idPost;
+      this.dialogDelete = true;
     },
     closeDialogDelete(value) {
-      this.dialogDelete = value
+      this.dialogDelete = value;
     },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
