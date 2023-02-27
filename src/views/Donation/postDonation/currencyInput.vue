@@ -1,7 +1,14 @@
 <template>
-  <div :class="cur.container">
+  <div 
+    :class="[
+      cur.container,
+      
+    ]">
     <label :class="cur.label">{{ label }}</label>
-    <div :class="cur.input">
+    <div :class="[
+        cur.input, 
+        { 
+          'input-disable' : isDisable}]">
       <span>Rp</span>
       <input
         ref="inputRef"
@@ -54,6 +61,7 @@ input:focus {
   gap: 4px;
   color: $charcoal;
 }
+
 .label {
   font-size: 12px;
   font-weight: 500;
@@ -63,5 +71,14 @@ input:focus {
 .container {
   display: grid;
   gap: 8px;
+}
+// .input input[type=text]:disabled  {
+//   background: #dddddd;
+// }
+</style>
+
+<style lang="scss">
+.input-disable {
+  background-color: $gainsboro;
 }
 </style>

@@ -1,28 +1,35 @@
 <template>
-  <div class="input__container">
-    <Label :title="title" />
-    <textarea
-      :class="['input', { input__error: isError || isErrorCounter }]"
-      :rows="rows"
-      :value="value"
-      v-on="inputListener"
-      :maxlength="counter"
-    />
-    <div
-      v-if="counter"
-      class="d-flex justify-space-between font-10"
-      :class="{ 'warning--text': value.length > counter }"
-    >
-      <div>
-        <span v-if="isError && errorMessage" class="warning--text">{{
-          errorMessage
-        }}</span>
+  <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
+    <div class="input__container">
+      <Label :title="title" />
+      <textarea
+        :class="
+          [
+            'input', 
+            { input__error: isError || isErrorCounter },
+            { input__error: errors.length > 0 },
+          ]"
+        :rows="rows"
+        :value="value"
+        v-on="inputListener"
+        :maxlength="counter"
+      />
+      <div
+        v-if="counter"
+        class="d-flex justify-space-between font-10"
+        :class="{ 'warning--text': value.length > counter }"
+      >
+        <div>
+          <span v-if="isError && errorMessage" class="warning--text">{{
+            errorMessage
+          }}</span>
+        </div>
+        <span>
+            <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
+          </span>
       </div>
-      <span>
-          <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
-        </span>
     </div>
-  </div>
+  </ValidationProvider>
 </template>
 
 <script>
@@ -53,6 +60,12 @@ export default {
     errorMessage: {
       type: String,
     },
+    name : {
+      type : String
+    },
+    rules : {
+      type : String
+    }
   },
   data() {
     return {
