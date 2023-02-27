@@ -10,6 +10,9 @@ input {
 }
 
 .field {
+  &__disable {
+    background-color: $gainsboro !important;
+  }
   &__label {
     font-size: 12px;
     font-weight: 500;

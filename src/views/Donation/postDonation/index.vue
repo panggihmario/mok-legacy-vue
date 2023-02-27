@@ -79,6 +79,9 @@
                 locale: 'id', 
                 currencyDisplay: 'hidden' ,
                 hideGroupingSeparatorOnFocus: false,
+                valueRange : {
+                  min : 10000
+                }
               }" 
               :isDisable="isDisableCurrency"
             />
@@ -205,6 +208,7 @@ export default {
         this.isDisableCurrency = true
       }else{
         this.isDisableCurrency = false
+        this.payloadDonation.targetAmount = 10000
       }
     },
     isEnded(value) {
@@ -422,7 +426,7 @@ export default {
       payloadDonation: {
         title: '',
         description: '',
-        targetAmount: 0,
+        targetAmount: 10000,
         recipientName: '',
         expiredAt: null,
         latitude: "",

@@ -10,10 +10,10 @@
     </div>
 
 
-    <v-timeline v-if="activites.length > 0" align-top dense>
+    <v-timeline style="margin-left : -27px" v-if="activites.length > 0" align-top dense>
       <v-timeline-item v-for="(ac, idx) in activites" :key="idx" color="whitesmoke" small>
         <v-row class="pt-1">
-          <v-col cols="2">
+          <v-col cols="1">
             <div :class="d['activity__dates']">
               <div>{{ formated(ac.createAt) }}</div>
               <div> {{ formatedHour(ac.createAt) }} </div>
@@ -51,13 +51,13 @@
       </v-timeline-item>
     </v-timeline>
 
-
+    <!-- <text-editor v-if="isDialog"  v-model="content" :value="content" name="Content" /> -->
     <!-- DIALOG -->
-    <v-dialog  v-model="isDialog" >
-      <v-card class="pa-4">
+    <v-dialog max-width="900"   v-model="isDialog" >
+      <v-card  class="pa-4">
         <div :class="d['activity__dialog-title']" class="mb-2">Update Kabar Terkini</div>
         <div :class="d['activity__dialog-subtitle']" class="mb-1">Tulis Kabar Terkini</div>
-        <text-editor v-model="content" :value="content" name="Content" />
+        <text-editor v-if="isEditor" v-model="content" :value="content" name="Content" />
         <div class="d-flex justify-end mt-2" style="gap : 8px">
           <custom-button @click="closeDialog" size="small">Batalkan</custom-button>
           <custom-button @click="handlePostActivity" size="small" color="primary">Publikasikan Kabar
@@ -93,6 +93,7 @@ export default {
     return {
       isDialog: false,
       isDelete : false,
+      isEditor : false,
       content: '',
       activites: [],
       detailContent: {},
@@ -113,6 +114,9 @@ export default {
     },
     openDialog() {
       this.isDialog = true
+      setTimeout(() => {
+        this.isEditor = true
+      },100)
     },
     openDialogConfirm (data) {
       this.isDelete = true
@@ -125,6 +129,7 @@ export default {
     closeDialog() {
       this.isDialog = false
       this.content = ''
+      this.isEditor = false
     },
     onDelete() {
       const id = this.detailContent.id
