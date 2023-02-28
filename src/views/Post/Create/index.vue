@@ -39,7 +39,8 @@
           </v-col>
           <v-col cols="6" style="margin-top : auto">
             <k-input 
-            v-model="title" 
+              v-model="title" 
+              icon="fas fa-link"
           />
           </v-col>
         </v-row>
