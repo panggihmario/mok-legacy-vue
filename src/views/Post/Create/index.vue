@@ -20,7 +20,6 @@
             v-model="channel" 
             itemText="name"
             label="Channel"
-            rules="required"
            />
           </v-col>
         </v-row>
@@ -120,7 +119,6 @@ export default {
         // floatingLink :this.floatingLink,
         // floatingLinkLabel : this.floatingLinkLabel
       };
-
       return this.postFeed(payload)
         .then(() => {
           this.alertSucces = true;
