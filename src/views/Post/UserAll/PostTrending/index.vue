@@ -27,6 +27,19 @@
               <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ item.trendingBy }}</td>
               <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
+              <td class="font-12 grey--text font-weight-medium">
+                <div class="d-flex align-center">
+                  <v-icon
+                    size="46px"
+                    :color="item.isHlsReady ? 'green' : 'red'"
+                    style="margin-right: -16px"
+                    >mdi-circle-small</v-icon
+                  >
+                  <span :class="item.isHlsReady ? 'green--text' : 'red--text'"
+                    >HLS</span
+                  >
+                </div>
+              </td>
               <td class="font-12 text-center">
                 <v-btn
                   small
@@ -84,7 +97,12 @@
               <div class="col">
                 <div
                   class="black"
-                  style="width: 362px; height: 456px; border-radius: 8px; overflow: hidden;"
+                  style="
+                    width: 362px;
+                    height: 456px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                  "
                 >
                   <video
                     v-if="
@@ -92,9 +110,7 @@
                         'mp4'
                       )
                     "
-                    :id="
-                      `videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`
-                    "
+                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
                     controls
                     :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
                     alt=""
@@ -245,6 +261,7 @@ export default {
         { text: "User", class: "whitesnow" },
         { text: "Di Trendingkan Oleh", class: "whitesnow" },
         { text: "Trending Berakhir", class: "whitesnow" },
+        { text: "", class: "whitesnow" },
         { text: "Action", class: "whitesnow", align: "center" },
       ],
       // tableItems: [],

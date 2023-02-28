@@ -6,7 +6,7 @@
     width="328"
     permanent
     right
-    style="padding:24px"
+    style="padding: 24px"
   >
     <div>
       <h5>Konten Terpilih</h5>
@@ -15,20 +15,66 @@
         “Submit Post”
       </p>
       <div>
-        <video
+        <!-- <video
           :src="previewTiktokData.video.playAddr"
           controls
           style="max-width: 100% !important; height: 100% !important"
-        ></video>
+        ></video> -->
 
-        <div class="mt-8 font-12 text-break">
-          <v-textarea
+        <div
+          class="container-img"
+          @click="
+            openInNew(
+              `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
+            )
+          "
+        >
+          <img
+            :src="previewTiktokData.video.cover"
+            class="image"
+            style="width: 100%"
+          />
+          <div class="middle">
+            <div class="d-flex flex-column">
+              <v-icon color="white">mdi-open-in-new</v-icon>
+              <span class="text">Open in new tab</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="row no-gutters font-12 whitesnow text-center">
+          <div class="col py-2">
+            <span>Quality : </span>
+            <span class="font-weight-medium">{{
+              previewTiktokData.video.definition
+            }}</span>
+          </div>
+          <v-divider vertical></v-divider>
+          <div class="col py-2">
+            <span>Width : </span>
+            <span class="font-weight-medium"
+              >{{ previewTiktokData.video.width }}px</span
+            >
+          </div>
+          <v-divider vertical></v-divider>
+          <div class="col py-2">
+            <span>Height : </span>
+            <span class="font-weight-medium"
+              >{{ previewTiktokData.video.height }}px</span
+            >
+          </div>
+        </section>
+
+        <div class="mt-3 font-12 text-break">
+          <k-textarea
             v-model="previewTiktokPayload.description"
-            label="Description"
+            placeholder="Caption"
             outlined
             background-color="white"
+            rows="2"
             class="font-12"
-          ></v-textarea>
+            hide-details
+          ></k-textarea>
           <custom-autocomplete
             :value="previewTiktokPayload.channel"
             v-model="previewTiktokPayload.channel"
@@ -36,7 +82,25 @@
             item-text="name"
             placeholder="Select Channel"
             return-object
+            class="mt-3"
+            hide-details
           />
+          <v-divider class="my-3"></v-divider>
+          <!-- <span class="grey--text">Link dari postingan ini</span>
+          <div class="mt-3">
+            <k-input
+              v-model="previewTiktokPayload.floatingLinkLabel"
+              placeholder="Placeholder"
+              class="mt-3"
+            ></k-input>
+          </div>
+          <div class="my-3">
+            <k-input
+              v-model="previewTiktokPayload.floatingLink"
+              placeholder="https:/...."
+              class="mt-3"
+            ></k-input>
+          </div> -->
         </div>
         <div class="d-flex">
           <custom-button
@@ -244,7 +308,7 @@ export default {
               (blob) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function() {
+                reader.onloadend = function () {
                   var base64data = reader.result;
                   resolve(base64data);
                 };
@@ -290,11 +354,53 @@ export default {
           }, 3000);
         });
     },
+    openInNew(v) {
+      window.open(v, "_blank");
+    },
   },
 };
 </script>
 
 <style lang="scss">
+.container-img {
+  position: relative;
+  cursor: pointer;
+}
+
+.image {
+  opacity: 1;
+  display: block;
+  height: auto;
+  transition: 0.5s ease;
+  backface-visibility: hidden;
+}
+
+.middle {
+  transition: 0.5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.container-img:hover .image {
+  filter: brightness(50%);
+}
+
+.container-img:hover .middle {
+  opacity: 1;
+  filter: brightness(100%);
+}
+
+.text {
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
 .font-12 {
   font-size: 12px;
 }

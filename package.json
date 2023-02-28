@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.1.0-rc12",
+  "version": "2.2.0-rc3",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -14,7 +14,6 @@
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^23.5.1",
     "@ckeditor/ckeditor5-editor-classic": "^22.0.0",
     "@ckeditor/ckeditor5-essentials": "^22.0.0",
-    "@ckeditor/ckeditor5-font": "^36.0.0",
     "@ckeditor/ckeditor5-image": "^22.0.0",
     "@ckeditor/ckeditor5-link": "^22.0.0",
     "@ckeditor/ckeditor5-media-embed": "^22.0.0",

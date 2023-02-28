@@ -18,6 +18,11 @@
       </v-btn>
     </div>
     <div class="d-flex flex-column mt-3 mb-12">
+      <h5>Konten Terpilih</h5>
+      <p class="font-12 mt-2">
+        Konten yang terpilih hanya akan terupload setelah kamu menekan tombol
+        “Submit Post”
+      </p>
       <div
         class="container-img"
         @click="openInNew(previewTiktokData.share_url)"
@@ -35,20 +40,22 @@
         </div>
       </div>
 
-      <div class="d-flex flex-column pt-4" style="gap: 12px; font-size: 14px;">
+      <div class="d-flex flex-column pt-4" style="gap: 12px; font-size: 14px">
         <span>{{ previewTiktokData.title }}</span>
         <span>{{ previewTiktokData.hot_words }}</span>
       </div>
 
-      <div class="mt-4">
-        <v-textarea
+      <div class="mt-3">
+        <k-textarea
           v-model="payload.description"
           clearable
-          label="Description"
+          placeholder="Caption"
           outlined
           background-color="white"
           hide-details
-        ></v-textarea>
+          rows="2"
+          class="font-12"
+        ></k-textarea>
         <custom-autocomplete
           :value="payload.channel"
           v-model="payload.channel"
@@ -62,9 +69,25 @@
         <span v-if="alertErrorChannel" class="channel-error primary--text"
           >Channel harap diisi</span
         >
+        <v-divider class="my-3"></v-divider>
+        <!-- <span class="grey--text">Link dari postingan ini</span>
+        <div class="mt-3">
+          <k-input
+            v-model="payload.floatingLinkLabel"
+            placeholder="Placeholder"
+            class="mt-3"
+          ></k-input>
+        </div>
+        <div class="my-3">
+          <k-input
+            v-model="payload.floatingLink"
+            placeholder="https:/...."
+            class="mt-3"
+          ></k-input>
+        </div> -->
       </div>
 
-      <div class="mt-4">
+      <div>
         <custom-button
           color="white"
           class="primary--text mr-4"
@@ -97,6 +120,8 @@ export default {
       payload: {
         description: "",
         channel: null,
+        // floatingLinkLabel: null,
+        // floatingLink: null,
         medias: [
           {
             id: null,

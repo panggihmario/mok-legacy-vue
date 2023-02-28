@@ -12,6 +12,8 @@ export default {
       description: null,
       medias: [],
       product: null,
+      // floatingLink: null,
+      // floatingLinkLabel: null,
       type: "social",
     },
   },
