@@ -64,9 +64,7 @@
             >
           </div>
         </section>
-
         <div class="mt-8 font-12 text-break">
-          {{ previewTiktokPayload }}
           <k-textarea
             v-model="previewTiktokPayload.description"
             placeholder="Caption"
