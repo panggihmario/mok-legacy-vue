@@ -64,7 +64,8 @@
             >
           </div>
         </section>
-        <div class="mt-8 font-12 text-break">
+
+        <div class="mt-3 font-12 text-break">
           <k-textarea
             v-model="previewTiktokPayload.description"
             placeholder="Caption"
@@ -85,7 +86,7 @@
             hide-details
           />
           <v-divider class="my-3"></v-divider>
-          <span class="grey--text">Link dari postingan ini</span>
+          <!-- <span class="grey--text">Link dari postingan ini</span>
           <div class="mt-3">
             <k-input
               v-model="previewTiktokPayload.floatingLinkLabel"
@@ -99,7 +100,7 @@
               placeholder="https:/...."
               class="mt-3"
             ></k-input>
-          </div>
+          </div> -->
         </div>
         <div class="d-flex">
           <custom-button
