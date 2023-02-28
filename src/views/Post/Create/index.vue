@@ -24,7 +24,7 @@
            />
           </v-col>
         </v-row>
-        <v-row>
+        <!-- <v-row>
           <v-col cols="6">
             <k-input 
             label="Link dari postingan ini" 
@@ -41,7 +41,7 @@
               placeholder="https:/...."
           />
           </v-col>
-        </v-row>
+        </v-row> -->
       </div>
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
@@ -117,8 +117,8 @@ export default {
         product: null,
         channel: this.channel,
         description: this.description,
-        floatingLink :this.floatingLink,
-        floatingLinkLabel : this.floatingLinkLabel
+        // floatingLink :this.floatingLink,
+        // floatingLinkLabel : this.floatingLinkLabel
       };
 
       return this.postFeed(payload)
