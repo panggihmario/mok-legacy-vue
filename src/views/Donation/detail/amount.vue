@@ -49,18 +49,19 @@ export default {
       type: Object
     }
   },
-  computed: {
-    percentAmountCollected() {
-      const collect = this.item.amountCollected
-      const target = this.item.targetAmount
+  watch : {
+    item : function(newVal) {
+      const collect = newVal.amountCollected
+      const target = newVal.targetAmount
       const percent = (collect / target) * 100
-      return percent
-    },
-
+      const round = Math.round(percent)
+      this.percentAmountCollected = round
+    }
   },
   data() {
     return {
       value: 0,
+      percentAmountCollected : 0,
       debits: [],
       credits : []
     }

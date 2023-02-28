@@ -5,6 +5,7 @@
       hide-default-footer
       disable-sort
       disable-filtering
+      :items-per-page="12"
       class="grey--text"
       :items="items"
       @click:row="openDetail"

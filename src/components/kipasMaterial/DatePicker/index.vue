@@ -3,7 +3,7 @@
     <Label :title="title" />
     <v-menu v-model="menu" max-width="290" :close-on-content-click="false">
       <template v-slot:activator="{ on, attrs }">
-        <div class="field__input">
+        <div class="field__input" :class="{'field__disable' : isDisable}" >
           <input :disabled="isDisable" :value="showDate" readonly :placeholder="placeholder" v-bind="attrs" v-on="on" />
           <v-icon size="15px">fa-regular fa-calendar</v-icon>
         </div>
@@ -49,7 +49,11 @@ export default {
       this.menu = false
       const localtz = moment(this.date).utcOffset() 
       const localUtc = localtz / 60
-      const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
+      // const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
+      const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add({
+        hours : localUtc + 1,
+        minutes : 1
+      }).unix()
       const milisecondEpoch = epochDate * 1000
       this.$emit('epochDate', milisecondEpoch)
     },
