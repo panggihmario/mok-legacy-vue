@@ -2,10 +2,9 @@
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="kipas__field-container">
       <label
-        v-if="label"
         class="kipas__label"
       >
-        {{ label  }} {{ isError }}
+        {{ label  }} 
       </label>
       <div
         :class="[
