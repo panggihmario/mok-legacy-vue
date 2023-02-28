@@ -9,6 +9,65 @@ input {
   cursor: pointer;
 }
 
+.input-lg {
+  height: 40px;
+  padding: 13px 16px;
+}
+
+.input-md {
+  height: 32px;
+  padding: 9px;
+}
+
+.input-sm {
+  height: 24px;
+  padding: 6px;
+}
+
+.input-outlined {
+  background: #ffffff;
+  border: 1px solid #bbbbbb;
+}
+
+.kipas {
+  &__field-container{
+    display: grid;
+    gap: 8px;
+  }
+  &__label {
+    color: $black;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &__field {
+    display: flex;
+    font-size: 12px;
+    font-weight: 400;
+    border-radius: 4px;
+    gap: 4px;
+  }
+  &__field-md-outlined {
+    @extend .input-md;
+    @extend .input-outlined;
+  }
+  &__field-lg-outlined {
+    @extend .input-lg;
+    @extend .input-outlined;
+  }
+  &__field-sm-outlined {
+    @extend .input-sm;
+    @extend .input-outlined;
+  }
+  &__error {
+    border: 1px solid $warning !important;
+  }
+  &__error-message {
+    color: $warning;
+    font-size: 12px;
+    font-weight: 400;
+  }
+}
+
 .field {
   &__disable {
     background-color: $gainsboro !important;
