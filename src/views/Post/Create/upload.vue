@@ -4,6 +4,7 @@
       :id="id" style="display: none" 
       @response="getImage"
       :minVideoHeight="720"
+      :typeAllowed="['jpeg','png', 'jpg', 'mp4']"
     />
     <div @click="uploadImage(id)" class="image-box">
       <v-img
