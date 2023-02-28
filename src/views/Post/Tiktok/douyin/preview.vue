@@ -45,7 +45,7 @@
         <span>{{ previewTiktokData.hot_words }}</span>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-3">
         <k-textarea
           v-model="payload.description"
           clearable
@@ -70,7 +70,7 @@
           >Channel harap diisi</span
         >
         <v-divider class="my-3"></v-divider>
-        <span class="grey--text">Link dari postingan ini</span>
+        <!-- <span class="grey--text">Link dari postingan ini</span>
         <div class="mt-3">
           <k-input
             v-model="payload.floatingLinkLabel"
@@ -84,10 +84,10 @@
             placeholder="https:/...."
             class="mt-3"
           ></k-input>
-        </div>
+        </div> -->
       </div>
 
-      <div class="mt-4">
+      <div>
         <custom-button
           color="white"
           class="primary--text mr-4"
@@ -120,8 +120,8 @@ export default {
       payload: {
         description: "",
         channel: null,
-        floatingLinkLabel: null,
-        floatingLink: null,
+        // floatingLinkLabel: null,
+        // floatingLink: null,
         medias: [
           {
             id: null,
