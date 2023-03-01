@@ -242,18 +242,18 @@ export default [
         role : ["ROLE_ADMIN"]
       }
     ]
+  },
+  {
+    title : 'RnD new feature',
+    action: "post_add",
+    items : [
+      {
+        title : 'RnD',
+        path : '/rnd',
+        role : ["ROLE_ADMIN"],
+      }
+    ]
   }
-  // {
-  //   title : 'RnD new feature',
-  //   action: "post_add",
-  //   items : [
-  //     {
-  //       title : 'RnD',
-  //       path : '/rnd',
-  //       role : ["ROLE_ADMIN"],
-  //     }
-  //   ]
-  // }
   // {
   //   title: "Order",
   //   action: "post_add",
