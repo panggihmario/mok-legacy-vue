@@ -242,7 +242,7 @@ export default [
         role : ["ROLE_ADMIN"]
       }
     ]
-  }
+  },
   // {
   //   title : 'RnD new feature',
   //   action: "post_add",
