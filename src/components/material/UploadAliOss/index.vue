@@ -176,7 +176,7 @@ export default {
         }
       })
         .then(response => {
-          const urlResponse = `${protocol}://${response.Location}`
+          const urlResponse = `${protocol}//${response.Location}`
           console.log(urlResponse)
           this.dataResponse.url = urlResponse
           return this.createThumbnail(file, 0.0)
