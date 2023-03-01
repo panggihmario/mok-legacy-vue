@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.2.0-rc3",
+  "version": "2.3.0-rc0",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -27,6 +27,7 @@
     "ali-oss": "^6.17.1",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "cos-js-sdk-v5": "^1.4.15",
     "moment": "^2.24.0",
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",
