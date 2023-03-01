@@ -166,15 +166,16 @@
 
 .menu-container {
   background-color: $truewhite;
-  box-shadow: 2px 4px 10px rgba(33, 83, 205, 0.25);
+  box-shadow: 0px 2px 0px -5px rgb(0 0 0 / 2%), 0 8px 10px 1px rgb(0 0 0 / 4%), 0 3px 14px 2px rgb(0 0 0 / 5%);
   border-radius: 8px;
+  padding: 10px 12px;
 }
 .menu-box {
   padding: 8px 16px;
   font-size: 11px;
   font-weight: 500;
   display: flex;
-  gap: 12px;
+  gap: 6px;
   cursor: pointer;
 }
 
@@ -330,7 +331,7 @@
   }
   &__header-content {
     display: grid;
-    gap: 24px;
+    gap: 20px;
     .detail-title {
       color: $charcoal;
       font-size: 18px;
@@ -343,8 +344,9 @@
       font-size: 12px;
       font-weight: 700;
       gap: 12px;
-      background-color: $whitesnow;
-      padding: 4px;
+      background-color: #f0f0f0;
+      padding: 4px 8px 4px 4px;
+      border-radius: 6px;
       .detail-time-icon {
         padding: 5px 9px;
         border-radius: 8px;
