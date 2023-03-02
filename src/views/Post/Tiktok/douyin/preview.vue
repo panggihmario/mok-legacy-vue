@@ -195,7 +195,10 @@ export default {
         this.errorMessage = "Harap Pilih Channel";
       } else {
         this.loadingSubmit = true;
-        return this.getDouyinVideoNoWatermark(splitted[5])
+        return this.getDouyinVideoNoWatermark({
+          id: splitted[5],
+          sendRawData: false,
+        })
           .then((response) => {
             let res = response.data.data;
             if (res.name) {
