@@ -3,6 +3,7 @@
     <div class="kipas__field-container">
       <label
         class="kipas__label"
+        :style="label ===  '-' && {color : 'transparent'} "
       >
         {{ label  }} 
       </label>
