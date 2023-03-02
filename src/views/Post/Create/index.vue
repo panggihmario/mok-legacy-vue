@@ -23,24 +23,24 @@
            />
           </v-col>
         </v-row>
-        <!-- <v-row>
+        <v-row>
           <v-col cols="6">
             <k-input 
             label="Link dari postingan ini" 
             v-model="floatingLinkLabel" 
-            placeholder="Link"
+            placeholder="Title"
             rules="min:4"
           />
           </v-col>
           <v-col cols="6" >
             <k-input 
               v-model="floatingLink" 
-              label="link"
+              label="-"
               icon="fas fa-link"
               placeholder="https:/...."
           />
           </v-col>
-        </v-row> -->
+        </v-row>
       </div>
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
@@ -116,8 +116,8 @@ export default {
         product: null,
         channel: this.channel,
         description: this.description,
-        // floatingLink :this.floatingLink,
-        // floatingLinkLabel : this.floatingLinkLabel
+        floatingLink :this.floatingLink,
+        floatingLinkLabel : this.floatingLinkLabel
       };
       return this.postFeed(payload)
         .then(() => {
