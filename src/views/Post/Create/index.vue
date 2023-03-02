@@ -13,20 +13,13 @@
           </div>
         </div>
         <k-textarea title="Caption" v-model="description" :counter="1000" rules="required" rows="8" />
-        <!-- <custom-textarea label="Caption" name="Caption" counter v-model="description" :value="description"
-          rules="required|max:1000" /> -->
         <v-row>
-          <!-- <v-col cols="6">
-            <custom-autocomplete :value="channel" v-model="channel" :items="channels" item-text="name" label="Channel"
-              return-object />
-          </v-col> -->
           <v-col cols="6">
             <k-autocomplete 
             :items="channels" 
             v-model="channel" 
             itemText="name"
             label="Channel"
-            rules="required"
            />
           </v-col>
         </v-row>
@@ -34,12 +27,17 @@
           <v-col cols="6">
             <k-input 
             label="Link dari postingan ini" 
-            v-model="title" 
+            v-model="floatingLinkLabel" 
+            placeholder="Title"
+            rules="min:4"
           />
           </v-col>
-          <v-col cols="6" style="margin-top : auto">
+          <v-col cols="6" >
             <k-input 
-            v-model="title" 
+              v-model="floatingLink" 
+              label="-"
+              icon="fas fa-link"
+              placeholder="https:/...."
           />
           </v-col>
         </v-row>
@@ -84,6 +82,8 @@ export default {
       alertSucces: false,
       alertFailed: false,
       dataChannel: null,
+      floatingLinkLabel : '',
+      floatingLink : ''
     };
   },
   computed: {
@@ -116,8 +116,9 @@ export default {
         product: null,
         channel: this.channel,
         description: this.description,
+        floatingLink :this.floatingLink,
+        floatingLinkLabel : this.floatingLinkLabel
       };
-
       return this.postFeed(payload)
         .then(() => {
           this.alertSucces = true;

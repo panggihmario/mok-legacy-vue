@@ -4,6 +4,7 @@
       :id="id" style="display: none" 
       @response="getImage"
       :minVideoHeight="720"
+      :typeAllowed="['jpeg','png', 'jpg', 'mp4']"
     />
     <div @click="uploadImage(id)" class="image-box">
       <v-img
@@ -55,6 +56,7 @@ export default {
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
+      console.log(payload)
       if(payload.status === 'success' ){
         const typeMedia = payload.response.type
         this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large

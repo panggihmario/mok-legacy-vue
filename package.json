@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.2.0-rc0",
+  "version": "2.3.0-rc2",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -30,6 +30,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "handsontable": "^12.3.1",
+    "cos-js-sdk-v5": "^1.4.15",
     "moment": "^2.24.0",
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",
