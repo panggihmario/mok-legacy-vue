@@ -69,7 +69,7 @@ export default {
       if(expiredAt) {
         if(isPass > 0 ) {
           this.isEnded = false
-          const durationData = moment.duration(expiredAt.diff(createAt))
+          const durationData = moment.duration(expiredAt.diff(moment()))
           const duration = durationData._data
           const daysDuration = durationData.asDays()
           const hours = duration.hours
