@@ -16,7 +16,15 @@
               >Lihat</span
             >
           </td>
-          <td style="font-size: 12px">{{ item.originalURL }}</td>
+          <td style="font-size: 12px">
+            <span
+              class="cursor-pointer secondary--text"
+              style="text-decoration: underline"
+              @click="openInNew(item.originalURL)"
+            >
+              {{ item.originalURL }}
+            </span>
+          </td>
           <td style="font-size: 12px">Cleeps China</td>
           <td style="font-size: 12px">{{ item.hashtag }}</td>
           <td style="font-size: 12px">{{ item.createdDate }}</td>
@@ -50,7 +58,7 @@
           >
             <div
               class="container-img"
-              @click="openInNew(previewMedia.videoURL)"
+              @click="openInNew(previewMedia.originalURL)"
             >
               <img
                 :src="previewMedia.thumbnailURL"
@@ -66,7 +74,10 @@
               </div>
             </div>
           </div>
-          <section class="d-flex flex-column pl-4" style="gap: 24px;width: 360px;">
+          <section
+            class="d-flex flex-column pl-4"
+            style="gap: 24px; width: 360px"
+          >
             <div class="d-flex flex-column">
               <span class="grey--text font-10">User</span>
               <span class="font-12">{{ previewMedia.username }}</span>
@@ -194,7 +205,7 @@ export default {
     },
     handleGetDouyinVideoNoWatermark(v) {
       const payload = {
-        id: v.originalURL.split("/")[4],
+        url: v.originalURL,
         sendRawData: true,
       };
       this.isLoadingDialogMedia = true;

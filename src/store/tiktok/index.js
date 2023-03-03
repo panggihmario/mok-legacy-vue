@@ -155,7 +155,7 @@ export default {
       let data = {
         url: `${state.pathDouyin}/${state.pathDownloadNoWatermark}`,
         params: {
-          id: payload.id,
+          url: payload.url,
           sendRawData: payload.sendRawData,
         },
       };
