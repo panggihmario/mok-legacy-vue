@@ -277,7 +277,8 @@ export default {
           this.isLoadingListDouyin = false;
         })
         .catch((err) => {
-          console.log({ err });
+          this.alertFailed = true;
+          this.errorMessage = err.response.data.message;
           this.isLoadingListDouyin = false;
         });
     },
