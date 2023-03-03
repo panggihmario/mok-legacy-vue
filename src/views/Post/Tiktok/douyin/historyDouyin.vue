@@ -25,14 +25,28 @@
               {{ item.originalURL }}
             </span>
           </td>
-          <td style="font-size: 12px">Cleeps China</td>
-          <td style="font-size: 12px">{{ item.hashtag }}</td>
+          <td style="font-size: 12px; width: 120px">Cleeps China</td>
+          <td style="font-size: 12px; width: 400px">
+            <span class="ellipsis-second-line">
+              {{ item.hashtag }}
+            </span>
+          </td>
           <td style="font-size: 12px">{{ item.createdDate }}</td>
           <td
-            style="font-size: 12px"
-            :class="{ 'green--text': item.status == 'READY_PUBLISH' }"
+            style="font-size: 12px; width: 160px"
+            class="d-flex flex-column justify-center"
           >
-            {{ item.status }}
+            <span
+              :class="{
+                'green--text': item.status == 'READY_PUBLISH',
+                'red--text': item.status == 'FAILED' || item.status == 'REJECT',
+              }"
+            >
+              {{ statusPreview[item.status] }}
+            </span>
+            <span v-if="item.status == 'FAILED'" style="font-size: 10px">
+              {{ item.reasonFailed }}
+            </span>
           </td>
         </tr>
       </template>
@@ -100,10 +114,22 @@
             <div class="d-flex flex-column">
               <span class="grey--text font-10">Status</span>
               <div
-                class="whitesnow font-12 px-3 py-2"
+                class="d-flex flex-column whitesnow font-12 px-3 py-2"
                 style="border-radius: 4px"
               >
-                {{ previewMedia.status }}
+                <span
+                  :class="{
+                    'green--text': previewMedia.status == 'READY_PUBLISH',
+                    'red--text':
+                      previewMedia.status == 'FAILED' ||
+                      previewMedia.status == 'REJECT',
+                  }"
+                >
+                  {{ statusPreview[previewMedia.status] }}
+                </span>
+                <span style="font-size: 10px">{{
+                  previewMedia.reasonFailed
+                }}</span>
               </div>
             </div>
           </section>
@@ -182,6 +208,12 @@ export default {
           filterable: false,
         },
       ],
+      statusPreview: {
+        NEW: "New",
+        READY_PUBLISH: "Ready to Publish",
+        REJECT: "Reject",
+        FAILED: "Failed",
+      },
       previewMedia: {},
       isDialogMedia: false,
       isLoadingDialogMedia: false,
@@ -256,5 +288,13 @@ export default {
 .container-img:hover .middle {
   opacity: 1;
   filter: brightness(100%);
+}
+
+.ellipsis-second-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
