@@ -21,8 +21,9 @@
           >FYP</v-chip
         >
       </div>
-      <div>
-        <!-- <v-select
+      <div class="d-flex" style="gap: 10px">
+        <v-select
+          v-if="isShowFilter"
           :items="listStatus"
           v-model="filter.status"
           placeholder="Status"
@@ -34,8 +35,22 @@
           single-line
           class="font-12"
           style="width: 200px"
-        ></v-select> -->
-        <v-btn class="text-capitalize font-12" text>Filter Data</v-btn>
+        ></v-select>
+        <v-btn
+          v-if="!isShowFilter"
+          class="text-capitalize font-12"
+          text
+          color="secondary"
+          @click="isShowFilter = true"
+          >Filter Data</v-btn
+        >
+        <v-btn
+          v-if="isShowFilter"
+          class="text-capitalize font-12"
+          text
+          @click="isShowFilter = false"
+          >Batalkan</v-btn
+        >
       </div>
     </section>
 
@@ -50,6 +65,19 @@
         v-else
         :listHistoryDouyin="listHistoryDouyin"
       ></ListHistoryDouyin>
+
+      <div class="d-flex justify-space-between align-center mt-10">
+        <div>
+          <span class="font-12">Total Elements : {{ totalElements }}</span>
+        </div>
+        <v-pagination
+          class="d-flex justify-end"
+          v-model="page"
+          :length="totalPages"
+          prev-icon="mdi-menu-left"
+          next-icon="mdi-menu-right"
+        ></v-pagination>
+      </div>
     </section>
     <section v-else-if="tab == 'fyp'">
       <section v-if="loadingListDouyin" class="d-flex justify-center">
@@ -131,10 +159,14 @@ export default {
       ],
       focusIndex: null,
       loadingListDouyin: false,
+      isShowFilter: false,
       alertSuccess: true,
       alertFailed: false,
       errorMessage: "",
       isLoadingListDouyin: false,
+      page: 1,
+      totalPages: 1,
+      totalElements: 1,
     };
   },
   watch: {
@@ -146,6 +178,16 @@ export default {
       }
     },
     "filter.status"() {
+      this.page = 1;
+      this.handleGetDouyinListHistory();
+    },
+    isShowFilter() {
+      if (!this.isShowFilter) {
+        this.filter.status = "";
+        this.handleGetDouyinListHistory();
+      }
+    },
+    page() {
       this.handleGetDouyinListHistory();
     },
     dataTokenDouyin() {
@@ -222,12 +264,17 @@ export default {
     },
     handleGetDouyinListHistory() {
       this.isLoadingListDouyin = true;
-      const payload = { ...this.filter };
+      const payload = {
+        ...this.filter,
+        status: this.filter.status || "",
+        page: this.page - 1,
+      };
       return this.getListDouyinVideo(payload)
         .then((res) => {
-          console.log({ res });
-          this.isLoadingListDouyin = false;
           this.listHistoryDouyin = res.data.data.content;
+          this.totalPages = res.data.data.totalPages;
+          this.totalElements = res.data.data.totalElements;
+          this.isLoadingListDouyin = false;
         })
         .catch((err) => {
           console.log({ err });
