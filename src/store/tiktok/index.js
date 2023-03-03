@@ -172,7 +172,7 @@ export default {
       return this._vm
         .$httpWithToken()
         .get(
-          `admin/${state.pathDouyin}?status=${payload.status}&page=${payload.page}`
+          `admin/${state.pathDouyin}?status=${payload.status}&page=${payload.page}&size=10`
         )
         .then((response) => {
           return response;
