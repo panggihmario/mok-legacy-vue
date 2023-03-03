@@ -22,6 +22,19 @@
         >
       </div>
       <div>
+        <!-- <v-select
+          :items="listStatus"
+          v-model="filter.status"
+          placeholder="Status"
+          solo
+          dense
+          hide-details
+          flat
+          clearable
+          single-line
+          class="font-12"
+          style="width: 200px"
+        ></v-select> -->
         <v-btn class="text-capitalize font-12" text>Filter Data</v-btn>
       </div>
     </section>
@@ -104,9 +117,18 @@ export default {
         },
       ],
       tab: "list",
+      filter: {
+        status: "",
+      },
       dataTokenDouyin: {},
       listDouyin: [],
       listHistoryDouyin: [],
+      listStatus: [
+        { value: "NEW", text: "New" },
+        { value: "READY_PUBLISH", text: "Ready to Publish" },
+        { value: "REJECT", text: "Reject" },
+        { value: "FAILED", text: "Failed" },
+      ],
       focusIndex: null,
       loadingListDouyin: false,
       alertSuccess: true,
@@ -122,6 +144,9 @@ export default {
       } else {
         this.handleGetDouyinListHistory();
       }
+    },
+    "filter.status"() {
+      this.handleGetDouyinListHistory();
     },
     dataTokenDouyin() {
       this.handleGetFeedExploreDouyin();
@@ -197,7 +222,8 @@ export default {
     },
     handleGetDouyinListHistory() {
       this.isLoadingListDouyin = true;
-      return this.getListDouyinVideo()
+      const payload = { ...this.filter };
+      return this.getListDouyinVideo(payload)
         .then((res) => {
           console.log({ res });
           this.isLoadingListDouyin = false;
