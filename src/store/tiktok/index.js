@@ -171,7 +171,7 @@ export default {
     getListDouyinVideo({ state }, payload) {
       let data = {
         url: `admin/${state.pathDouyin}`,
-        params: { ...payload },
+        params: payload,
       };
       return this._vm
         .$httpWithToken()
