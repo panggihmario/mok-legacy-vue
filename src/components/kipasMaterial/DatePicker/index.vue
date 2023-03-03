@@ -49,12 +49,13 @@ export default {
       this.menu = false
       const localtz = moment(this.date).utcOffset() 
       const localUtc = localtz / 60
-      // const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
-      const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add({
-        hours : localUtc + 1,
-        minutes : 1
-      }).unix()
+      const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add(localUtc, 'hours').unix()
+      // const epochDate = moment(this.date, "YYYY-MM-DD").endOf("day").add({
+      //   hours : localUtc + 1,
+      //   minutes : 1
+      // }).unix()
       const milisecondEpoch = epochDate * 1000
+      console.log(milisecondEpoch)
       this.$emit('epochDate', milisecondEpoch)
     },
   },

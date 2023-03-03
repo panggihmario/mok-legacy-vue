@@ -169,13 +169,11 @@ export default {
         });
     },
     getListDouyinVideo({ state }, payload) {
-      let data = {
-        url: `admin/${state.pathDouyin}`,
-        params: payload,
-      };
       return this._vm
         .$httpWithToken()
-        .get(data.url, data.params)
+        .get(
+          `admin/${state.pathDouyin}?status=${payload.status}&page=${payload.page}`
+        )
         .then((response) => {
           return response;
         })
