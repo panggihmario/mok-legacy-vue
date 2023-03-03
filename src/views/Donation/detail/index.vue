@@ -66,7 +66,6 @@ export default {
       const id = this.$route.params.id
       return this.fetchDetailDonation(id)
         .then(response => {
-          console.log(response)
           const medias = response.medias
           let image,video
           medias.forEach(media => {

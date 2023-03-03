@@ -5,7 +5,7 @@
       :list="crumbs"
     >
       <div :class="d.header">
-        <custom-button size="x-medium" v-if="!isExpand" @click="openExpand" >
+        <custom-button style="margin-top : auto" size="x-medium" v-if="!isExpand" @click="openExpand" >
           Filter Data
         </custom-button>
         <k-input @keyup.enter="onEnter" v-model="keyword"/>
@@ -13,6 +13,7 @@
           size="x-medium" 
           color="primary"
           @click="openFormDonation"
+          style="margin-top : auto"
         >
           Buat Penggalangan Dana Baru
         </custom-button>
