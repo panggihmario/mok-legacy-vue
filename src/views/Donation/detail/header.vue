@@ -60,29 +60,41 @@ export default {
       type: Object
     }
   },
-  computed : {
-    reminder () {
-      const createAt = this.item.createAt
-      const expiredAt = this.item.expiredAt
-      let rest
+  watch : {
+    item(value) {
+
+      const createAt = moment(value.createAt)
+      const expiredAt = moment(value.expiredAt)
+      const isPass = moment(expiredAt).diff(moment(), 'miliseconds')
       if(expiredAt) {
-        const total = moment(expiredAt).diff(moment(createAt), 'days')
-        rest = `${total} hari`
-        if(total < 1) {
-          this.isEnded = true
-        }else {
+        if(isPass > 0 ) {
           this.isEnded = false
+          const durationData = moment.duration(expiredAt.diff(moment()))
+          const duration = durationData._data
+          const daysDuration = durationData.asDays()
+          const hours = duration.hours
+          const minutes = duration.minutes
+          if(daysDuration > 0 && daysDuration < 1) {
+            this.reminder = `${hours} jam ${minutes} menit`
+          }else{
+            this.reminder = `${Math.floor(daysDuration)} hari`
+          }
+
+        }else{
+          this.isEnded = true
         }
       }else{
-        rest = '-'
+        this.reminder = '-'
       }
-      return rest
+      
+      
     }
   },
   data () {
     return {
       isPlay : false,
-      isEnded : false
+      isEnded : false,
+      reminder : ''
     }
   },
   methods : {

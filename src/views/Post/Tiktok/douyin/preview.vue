@@ -189,13 +189,15 @@ export default {
       }
     },
     submitToPostFeed() {
-      const splitted = this.previewTiktokData.share_url.split("/");
       if (this.payload.channel == null) {
         this.alertErrorChannel = true;
         this.errorMessage = "Harap Pilih Channel";
       } else {
         this.loadingSubmit = true;
-        return this.getDouyinVideoNoWatermark(splitted[5])
+        return this.getDouyinVideoNoWatermark({
+          url: this.previewTiktokData.share_url,
+          sendRawData: false,
+        })
           .then((response) => {
             let res = response.data.data;
             if (res.name) {

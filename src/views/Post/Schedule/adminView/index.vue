@@ -18,7 +18,7 @@
               @mousemove="getPosition"
               @mouseout="stopTracking"
             >
-              <LinkDialog :item="item" :feeds="feeds" />
+              <LinkDialog  :item="item" :feeds="feeds" />
               <div
                 v-if="item.id === selectedItem"
                 :class="ad['tb__hover-image']"
