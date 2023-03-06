@@ -40,13 +40,14 @@
               outline
               light
             />
-            <v-row>
+            <!-- <v-row>
               <v-col cols="6">
                 <k-input 
                 label="Link dari postingan ini" 
                 v-model="modelFloatingLinkLabel" 
                 placeholder="Title"
                 rules="min:4"
+                errorMessage='Min 4 and Max 30'
               />
               </v-col>
               <v-col cols="6" >
@@ -57,7 +58,7 @@
                   placeholder="https:/...."
               />
               </v-col>
-            </v-row>
+            </v-row> -->
           </div>
         </div>
         <!-- <k-select/> -->
@@ -68,7 +69,7 @@
       </div>
     </div>
     <!-- <v-expand-x-transition> -->
-    <div v-if="isChanging">
+    <div v-if="isChanging" class="mt-2">
       <custom-button
         size="small"
         color="kellygreen"
@@ -132,6 +133,7 @@ export default {
   computed: {
     modelDescription: {
       get() {
+        // console.log(this.description)
         return this.description;
       },
       set(value) {
@@ -141,6 +143,7 @@ export default {
     },
     modelFloatingLinkLabel : {
       get() {
+        console.log(this.floatingLinkLabel)
         return this.floatingLinkLabel
       },
       set(value) {
