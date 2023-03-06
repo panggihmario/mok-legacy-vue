@@ -4,6 +4,7 @@
       :headers="headers"
       :items="listHistoryDouyin"
       hide-default-footer
+      class="grey--text"
     >
       <template v-slot:item="{ item }">
         <tr>
@@ -26,12 +27,19 @@
             </span>
           </td>
           <td style="font-size: 12px; width: 120px">Cleeps China</td>
-          <td style="font-size: 12px; width: 400px">
+          <td style="font-size: 12px; width: 300px">
             <span class="ellipsis-second-line">
               {{ item.hashtag }}
             </span>
           </td>
-          <td style="font-size: 12px">{{ item.createdDate }}</td>
+          <td
+            style="font-size: 12px; width: 100px"
+            v-html="formatDate(item.createAt, true)"
+          ></td>
+          <td
+            style="font-size: 12px; width: 100px"
+            v-html="formatDate(item.modifyAt, true)"
+          ></td>
           <td
             style="font-size: 12px; width: 160px"
             class="d-flex flex-column justify-center"
@@ -71,6 +79,18 @@
             "
           >
             <div
+              v-if="previewMedia.status == 'READY_PUBLISH'"
+              style="width: 200px"
+            >
+              <video
+                v-if="isDialogMedia"
+                :src="previewMedia.videoKipasKipasURL"
+                controls
+                style="max-width: 361px !important"
+              ></video>
+            </div>
+            <div
+              v-else
               class="container-img"
               @click="openInNew(previewMedia.originalURL)"
             >
@@ -194,8 +214,15 @@ export default {
           filterable: false,
         },
         {
-          text: "Import",
-          value: "createdDate",
+          text: "Created",
+          value: "createdAt",
+          class: "whitesnow",
+          sortable: false,
+          filterable: false,
+        },
+        {
+          text: "Modified",
+          value: "modifyAt",
           class: "whitesnow",
           sortable: false,
           filterable: false,
@@ -223,6 +250,19 @@ export default {
     ...mapActions({
       getDouyinVideoNoWatermark: "tiktok/getDouyinVideoNoWatermark",
     }),
+    formatDate(v, withHour) {
+      let d = new Date(v);
+      let date = d.getDate();
+      let month = d.getMonth();
+      let year = d.getFullYear();
+      let hour = d.getHours();
+      let minute = d.getMinutes();
+      return withHour
+        ? `${date}/${month + 1}/${year} <br /> ${
+            hour < 10 ? `0${hour}` : hour
+          }:${minute < 10 ? `0${minute}` : minute}`
+        : `${date}/${month + 1}/${year}`;
+    },
     openDialogMedia(v) {
       this.previewMedia = v;
       this.isDialogMedia = true;
@@ -296,5 +336,9 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.font-10 {
+  font-size: 10px;
 }
 </style>
