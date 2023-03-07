@@ -2,7 +2,9 @@
   <div>
     <HeaderContent label="Tambah" :list="crumbs">
       <v-btn
-        :disabled="!isDataEdited || errorData.length > 0"
+        :disabled="
+          !isDataEdited || errorData.length > 0 || dataPayload.length <= 0
+        "
         :loading="isLoadingPostVideo"
         @click="actionPostDouyin"
         >Submit</v-btn
@@ -29,7 +31,7 @@
       <Table-Create
         :tableData="tableData"
         :tableError="tableError"
-        @afterChangeData="isDataEdited = true"
+        @afterChangeData="checkTableData"
         @afterValidate="afterValidate"
       ></Table-Create>
     </section>
@@ -128,6 +130,7 @@ export default {
     },
     checkTableData() {
       let data = [];
+      this.isDataEdited = true;
       for (let i = 0; i < this.tableData.length; i++) {
         const e = this.tableData[i];
         data.push({
@@ -135,8 +138,20 @@ export default {
           row: i,
         });
       }
-      const filtered = data.filter((item) => Object.keys(item).length > 1);
-      this.dataPayload = filtered;
+      const filtered = data.filter((item) => {
+        if (Object.keys(item).length <= 2 && Object.keys(item).length > 1) {
+          console.log(item);
+        }
+        return Object.keys(item).length > 2;
+      });
+      this.dataPayload = filtered.filter((item) => {
+        return (
+          item.originalURL != "" &&
+          item.username != "" &&
+          item.originalURL != null &&
+          item.username != null
+        );
+      });
     },
   },
 };
