@@ -31,6 +31,7 @@
       <Table-Create
         :tableData="tableData"
         :tableError="tableError"
+        :cellMeta="cellMeta"
         @afterChangeData="checkTableData"
         @afterValidate="afterValidate"
       ></Table-Create>
@@ -72,7 +73,8 @@ export default {
       ],
       tableData: [],
       errorData: [],
-      tableError: {},
+      cellMeta: [],
+      tableError: null,
       dataPayload: [],
       isDataEdited: false,
       isLoadingPrepareVideo: false,
@@ -107,6 +109,7 @@ export default {
     actionPostDouyin() {
       this.checkTableData();
       this.isLoadingPostVideo = true;
+      this.tableError = null;
       return this.postDouyinVideo(this.dataPayload)
         .then((res) => {
           this.isSuccess = true;
@@ -116,21 +119,30 @@ export default {
           }, 3000);
         })
         .catch((err) => {
-          console.log({ err });
           this.isError = true;
           this.errorMessage = err.response.data;
           this.isLoadingPostVideo = false;
           if (err.response.data.code == 4200) {
             this.tableError = err.response.data.data;
+            this.cellMeta.push({
+              row: err.response.data.data.row,
+              col: 1,
+              className: "red",
+            });
           }
         });
     },
     afterValidate(item) {
       this.errorData = item;
+      setTimeout(() => {
+        
+        this.checkTableData();
+      }, 100);
     },
     checkTableData() {
-      let data = [];
+      this.cellMeta = [];
       this.isDataEdited = true;
+      let data = [];
       for (let i = 0; i < this.tableData.length; i++) {
         const e = this.tableData[i];
         data.push({
@@ -140,7 +152,7 @@ export default {
       }
       const filtered = data.filter((item) => {
         if (Object.keys(item).length <= 2 && Object.keys(item).length > 1) {
-          console.log(item);
+          console.log({ item });
         }
         return Object.keys(item).length > 2;
       });
@@ -157,8 +169,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .box-alert {
   border-radius: 4px;
+}
+.cell-error {
+  background-color: rgba($color: red, $alpha: 0.3) !important;
 }
 </style>
