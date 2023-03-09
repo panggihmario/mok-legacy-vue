@@ -21,6 +21,14 @@ const pathPost = [
     },
   },
   {
+    path: "/post/douyin/create",
+    name: "createListDouyin",
+    component: () => import("../../views/Post/Tiktok/douyin/create"),
+    meta: {
+      page: "postDouyin",
+    },
+  },
+  {
     path: "/post/user/:tab/:page",
     name: "listUser",
     component: () => import("../../views/Post/UserAll"),

@@ -155,11 +155,40 @@ export default {
       let data = {
         url: `${state.pathDouyin}/${state.pathDownloadNoWatermark}`,
         params: {
-          id: payload,
+          url: payload.url,
+          sendRawData: payload.sendRawData,
         },
       };
       return this._vm
         .$fetchTiktokWithoutToken(data)
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    getListDouyinVideo({ state }, payload) {
+      return this._vm
+        .$httpWithToken()
+        .get(
+          `admin/${state.pathDouyin}?status=${payload.status}&page=${payload.page}&size=10`
+        )
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    postDouyinVideo({ state }, payload) {
+      let data = {
+        url: `admin/${state.pathDouyin}`,
+        params: { data: payload },
+      };
+      return this._vm
+        .$httpWithToken()
+        .post(data.url, data.params)
         .then((response) => {
           return response;
         })

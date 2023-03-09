@@ -19,8 +19,12 @@
           :item="item"
           v-model="description"
           :description="description"
+          :floatingLink="floatingLink"
+          :floatingLinkLabel="floatingLinkLabel"
           @closeDialog="closeDialog"
           :isAdmin="isAdmin"
+          @setFloatingLabel="setFloatingLabel"
+          @setFloatingLink="setFloatingLink"
           @saveCaption="saveCaption"
           @setChange="setChange"
           :isChanging="isChanging"
@@ -67,6 +71,8 @@ export default {
       isPublish : false,
       isChanging : false,
       description : '',
+      floatingLink : '',
+      floatingLinkLabel : '',
       detailFeed: {
         medias: [],
       },
@@ -81,11 +87,20 @@ export default {
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
     }),
+    setFloatingLabel (value) {
+      this.floatingLinkLabel = value
+    },
+    setFloatingLink (value) {
+      this.floatingLink = value
+    },
     getFeedById(id) {
       return this.fetchFeedById(id)
         .then(response => {
+          // console.log("response",response)
           this.description = response.description;
           this.detailFeed = response
+          // this.floatingLink = response.floatingLink
+          // this.floatingLinkLabel = response.floatingLinkLabel
         })
     },
     stopVideo () {
@@ -113,7 +128,9 @@ export default {
           ...this.detailFeed,
           description: this.description,
           medias: this.detailFeed.medias,
-          channel : channelValue
+          channel : channelValue,
+          floatingLink :this.floatingLink,
+          floatingLinkLabel: this.floatingLinkLabel
         },
       }
       return this.updatePostFeed(payload)
@@ -121,7 +138,10 @@ export default {
           return this.fetchFeedById(id);
         })
         .then((response) => {
+          console.log("response after update", response)
           this.description = response.description;
+          this.floatingLink = response.floatingLink
+          this.floatingLinkLabel = response.floatingLinkLabel
         });
     },
     getFeed (id) {

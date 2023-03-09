@@ -11,16 +11,18 @@
         >
       </div>
       <div v-if="isAdmin" :class="d['desc-container']">
+       
         <div>
-          <div :class="d.label">User</div>
+          <div :class="d.label">User</div> 
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
+       
         <textarea 
           :class="d['dg__text-area']" 
           v-model="modelDescription" 
           :readonly="isPublish"
         />
-        <div style="width: 250px">
+        <div >
           <custom-input 
             v-if="isPublish" 
             v-model="item.channel.name" 
@@ -29,15 +31,34 @@
             readonly
           />
           <div v-else>
-          <custom-autocomplete
-            :items="channels"
-            item-text="name"
-            label="Channel"
-            return-object
-            v-model="channelValue"
-            outline
-            light
-          />
+            <custom-autocomplete
+              :items="channels"
+              item-text="name"
+              label="Channel"
+              return-object
+              v-model="channelValue"
+              outline
+              light
+            />
+            <!-- <v-row>
+              <v-col cols="6">
+                <k-input 
+                label="Link dari postingan ini" 
+                v-model="modelFloatingLinkLabel" 
+                placeholder="Title"
+                rules="min:4"
+                errorMessage='Min 4 and Max 30'
+              />
+              </v-col>
+              <v-col cols="6" >
+                <k-input 
+                  v-model="modelFloatingLink" 
+                  label="-"
+                  icon="fas fa-link"
+                  placeholder="https:/...."
+              />
+              </v-col>
+            </v-row> -->
           </div>
         </div>
         <!-- <k-select/> -->
@@ -48,7 +69,7 @@
       </div>
     </div>
     <!-- <v-expand-x-transition> -->
-    <div v-if="isChanging">
+    <div v-if="isChanging" class="mt-2">
       <custom-button
         size="small"
         color="kellygreen"
@@ -99,6 +120,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    floatingLinkLabel : {
+      type : String
+    },
+    floatingLink : {
+      type : String
+    }
   },
   mounted() {
     this.getResponseChannel();
@@ -106,12 +133,32 @@ export default {
   computed: {
     modelDescription: {
       get() {
+        // console.log(this.description)
         return this.description;
       },
       set(value) {
         this.$emit("setChange", true);
         this.$emit("input", value);
       },
+    },
+    modelFloatingLinkLabel : {
+      get() {
+        console.log(this.floatingLinkLabel)
+        return this.floatingLinkLabel
+      },
+      set(value) {
+        this.$emit("setChange", true);
+        this.$emit('setFloatingLabel', value)
+      }
+    },
+    modelFloatingLink : {
+      get() {
+        return this.floatingLink
+      },
+      set(value) {
+        this.$emit("setChange", true);
+        this.$emit('setFloatingLink', value)
+      }
     },
     channelValue: {
       get() {
@@ -129,6 +176,7 @@ export default {
     }),
     saveCaption() {
       this.loading = true;
+      console.log(this.floatingLinkLabel, this.floatingLink)
       setTimeout(() => {
         this.$emit("saveCaption", this.channelValue);
         this.loading = false;

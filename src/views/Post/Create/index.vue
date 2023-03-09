@@ -28,19 +28,21 @@
             <k-input 
             label="Link dari postingan ini" 
             v-model="floatingLinkLabel" 
-            placeholder="Link"
-            rules="min:4"
+            placeholder="Title"
+            rules="min:4|max:30"
+            errorMessage='Min 4 and Max 30'
           />
           </v-col>
           <v-col cols="6" >
             <k-input 
               v-model="floatingLink" 
-              label="link"
+              label="-"
               icon="fas fa-link"
               placeholder="https:/...."
           />
           </v-col>
         </v-row> -->
+        <div class="error-link" v-if="isLink">Kedua Field Link Harus Diisi</div>
       </div>
       <v-snackbar v-model="alertSucces" top right color="success">
         Success Post
@@ -64,6 +66,7 @@ export default {
   data() {
     return {
       description: "",
+      isLink : false,
       title: '',
       testUrl: "",
       file: "",
@@ -140,6 +143,33 @@ export default {
             this.alertFailed = false;
           }, 1500);
         });
+      // if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ){
+      //   this.isLink = false
+      //   return this.postFeed(payload)
+      //   .then(() => {
+      //     this.alertSucces = true;
+      //     setTimeout(() => {
+      //       this.alertSucces = false;
+      //       this.loading = false;
+      //       this.$router.push({
+      //         name: "draft",
+      //         params: {
+      //           page: 1,
+      //         },
+      //       });
+      //     }, 1500);
+      //   })
+      //   .catch(() => {
+      //     this.loading = false;
+      //     this.alertFailed = true;
+      //     setTimeout(() => {
+      //       this.alertFailed = false;
+      //     }, 1500);
+      //   });
+      // }else{
+      //   this.isLink = true
+      // }
+    
     },
     async getResponseChannel() {
       const response = await this.getAllChannel();
@@ -178,5 +208,12 @@ export default {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+}
+.error-link {
+  color: $warning;
+  transition: 0.3s ease-in-out;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 5px;
 }
 </style>
