@@ -1,3 +1,7 @@
+
+
+
+
 <template>
   <div>
     <div>
@@ -19,7 +23,6 @@
 
 <script>
 import moment from "moment";
-import { cos } from "../../../plugins/httpRequest";
 export default {
   data() {
     return {
@@ -140,62 +143,12 @@ export default {
       this.$emit("response", result);
       const isValid = this.validationMedia(typeMedia, dimensions, file);
       if (isValid) {
-        if(typeMedia === 'video') {
-          return this.saveFileToTencent(file,typeMedia, dimensions)
-        }else{
-          return this.saveFileToAliOss(file, typeMedia, dimensions);
-        }
+        return this.saveFileToAliOss(file, typeMedia, dimensions);
       } else {
         const tempResult = this.printError(file);
         this.$emit("response", tempResult);
         this.loadingUpload = false;
       }
-    },
-    saveFileToTencent(file, typeMedia, dimensions) {
-      let data = {
-        ...this.dataResponse,
-        type : typeMedia,
-        metadata: {
-          width: dimensions.width,
-          height: dimensions.height,
-          size: file.size
-        }
-      }
-      this.dataResponse = data
-      const currentDateEpoch = moment(new Date).valueOf()
-      const fileType = file.type.split("/")[1]
-      const filePath = `tmp/source/${currentDateEpoch}.${fileType}`
-      const protocol = window.location.protocol
-      return cos.uploadFile({
-        Bucket: process.env.VUE_APP_TENCENT_BUCKET,
-        Region: process.env.VUE_APP_TENCENT_REGION, 
-        Key: filePath,
-        Body: file, 
-        onProgress: function (progressData) {
-          // console.log(JSON.stringify(progressData));
-        }
-      })
-        .then(response => {
-          const urlResponse = `${protocol}//${response.Location}`
-          console.log(urlResponse)
-          this.dataResponse.url = urlResponse
-          return this.createThumbnail(file, 0.0)
-        })
-        .then((thumbnail) => {
-          const temp = {
-            ...this.dataResponse,
-            thumbnail,
-          };
-          this.dataResponse = temp;
-          let result = {
-            response: temp,
-            status: "success",
-          };
-          this.$emit("response", result);
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     saveFileToAliOss(file, type, dimensions) {
       let data = {
