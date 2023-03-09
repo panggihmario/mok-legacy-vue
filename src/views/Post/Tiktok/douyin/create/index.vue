@@ -2,7 +2,9 @@
   <div>
     <HeaderContent label="Tambah" :list="crumbs">
       <v-btn
-        :disabled="!isDataEdited || errorData.length > 0"
+        :disabled="
+          !isDataEdited || errorData.length > 0 || dataPayload.length <= 0
+        "
         :loading="isLoadingPostVideo"
         @click="actionPostDouyin"
         >Submit</v-btn
@@ -29,7 +31,8 @@
       <Table-Create
         :tableData="tableData"
         :tableError="tableError"
-        @afterChangeData="isDataEdited = true"
+        :cellMeta="cellMeta"
+        @afterChangeData="checkTableData"
         @afterValidate="afterValidate"
       ></Table-Create>
     </section>
@@ -70,7 +73,8 @@ export default {
       ],
       tableData: [],
       errorData: [],
-      tableError: {},
+      cellMeta: [],
+      tableError: null,
       dataPayload: [],
       isDataEdited: false,
       isLoadingPrepareVideo: false,
@@ -105,6 +109,7 @@ export default {
     actionPostDouyin() {
       this.checkTableData();
       this.isLoadingPostVideo = true;
+      this.tableError = null;
       return this.postDouyinVideo(this.dataPayload)
         .then((res) => {
           this.isSuccess = true;
@@ -114,19 +119,29 @@ export default {
           }, 3000);
         })
         .catch((err) => {
-          console.log({ err });
           this.isError = true;
           this.errorMessage = err.response.data;
           this.isLoadingPostVideo = false;
           if (err.response.data.code == 4200) {
             this.tableError = err.response.data.data;
+            this.cellMeta.push({
+              row: err.response.data.data.row,
+              col: 1,
+              className: "red",
+            });
           }
         });
     },
     afterValidate(item) {
       this.errorData = item;
+      setTimeout(() => {
+        
+        this.checkTableData();
+      }, 100);
     },
     checkTableData() {
+      this.cellMeta = [];
+      this.isDataEdited = true;
       let data = [];
       for (let i = 0; i < this.tableData.length; i++) {
         const e = this.tableData[i];
@@ -135,15 +150,30 @@ export default {
           row: i,
         });
       }
-      const filtered = data.filter((item) => Object.keys(item).length > 1);
-      this.dataPayload = filtered;
+      const filtered = data.filter((item) => {
+        if (Object.keys(item).length <= 2 && Object.keys(item).length > 1) {
+          console.log({ item });
+        }
+        return Object.keys(item).length > 2;
+      });
+      this.dataPayload = filtered.filter((item) => {
+        return (
+          item.originalURL != "" &&
+          item.username != "" &&
+          item.originalURL != null &&
+          item.username != null
+        );
+      });
     },
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .box-alert {
   border-radius: 4px;
+}
+.cell-error {
+  background-color: rgba($color: red, $alpha: 0.3) !important;
 }
 </style>
