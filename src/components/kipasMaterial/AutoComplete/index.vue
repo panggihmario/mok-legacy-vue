@@ -74,7 +74,7 @@ export default {
           this.results = this.items
         } else {
           const search = (text) =>
-            this.items.filter((item) => item[this.itemText].toLowerCase().includes(text));
+          this.items.filter((item) => item[this.itemText].toLowerCase().includes(text));
           const result = search(query);
           this.results = result
         }
