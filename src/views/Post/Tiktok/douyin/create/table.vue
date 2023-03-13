@@ -40,6 +40,22 @@ export default {
     const changesDataCell = ref([]);
     const errorData = ref([]);
 
+    const usernameValidator = (value, callback) => {
+      if (value) {
+        if (
+          /^(?=[A-Za-z0-9._]{4,20}$)(?!^[._]|.*[._]{2}|.*[._]$)[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*$/.test(
+            value
+          )
+        ) {
+          callback(true);
+        } else {
+          callback(false);
+        }
+      } else {
+        callback(true);
+      }
+    };
+
     const urlValidator = (value, callback) => {
       if (value) {
         if (
@@ -93,7 +109,7 @@ export default {
         {
           data: "username",
           type: "text",
-          // validator: textValidator,
+          validator: usernameValidator,
           allowEmpty: false,
         },
         {
