@@ -211,37 +211,36 @@ export default {
       }
     },
     actionGetTiktokVideoNoWatermark() {
-      console.log("anjay");
-      // const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
-      // if (this.previewTiktokPayload.channel == null) {
-      //   this.alertFailed = true;
-      //   setTimeout(() => {
-      //     this.alertFailed = false;
-      //   }, 3000);
-      //   this.payloadFailed.message = "Harap Pilih Channel";
-      // } else {
-      //   this.loadingSubmit = true;
-      //   return this.getTiktokVideoNoWatermark(url)
-      //     .then((response) => {
-      //       let res = response.data.data;
-      //       if (res.name) {
-      //         this.loadingSubmit = false;
-      //         this.actionPostToDraft(res);
-      //         if (process.env.VUE_APP_SERVER_STATUS === "production") {
-      //           this.dataResponse.url = `${this.asetKipas}/${res.name}`;
-      //         } else {
-      //           this.dataResponse.url = res.url;
-      //         }
-      //       } else {
-      //         this.loadingSubmit = false;
-      //         this.payloadFailed.message = "Upload Failed";
-      //         this.alertFailed = true;
-      //       }
-      //     })
-      //     .catch((err) => {
-      //       this.loadingSubmit = false;
-      //     });
-      // }
+      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
+      if (this.previewTiktokPayload.channel == null) {
+        this.alertFailed = true;
+        setTimeout(() => {
+          this.alertFailed = false;
+        }, 3000);
+        this.payloadFailed.message = "Harap Pilih Channel";
+      } else {
+        this.loadingSubmit = true;
+        return this.getTiktokVideoNoWatermark(url)
+          .then((response) => {
+            let res = response.data.data;
+            if (res.name) {
+              this.loadingSubmit = false;
+              this.actionPostToDraft(res);
+              if (process.env.VUE_APP_SERVER_STATUS === "production") {
+                this.dataResponse.url = `${this.asetKipas}/${res.name}`;
+              } else {
+                this.dataResponse.url = res.url;
+              }
+            } else {
+              this.loadingSubmit = false;
+              this.payloadFailed.message = "Upload Failed";
+              this.alertFailed = true;
+            }
+          })
+          .catch((err) => {
+            this.loadingSubmit = false;
+          });
+      }
     },
     actionPostToDraft(res) {
       const currentDateEpoch = moment(new Date()).valueOf();
