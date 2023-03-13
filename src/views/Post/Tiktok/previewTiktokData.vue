@@ -6,9 +6,8 @@
     width="328"
     permanent
     right
-    style="padding: 24px"
   >
-    <div>
+    <div style="padding: 24px;">
       <h5>Konten Terpilih</h5>
       <p class="font-12 mt-2">
         Konten yang terpilih hanya akan terupload setelah kamu menekan tombol
@@ -86,12 +85,14 @@
             hide-details
           />
           <v-divider class="my-3"></v-divider>
-          <!-- <span class="grey--text">Link dari postingan ini</span>
+          <span class="grey--text">Link dari postingan ini</span>
           <div class="mt-3">
             <k-input
               v-model="previewTiktokPayload.floatingLinkLabel"
               placeholder="Placeholder"
               class="mt-3"
+              rules="min:4|max:30"
+              errorMessage="Min 4 and Max 30"
             ></k-input>
           </div>
           <div class="my-3">
@@ -99,8 +100,9 @@
               v-model="previewTiktokPayload.floatingLink"
               placeholder="https:/...."
               class="mt-3"
+              icon="fas fa-link"
             ></k-input>
-          </div> -->
+          </div>
         </div>
         <div class="d-flex">
           <custom-button
@@ -115,6 +117,11 @@
             class="white--text"
             :loading="loadingSubmit"
             @click="actionGetTiktokVideoNoWatermark"
+            :disabled="
+              (previewTiktokPayload.floatingLinkLabel.length > 0 &&
+                previewTiktokPayload.floatingLinkLabel.length < 4) ||
+              previewTiktokPayload.floatingLinkLabel.length > 30
+            "
           >
             Submit Post
           </custom-button>
@@ -204,36 +211,37 @@ export default {
       }
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
-      if (this.previewTiktokPayload.channel == null) {
-        this.alertFailed = true;
-        setTimeout(() => {
-          this.alertFailed = false;
-        }, 3000);
-        this.payloadFailed.message = "Harap Pilih Channel";
-      } else {
-        this.loadingSubmit = true;
-        return this.getTiktokVideoNoWatermark(url)
-          .then((response) => {
-            let res = response.data.data;
-            if (res.name) {
-              this.loadingSubmit = false;
-              this.actionPostToDraft(res);
-              if (process.env.VUE_APP_SERVER_STATUS === "production") {
-                this.dataResponse.url = `${this.asetKipas}/${res.name}`;
-              } else {
-                this.dataResponse.url = res.url;
-              }
-            } else {
-              this.loadingSubmit = false;
-              this.payloadFailed.message = "Upload Failed";
-              this.alertFailed = true;
-            }
-          })
-          .catch((err) => {
-            this.loadingSubmit = false;
-          });
-      }
+      console.log("anjay");
+      // const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
+      // if (this.previewTiktokPayload.channel == null) {
+      //   this.alertFailed = true;
+      //   setTimeout(() => {
+      //     this.alertFailed = false;
+      //   }, 3000);
+      //   this.payloadFailed.message = "Harap Pilih Channel";
+      // } else {
+      //   this.loadingSubmit = true;
+      //   return this.getTiktokVideoNoWatermark(url)
+      //     .then((response) => {
+      //       let res = response.data.data;
+      //       if (res.name) {
+      //         this.loadingSubmit = false;
+      //         this.actionPostToDraft(res);
+      //         if (process.env.VUE_APP_SERVER_STATUS === "production") {
+      //           this.dataResponse.url = `${this.asetKipas}/${res.name}`;
+      //         } else {
+      //           this.dataResponse.url = res.url;
+      //         }
+      //       } else {
+      //         this.loadingSubmit = false;
+      //         this.payloadFailed.message = "Upload Failed";
+      //         this.alertFailed = true;
+      //       }
+      //     })
+      //     .catch((err) => {
+      //       this.loadingSubmit = false;
+      //     });
+      // }
     },
     actionPostToDraft(res) {
       const currentDateEpoch = moment(new Date()).valueOf();
