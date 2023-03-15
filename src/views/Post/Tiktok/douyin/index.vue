@@ -74,6 +74,7 @@
           class="d-flex justify-end"
           v-model="page"
           :length="totalPages"
+          :total-visible="6"
           prev-icon="mdi-menu-left"
           next-icon="mdi-menu-right"
         ></v-pagination>
