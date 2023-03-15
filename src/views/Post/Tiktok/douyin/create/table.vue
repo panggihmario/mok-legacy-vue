@@ -92,6 +92,14 @@ export default {
       afterValidate(isValid, value, row, prop) {
         const header = ["username", "originalURL", "hashtag"];
         const col = header.findIndex((val) => val == prop);
+        // if (prop == "username" && /^[0-9]*$/.test(value)) {
+        //   const edited = (props.tableData[row].username = `${value}k`);
+        //   const data = {
+        //     row,
+        //     value: edited,
+        //   };
+        //   emit("validateUsernameNumber", data);
+        // }
         if (isValid) {
           const result = errorData.value.filter((item) => {
             if (item.row != row || item.col != col) {

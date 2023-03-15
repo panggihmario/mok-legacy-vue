@@ -7,7 +7,7 @@
     permanent
     right
   >
-    <div style="padding: 24px;">
+    <div style="padding: 24px">
       <h5>Konten Terpilih</h5>
       <p class="font-12 mt-2">
         Konten yang terpilih hanya akan terupload setelah kamu menekan tombol
@@ -117,12 +117,12 @@
             class="white--text"
             :loading="loadingSubmit"
             @click="actionGetTiktokVideoNoWatermark"
-            :disabled="
+          >
+            <!-- :disabled="
               (previewTiktokPayload.floatingLinkLabel.length > 0 &&
                 previewTiktokPayload.floatingLinkLabel.length < 4) ||
               previewTiktokPayload.floatingLinkLabel.length > 30
-            "
-          >
+            " -->
             Submit Post
           </custom-button>
         </div>
@@ -223,13 +223,13 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            if (res.name) {
+            if (res.Location) {
               this.loadingSubmit = false;
-              this.actionPostToDraft(res);
+              this.actionPostToDraft(`https://${res.Location}`);
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
-                this.dataResponse.url = `${this.asetKipas}/${res.name}`;
+                this.dataResponse.url = `https://${res.Location}`;
               } else {
-                this.dataResponse.url = res.url;
+                this.dataResponse.url = `https://${res.Location}`;
               }
             } else {
               this.loadingSubmit = false;
@@ -242,11 +242,11 @@ export default {
           });
       }
     },
-    actionPostToDraft(res) {
+    actionPostToDraft(url) {
       const currentDateEpoch = moment(new Date()).valueOf();
       const filePath = `/img/media/${currentDateEpoch}.jpg`;
       let response;
-      return this.drawImageOnCanvas(res.url, 0.0)
+      return this.drawImageOnCanvas(url, 0.0)
         .then((base64data) => {
           const thumbnail = this.dataURLtoFile(
             base64data,
