@@ -200,12 +200,12 @@ export default {
         })
           .then((response) => {
             let res = response.data.data;
-            if (res.name) {
-              this.actionPostToDraft(res);
+            if (res.Location) {
+              this.actionPostToDraft(`https://${res.Location}`);
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
-                this.payload.medias[0].url = `${this.asetKipas}/${res.name}`;
+                this.payload.medias[0].url = `https://${res.Location}`;
               } else {
-                this.payload.medias[0].url = res.url;
+                this.payload.medias[0].url = `https://${res.Location}`;
               }
             } else {
               this.loadingSubmit = false;
@@ -219,11 +219,11 @@ export default {
           });
       }
     },
-    actionPostToDraft(res) {
+    actionPostToDraft(url) {
       const currentDateEpoch = moment(new Date()).valueOf();
       const filePath = `/img/media/${currentDateEpoch}.jpg`;
       let response;
-      return this.drawImageOnCanvas(res.url, 0.0)
+      return this.drawImageOnCanvas(url, 0.0)
         .then((base64data) => {
           const thumbnail = this.dataURLtoFile(
             base64data,

@@ -34,6 +34,7 @@
         :cellMeta="cellMeta"
         @afterChangeData="checkTableData"
         @afterValidate="afterValidate"
+        @validateUsernameNumber="validateUsernameNumber"
       ></Table-Create>
     </section>
 
@@ -135,7 +136,6 @@ export default {
     afterValidate(item) {
       this.errorData = item;
       setTimeout(() => {
-        
         this.checkTableData();
       }, 100);
     },
@@ -164,6 +164,9 @@ export default {
           item.username != null
         );
       });
+    },
+    validateUsernameNumber(d) {
+      // this.tableData[d.row].username = d.value;
     },
   },
 };
