@@ -79,18 +79,6 @@
             "
           >
             <div
-              v-if="previewMedia.status == 'READY_PUBLISH'"
-              style="width: 200px"
-            >
-              <video
-                v-if="isDialogMedia"
-                :src="previewMedia.videoKipasKipasURL"
-                controls
-                style="max-width: 361px !important"
-              ></video>
-            </div>
-            <div
-              v-else
               class="container-img"
               @click="openInNew(previewMedia.originalURL)"
             >
@@ -98,7 +86,6 @@
                 :src="previewMedia.thumbnailURL"
                 class="image"
                 style="width: 100%"
-                loading="lazy"
               />
               <div class="middle">
                 <div class="d-flex flex-column">

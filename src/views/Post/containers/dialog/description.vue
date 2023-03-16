@@ -40,7 +40,7 @@
               outline
               light
             />
-            <!-- <v-row>
+            <v-row>
               <v-col cols="6">
                 <k-input 
                 label="Link dari postingan ini" 
@@ -58,7 +58,7 @@
                   placeholder="https:/...."
               />
               </v-col>
-            </v-row> -->
+            </v-row>
           </div>
         </div>
         <!-- <k-select/> -->
@@ -143,7 +143,6 @@ export default {
     },
     modelFloatingLinkLabel : {
       get() {
-        console.log(this.floatingLinkLabel)
         return this.floatingLinkLabel
       },
       set(value) {

@@ -1,3 +1,7 @@
+
+
+
+
 <template>
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="autocomplete" :class="`select-${idElement}`">
@@ -151,4 +155,3 @@ export default {
 <style src="./style.scss" lang="scss" scoped>
 
 </style>
-
