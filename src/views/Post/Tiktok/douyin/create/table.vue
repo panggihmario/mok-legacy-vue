@@ -117,7 +117,7 @@ export default {
         {
           data: "username",
           type: "text",
-          validator: usernameValidator,
+          // validator: usernameValidator,
           allowEmpty: false,
         },
         {
