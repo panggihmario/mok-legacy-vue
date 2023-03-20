@@ -1,6 +1,7 @@
 <template>
   <div
     class="d-flex flex-column align-center card font-12 pa-2 cursor-pointer"
+    style="width: 212px"
     @click="openDrawerPreview(index, data)"
   >
     <div class="d-flex justify-center align-center black" style="height: 302px">
