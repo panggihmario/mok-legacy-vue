@@ -167,7 +167,7 @@ export default {
       isLoadingListDouyin: false,
       page: 1,
       totalPages: 1,
-      totalElements: 1,
+      totalElements: 0,
     };
   },
   watch: {
