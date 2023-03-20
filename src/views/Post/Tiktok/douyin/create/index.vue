@@ -150,7 +150,7 @@ export default {
           username: e.username
             ? /^[0-9]*$/.test(e.username)
               ? `${e.username.slice(0, 19)}k`
-              : e.username.slice(0, 19)
+              : e.username.slice(0, 20)
             : "",
           row: i,
         });
