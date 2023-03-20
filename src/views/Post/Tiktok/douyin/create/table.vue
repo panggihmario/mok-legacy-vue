@@ -43,7 +43,8 @@ export default {
     const usernameValidator = (value, callback) => {
       if (value) {
         if (
-          /^(?=[A-Za-z0-9._]{4,20}$)(?!^[._]|.*[._]{2}|.*[._]$)[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*$/.test(
+          // /^(?=[A-Za-z0-9._]{4,20}$)(?!^[._]|.*[._]{2}|.*[._]$)[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*$/.test(
+          /^[a-zA-Z0-9_.-]{4,20}$/.test(
             value
           )
         ) {
@@ -92,14 +93,6 @@ export default {
       afterValidate(isValid, value, row, prop) {
         const header = ["username", "originalURL", "hashtag"];
         const col = header.findIndex((val) => val == prop);
-        // if (prop == "username" && /^[0-9]*$/.test(value)) {
-        //   const edited = (props.tableData[row].username = `${value}k`);
-        //   const data = {
-        //     row,
-        //     value: edited,
-        //   };
-        //   emit("validateUsernameNumber", data);
-        // }
         if (isValid) {
           const result = errorData.value.filter((item) => {
             if (item.row != row || item.col != col) {
@@ -117,7 +110,7 @@ export default {
         {
           data: "username",
           type: "text",
-          // validator: usernameValidator,
+          validator: usernameValidator,
           allowEmpty: false,
         },
         {
