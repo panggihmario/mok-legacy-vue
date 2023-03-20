@@ -4,22 +4,28 @@
       Tidak Ada Video
     </div>
     <div v-else class="d-flex justify-space-between">
-      <div class="d-flex flex-wrap whitesmoke" no-gutters style="width: 100%">
+      <div
+        class="d-flex flex-wrap whitesmoke pa-4"
+        no-gutters
+        style="width: 100%; gap: 16px"
+      >
         <div
           v-for="(item, idx) in userFeed"
           :key="idx"
-          class="d-flex justify-center pa-2"
+          class="d-flex justify-center"
+          style="width: 200px"
           :style="
-            focusIndex == null
-              ? 'width: 20%'
-              : idx == focusIndex
-              ? 'width: 33.33%'
-              : 'width: 33.33%; opacity: .6'
+            focusIndex != null ? (focusIndex == idx ? '' : 'opacity: .6') : ''
           "
           @click="selectFocus(idx, item)"
         >
-          <div style="max-width: 100% !important">
-            <v-img :src="item.video.cover" height="260px" width="100%"></v-img>
+          <div class="cursor-pointer" style="max-width: 100% !important">
+            <div
+              class="d-flex justify-center align-center black"
+              style="height: 302px; overflow: hidden"
+            >
+              <img :src="item.video.cover" alt="" style="width: 100%" />
+            </div>
 
             <div
               class="mt-2 font-12 text-break ellipsis-second-line"
@@ -105,23 +111,31 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-.font-9
-	font-size: 9px
-.font-10
-	font-size: 10px
-.font-12
-	font-size: 12px
-.sticky-div
-	position: -webkit-sticky !important
-	position: sticky !important
-	top: 0
-	height: 100vh
-	overflow: auto
-.ellipsis-second-line
-	overflow: hidden
-	text-overflow: ellipsis
-	display: -webkit-box
-	-webkit-line-clamp: 2
-	-webkit-box-orient: vertical
+<style lang="scss" scoped>
+.font-9 {
+  font-size: 9px;
+}
+.font-10 {
+  font-size: 10px;
+}
+.font-12 {
+  font-size: 12px;
+}
+.sticky-div {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+}
+.ellipsis-second-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
 </style>
