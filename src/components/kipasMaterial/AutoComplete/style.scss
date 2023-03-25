@@ -11,9 +11,10 @@ $height : 40px;
   display: grid;
   gap: 8px;
   &__popover {
+    top: 68px;
     position: absolute;
     min-height: $height;
-    max-height: 300px;
+    max-height: 250px;
     z-index: 1;
     transition: all 0.4s;
     left: 0;
