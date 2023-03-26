@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       loadingUpload: false,
+      errorMessage : '',
       asetKipas: "https://asset.kipaskipas.com",
       media: {
         size: "",
@@ -53,6 +54,10 @@ export default {
     minVideoHeight: {
       type: Number,
       default: 200,
+    },
+    maxVideoHeight : {
+      type : Number,
+      default : 2048
     },
     label: {
       type: String,
@@ -177,7 +182,6 @@ export default {
       })
         .then(response => {
           const urlResponse = `${protocol}//${response.Location}`
-          console.log(urlResponse)
           this.dataResponse.url = urlResponse
           return this.createThumbnail(file, 0.0)
         })
@@ -351,16 +355,9 @@ export default {
       return new File([u8arr], filename, { type: mime });
     },
     printError(file) {
-      let message
-      if (this.minVideoHeight) {
-        message = `Minimum height is ${this.minVideoHeight}`
-      }
-      if (this.typeAllowed) {
-        message = `Hanya boleh ${this.typeAllowed.join(' ')}`
-      }
       const result = {
         status: "failed",
-        message,
+        message : this.errorMessage,
       };
       return result;
     },
@@ -370,6 +367,7 @@ export default {
       if(this.typeAllowed) {
         const isInclude = this.typeAllowed.includes(typeFile)
         if (this.typeAllowed && !isInclude) {
+          this.errorMessage = `Hanya boleh ${this.typeAllowed.join(' ')}`
           return false;
         }
         if (this.maxSize && file.size > this.maxSize) {
@@ -381,18 +379,18 @@ export default {
         ) {
           return false;
         }
-        return true;
-      }else{
-        if (typeMedia === "video") {
+        if(typeMedia === 'video'  ) {
           const heightVideo = dimensions.height;
-          if (heightVideo < this.minVideoHeight) {
-            return false;
-          } else {
-            return true;
+          if(heightVideo < this.minVideoHeight) {
+            this.errorMessage = `Min height is ${this.minVideoHeight}`
+            return false
           }
-        }else{
-          return true
+          if(heightVideo > this.maxVideoHeight) {
+            this.errorMessage = `Max height is ${this.maxVideoHeight}`
+            return false
+          }
         }
+        return true;
       }
     },
     handleUpload() {
