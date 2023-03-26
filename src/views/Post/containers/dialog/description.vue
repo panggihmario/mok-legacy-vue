@@ -17,10 +17,17 @@
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
        
-        <textarea 
+        <!-- <textarea 
           :class="d['dg__text-area']" 
           v-model="modelDescription" 
           :readonly="isPublish"
+        /> -->
+        <k-textarea 
+          title="Caption" 
+          v-model="modelDescription" 
+          :counter="1000" 
+          rules="required" 
+          rows="8" 
         />
         <div >
           <custom-input 

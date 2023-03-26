@@ -12,7 +12,13 @@
             <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" />
           </div>
         </div>
-        <k-textarea title="Caption" v-model="description" :counter="1000" rules="required" rows="8" />
+        <k-textarea 
+          title="Caption" 
+          v-model="description" 
+          :counter="1000" 
+          rules="required" 
+          rows="8" 
+        />
         <v-row>
           <v-col cols="6">
             <k-autocomplete 
