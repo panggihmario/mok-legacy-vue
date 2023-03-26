@@ -56,7 +56,6 @@ export default {
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
-      console.log(payload)
       if(payload.status === 'success' ){
         const typeMedia = payload.response.type
         this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
@@ -72,7 +71,7 @@ export default {
         this.errorMessage = payload.message
         setTimeout(() => {
           this.errorMessage = ''
-        },2000)
+        },3000)
       }
       else {
         this.visible = true;
