@@ -71,7 +71,7 @@ export default {
       require: true,
     },
     rules: {
-      type: String,
+      type: [String, Object],
     },
     size: {
       type: String,
