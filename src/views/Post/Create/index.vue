@@ -45,6 +45,8 @@
               label="-"
               icon="fas fa-link"
               placeholder="https:/...."
+              :rules="{regex: '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'}"
+              errorMessage='Gunakan format link yang sesuai contohnya https://youtube.com'
           />
           </v-col>
         </v-row>
@@ -128,30 +130,7 @@ export default {
         floatingLink :this.floatingLink,
         floatingLinkLabel : this.floatingLinkLabel
       };
-      return this.postFeed(payload)
-        .then(() => {
-          this.alertSucces = true;
-          setTimeout(() => {
-            this.alertSucces = false;
-            this.loading = false;
-            this.$router.push({
-              name: "draft",
-              params: {
-                page: 1,
-              },
-            });
-          }, 1500);
-        })
-        .catch(() => {
-          this.loading = false;
-          this.alertFailed = true;
-          setTimeout(() => {
-            this.alertFailed = false;
-          }, 1500);
-        });
-      // if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ){
-      //   this.isLink = false
-      //   return this.postFeed(payload)
+      // return this.postFeed(payload)
       //   .then(() => {
       //     this.alertSucces = true;
       //     setTimeout(() => {
@@ -172,9 +151,32 @@ export default {
       //       this.alertFailed = false;
       //     }, 1500);
       //   });
-      // }else{
-      //   this.isLink = true
-      // }
+      if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ){
+        this.isLink = false
+        return this.postFeed(payload)
+        .then(() => {
+          this.alertSucces = true;
+          setTimeout(() => {
+            this.alertSucces = false;
+            this.loading = false;
+            this.$router.push({
+              name: "draft",
+              params: {
+                page: 1,
+              },
+            });
+          }, 1500);
+        })
+        .catch(() => {
+          this.loading = false;
+          this.alertFailed = true;
+          setTimeout(() => {
+            this.alertFailed = false;
+          }, 1500);
+        });
+      }else{
+        this.isLink = true
+      }
     
     },
     async getResponseChannel() {

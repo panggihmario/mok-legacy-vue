@@ -96,11 +96,10 @@ export default {
     getFeedById(id) {
       return this.fetchFeedById(id)
         .then(response => {
-          // console.log("response",response)
           this.description = response.description;
           this.detailFeed = response
-          // this.floatingLink = response.floatingLink
-          // this.floatingLinkLabel = response.floatingLinkLabel
+          this.floatingLink = response.floatingLink
+          this.floatingLinkLabel = response.floatingLinkLabel
         })
     },
     stopVideo () {
