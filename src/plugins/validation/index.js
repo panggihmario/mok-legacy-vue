@@ -22,6 +22,14 @@ extend('alpha_dash', {
 	}
 })
 
+// extend('url', {
+// 	...url , 
+// 	message (fieldname){
+// 		const [realFieldName] = fieldname.split("-")
+// 		return `${realFieldName} hanya dapat berupa huruf, angka dan underscore`
+// 	}
+// })
+
 extend('positive', (value) => {
   return 'Password is not same';
 });
