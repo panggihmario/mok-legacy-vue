@@ -270,6 +270,7 @@ export default {
           endProceedAt : processDate.endAt,
           statusProcess : isStatusProcess
         }
+        // console.log(payload)
         return this.filterFeed(payload)
           .then(() => {
             this.$router.push({
