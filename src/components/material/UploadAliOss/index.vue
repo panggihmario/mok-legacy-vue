@@ -59,6 +59,10 @@ export default {
       type : Number,
       default : 2048
     },
+    maxVideoWidth : {
+      type : Number,
+      default : 2048
+    },
     label: {
       type: String,
     },
@@ -381,12 +385,17 @@ export default {
         }
         if(typeMedia === 'video'  ) {
           const heightVideo = dimensions.height;
+          const widthVideo = dimensions.width
           if(heightVideo < this.minVideoHeight) {
             this.errorMessage = `Min height is ${this.minVideoHeight}`
             return false
           }
           if(heightVideo > this.maxVideoHeight) {
             this.errorMessage = `Max height is ${this.maxVideoHeight}`
+            return false
+          }
+          if(widthVideo > this.maxVideoWidth) {
+            this.errorMessage = `Max width is ${this.maxVideoHeight}`
             return false
           }
         }
