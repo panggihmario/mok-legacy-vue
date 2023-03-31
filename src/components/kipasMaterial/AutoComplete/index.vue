@@ -10,7 +10,7 @@
       <div class="auto__error-message" v-if="errors.length > 0">
         {{ errorMessage }}
       </div>
-      <div class="autocomplete__popover" :class="isTop ? 'isTop' : 'isBottom'" v-show="isOpen">
+      <div class="autocomplete__popover"  v-show="isOpen">
         <v-list dense>
           <v-list-item-group  v-for="(item, i) in results" :key="i">
             <v-list-item @click="setResult(item)">
@@ -132,11 +132,15 @@ export default {
       this.results = this.items
     },
     setResult(item) {
-      this.search = item[this.itemText];
-      this.itemId = item.id
-      this.isOpen = false;
-      this.selectedItem = item
-      this.$emit('input', item)
+      if(item) {
+        console.log(item)
+        this.search = item[this.itemText];
+        this.itemId = item.id
+        this.isOpen = false;
+        this.selectedItem = item
+        this.$emit('input', item)
+      }
+      
     },
     handleClickOutside(event) {
       if (!this.$el.contains(event.target)) {

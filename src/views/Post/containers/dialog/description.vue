@@ -17,10 +17,17 @@
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
        
-        <textarea 
+        <!-- <textarea 
           :class="d['dg__text-area']" 
           v-model="modelDescription" 
           :readonly="isPublish"
+        /> -->
+        <k-textarea 
+          title="Caption" 
+          v-model="modelDescription" 
+          :counter="1000" 
+          rules="required" 
+          rows="8" 
         />
         <div >
           <custom-input 
@@ -56,6 +63,8 @@
                   label="-"
                   icon="fas fa-link"
                   placeholder="https:/...."
+                  :rules="{regex: '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'}"
+                  errorMessage='Gunakan format link yang sesuai contohnya https://youtube.com'
               />
               </v-col>
             </v-row>
