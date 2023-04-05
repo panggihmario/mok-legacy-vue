@@ -45,7 +45,8 @@ export default {
       thumbnail : '',
       visible : false,
       image : '',
-      errorMessage : ''
+      errorMessage : '',
+      isResolution : false
     }
   },
   methods : {

@@ -130,6 +130,7 @@ export default {
         floatingLink :this.floatingLink,
         floatingLinkLabel : this.floatingLinkLabel
       };
+      console.log(payload)
       // return this.postFeed(payload)
       //   .then(() => {
       //     this.alertSucces = true;
