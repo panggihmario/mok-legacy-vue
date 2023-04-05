@@ -8,11 +8,6 @@
       <v-icon :color="color" left>$upload</v-icon>
       <span class="text-capitalize upload__label" :class="`${color}--text`"> {{ title }} </span>
     </v-btn>
-    <!-- <div 
-      id="output"
-      style="display: inline-block; 
-      top: 4px; 
-      position: relative ;border: dotted 1px #ccc; padding: 2px;"></div> -->
     <input @change="onLoad" class="upload__core" :id="id" type="file" />
   </div>
 </template>
@@ -150,7 +145,8 @@ export default {
       const isValid = this.validationMedia(typeMedia, dimensions, file);
       if (isValid) {
         if(typeMedia === 'video') {
-          return this.saveFileToTencent(file,typeMedia, dimensions)
+          this.checkResolution(file,typeMedia, dimensions)
+          // return this.saveFileToTencent(file,typeMedia, dimensions)
         }else{
           return this.saveFileToAliOss(file, typeMedia, dimensions);
         }
@@ -158,6 +154,25 @@ export default {
         const tempResult = this.printError(file);
         this.$emit("response", tempResult);
         this.loadingUpload = false;
+      }
+    },
+    checkResolution (file,typeMedia, dimensions) {
+      const width = dimensions.width
+      const height = dimensions.height
+      if(width >= 1024 || height >= 1024) {
+        return this.saveFileToTencent(file,typeMedia, dimensions)
+      }else{
+        const result = {
+          status : 'low resolution',
+          response : null,
+          isLowResolution : true,
+          bundle : {
+            file,
+            typeMedia,
+            dimensions
+          }
+        }
+        this.$emit("response", result);
       }
     },
     saveFileToTencent(file, typeMedia, dimensions) {
