@@ -52,7 +52,7 @@
             label="Username"
             name="Username"
             :value="data.username"
-            rules="required"
+            :rules="{required : true , regex : '^(?=[a-z0-9._]{4,20}$)(?!^[._]|.*[._]$)[a-z0-9._]*[a-z][a-z0-9._]*$'}"
             v-model="data.username"
           />
           <custom-input
