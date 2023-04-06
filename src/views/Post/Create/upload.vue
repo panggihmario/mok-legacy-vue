@@ -6,29 +6,34 @@
       :minVideoHeight="720"
       :typeAllowed="['jpeg','png', 'jpg', 'mp4']"
     />
-    <div @click="uploadImage(id)" class="image-box">
-      <v-img
-        contain
-        v-if="image"
-        :src="image"
-        max-height="100%"
-        max-width="100%"
-        :aspect-ratio="1"
-      ></v-img>
-      <div v-else>
-        <div class="d-flex justify-center">
-          <v-icon class="text-center" size="18px" color="secondary"
-            >$upload</v-icon
-          >
+    <div class="image-box" :class="{'isLowResolution' : isLowResolution}" >
+      <div v-if="isLowResolution" class="actions-resolution">
+        <custom-button 
+          size="x-small"
+          color="warning"
+          @click="useVideo">Gunakan video
+        </custom-button>
+        <custom-button 
+          size="x-small"
+          color="success"
+          @click="uploadImage(id)">Ubah video
+        </custom-button>
+      </div>
+      <div v-else @click="uploadImage(id)">
+        <img v-if="image"  :src="image" class="show-image"/>
+        <div v-else class="click-area">
+          <div class="d-flex justify-center">
+            <v-icon class="text-center" size="18px" color="secondary">$upload</v-icon>
+          </div>
+          <div class="ml-2 text-secondary">Foto/Video</div>
+          <v-progress-linear
+            color="secondary"
+            indeterminate
+            rounded
+            height="6"
+            v-if="visible"
+          />
         </div>
-        <div class="ml-2 text-secondary">Foto/Video</div>
-        <v-progress-linear
-          color="secondary"
-          indeterminate
-          rounded
-          height="6"
-          v-if="visible"
-        />
       </div>
     </div>
     <div class="err-msg">{{errorMessage}}</div>
@@ -36,7 +41,9 @@
 </template>
 
 <script>
+import mixins from "@/mixins/upload.js";
 export default {
+  mixins: [mixins],
   props : {
     id : String,
   },
@@ -45,10 +52,28 @@ export default {
       thumbnail : '',
       visible : false,
       image : '',
-      errorMessage : ''
+      errorMessage : '',
+      isLowResolution : false,
+      bundle : null
     }
   },
   methods : {
+    useVideo() {
+      this.isLowResolution = false
+      this.$emit('displayWarning', false)
+      this.uploadWithTencent(this.bundle)
+        .then(payload => {
+          const idUpload = this.id.split('-')
+          const position = idUpload[1]
+          this.image =  payload.response.thumbnail.large
+          const params = {
+            position,
+            response : payload.response
+          }
+          this.$emit('saveImageOnPayload',params)
+          this.visible = false
+        })
+    },
     uploadImage(id) {
       document.getElementById(id).click();
     },
@@ -72,9 +97,15 @@ export default {
         setTimeout(() => {
           this.errorMessage = ''
         },3000)
+      }else if(payload.isLowResolution) {
+        this.isLowResolution = true
+        this.bundle = payload.bundle
+        this.$emit('displayWarning', true)
       }
       else {
         this.visible = true;
+        this.$emit('displayWarning', false)
+        this.isLowResolution = false
       }
     }
   }
@@ -96,11 +127,48 @@ export default {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+  position: relative;
+}
+
+.isLowResolution {
+  border: 1px dashed $warning;
 }
 .err-msg {
   width: 100px;
   font-size: 10px;
   color: red;
   margin-top: 5px;
+}
+.actions-resolution {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #FFFFFF;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  padding: 5px;
+}
+
+.show-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.click-area {
+  height: 104px;
+  width: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
 }
 </style>

@@ -56,8 +56,9 @@
             name="Username"
             :value="data.username"
             v-model="data.username"
-            rules="required|alpha_dash"
-          />
+            :rules="{required : true , regex : '^(?=[a-z0-9._]{4,20}$)(?!^[._]|.*[._]$)[a-z0-9._]*[a-z][a-z0-9._]*$'}"
+            />
+            <!-- rules="required|alpha_dash" -->
           <custom-input
             :label="$t('input.password')"
             name="Password"
