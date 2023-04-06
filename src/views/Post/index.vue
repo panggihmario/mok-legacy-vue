@@ -196,9 +196,11 @@ export default {
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
+      this.setProcessDate([])
       this.setDisplayDate('')
       this.setStatusLabel('Status Proses')
       this.setIsStatusProcess('all')
+      this.setDisplayProcessDate('')
       this.expand = false
       return this.onInitiateFetchFeeds(tab)
         .then(() => {
