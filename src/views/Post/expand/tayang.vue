@@ -71,13 +71,17 @@ export default {
   methods : {
     ...mapMutations({
       setIsStatusProcess : 'post/setIsStatusProcess',
-      setStatusLabel : 'post/setStatusLabel'
+      setStatusLabel : 'post/setStatusLabel',
+      setProcessDate : 'post/setProcessDate',
     }), 
     chooseHandler(item) {
       this.isShowCalendar = item.isShowCalendar
       this.label = item.text
       this.setStatusLabel(item.text)
       this.setIsStatusProcess(item.isStatusProcess)
+      if(item.isStatusProcess === 'wait') {
+        this.setProcessDate([])
+      }
     }
   }
 }

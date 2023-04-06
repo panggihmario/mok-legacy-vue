@@ -64,7 +64,31 @@
           </div>
         </section>
 
-        <div class="mt-3 font-12 text-break">
+        <div
+          v-if="
+            previewTiktokData.video.height >= 1024
+              ? false
+              : previewTiktokData.video.width >= 1024
+              ? false
+              : true
+          "
+          class="alert-resolution mt-3"
+        >
+          <div class="d-flex">
+            <div style="margin-top: 2px; margin-right: 6px">
+              <icon-triangle-exclamation></icon-triangle-exclamation>
+            </div>
+            <div>
+              <span
+                >Video ini memiliki resolusi rendah, untuk menjaga kualitas
+                konten, gunakan video lain yang memiliki minimum resolusi 1024
+                pixel.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 font-12 text-break">
           <k-textarea
             v-model="previewTiktokPayload.description"
             placeholder="Caption"
@@ -102,9 +126,17 @@
               class="mt-3"
               icon="fas fa-link"
             ></k-input>
+            <div
+              v-if="previewTiktokPayload.floatingLink && !isValid.url"
+              class="mt-2 warning--text"
+            >
+              Gunakan format link yang sesuai contohnya <br />
+              https://youtube.com
+            </div>
           </div>
         </div>
-        <div class="d-flex">
+
+        <div class="d-flex mt-3">
           <custom-button
             color="white"
             class="primary--text mr-4"
@@ -117,6 +149,13 @@
             class="white--text"
             :loading="loadingSubmit"
             @click="actionGetTiktokVideoNoWatermark"
+            :disabled="
+              previewTiktokData.video.height >= 1024
+                ? false
+                : previewTiktokData.video.width >= 1024
+                ? false
+                : true
+            "
           >
             <!-- :disabled="
               (previewTiktokPayload.floatingLinkLabel.length > 0 &&
@@ -162,7 +201,26 @@ export default {
       payloadFailed: {
         message: "",
       },
+      rules: {
+        urlValidation: (value) => {
+          if (value) {
+            const pattern =
+              /^(?:(?:(?:https?|http?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/;
+            return pattern.test(value);
+          } else {
+            return;
+          }
+        },
+      },
+      isValid: {
+        url: true,
+      },
     };
+  },
+  watch: {
+    "previewTiktokPayload.floatingLink"(val) {
+      this.isValid.url = this.rules.urlValidation(val);
+    },
   },
   mounted() {
     this.handleGetChannel();
@@ -410,5 +468,14 @@ export default {
 
 .font-12 {
   font-size: 12px;
+}
+
+.alert-resolution {
+  border: 1px solid $warning;
+  border-radius: 4px;
+  background-color: $primarylowtint;
+  padding: 6px;
+  font-weight: 600;
+  font-size: 11px;
 }
 </style>
