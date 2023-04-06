@@ -193,12 +193,13 @@ export default {
         this.alertErrorChannel = true;
         this.errorMessage = "Harap Pilih Channel";
       } else {
-        this.loadingSubmit = true;
+        // this.loadingSubmit = true;
         return this.getDouyinVideoNoWatermark({
           url: this.previewTiktokData.share_url,
-          sendRawData: false,
+          sendRawData: true,
         })
           .then((response) => {
+            // console.log({ response });
             let res = response.data.data;
             if (res.Location) {
               this.actionPostToDraft(`https://${res.Location}`);
