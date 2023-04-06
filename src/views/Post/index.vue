@@ -200,6 +200,7 @@ export default {
       this.setDisplayDate('')
       this.setStatusLabel('Status Proses')
       this.setIsStatusProcess('all')
+      this.setDisplayProcessDate('')
       this.expand = false
       return this.onInitiateFetchFeeds(tab)
         .then(() => {
