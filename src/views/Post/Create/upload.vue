@@ -6,7 +6,7 @@
       :minVideoHeight="720"
       :typeAllowed="['jpeg','png', 'jpg', 'mp4']"
     />
-    <div class="image-box">
+    <div class="image-box" :class="{'isLowResolution' : isLowResolution}" >
       <div v-if="isLowResolution" class="actions-resolution">
         <custom-button 
           size="x-small"
@@ -23,9 +23,7 @@
         <img v-if="image"  :src="image" class="show-image"/>
         <div v-else>
           <div class="d-flex justify-center">
-            <v-icon class="text-center" size="18px" color="secondary"
-              >$upload</v-icon
-            >
+            <v-icon class="text-center" size="18px" color="secondary">$upload</v-icon>
           </div>
           <div class="ml-2 text-secondary">Foto/Video</div>
           <v-progress-linear
@@ -131,6 +129,10 @@ export default {
   cursor: pointer;
   position: relative;
 }
+
+.isLowResolution {
+  border: 1px dashed $warning;
+}
 .err-msg {
   width: 100px;
   font-size: 10px;
@@ -141,6 +143,11 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #FFFFFF;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  padding: 5px;
 }
 
 .show-image {
