@@ -21,7 +21,7 @@
       </div>
       <div v-else @click="uploadImage(id)">
         <img v-if="image"  :src="image" class="show-image"/>
-        <div v-else>
+        <div v-else class="click-area">
           <div class="d-flex justify-center">
             <v-icon class="text-center" size="18px" color="secondary">$upload</v-icon>
           </div>
@@ -160,5 +160,15 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.click-area {
+  height: 104px;
+  width: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
 }
 </style>
