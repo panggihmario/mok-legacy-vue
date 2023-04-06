@@ -9,9 +9,20 @@
       <div style="width: 584px">
         <div class="d-flex mb-4">
           <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
-            <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" />
+            <Upload 
+              :id="`post-${idx}`" 
+              @saveImageOnPayload="saveImageOnPayload" 
+              @displayWarning="displayWarning"
+            />
           </div>
         </div>
+        <div v-if="isWarning" class="warning-box">
+          <v-icon size="15px" color="warning">fas fa-exclamation-triangle</v-icon>
+          <div>
+            Video ini memiliki resolusi rendah, klik tombol “Gukanan Video” untuk tetap menggunakan video ini, atau klik “Ubah Video” jika ingin mengganti dengan video lain
+          </div>
+        </div>
+    
         <k-textarea 
           title="Caption" 
           v-model="description" 
@@ -75,6 +86,7 @@ export default {
     return {
       description: "",
       isLink : false,
+      isWarning : false,
       title: '',
       testUrl: "",
       file: "",
@@ -108,6 +120,9 @@ export default {
       postFeed: "post/postFeed",
       getAllChannel: "channel/getAllChannel",
     }),
+    displayWarning(value) {
+      this.isWarning = value
+    },
     saveImageOnPayload(params) {
       this.$set(this.medias, params.position, params.response);
     },
@@ -130,6 +145,7 @@ export default {
         floatingLink :this.floatingLink,
         floatingLinkLabel : this.floatingLinkLabel
       };
+      console.log(payload)
       // return this.postFeed(payload)
       //   .then(() => {
       //     this.alertSucces = true;
@@ -223,5 +239,18 @@ export default {
   font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
+}
+.warning-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #FFEBEF;
+  border: 1px solid #FA7F96;
+  border-radius: 4px;
+  color: #000000;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px;
+  margin: 4px 0 16px 0;
 }
 </style>

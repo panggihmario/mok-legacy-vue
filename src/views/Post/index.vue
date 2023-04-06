@@ -196,6 +196,7 @@ export default {
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
+      this.setProcessDate([])
       this.setDisplayDate('')
       this.setStatusLabel('Status Proses')
       this.setIsStatusProcess('all')

@@ -19,6 +19,7 @@ import IconClockSquare from "../../components/icon/iconClockSquare.vue";
 import IconThumbUp from "../../components/icon/iconThumbUp.vue";
 import IconEye from "../../components/icon/iconEye.vue";
 import IconInfoOutline from "../../components/icon/iconInfoOutline.vue";
+import IconWarning from "../../components/icon/iconWarning.vue"
 import IconTriangleExclamation from "../../components/icon/triangleExclamation.vue";
 import LabelField from "../../components/material/Input/label.vue";
 import InputArea from "../../components/material/InputArea";
@@ -67,6 +68,10 @@ export default [
   {
     name: "custom-upload",
     component: Upload,
+  },
+  {
+    name : 'icon-warning',
+    component : IconWarning
   },
   {
     name: "icon-upload",
