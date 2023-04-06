@@ -64,7 +64,31 @@
           </div>
         </section>
 
-        <div class="mt-3 font-12 text-break">
+        <div
+          v-if="
+            previewTiktokData.video.height >= 1024
+              ? false
+              : previewTiktokData.video.width >= 1024
+              ? false
+              : true
+          "
+          class="alert-resolution mt-3"
+        >
+          <div class="d-flex">
+            <div style="margin-top: 2px; margin-right: 6px">
+              <icon-triangle-exclamation></icon-triangle-exclamation>
+            </div>
+            <div>
+              <span
+                >Video ini memiliki resolusi rendah, untuk menjaga kualitas
+                konten, gunakan video lain yang memiliki minimum resolusi 1024
+                pixel.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 font-12 text-break">
           <k-textarea
             v-model="previewTiktokPayload.description"
             placeholder="Caption"
@@ -108,29 +132,6 @@
             >
               Gunakan format link yang sesuai contohnya <br />
               https://youtube.com
-            </div>
-          </div>
-        </div>
-        <div
-          v-if="
-            previewTiktokData.video.height >= 1024
-              ? false
-              : previewTiktokData.video.width >= 1024
-              ? false
-              : true
-          "
-          class="alert-resolution"
-        >
-          <div class="d-flex">
-            <div style="margin-top: 2px; margin-right: 6px">
-              <icon-triangle-exclamation></icon-triangle-exclamation>
-            </div>
-            <div>
-              <span
-                >Video ini memiliki resolusi rendah, untuk menjaga kualitas
-                konten, gunakan video lain yang memiliki minimum resolusi 1024
-                pixel.
-              </span>
             </div>
           </div>
         </div>
