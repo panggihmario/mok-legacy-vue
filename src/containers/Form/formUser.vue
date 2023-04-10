@@ -40,7 +40,6 @@
               dense
             />
             <custom-select
-              v-if="type === 'edit'"
               :label="$t('input.chooseAccount')"
               placeholder="Pilih jenis akun"
               v-model="data.role"
