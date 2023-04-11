@@ -73,8 +73,14 @@ export default {
       getListRole: "account/getListRole",
     }),
     handleGetListRole() {
-      return this.getListRole().then((response) => {
-        this.listAccountType = response.data.data
+      return this.getListRole()
+        .then((response) => {
+          const responsData = response.data.data
+          this.listAccountType = response.data.data
+          const filterData = responsData.filter(d => {
+            return (d !== 'ROLE_ADMIN' && d !== 'ROLE_SYSTEM' && d !== 'ROLE_ADMIN_SOCIAL' && d !== 'ROLE_ADMIN_FINANCE' )
+          })
+          this.listAccountType = filterData
       });
     },
     async onSubmit(payload) {
