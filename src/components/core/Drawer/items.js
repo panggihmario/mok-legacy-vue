@@ -91,11 +91,11 @@ export default [
           },
         ],
       },
-      {
-        title: "List Donation",
-        path: "/donation",
-        role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
-      },
+      // {
+      //   title: "List Donation",
+      //   path: "/donation",
+      //   role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      // },
       {
         title: "Feedback user",
         path: "/feedback/1",
