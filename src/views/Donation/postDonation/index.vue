@@ -55,6 +55,7 @@
                   @response="getResponseVideo" 
                   id="donation-video" 
                   text 
+                  :limitResolution="576"
                   color="primary"
                   :typeAllowed="['mp4', '3gp']"
                   title="Upload Video" 
@@ -373,6 +374,7 @@ export default {
       }
     },
     getResponseVideo(media) {
+      console.log(media)
       if(media.status === 'success') {
         this.showVideoDonation = media.response.url
         this.$set(this.medias, 1, media.response)
