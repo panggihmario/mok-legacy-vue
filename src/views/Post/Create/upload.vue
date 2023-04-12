@@ -3,6 +3,7 @@
     <upload-oss
       :id="id" style="display: none" 
       @response="getImage"
+      :limitResolution="1024"
       :minVideoHeight="720"
       :typeAllowed="['jpeg','png', 'jpg', 'mp4']"
     />
