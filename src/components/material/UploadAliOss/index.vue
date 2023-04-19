@@ -46,6 +46,9 @@ export default {
     id: {
       type: [String, Number],
     },
+    limitResolution : {
+      type : Number
+    },
     minVideoHeight: {
       type: Number,
       default: 200,
@@ -159,7 +162,7 @@ export default {
     checkResolution (file,typeMedia, dimensions) {
       const width = dimensions.width
       const height = dimensions.height
-      if(width >= 1024 || height >= 1024) {
+      if(width >= this.limitResolution || height >= this.limitResolution) {
         return this.saveFileToTencent(file,typeMedia, dimensions)
       }else{
         const result = {

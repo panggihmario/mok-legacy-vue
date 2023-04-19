@@ -5,6 +5,7 @@
 			:data="data"
 			:loading="loading"
 			@onSubmit="onSubmit"
+      :listAccountType="listAccountType"
 			type="create"
 		/>
     <v-snackbar top right v-model="alertError" color="error">
@@ -31,6 +32,7 @@ export default {
 			errorMessage : '',
 			loading : false,
       genderType: ["MALE", "FEMALE"],
+      listAccountType : [],
       items: [
         {
           text: "Manage Account",
@@ -58,14 +60,29 @@ export default {
         mobile: "",
         isVerified: false,
         accountType: "SELEB",
-        role: "SELEB"
+        role: ""
       }
     };
   },
+  mounted() {
+    this.handleGetListRole()
+  },
   methods: {
     ...mapActions({
-      createUser: "account/createUser"
+      createUser: "account/createUser",
+      getListRole: "account/getListRole",
     }),
+    handleGetListRole() {
+      return this.getListRole()
+        .then((response) => {
+          const responsData = response.data.data
+          this.listAccountType = response.data.data
+          const filterData = responsData.filter(d => {
+            return (d !== 'ROLE_ADMIN' && d !== 'ROLE_SYSTEM' && d !== 'ROLE_ADMIN_SOCIAL' && d !== 'ROLE_ADMIN_FINANCE' )
+          })
+          this.listAccountType = filterData
+      });
+    },
     async onSubmit(payload) {
 			this.loading = true
       const response = await this.createUser(payload);

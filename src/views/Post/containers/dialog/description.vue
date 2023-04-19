@@ -53,7 +53,7 @@
                 label="Link dari postingan ini" 
                 v-model="modelFloatingLinkLabel" 
                 placeholder="Title"
-                rules="min:4"
+                rules="min:4|max:30"
                 errorMessage='Min 4 and Max 30'
               />
               </v-col>
