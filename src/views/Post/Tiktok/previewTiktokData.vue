@@ -233,11 +233,11 @@ export default {
   },
   watch: {
     "previewTiktokPayload.floatingLinkLabel"(val) {
-      if (val == "" && this.previewTiktokPayload.floatingLink != "") {
-        this.isValid.counter = "Gunakan minimal 4 karakter";
-      } else {
+      // if (val == "") {
+      //   this.isValid.counter = "Gunakan minimal 4 karakter";
+      // } else {
         this.isValid.counter = this.rules.counterValidation(val);
-      }
+      // }
     },
     "previewTiktokPayload.floatingLink"(val) {
       this.isValid.url = this.rules.urlValidation(val);
