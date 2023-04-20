@@ -207,7 +207,7 @@ export default [
       {
         title: "Komplain",
         path: "/complaint",
-        role: ["ROLE_ADMIN", "ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT"],
+        role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT"],
       },
       {
         title: "Finance",
@@ -219,29 +219,29 @@ export default [
   {
     action: "fas fa-hand-holding-usd",
     title: "Penggalangan Dana",
-    items : [
+    items: [
       {
-        title : 'List Penggalangan Dana',
-        path : '/donations',
-        role : ["ROLE_ADMIN"]
+        title: "List Penggalangan Dana",
+        path: "/donations",
+        role: ["ROLE_ADMIN"],
       },
       {
-        title : 'Kategori',
-        path : '/donation-category',
-        role : ["ROLE_ADMIN"]
-      }
-    ]
+        title: "Kategori",
+        path: "/donation-category",
+        role: ["ROLE_ADMIN"],
+      },
+    ],
   },
   {
     action: "fa-solid fa-database",
     title: "Master",
-    items : [
+    items: [
       {
-        title : 'Bank',
-        path : '/bank',
-        role : ["ROLE_ADMIN"]
-      }
-    ]
+        title: "Bank",
+        path: "/bank",
+        role: ["ROLE_ADMIN"],
+      },
+    ],
   },
   // {
   //   title : 'RnD new feature',
