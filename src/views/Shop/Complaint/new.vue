@@ -5,6 +5,7 @@
       hide-default-footer
       :items="items"
       no-data-text="Tidak Ada Komplain"
+      :items-per-page="-1"
     >
       <template v-slot:item="{ item }">
         <tr>
@@ -20,6 +21,20 @@
         </tr>
       </template>
     </v-data-table>
+
+    <div class="d-flex justify-space-between align-center mt-10">
+      <div>
+        <span class="font-12">Total Elements : {{ totalElements }}</span>
+      </div>
+      <v-pagination
+        class="d-flex justify-end"
+        v-model="page"
+        :length="totalPages"
+        :total-visible="6"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -72,7 +87,15 @@ export default {
         },
       ],
       items: [],
+      totalElements: 0,
+      page: 1,
+      totalPages: 1,
     };
+  },
+  watch: {
+    page() {
+      this.handleGetListComplaint();
+    },
   },
   mounted() {
     this.handleGetListComplaint();
@@ -113,11 +136,15 @@ export default {
         status: "new",
         params: {
           sort: "ASC",
+          page: this.page - 1,
+          size: 10,
         },
       };
       const response = await this.getListComplaint(payload);
       if (response.status === 200) {
         this.items = response.data.data.content;
+        this.totalPages = response.data.data.totalPages;
+        this.totalElements = response.data.data.totalElements;
         this.$emit("getTotalList", this.items.length);
       } else {
         console.error(error);
@@ -129,12 +156,15 @@ export default {
         status: "new",
         params: {
           sort: "ASC",
+          page: this.page - 1,
+          size: 10,
         },
       };
       const response = await this.getListComplaint(payload);
       if (response.status === 200) {
-        console.log(response)
         this.items = response.data.data.content;
+        this.totalPages = response.data.data.totalPages;
+        this.totalElements = response.data.data.totalElements;
         this.$emit("getTotalList", this.items.length);
       } else {
         console.log(error);
