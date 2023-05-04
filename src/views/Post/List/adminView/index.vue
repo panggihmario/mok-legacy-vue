@@ -1,10 +1,16 @@
 <template>
   <div :class="ad['tb__td']">
+    <div :class="ad['tb__actions']">
+      <custom-button size="small" color="warning">Hapus Konten Terpilih</custom-button>
+      <custom-button size="small">Uncheck Konten Terpilih</custom-button>
+    </div>
     <v-data-table
       :headers="headers"
       hide-default-footer
-      class="grey--text"
+      class="grey--text my-table"
       :items="feeds"
+      v-model="selected"
+      show-select
     >
       <template v-slot:body="{ items }">
         <tbody>
@@ -12,6 +18,14 @@
             v-for="item in items"
             :key="item.id"
           >
+            <td>
+              <input
+                style="width: 20px"
+                type="checkbox"
+                :value="item"
+                v-model="selected"
+              />
+            </td>
             <td
               @mouseover="onHover(item)"
               @mouseleave="onLeave"
@@ -39,21 +53,21 @@
               <div :class="ad['tb__caption']">{{ item.description }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
+              <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.createBy }}</div>
+              <div :class="ad['tb__caption']">{{ item.createBy }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']"  >{{ item.publishBy }}</div>
+              <div :class="ad['tb__caption']"  >{{ item.publishBy }}</div>
             </td>
             <td >
-              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
+              <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
             <td>
-              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
+              <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 <div v-if="item.proceedAt"> {{ formatingDate(item.proceedAt) }} </div>
                 <div v-else > 
                   <v-icon size="small" >far fa-clock</v-icon>
@@ -123,20 +137,19 @@ export default {
   data() {
     return {
       page: 1,
+      selected : [],
       selectedItem : null,
       thumbnailImage : "",
       headers: [
         {
           text: "Media",
-          class: "whitesnow",
           sortable: false,
           value: "media",
           filterable: false,
-          width: "100",
+          width: "90",
         },
         {
           text: "Caption",
-          class: "whitesnow",
           value: "description",
           sortable: false,
           filterable: false,
@@ -144,28 +157,24 @@ export default {
         },
         {
           text: "Channel",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "channel",
         },
         {
           text: "User",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "user",
         },
         {
           text: "Publisher",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "publishBy",
         },
         {
           text: "Dipublish Pada",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "schedule",
@@ -174,7 +183,6 @@ export default {
         },
         {
           text : 'Tayang',
-          class : 'whitesnow',
           sortable : false,
           filterable : false , 
           value : 'proceedAt',
@@ -182,7 +190,6 @@ export default {
         },
         {
           text: "Action",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "action",
@@ -193,6 +200,18 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" >
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
+}
+.header-table {
+  color: black;
+  font-size: 14px;
+}
+</style>
 
 <style src="../../style.scss" lang="scss" module="ad">
 </style>
