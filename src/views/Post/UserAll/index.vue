@@ -194,6 +194,7 @@ export default {
       return this.fetchPostAllUser(payload)
         .then((response) => {
           let res = response.data.data;
+          console.log(res)
           this.loadingListCandidate = false;
           this.tableItemsCandidate = res.content;
           this.totalPagesCandidate = res.totalPages;
