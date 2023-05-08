@@ -11,7 +11,7 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .get(
-            `${state.pathComplaintList}/${payload.type}/${payload.status}`,
+            `${state.pathComplaintList}/${payload.type}/${payload.status}?page=${payload.params.page}&size=${payload.params.size}`,
             payload.params
           );
         return response;

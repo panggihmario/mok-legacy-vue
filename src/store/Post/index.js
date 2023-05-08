@@ -170,6 +170,19 @@ export default {
           throw err;
         });
     },
+    multipleDelete ({state, dispatch}, payload) {
+      const params = {
+        url : `${state.pathFeed}/multiple-delete`,
+        data : payload
+      }
+      return dispatch("postWithToken", params, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     searchFeed({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathFeed}/search`,

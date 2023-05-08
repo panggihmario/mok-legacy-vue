@@ -1,8 +1,8 @@
 <template>
   <div :class="ad['tb__td']">
     <div :class="ad['tb__actions']">
-      <custom-button size="small" color="warning">Hapus Konten Terpilih</custom-button>
-      <custom-button size="small">Uncheck Konten Terpilih</custom-button>
+      <custom-button @click="deleteFeed" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+      <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
     </div>
     <v-data-table
       :headers="headers"
@@ -104,7 +104,29 @@ export default {
   methods: {
      ...mapActions({
       fetchFeedById: "post/fetchFeedById",
+      multipleDelete : 'post/multipleDelete',
+      fetchFeeds: "post/fetchFeeds",
     }),
+    clearSelected () {
+      this.selected = []
+    },  
+    deleteFeed () {
+      const idSelected = this.selected.map(select => {
+        return select.id
+      })
+      return this.multipleDelete(idSelected)
+        .then(response => {
+          const payload = {
+            size : 10,
+            tab : 'list',
+            page : 0,
+          }
+          return this.fetchFeeds(payload)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     successDelete() {
       this.$emit("refreshDataFeed");
     },
