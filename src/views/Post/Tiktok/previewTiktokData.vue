@@ -115,9 +115,13 @@
               v-model="previewTiktokPayload.floatingLinkLabel"
               placeholder="Placeholder"
               class="mt-3"
-              rules="min:4|max:30"
-              errorMessage="Min 4 and Max 30"
+              maxlength="30"
             ></k-input>
+            <!-- rules="min:4|max:30"
+              errorMessage="Gunakan minimal 4 karakter" -->
+          </div>
+          <div v-if="isValid.counter != ''" class="mt-2 warning--text">
+            {{ isValid.counter }}
           </div>
           <div class="my-3">
             <k-input
@@ -202,6 +206,15 @@ export default {
         message: "",
       },
       rules: {
+        counterValidation: (value) => {
+          return value.length > 0
+            ? value.length < 4
+              ? "Gunakan minimal 4 karakter"
+              : value.length >= 30
+              ? "Gunakan maksimal 30 karakter"
+              : ""
+            : "";
+        },
         urlValidation: (value) => {
           if (value) {
             const pattern =
@@ -214,12 +227,27 @@ export default {
       },
       isValid: {
         url: true,
+        counter: "",
       },
     };
   },
   watch: {
+    "previewTiktokPayload.floatingLinkLabel"(val) {
+      // if (val == "") {
+      //   this.isValid.counter = "Gunakan minimal 4 karakter";
+      // } else {
+        this.isValid.counter = this.rules.counterValidation(val);
+      // }
+    },
     "previewTiktokPayload.floatingLink"(val) {
       this.isValid.url = this.rules.urlValidation(val);
+      if (this.previewTiktokPayload.floatingLink != "") {
+        if (this.previewTiktokPayload.floatingLinkLabel == "") {
+          this.isValid.counter = "Gunakan minimal 4 karakter";
+        }
+      } else {
+        this.isValid.counter = "";
+      }
     },
   },
   mounted() {
