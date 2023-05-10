@@ -226,7 +226,6 @@ export default {
       return this.fetchPostAllUser(payload)
         .then((response) => {
           let res = response.data.data;
-          console.log(res)
           this.loadingListCandidate = false;
           this.tableItemsCandidate = res.content;
           this.totalPagesCandidate = res.totalPages;
@@ -308,7 +307,7 @@ export default {
       let payload = {
         page: this.pageNotification - 1,
         size: 25,
-        direction: "DESC",
+        sort: "createAt,desc",
         ...this.dataFilter,
       };
       this.loadingListNotification = true;
@@ -332,7 +331,7 @@ export default {
       let payload = {
         page: this.pageNotification - 1,
         size: 25,
-        direction: "DESC",
+        sort: "createAt,desc",
       };
       this.loadingListNotification = true;
       this.isFilter = false;
