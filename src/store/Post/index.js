@@ -2,7 +2,8 @@ export default {
   namespaced: true,
   state: {
     pathPost: "feeds/post",
-    pathFeed: "admin/social",
+    pathFeedSocial: "admin/social",
+    pathFeed: "feeds",
     pathTrendingFeeds: "admin/trending-feeds",
     feeds: [],
     channelCode: null,
@@ -12,24 +13,24 @@ export default {
     paramsUsers: [],
     paramsChannel: [],
     paramsDate: [],
-    paramsProcess : [],
+    paramsProcess: [],
     displayDate: "",
-    displayProcessDate : '',
+    displayProcessDate: "",
     keywordSearchTrending: "",
     paramsUsersTrending: [],
     paramsChannelTrending: [],
     channelCodeTrending: null,
     paramsDateTrending: [],
     displayDateTrending: "",
-    isStatusProcess : 'all',
-    statusLabel : 'Status Proses'
+    isStatusProcess: "all",
+    statusLabel: "Status Proses",
   },
   mutations: {
-    setStatusLabel (state, payload) {
-      state.statusLabel = payload
+    setStatusLabel(state, payload) {
+      state.statusLabel = payload;
     },
-    setIsStatusProcess (state , payload) {
-      state.isStatusProcess = payload
+    setIsStatusProcess(state, payload) {
+      state.isStatusProcess = payload;
     },
     setKeywordSearchTrending(state, payload) {
       state.keywordSearchTrending = payload;
@@ -55,9 +56,9 @@ export default {
     setDisplayDate(state, payload) {
       state.displayDate = payload;
     },
-    setDisplayProcessDate (state, payload) {
-      state.displayProcessDate = payload
-    },  
+    setDisplayProcessDate(state, payload) {
+      state.displayProcessDate = payload;
+    },
     setParamsChannel(state, payload) {
       state.paramsChannel = payload;
     },
@@ -65,7 +66,7 @@ export default {
       state.paramsDate = payload;
     },
     setProcessDate(state, payload) {
-      state.paramsProcess = payload
+      state.paramsProcess = payload;
     },
     setKeyWord(state, payload) {
       state.keywordSearch = payload;
@@ -89,7 +90,7 @@ export default {
   actions: {
     fetchFeedById({ state, dispatch }, payload) {
       const data = {
-        url: `${state.pathFeed}/${payload}`,
+        url: `${state.pathFeedSocial}/${payload}`,
       };
       return dispatch("getWithToken", data, { root: true })
         .then((response) => {
@@ -102,7 +103,7 @@ export default {
     },
     fetchFeeds({ state, dispatch, commit }, payload) {
       const data = {
-        url: `${state.pathFeed}`,
+        url: `${state.pathFeedSocial}`,
         params: {
           ...payload,
         },
@@ -130,7 +131,7 @@ export default {
     },
     postFeed({ state, dispatch }, payload) {
       const params = {
-        url: `${state.pathFeed}`,
+        url: `${state.pathFeedSocial}`,
         data: {
           ...payload,
         },
@@ -145,7 +146,7 @@ export default {
     },
     updatePostFeed({ state, dispatch }, payload) {
       const params = {
-        url: `${state.pathFeed}/${payload.id}/publisher/${payload.type}`,
+        url: `${state.pathFeedSocial}/${payload.id}/publisher/${payload.type}`,
         data: {
           ...payload.params,
         },
@@ -160,7 +161,7 @@ export default {
     },
     deleteFeed({ state, dispatch }, payload) {
       const params = {
-        url: `${state.pathFeed}/${payload}`,
+        url: `${state.pathFeedSocial}/${payload}`,
       };
       return dispatch("deleteWithToken", params, { root: true })
         .then((response) => {
@@ -172,7 +173,7 @@ export default {
     },
     searchFeed({ state, dispatch, commit }, payload) {
       const data = {
-        url: `${state.pathFeed}/search`,
+        url: `${state.pathFeedSocial}/search`,
         params: {
           ...payload,
         },
@@ -198,7 +199,7 @@ export default {
     },
     filterFeed({ state, dispatch, commit }, payload) {
       const data = {
-        url: `${state.pathFeed}/filter`,
+        url: `${state.pathFeedSocial}/filter`,
         params: {
           ...payload,
           size: 10,
@@ -222,7 +223,7 @@ export default {
     },
     fetchListAccounts({ state, dispatch }, payload) {
       const data = {
-        url: `${state.pathFeed}/accounts`,
+        url: `${state.pathFeedSocial}/accounts`,
         params: {
           ...payload,
           sort: "createAt",
@@ -237,7 +238,7 @@ export default {
     },
     searchAccounts({ state, dispatch }, payload) {
       const data = {
-        url: `${state.pathFeed}/account/username`,
+        url: `${state.pathFeedSocial}/account/username`,
         params: {
           sort: "createAt",
           direction: "ASC",
@@ -320,6 +321,31 @@ export default {
     fetchPostAllUserTrendingDetailById({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathTrendingFeeds}/actives/${payload.id}`,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchHistoryNotification({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/push-notif/history`,
+        params: payload,
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    fetchPostAllUserNotificationDetailById({ state, dispatch, commit }, payload) {
+      const data = {
+        url: `${state.pathFeed}/${payload}`,
       };
       return dispatch("getWithToken", data, { root: true })
         .then((response) => {

@@ -14,7 +14,9 @@
           <tbody>
             <tr v-for="(item, idx) in items" :key="idx">
               <td class="font-12">
-                <span class="show-post" @click="openDialogPost(item.id, idx)"
+                <span
+                  class="show-post"
+                  @click="openDialogPost(item.feedId, idx)"
                   >Lihat Post</span
                 >
               </td>
@@ -23,35 +25,10 @@
                   {{ item.description }}
                 </div>
               </td>
-              <td class="font-12">{{ item.channel.name }}</td>
+              <td class="font-12">{{ item.channelName }}</td>
               <td class="font-12">{{ item.createBy }}</td>
-              <td class="font-12">{{ item.trendingBy }}</td>
-              <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
-              <td class="font-12 grey--text font-weight-medium">
-                <div class="d-flex align-center">
-                  <v-icon
-                    size="46px"
-                    :color="item.isAllMp4Ready ? 'green' : 'red'"
-                    style="margin-right: -16px"
-                    >mdi-circle-small</v-icon
-                  >
-                  <span
-                    :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
-                    >MP4</span
-                  >
-                </div>
-              </td>
-              <td class="font-12 text-center">
-                <v-btn
-                  small
-                  color="secondary"
-                  class="text-capitalize"
-                  style="border-radius: 5px"
-                  @click="openDialogPushNotif(item.id)"
-                >
-                  Push Notif
-                </v-btn>
-              </td>
+              <td class="font-12">{{ item.postBy }}</td>
+              <td class="font-12">{{ formatingDate(item.createAt) }}</td>
             </tr>
           </tbody>
         </template>
@@ -90,7 +67,7 @@
       </v-btn>
       <v-card>
         <div
-          v-if="!loadingDetail && tableItemsDialog.createBy"
+          v-if="!loadingDetail && tableItemsDialog.createAt"
           class="d-flex align-center"
         >
           <div class="pt-7" style="width: 100%">
@@ -107,19 +84,19 @@
                 >
                   <video
                     v-if="
-                      tableItemsDialog.medias[dialogPostMediasIdx].url.includes(
-                        'mp4'
-                      )
+                      tableItemsDialog.post.medias[
+                        dialogPostMediasIdx
+                      ].url.includes('mp4')
                     "
-                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
+                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.post.medias[dialogPostMediasIdx].id}`"
                     controls
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
+                    :src="tableItemsDialog.post.medias[dialogPostMediasIdx].url"
                     alt=""
                     class="vid"
                   />
                   <v-img
                     v-else
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
+                    :src="tableItemsDialog.post.medias[dialogPostMediasIdx].url"
                     alt=""
                     contain
                     width="100%"
@@ -130,10 +107,10 @@
               <div class="col font-12">
                 <div>
                   <span class="font-10">User</span>
-                  <p>@{{ tableItemsDialog.createBy }}</p>
+                  <p>@{{ tableItemsDialog.account.username }}</p>
                 </div>
                 <div class="whitesnow mt-5 pa-2" style="min-height: 400px">
-                  {{ tableItemsDialog.description }}
+                  {{ tableItemsDialog.post.description }}
                 </div>
               </div>
             </div>
@@ -153,13 +130,14 @@
                   tile
                   @click="changeDialogPostImg(1)"
                   :disabled="
-                    dialogPostMediasIdx == tableItemsDialog.medias.length - 1
+                    dialogPostMediasIdx ==
+                    tableItemsDialog.post.medias.length - 1
                   "
                 >
                   <v-icon>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
-              <div
+              <!-- <div
                 class="primarylowtint ml-2 px-2"
                 style="height: 24px; border-radius: 4px"
               >
@@ -168,7 +146,7 @@
                   {{ tableItemsDialog.trendingExpired }} jam setelah status
                   postingan berubah menjadi trending!</span
                 >
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -260,10 +238,8 @@ export default {
         { text: "Caption", class: "whitesnow" },
         { text: "Channel", class: "whitesnow" },
         { text: "User", class: "whitesnow" },
-        { text: "Di Trendingkan Oleh", class: "whitesnow" },
-        { text: "Trending Berakhir", class: "whitesnow" },
-        { text: "", class: "whitesnow" },
-        { text: "Action", class: "whitesnow", align: "center" },
+        { text: "Push Notif Oleh", class: "whitesnow" },
+        { text: "Waktu Push", class: "whitesnow" },
       ],
       // tableItems: [],
       tableItemsDialog: {
@@ -289,16 +265,16 @@ export default {
       this.stopVideo();
     },
     dialogPostDataIdx() {
-      this.stopVideo();
-      this.dialogPostMediasIdx = 0;
-      if (this.dialogPostDataIdx < 0) {
-        this.dialogPostDataIdx = this.tableItems.length - 1;
-      } else if (this.dialogPostDataIdx > this.tableItems.length - 1) {
-        this.dialogPostDataIdx = 0;
-      } else {
-        let id = this.tableItems[this.dialogPostDataIdx].id;
-        this.handleGetUserPostDetail(id);
-      }
+      // this.stopVideo();
+      // this.dialogPostMediasIdx = 0;
+      // if (this.dialogPostDataIdx < 0) {
+      //   this.dialogPostDataIdx = this.tableItems.length - 1;
+      // } else if (this.dialogPostDataIdx > this.tableItems.length - 1) {
+      //   this.dialogPostDataIdx = 0;
+      // } else {
+      //   let id = this.tableItems[this.dialogPostDataIdx].id;
+      //   this.handleGetUserPostDetail(id);
+      // }
     },
   },
   mounted() {
@@ -306,18 +282,15 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchPostAllUserTrendingDetailById:
-        "post/fetchPostAllUserTrendingDetailById",
+      fetchPostAllUserNotificationDetailById:
+        "post/fetchPostAllUserNotificationDetailById",
     }),
     getRoute() {
       this.page = parseInt(this.$route.params.page);
     },
     handleGetUserPostDetail(id) {
-      const payload = {
-        id: id,
-      };
       this.loadingDetail = true;
-      return this.fetchPostAllUserTrendingDetailById(payload)
+      return this.fetchPostAllUserNotificationDetailById(id)
         .then((response) => {
           this.loadingDetail = false;
           this.tableItemsDialog = response.data.data;
