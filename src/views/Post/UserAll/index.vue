@@ -48,6 +48,16 @@
           @actionPushNotif="actionPushNotif"
         ></Post-All-Trending>
       </div>
+      <div v-else-if="tab == 2">
+        <Post-Notification
+          :tableItems="tableItemsNotification"
+          :loadingList="loadingListNotification"
+          :totalPages="totalPagesNotification"
+          :totalElements="totalElementsNotification"
+          @onChangePage="changePage"
+          @actionPushNotif="actionPushNotif"
+        ></Post-Notification>
+      </div>
     </div>
 
     <v-snackbar
@@ -82,7 +92,8 @@ import HeaderContent from "@/containers/HeaderContent";
 import NavigationTab from "./Navigation/index.vue";
 import PostAll from "./PostAll/index.vue";
 import PostAllTrending from "./PostTrending/index.vue";
-import { mapActions, mapState } from "vuex";
+import PostNotification from "./Notification/index.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -90,6 +101,7 @@ export default {
     NavigationTab,
     PostAll,
     PostAllTrending,
+    PostNotification,
   },
   data() {
     return {
@@ -98,16 +110,21 @@ export default {
       itemsChannel: [],
       alertSearchFailed: false,
       searchFailedData: {},
-      tableItemsCandidate: [],
-      loadingListCandidate: false,
-      totalElementsCandidate: 0,
       pageCandidate: 1,
-      totalPagesCandidate: 0,
-      tableItemsActive: [],
-      loadingListActive: false,
-      totalElementsActive: 0,
       pageActive: 1,
+      pageNotification: 1,
+      totalPagesCandidate: 0,
       totalPagesActive: 0,
+      totalPagesNotification: 0,
+      tableItemsCandidate: [],
+      tableItemsActive: [],
+      tableItemsNotification: [],
+      loadingListCandidate: false,
+      loadingListActive: false,
+      loadingListNotification: false,
+      totalElementsCandidate: 0,
+      totalElementsActive: 0,
+      totalElementsNotification: 0,
       isFilter: false,
       dataFilter: {
         usernames: "",
@@ -115,6 +132,7 @@ export default {
         startAt: "",
         endAt: "",
         keyword: "",
+        search: "",
       },
       alertFailed: false,
       alertPushNotifSuccess: false,
@@ -138,8 +156,10 @@ export default {
       if (this.dataFilter.keyword == "" || this.dataFilter.keyword == null) {
         if (this.tab == 0) {
           this.getListPostByFilter("candidates");
-        } else {
+        } else if (this.tab == 1) {
           this.getListPostByFilter("trending");
+        } else if (this.tab == 2) {
+          this.getListPostByFilter("notification");
         }
       }
     },
@@ -153,6 +173,7 @@ export default {
       fetchPostAllUserTrending: "post/fetchPostAllUserTrending",
       fetchPostAllUserFilter: "post/fetchPostAllUserFilter",
       fetchPostAllUserTrendingFilter: "post/fetchPostAllUserTrendingFilter",
+      fetchHistoryNotification: "post/fetchHistoryNotification",
       postPushNotifTrendingById: "post/postPushNotifTrendingById",
       searchAccount: "post/searchAccounts",
       searchChannel: "channel/searchChannel",
@@ -169,7 +190,7 @@ export default {
           this.handleSearchChannel("a");
         }
         this.getListPostByFilter("candidates");
-      } else {
+      } else if (this.$route.params.tab == "trending") {
         if (this.$route.query.filter) {
           this.isFilter = true;
         }
@@ -179,12 +200,23 @@ export default {
           this.handleSearchAccount("a");
           this.handleSearchChannel("a");
         }
-        this.getListPostByFilter("active");
+        this.getListPostByFilter("trending");
+      } else if (this.$route.params.tab == "notification") {
+        if (this.$route.query.filter) {
+          this.isFilter = true;
+        }
+        this.pageNotification = this.$route.params.page;
+        this.tab = 2;
+        if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
+          this.handleSearchAccount("a");
+          this.handleSearchChannel("a");
+        }
+        this.getListPostByFilter("notification");
       }
     },
-    resetData () {
-      this.getListPostByFilter('candidates')
-    },  
+    resetData() {
+      this.getListPostByFilter("candidates");
+    },
     handleGetListUserPost() {
       let payload = {
         page: this.pageCandidate - 1,
@@ -271,6 +303,53 @@ export default {
           this.loadingListActive = false;
         });
     },
+    handleGetListUserPostNotificationFilter() {
+      let payload = {
+        page: this.pageNotification - 1,
+        size: 25,
+        direction: "DESC",
+        ...this.dataFilter,
+      };
+      this.loadingListNotification = true;
+      this.isFilter = true;
+      return this.fetchHistoryNotification(payload)
+        .then((response) => {
+          let res = response.data.data;
+          this.loadingListNotification = false;
+          this.tableItemsNotification = res.content;
+          this.totalPagesNotification = res.totalPages;
+          this.totalElementsNotification = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
+        })
+        .catch((err) => {
+          this.loadingListNotification = false;
+        });
+    },
+    handleGetListUserPostNotification() {
+      let payload = {
+        page: this.pageNotification - 1,
+        size: 25,
+        direction: "DESC",
+      };
+      this.loadingListNotification = true;
+      this.isFilter = false;
+      return this.fetchHistoryNotification(payload)
+        .then((response) => {
+          let res = response.data.data;
+          this.loadingListNotification = false;
+          this.tableItemsNotification = res.content;
+          this.totalPagesNotification = res.totalPages;
+          this.totalElementsNotification = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
+        })
+        .catch((err) => {
+          this.loadingListNotification = false;
+        });
+    },
     actionGetListDataByTab(data, type) {
       this.dataFilter = {
         ...data,
@@ -286,16 +365,27 @@ export default {
         } else {
           this.routerPushGetRoute("candidates", 1, {}, false);
         }
-      } else {
+      } else if (this.tab == 1) {
         if (type == "filter") {
           this.isFilter = true;
           if (this.tab == 0 && this.pageCandidate == 1) {
-            this.routerPushGetRoute("active", 1, { filter: true }, true);
+            this.routerPushGetRoute("trending", 1, { filter: true }, true);
           } else {
-            this.routerPushGetRoute("active", 1, { filter: true }, true);
+            this.routerPushGetRoute("trending", 1, { filter: true }, true);
           }
         } else {
-          this.routerPushGetRoute("active", 1, {}, false);
+          this.routerPushGetRoute("trending", 1, {}, false);
+        }
+      } else if (this.tab == 2) {
+        if (type == "filter") {
+          this.isFilter = true;
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute("notification", 1, { filter: true }, true);
+          } else {
+            this.routerPushGetRoute("notification", 1, { filter: true }, true);
+          }
+        } else {
+          this.routerPushGetRoute("notification", 1, {}, false);
         }
       }
     },
@@ -316,11 +406,17 @@ export default {
         } else {
           this.handleGetListUserPost();
         }
-      } else {
+      } else if (type == "trending") {
         if (this.isFilter) {
           this.handleGetListUserPostTrendingFilter();
         } else {
           this.handleGetListUserPostTrending();
+        }
+      } else if (type == "notification") {
+        if (this.isFilter) {
+          this.handleGetListUserPostNotificationFilter();
+        } else {
+          this.handleGetListUserPostNotification();
         }
       }
     },
@@ -368,7 +464,8 @@ export default {
         });
     },
     changeTab(v) {
-      this.$router.push(`/post/user/${v == 0 ? "candidates" : "trending"}/1`);
+      const listTab = ["candidates", "trending", "notification"];
+      this.$router.push(`/post/user/${listTab[v]}/1`);
       this.tab = v;
     },
     changePage(v) {
@@ -379,13 +476,20 @@ export default {
           this.routerPushGetRoute("candidates", v);
         }
         this.pageCandidate = v;
-      } else {
+      } else if (this.tab == 1) {
         if (this.isFilter) {
-          this.routerPushGetRoute("active", v, { filter: this.isFilter });
+          this.routerPushGetRoute("trending", v, { filter: this.isFilter });
         } else {
-          this.routerPushGetRoute("active", v);
+          this.routerPushGetRoute("trending", v);
         }
         this.pageActive = v;
+      } else if (this.tab == 2) {
+        if (this.isFilter) {
+          this.routerPushGetRoute("notification", v, { filter: this.isFilter });
+        } else {
+          this.routerPushGetRoute("notification", v);
+        }
+        this.pageNotification = v;
       }
     },
   },
