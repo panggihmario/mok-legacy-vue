@@ -4,6 +4,12 @@
 }
 
 .tb {
+  &__actions {
+    display: flex;
+    gap: 4px;
+    background-color: #EEEEEE;
+    padding: 4px;
+  }
   &__link {
     color: $secondary;
     font-size: 12px;
