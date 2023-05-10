@@ -173,7 +173,7 @@ export default {
     },
     multipleDelete ({state, dispatch}, payload) {
       const params = {
-        url : `${state.pathFeed}/multiple-delete`,
+        url : `${state.pathFeedSocial}/multiple-delete`,
         data : payload
       }
       return dispatch("postWithToken", params, { root: true })

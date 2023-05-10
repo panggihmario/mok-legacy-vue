@@ -1,7 +1,7 @@
 <template>
   <div :class="ad['tb__td']">
     <div :class="ad['tb__actions']">
-      <custom-button @click="deleteFeed" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+      <custom-button :loading="isLoadingMultiple" @click="deleteFeed" size="small" color="warning">Hapus Konten Terpilih</custom-button>
       <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
     </div>
     <v-data-table
@@ -111,6 +111,7 @@ export default {
       this.selected = []
     },  
     deleteFeed () {
+      this.isLoadingMultiple = true
       const idSelected = this.selected.map(select => {
         return select.id
       })
@@ -121,9 +122,11 @@ export default {
             tab : 'list',
             page : 0,
           }
+          this.isLoadingMultiple = false
           return this.fetchFeeds(payload)
         })
         .catch(err => {
+          this.isLoadingMultiple = false
           console.log(err)
         })
     },
@@ -160,6 +163,7 @@ export default {
     return {
       page: 1,
       selected : [],
+      isLoadingMultiple : false,
       selectedItem : null,
       thumbnailImage : "",
       headers: [
