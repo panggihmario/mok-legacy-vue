@@ -31,12 +31,13 @@
                 <div class="d-flex align-center">
                   <v-icon
                     size="46px"
-                    :color="item.isHlsReady ? 'green' : 'red'"
+                    :color="item.isAllMp4Ready ? 'green' : 'red'"
                     style="margin-right: -16px"
                     >mdi-circle-small</v-icon
                   >
-                  <span :class="item.isHlsReady ? 'green--text' : 'red--text'"
-                    >HLS</span
+                  <span
+                    :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
+                    >MP4</span
                   >
                 </div>
               </td>
