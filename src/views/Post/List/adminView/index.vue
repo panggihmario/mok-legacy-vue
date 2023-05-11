@@ -4,6 +4,13 @@
       <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
       <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
     </div>
+    <v-snackbar
+      v-model="alertSuccess"
+      top
+      :color="statusMessage"
+    > 
+      {{ message }}
+    </v-snackbar>
     <DialogReject
       @closeDialog="closeDialog"
       @handleDelete="deleteFeed"
@@ -80,7 +87,11 @@
               </div>
             </td>
             <td class="d-flex justify-center align-center">
-              <Action :item="item" @successDelete="successDelete" />
+              <Action 
+                :item="item" 
+                @successDelete="successDelete" 
+                @handleFailed="onHandleFailed"
+              />
             </td>
             <!-- <td></td> -->
           </tr>
@@ -126,7 +137,6 @@ export default {
       }else{
         return
       }
-      
     },
     deleteFeed () {
       this.isLoadingMultiple = true
@@ -135,6 +145,7 @@ export default {
       })
       return this.multipleDelete(idSelected)
         .then(response => {
+          this.message = response.data.message
           const payload = {
             size : 10,
             tab : 'list',
@@ -142,15 +153,38 @@ export default {
           }
           this.dialogReject = false
           this.isLoadingMultiple = false
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.message = ''
+          },1500)
           return this.fetchFeeds(payload)
         })
         .catch(err => {
           this.isLoadingMultiple = false
-          console.log(err)
+          this.dialogReject = false
+          this.onHandleFailed(err)
         })
     },
-    successDelete() {
+    onHandleFailed(value) {
+      const response = value.response
+      this.message = response.data.message
+      this.statusMessage = 'warning'
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+        this.statusMessage = 'success'
+      },1500)
+    },
+    successDelete(response) {
       this.$emit("refreshDataFeed");
+      this.message = response.data.message
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+      },1500)
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
@@ -182,6 +216,9 @@ export default {
     return {
       page: 1,
       dialogReject : false,
+      alertSuccess : false,
+      message : '',
+      statusMessage : 'success',
       selected : [],
       isLoadingMultiple : false,
       selectedItem : null,
