@@ -1,9 +1,24 @@
 <template>
   <div :class="ad['tb__td']">
-    <div :class="ad['tb__actions']">
-      <custom-button :loading="isLoadingMultiple" @click="deleteFeed" size="small" color="warning">Hapus Konten Terpilih</custom-button>
-      <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
-    </div>
+    <transition name="fade">
+      <div :class="ad['tb__actions']" v-if="selected.length > 0">
+        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+        <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
+      </div>
+    </transition>
+    
+    <v-snackbar
+      v-model="alertSuccess"
+      top
+      :color="statusMessage"
+    > 
+      {{ message }}
+    </v-snackbar>
+    <DialogReject
+      @closeDialog="closeDialog"
+      @handleDelete="deleteFeed"
+      :dialogReject="dialogReject"
+    />
     <v-data-table
       :headers="headers"
       hide-default-footer
@@ -75,7 +90,11 @@
               </div>
             </td>
             <td class="d-flex justify-center align-center">
-              <Action :item="item" @successDelete="successDelete" />
+              <Action 
+                :item="item" 
+                @successDelete="successDelete" 
+                @handleFailed="onHandleFailed"
+              />
             </td>
             <!-- <td></td> -->
           </tr>
@@ -90,10 +109,21 @@ import { mapState, mapActions } from "vuex";
 import moment from "moment";
 import LinkDialog from "../../containers/dialog/index.vue";
 import Action from "./action.vue";
+import DialogReject from "./dialogReject.vue"
 export default {
   components: {
     LinkDialog,
     Action,
+    DialogReject
+  },
+  watch : {
+    '$route.params.page': {
+      handler: function(search) {
+        this.selected = []
+      },
+      deep: true,
+      immediate: true
+  }
   },
   computed: {
     ...mapState({
@@ -110,6 +140,16 @@ export default {
     clearSelected () {
       this.selected = []
     },  
+    closeDialog() {
+      this.dialogReject = false
+    },
+    openDialogDelete() {
+      if(this.selected.length > 0) {
+        this.dialogReject = true
+      }else{
+        return
+      }
+    },
     deleteFeed () {
       this.isLoadingMultiple = true
       const idSelected = this.selected.map(select => {
@@ -117,21 +157,46 @@ export default {
       })
       return this.multipleDelete(idSelected)
         .then(response => {
+          this.message = response.data.message
           const payload = {
             size : 10,
             tab : 'list',
             page : 0,
           }
+          this.dialogReject = false
           this.isLoadingMultiple = false
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.message = ''
+          },1500)
           return this.fetchFeeds(payload)
         })
         .catch(err => {
           this.isLoadingMultiple = false
-          console.log(err)
+          this.dialogReject = false
+          this.onHandleFailed(err)
         })
     },
-    successDelete() {
+    onHandleFailed(value) {
+      const response = value.response
+      this.message = response.data.message
+      this.statusMessage = 'warning'
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+        this.statusMessage = 'success'
+      },1500)
+    },
+    successDelete(response) {
       this.$emit("refreshDataFeed");
+      this.message = response.data.message
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+      },1500)
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
@@ -162,6 +227,10 @@ export default {
   data() {
     return {
       page: 1,
+      dialogReject : false,
+      alertSuccess : false,
+      message : '',
+      statusMessage : 'success',
       selected : [],
       isLoadingMultiple : false,
       selectedItem : null,
@@ -236,6 +305,13 @@ export default {
 .header-table {
   color: black;
   font-size: 14px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 
