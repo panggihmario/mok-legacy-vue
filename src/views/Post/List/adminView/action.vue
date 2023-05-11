@@ -72,11 +72,14 @@ export default {
         .then(response => {
           setTimeout(() => {
             this.loadingDelete = false
-            this.$emit('successDelete')
+            this.closeDialogReject()
+            this.$emit('successDelete', response)
           }, 2000)
         })
         .catch(err => {
           this.loadingDelete = false
+          this.closeDialogReject()
+          this.$emit('handleFailed', err)
         })
     }
   }
