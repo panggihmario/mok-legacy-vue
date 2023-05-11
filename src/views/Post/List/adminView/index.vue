@@ -1,9 +1,12 @@
 <template>
   <div :class="ad['tb__td']">
-    <div :class="ad['tb__actions']">
-      <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
-      <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
-    </div>
+    <transition name="fade">
+      <div :class="ad['tb__actions']" v-if="selected.length > 0">
+        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+        <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
+      </div>
+    </transition>
+    
     <v-snackbar
       v-model="alertSuccess"
       top
@@ -112,6 +115,15 @@ export default {
     LinkDialog,
     Action,
     DialogReject
+  },
+  watch : {
+    '$route.params.page': {
+      handler: function(search) {
+        this.selected = []
+      },
+      deep: true,
+      immediate: true
+  }
   },
   computed: {
     ...mapState({
@@ -293,6 +305,13 @@ export default {
 .header-table {
   color: black;
   font-size: 14px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 
