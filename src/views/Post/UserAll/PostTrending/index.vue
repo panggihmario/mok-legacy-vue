@@ -31,12 +31,12 @@
                 <div class="d-flex align-center">
                   <v-icon
                     size="46px"
-                    :color="item.isAllMp4Ready ? 'green' : 'red'"
+                    :color="item.isMp4Ready ? 'green' : 'red'"
                     style="margin-right: -16px"
                     >mdi-circle-small</v-icon
                   >
                   <span
-                    :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
+                    :class="item.isMp4Ready ? 'green--text' : 'red--text'"
                     >MP4</span
                   >
                 </div>

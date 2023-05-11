@@ -247,8 +247,19 @@ export default {
     };
   },
   watch: {
+    "previewTiktokData.id"() {
+      this.isDataExist = false;
+      this.isValid.url = true;
+      this.isValid.counter = "";
+      this.previewTiktokPayload.floatingLink = "";
+      this.previewTiktokPayload.floatingLinkLabel = "";
+    },
     previewTiktokData() {
       this.isDataExist = false;
+      this.isValid.url = true;
+      this.isValid.counter = "";
+      this.previewTiktokPayload.floatingLink = "";
+      this.previewTiktokPayload.floatingLinkLabel = "";
     },
     "previewTiktokPayload.floatingLinkLabel"(val) {
       // if (val == "") {

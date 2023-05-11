@@ -265,16 +265,16 @@ export default {
       this.stopVideo();
     },
     dialogPostDataIdx() {
-      // this.stopVideo();
-      // this.dialogPostMediasIdx = 0;
-      // if (this.dialogPostDataIdx < 0) {
-      //   this.dialogPostDataIdx = this.tableItems.length - 1;
-      // } else if (this.dialogPostDataIdx > this.tableItems.length - 1) {
-      //   this.dialogPostDataIdx = 0;
-      // } else {
-      //   let id = this.tableItems[this.dialogPostDataIdx].id;
-      //   this.handleGetUserPostDetail(id);
-      // }
+      this.stopVideo();
+      this.dialogPostMediasIdx = 0;
+      if (this.dialogPostDataIdx < 0) {
+        this.dialogPostDataIdx = this.tableItems.length - 1;
+      } else if (this.dialogPostDataIdx > this.tableItems.length - 1) {
+        this.dialogPostDataIdx = 0;
+      } else {
+        let id = this.tableItems[this.dialogPostDataIdx].feedId;
+        this.handleGetUserPostDetail(id);
+      }
     },
   },
   mounted() {
@@ -319,6 +319,7 @@ export default {
       this.dialogPost = true;
       this.dialogPostDataIdx = idx;
       this.handleGetUserPostDetail(id);
+      console.log();
     },
     changeDialogPostImg(v) {
       this.dialogPostMediasIdx += v;
@@ -331,7 +332,7 @@ export default {
     },
     stopVideo() {
       const slide = this.dialogPostMediasIdx;
-      const medias = this.tableItemsDialog.medias;
+      const medias = this.tableItemsDialog.post.medias;
       let idVideo;
       medias.forEach((m, idx) => {
         if (m.type === "video") {
