@@ -1,9 +1,14 @@
 <template>
   <div :class="ad['tb__td']">
     <div :class="ad['tb__actions']">
-      <custom-button :loading="isLoadingMultiple" @click="deleteFeed" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+      <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
       <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
     </div>
+    <DialogReject
+      @closeDialog="closeDialog"
+      @handleDelete="deleteFeed"
+      :dialogReject="dialogReject"
+    />
     <v-data-table
       :headers="headers"
       hide-default-footer
@@ -90,10 +95,12 @@ import { mapState, mapActions } from "vuex";
 import moment from "moment";
 import LinkDialog from "../../containers/dialog/index.vue";
 import Action from "./action.vue";
+import DialogReject from "./dialogReject.vue"
 export default {
   components: {
     LinkDialog,
     Action,
+    DialogReject
   },
   computed: {
     ...mapState({
@@ -110,6 +117,17 @@ export default {
     clearSelected () {
       this.selected = []
     },  
+    closeDialog() {
+      this.dialogReject = false
+    },
+    openDialogDelete() {
+      if(this.selected.length > 0) {
+        this.dialogReject = true
+      }else{
+        return
+      }
+      
+    },
     deleteFeed () {
       this.isLoadingMultiple = true
       const idSelected = this.selected.map(select => {
@@ -122,6 +140,7 @@ export default {
             tab : 'list',
             page : 0,
           }
+          this.dialogReject = false
           this.isLoadingMultiple = false
           return this.fetchFeeds(payload)
         })
@@ -162,6 +181,7 @@ export default {
   data() {
     return {
       page: 1,
+      dialogReject : false,
       selected : [],
       isLoadingMultiple : false,
       selectedItem : null,
