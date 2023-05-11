@@ -186,11 +186,7 @@ export default {
         page,
         ...(sort &&  {sort : sort} )
       }
-      console.log(payload)
       return this.fetchFeeds(payload)
-        .then(r => {
-          console.log(r)
-        })
     },
     changeTab(tab) {
       this.isFilter = false
