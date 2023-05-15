@@ -1,10 +1,31 @@
 <template>
   <div :class="ad['tb__td']">
+    <transition name="fade">
+      <div :class="ad['tb__actions']" v-if="selected.length > 0">
+        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten Terpilih</custom-button>
+        <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
+      </div>
+    </transition>
+    
+    <v-snackbar
+      v-model="alertSuccess"
+      top
+      :color="statusMessage"
+    > 
+      {{ message }}
+    </v-snackbar>
+    <DialogReject
+      @closeDialog="closeDialog"
+      @handleDelete="deleteFeed"
+      :dialogReject="dialogReject"
+    />
     <v-data-table
       :headers="headers"
       hide-default-footer
-      class="grey--text"
+      class="grey--text my-table"
       :items="feeds"
+      v-model="selected"
+      show-select
     >
       <template v-slot:body="{ items }">
         <tbody>
@@ -12,6 +33,14 @@
             v-for="item in items"
             :key="item.id"
           >
+            <td>
+              <input
+                style="width: 20px"
+                type="checkbox"
+                :value="item"
+                v-model="selected"
+              />
+            </td>
             <td
               @mouseover="onHover(item)"
               @mouseleave="onLeave"
@@ -39,21 +68,21 @@
               <div :class="ad['tb__caption']">{{ item.description }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
+              <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.createBy }}</div>
+              <div :class="ad['tb__caption']">{{ item.createBy }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']"  >{{ item.publishBy }}</div>
+              <div :class="ad['tb__caption']"  >{{ item.publishBy }}</div>
             </td>
             <td >
-              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
+              <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
             <td>
-              <div :class="ad['dg__desc']" class="d-flex justify-center align-center" >
+              <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 <div v-if="item.proceedAt"> {{ formatingDate(item.proceedAt) }} </div>
                 <div v-else > 
                   <v-icon size="small" >far fa-clock</v-icon>
@@ -61,7 +90,11 @@
               </div>
             </td>
             <td class="d-flex justify-center align-center">
-              <Action :item="item" @successDelete="successDelete" />
+              <Action 
+                :item="item" 
+                @successDelete="successDelete" 
+                @handleFailed="onHandleFailed"
+              />
             </td>
             <!-- <td></td> -->
           </tr>
@@ -76,10 +109,21 @@ import { mapState, mapActions } from "vuex";
 import moment from "moment";
 import LinkDialog from "../../containers/dialog/index.vue";
 import Action from "./action.vue";
+import DialogReject from "./dialogReject.vue"
 export default {
   components: {
     LinkDialog,
     Action,
+    DialogReject
+  },
+  watch : {
+    '$route.params.page': {
+      handler: function(search) {
+        this.selected = []
+      },
+      deep: true,
+      immediate: true
+  }
   },
   computed: {
     ...mapState({
@@ -90,9 +134,69 @@ export default {
   methods: {
      ...mapActions({
       fetchFeedById: "post/fetchFeedById",
+      multipleDelete : 'post/multipleDelete',
+      fetchFeeds: "post/fetchFeeds",
     }),
-    successDelete() {
+    clearSelected () {
+      this.selected = []
+    },  
+    closeDialog() {
+      this.dialogReject = false
+    },
+    openDialogDelete() {
+      if(this.selected.length > 0) {
+        this.dialogReject = true
+      }else{
+        return
+      }
+    },
+    deleteFeed () {
+      this.isLoadingMultiple = true
+      const idSelected = this.selected.map(select => {
+        return select.id
+      })
+      return this.multipleDelete(idSelected)
+        .then(response => {
+          this.message = response.data.message
+          const payload = {
+            size : 10,
+            tab : 'list',
+            page : 0,
+          }
+          this.dialogReject = false
+          this.isLoadingMultiple = false
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.message = ''
+          },1500)
+          return this.fetchFeeds(payload)
+        })
+        .catch(err => {
+          this.isLoadingMultiple = false
+          this.dialogReject = false
+          this.onHandleFailed(err)
+        })
+    },
+    onHandleFailed(value) {
+      const response = value.response
+      this.message = response.data.message
+      this.statusMessage = 'warning'
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+        this.statusMessage = 'success'
+      },1500)
+    },
+    successDelete(response) {
       this.$emit("refreshDataFeed");
+      this.message = response.data.message
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+      },1500)
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
@@ -123,20 +227,24 @@ export default {
   data() {
     return {
       page: 1,
+      dialogReject : false,
+      alertSuccess : false,
+      message : '',
+      statusMessage : 'success',
+      selected : [],
+      isLoadingMultiple : false,
       selectedItem : null,
       thumbnailImage : "",
       headers: [
         {
           text: "Media",
-          class: "whitesnow",
           sortable: false,
           value: "media",
           filterable: false,
-          width: "100",
+          width: "90",
         },
         {
           text: "Caption",
-          class: "whitesnow",
           value: "description",
           sortable: false,
           filterable: false,
@@ -144,28 +252,24 @@ export default {
         },
         {
           text: "Channel",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "channel",
         },
         {
           text: "User",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "user",
         },
         {
           text: "Publisher",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "publishBy",
         },
         {
           text: "Dipublish Pada",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "schedule",
@@ -174,7 +278,6 @@ export default {
         },
         {
           text : 'Tayang',
-          class : 'whitesnow',
           sortable : false,
           filterable : false , 
           value : 'proceedAt',
@@ -182,7 +285,6 @@ export default {
         },
         {
           text: "Action",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "action",
@@ -193,6 +295,25 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" >
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
+}
+.header-table {
+  color: black;
+  font-size: 14px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>
 
 <style src="../../style.scss" lang="scss" module="ad">
 </style>

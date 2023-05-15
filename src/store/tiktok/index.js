@@ -27,6 +27,35 @@ export default {
     },
   },
   actions: {
+    postTiktokUrlValidation({ state }, payload) {
+      const data = {
+        url: `admin/tiktok`,
+        params: payload,
+      };
+      return this._vm
+        .$httpWithToken()
+        .post(data.url, data.params)
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+    getTiktokUrlValidation({ state }, payload) {
+      const data = {
+        url: `admin/tiktok/validation?originalUrl=${payload}`,
+      };
+      return this._vm
+        .$httpWithToken()
+        .get(data.url)
+        .then((response) => {
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
     getUserDetail({ state }, payload) {
       const data = {
         url: `${state.pathAccount}/detail`,

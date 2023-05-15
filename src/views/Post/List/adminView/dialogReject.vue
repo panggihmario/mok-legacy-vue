@@ -1,17 +1,13 @@
 <template>
-<div>
-  <custom-button 
-    size="x-small" 
-    color="primary" 
-    @click="openDialogReject"
+  <v-dialog 
+    width="475" 
+    v-model="dialogReject"
+    @click:outside="closeDialog"
   >
-    Delete
-  </custom-button>
-      <v-dialog width="475" v-model="dialogReject">
-      <v-card>
+  <v-card>
         <div :class="d.container" >
           <div :class="d.icon">
-            <v-btn icon @click="closeDialogReject" small>
+            <v-btn icon @click="closeDialog" small>
               <v-icon small>fas fa-times</v-icon>
             </v-btn>
           </div>
@@ -26,7 +22,14 @@
                 <div :class="d.title">Apakah kamu yakin ingin menghapus postingan ini?</div>
                 <div  :class="d.content" >Postingan yang kamu hapus akan dihilangkan dari list feed ini, dan kamu tidak akan bisa mengembalikan potingan yang sudah dihapus.</div>
                 <div class="d-flex">
-                  <custom-button @click="closeDialogReject" size="small" class="mr-2" color="secondary">Batalkan Hapus Postingan</custom-button>
+                  <custom-button 
+                    @click="closeDialog" 
+                    size="small" 
+                    class="mr-2" 
+                    color="secondary"
+                  >
+                    Batalkan Hapus Postingan
+                  </custom-button>
                   <custom-button
                     :loading="loadingDelete" 
                     @click="handleDelete" 
@@ -41,46 +44,29 @@
           </div>
         </div>
       </v-card>
-    </v-dialog>
-</div>
+  </v-dialog>
 </template>
 
 <script>
-import { mapActions } from "vuex"
 export default {
-  props : ['item'],
+  props : {
+    dialogReject : Boolean
+  },
   data () {
     return {
       loadingDelete : false,
-      dialogReject : false
     }
   },
   methods : {
-    ...mapActions({
-      deleteFeed : 'post/deleteFeed'
-    }),
-    closeDialogReject() {
-      this.dialogReject = false
+    closeDialog () {
+      this.$emit('closeDialog', false)
     },
-    openDialogReject() {
-      this.dialogReject = true
-    },
-    handleDelete() {
+    handleDelete () {
       this.loadingDelete = true
-      const id = this.item.id
-      return this.deleteFeed(id)
-        .then(response => {
-          setTimeout(() => {
-            this.loadingDelete = false
-            this.closeDialogReject()
-            this.$emit('successDelete', response)
-          }, 2000)
-        })
-        .catch(err => {
-          this.loadingDelete = false
-          this.closeDialogReject()
-          this.$emit('handleFailed', err)
-        })
+      this.$emit('handleDelete')
+      setTimeout(() => {
+        this.loadingDelete = false
+      },500)
     }
   }
 }
