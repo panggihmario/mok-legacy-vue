@@ -26,8 +26,8 @@
                 </div>
               </td>
               <td class="font-12">{{ item.channelName }}</td>
-              <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ item.postBy }}</td>
+              <td class="font-12">{{ item.createBy }}</td>
               <td class="font-12">{{ formatingDate(item.createAt) }}</td>
             </tr>
           </tbody>
