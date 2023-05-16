@@ -90,7 +90,7 @@
 
         <div class="mt-2 font-12 text-break">
           <k-textarea
-            v-model="previewTiktokPayload.description"
+            v-model="dataPayload.description"
             placeholder="Caption"
             outlined
             background-color="white"
@@ -99,8 +99,8 @@
             hide-details
           ></k-textarea>
           <custom-autocomplete
-            :value="previewTiktokPayload.channel"
-            v-model="previewTiktokPayload.channel"
+            :value="dataPayload.channel"
+            v-model="dataPayload.channel"
             :items="channels"
             item-text="name"
             placeholder="Select Channel"
@@ -112,7 +112,7 @@
           <span class="grey--text">Link dari postingan ini</span>
           <div class="mt-3">
             <k-input
-              v-model="previewTiktokPayload.floatingLinkLabel"
+              v-model="dataPayload.floatingLinkLabel"
               placeholder="Placeholder"
               class="mt-3"
               maxlength="30"
@@ -125,13 +125,13 @@
           </div>
           <div class="my-3">
             <k-input
-              v-model="previewTiktokPayload.floatingLink"
+              v-model="dataPayload.floatingLink"
               placeholder="https:/...."
               class="mt-3"
               icon="fas fa-link"
             ></k-input>
             <div
-              v-if="previewTiktokPayload.floatingLink && !isValid.url"
+              v-if="dataPayload.floatingLink && !isValid.url"
               class="mt-2 warning--text"
             >
               Gunakan format link yang sesuai contohnya <br />
@@ -216,6 +216,16 @@ export default {
         thumbnail: {},
         metadata: {},
       },
+      dataPayload: {
+        id: null,
+        channel: null,
+        description: null,
+        medias: [],
+        product: null,
+        floatingLink: null,
+        floatingLinkLabel: null,
+        type: "social",
+      },
       payloadFailed: {
         message: "",
       },
@@ -251,36 +261,44 @@ export default {
       this.isDataExist = false;
       this.isValid.url = true;
       this.isValid.counter = "";
-      this.previewTiktokPayload.floatingLink = "";
-      this.previewTiktokPayload.floatingLinkLabel = "";
+      this.dataPayload.floatingLink = "";
+      this.dataPayload.floatingLinkLabel = "";
     },
     previewTiktokData() {
       this.isDataExist = false;
       this.isValid.url = true;
       this.isValid.counter = "";
-      this.previewTiktokPayload.floatingLink = "";
-      this.previewTiktokPayload.floatingLinkLabel = "";
+      this.dataPayload.floatingLink = "";
+      this.dataPayload.floatingLinkLabel = "";
+      // this.dataPayload.description = this.previewTiktokData.desc
+      this.dataPayload = { ...this.previewTiktokPayload };
+      console.log(this.dataPayload);
     },
     "previewTiktokPayload.floatingLinkLabel"(val) {
       // if (val == "") {
       //   this.isValid.counter = "Gunakan minimal 4 karakter";
       // } else {
-      this.isValid.counter = this.rules.counterValidation(val);
+      // this.isValid.counter = this.rules.counterValidation(val);
       // }
     },
     "previewTiktokPayload.floatingLink"(val) {
-      this.isValid.url = this.rules.urlValidation(val);
-      if (this.previewTiktokPayload.floatingLink != "") {
-        if (this.previewTiktokPayload.floatingLinkLabel == "") {
-          this.isValid.counter = "Gunakan minimal 4 karakter";
-        }
-      } else {
-        this.isValid.counter = "";
-      }
+      // this.isValid.url = this.rules.urlValidation(val);
+      // if (this.dataPayload.floatingLink != "") {
+      //   if (this.dataPayload.floatingLinkLabel == "") {
+      //     this.isValid.counter = "Gunakan minimal 4 karakter";
+      //   }
+      // } else {
+      //   this.isValid.counter = "";
+      // }
     },
   },
   mounted() {
     this.handleGetChannel();
+    this.isDataExist = false;
+    this.isValid.url = true;
+    this.isValid.counter = "";
+    this.dataPayload.floatingLink = "";
+    this.dataPayload.floatingLinkLabel = "";
   },
   computed: {
     ...mapState({
@@ -350,7 +368,7 @@ export default {
     },
     actionGetTiktokVideoNoWatermark() {
       const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
-      if (this.previewTiktokPayload.channel == null) {
+      if (this.dataPayload.channel == null) {
         this.alertFailed = true;
         setTimeout(() => {
           this.alertFailed = false;
@@ -477,11 +495,11 @@ export default {
       return new File([u8arr], filename, { type: mime });
     },
     actionPostFeed() {
-      this.previewTiktokPayload.medias[0] = this.dataResponse;
-      if (this.previewTiktokPayload.description == null) {
-        this.previewTiktokPayload.description = "";
+      this.dataPayload.medias[0] = this.dataResponse;
+      if (this.dataPayload.description == null) {
+        this.dataPayload.description = "";
       }
-      return this.postFeed(this.previewTiktokPayload)
+      return this.postFeed(this.dataPayload)
         .then((response) => {
           this.actionPostUrlValidation({
             originalUrl: this.tiktokUrl,
