@@ -31,6 +31,7 @@
             class="mr-4"
             v-if="isFilter"
             @click="resetFilter"
+            style="margin-top : auto"
             size="x-medium"
           >
             <div class="warning--text" >Reset Filter</div>
@@ -39,6 +40,7 @@
           <custom-button 
             v-if="!expand"
             class="mr-4"
+            style="margin-top : auto"
             size="x-medium"
             @click="expand = !expand"
           >
@@ -184,11 +186,7 @@ export default {
         page,
         ...(sort &&  {sort : sort} )
       }
-
       return this.fetchFeeds(payload)
-        .then(r => {
-          console.log(r)
-        })
     },
     changeTab(tab) {
       this.isFilter = false

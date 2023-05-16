@@ -16,20 +16,20 @@
 
       <div class="d-flex align-center">
         <custom-button
-          v-if="!showFilter"
+          v-if="!showFilter && tab != 2"
           size="x-medium"
           @click="showFilter = true"
           class="mr-4"
         >
           <div>Filter Data</div>
         </custom-button>
-        <input  
+        <input
           style="width: 200px"
           placeholder="Search"
           :class="p['input-search']"
           v-model="keywordTrending"
           @keyup.enter="actionFilter"
-          />
+        />
       </div>
     </div>
 
@@ -82,7 +82,7 @@ export default {
   data() {
     return {
       tab: 0,
-      items: ["Semua Postingan", "Trending"],
+      items: ["Semua Postingan", "Trending", "List Push Notif"],
       search: "",
       searchChannel: "",
       showFilter: false,
@@ -183,8 +183,10 @@ export default {
       this.isResetFilter = true;
       if (this.$route.params.tab == "candidates") {
         this.tab = 0;
-      } else {
+      } else if (this.$route.params.tab == "trending") {
         this.tab = 1;
+      } else if (this.$route.params.tab == "notification") {
+        this.tab = 2;
       }
     },
     convertEpoch(d, h, m) {
@@ -202,6 +204,7 @@ export default {
     actionFilter() {
       let filterPayload = {
         keyword: this.keywordSearchTrending,
+        search: this.keywordSearchTrending,
         usernames: this.paramsUsersTrending.join(","),
         channelCodes: this.paramsChannelTrending.join(","),
         startAt:
@@ -219,10 +222,9 @@ export default {
 };
 </script>
 
-
 <style lang="scss" module="p">
 .input-search {
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   height: 32px;
