@@ -16,7 +16,7 @@
 
       <div class="d-flex align-center">
         <custom-button
-          v-if="!showFilter"
+          v-if="!showFilter && tab != 2"
           size="x-medium"
           @click="showFilter = true"
           class="mr-4"
