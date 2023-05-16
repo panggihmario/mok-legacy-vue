@@ -140,6 +140,15 @@
           </div>
         </div>
 
+        <div
+          v-if="isDataExist"
+          class="d-flex align-center alert-data-exist"
+          style="gap: 6px"
+        >
+          <icon-triangle-exclamation></icon-triangle-exclamation>
+          <span>Konten sudah pernah disubmit, coba konten lain</span>
+        </div>
+
         <div class="d-flex mt-3">
           <custom-button
             color="white"
@@ -152,7 +161,11 @@
             color="primary"
             class="white--text"
             :loading="loadingSubmit"
-            @click="actionGetTiktokVideoNoWatermark"
+            @click="
+              actionGetUrlValidation(
+                `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
+              )
+            "
             :disabled="
               previewTiktokData.video.height >= 1024
                 ? false
@@ -195,6 +208,7 @@ export default {
       asetKipas: "https://asset.kipaskipas.com",
       channels: [],
       payload: {},
+      tiktokUrl: "",
       dataResponse: {
         id: null,
         type: "video",
@@ -229,14 +243,29 @@ export default {
         url: true,
         counter: "",
       },
+      isDataExist: false,
     };
   },
   watch: {
+    "previewTiktokData.id"() {
+      this.isDataExist = false;
+      this.isValid.url = true;
+      this.isValid.counter = "";
+      this.previewTiktokPayload.floatingLink = "";
+      this.previewTiktokPayload.floatingLinkLabel = "";
+    },
+    previewTiktokData() {
+      this.isDataExist = false;
+      this.isValid.url = true;
+      this.isValid.counter = "";
+      this.previewTiktokPayload.floatingLink = "";
+      this.previewTiktokPayload.floatingLinkLabel = "";
+    },
     "previewTiktokPayload.floatingLinkLabel"(val) {
       // if (val == "") {
       //   this.isValid.counter = "Gunakan minimal 4 karakter";
       // } else {
-        this.isValid.counter = this.rules.counterValidation(val);
+      this.isValid.counter = this.rules.counterValidation(val);
       // }
     },
     "previewTiktokPayload.floatingLink"(val) {
@@ -264,6 +293,8 @@ export default {
       changeStatusPreviewTiktok: "changeStatusPreviewTiktok",
       changeStatusPreviewTiktokSuccess: "changeStatusPreviewTiktokSuccess",
       getAllChannel: "channel/getAllChannel",
+      postTiktokUrlValidation: "tiktok/postTiktokUrlValidation",
+      getTiktokUrlValidation: "tiktok/getTiktokUrlValidation",
       getTiktokVideoNoWatermark: "tiktok/getTiktokVideoNoWatermark",
       postFeed: "post/postFeed",
     }),
@@ -295,6 +326,27 @@ export default {
       } else {
         return response;
       }
+    },
+    actionPostUrlValidation(dataPayload) {
+      return this.postTiktokUrlValidation(dataPayload)
+        .then((res) => {
+          // console.log({ res });
+        })
+        .catch((err) => {
+          // console.log({ err });
+        });
+    },
+    actionGetUrlValidation(url) {
+      this.tiktokUrl = url;
+      return this.getTiktokUrlValidation(url)
+        .then((res) => {
+          this.actionGetTiktokVideoNoWatermark();
+        })
+        .catch((err) => {
+          if (err.response.data.code == "4200") {
+            this.isDataExist = true;
+          }
+        });
     },
     actionGetTiktokVideoNoWatermark() {
       const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
@@ -431,6 +483,12 @@ export default {
       }
       return this.postFeed(this.previewTiktokPayload)
         .then((response) => {
+          this.actionPostUrlValidation({
+            originalUrl: this.tiktokUrl,
+            postSocialId: response.data.data.postSocialId,
+            status: "CREATED",
+          });
+
           this.loadingSubmit = false;
           this.actionChangeStatusPreviewTiktokSuccess(true);
           setTimeout(() => {
@@ -505,5 +563,12 @@ export default {
   padding: 6px;
   font-weight: 600;
   font-size: 11px;
+}
+
+.alert-data-exist {
+  background-color: $primarylowtint;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px;
 }
 </style>
