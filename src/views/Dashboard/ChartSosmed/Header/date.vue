@@ -13,6 +13,7 @@
         readonly
         dense
         color="secondary"
+        placeholder="Tanggal"
         outlined
         v-bind="attrs"
         v-on="on"
@@ -56,7 +57,13 @@
             <custom-button  class="mr-2" size="small" @click="onReset" >
               <div class="primary--text">Reset</div>
             </custom-button>
-            <custom-button size="small" color="secondary">Ok</custom-button>
+            <custom-button 
+              size="small" 
+              color="secondary"
+              @click="saveDate"
+            >
+              Ok
+            </custom-button>
           </div>
           
         </v-col>
@@ -101,12 +108,28 @@ export default {
     },
   },
   methods : {
+    saveDate () {
+      const dateRange = this.choosenDate
+      const start = this.formatter(dateRange[0]);
+      const end = this.formatter(dateRange[1]);
+      const fullDate = `${start} - ${end}`;
+      this.displayDate = dateRange.length > 1 ? fullDate : `${start}`
+      this.menu = false
+      const startEpoch = moment(dateRange[0]).subtract(7, 'hour').valueOf()
+      const endEpoch = dateRange.length > 1 ? moment(dateRange[1]).subtract(7, 'hour').valueOf() : startEpoch
+      const params = {
+        startEpoch,
+        endEpoch
+      }
+      this.$emit('setDate', params)
+    },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
       return v;
     },
     onReset () {
       this.choosenDate = []
+      this.displayDate = ''
     },
     checkRangeDate(value) {
       const [first, second] = value;

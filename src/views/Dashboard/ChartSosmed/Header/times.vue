@@ -34,10 +34,6 @@ export default {
     return {
       items: [
         {
-          label : 'HOUR',
-          value : 'hour'
-        },
-        {
           label : 'DAY',
           value : 'day'
         },

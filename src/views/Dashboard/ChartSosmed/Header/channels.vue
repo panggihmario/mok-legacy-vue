@@ -51,7 +51,6 @@ export default {
       return this.getListChannel()
         .then(response => {
           const responseData = response.data.data
-          console.log(responseData)
           this.items = responseData
         })
         .catch(() => {
