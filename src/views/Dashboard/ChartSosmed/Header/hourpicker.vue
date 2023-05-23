@@ -137,6 +137,7 @@ export default {
         end : this.endHour ? this.endHour : this.startHour
       }
       this.$emit('setHour', params)
+      this.menu = false
     }
   } 
 }

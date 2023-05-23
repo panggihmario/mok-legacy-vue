@@ -3,6 +3,9 @@
       <div class="d-flex justify-space-between align-center">
         <div :class="k['dash__label']">User Activity</div>
         <div :class="k['dash__actions']" >
+          <custom-button>
+            <div class="primary--text">Reset Filter</div>
+          </custom-button>
           <Trending
             :isTrending="payload.isTrending"
             @onTrending="handleTrending"
@@ -38,10 +41,12 @@
           <custom-button @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
       </div>
-      {{ payload }}
+      <!-- {{ payload }} -->
     </div>
 </template>
 <script>
+import moment  from 'moment';
+import { mapActions } from 'vuex';
 import isTrending from './isTrending.vue';
 import SearchUsername from './searchUsername.vue';
 import channels from './channels.vue';
@@ -86,21 +91,56 @@ export default {
       ],
     }
   },
+  mounted() {
+    this.initChart()
+  },
   methods : {
-    handleFilter () {
-      const params = {
-        timeline: this.payload.timeline,
-        isTrending : this.payload.isTrending,
-        performerId : this.payload.performerId,
-        channelCode : this.payload.channelCode,
-        startDateAt : this.payload.startDateAt,
-        endDateAt : this.payload.endDateAt,
-        startHourAt : this.payload.startHourAt,
-        endHourAt : this.payload.endHourAt,
-        ...this.payload.timeline === 'month' && {startMonthAt : this.payload.startMonthAt},
-        ...this.payload.timeline === 'month' && {endMonthAt : this.payload.endMonthAt}
+    ...mapActions({
+      fetchStatisticsUserSeen : 'dashboard/fetchStatisticsUserSeen' 
+    }),
+    initChart () {
+      const startDateAt = moment().subtract(7, 'hour').valueOf()
+      const endDateAt = moment().endOf('day').subtract(7, 'hour').valueOf()
+      const payload = {
+        filterBy : this.payload.timeline,
+        params : {
+          isTrending : false,
+          startDateAt ,
+          endDateAt ,
+          startHourAt : 0,
+          endHourAt : 23
+        }
       }
-      console.log(params)
+      return this.fetchStatisticsUserSeen(payload)
+        .then(response => {
+          this.$emit('setData', response)
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
+    },
+    handleFilter () {
+      const payload = {
+        filterBy : this.payload.timeline,
+        params : {
+          isTrending : this.payload.isTrending,
+          ...this.payload.performerId && {performerId : this.payload.performerId},
+          ...this.payload.channelCode && {channelCode : this.payload.channelCode},
+          startDateAt : this.payload.startDateAt,
+          endDateAt : this.payload.endDateAt,
+          ...this.payload.endHourAt && {endHourAt : this.payload.endHourAt},
+          ...this.payload.startHourAt && {startHourAt : this.payload.startHourAt},
+          ...this.payload.timeline === 'month' && {startMonthAt : this.payload.startMonthAt},
+          ...this.payload.timeline === 'month' && {endMonthAt : this.payload.endMonthAt}
+        },
+      }
+      console.log(payload)
+      return this.fetchStatisticsUserSeen(payload)
+        .then(response => {
+          console.log(response)
+          this.$emit('setData', response)
+        })
     },
     handleTrending(value) {
       this.payload.isTrending = value
