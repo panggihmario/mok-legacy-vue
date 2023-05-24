@@ -2,7 +2,7 @@
   <v-menu v-model="menu" ref="menu" :close-on-content-click="false" :return-value.sync="date"
     transition="scale-transition" offset-y>
     <template v-slot:activator="{ on, attrs }">
-      <v-text-field v-model="date" readonly dense color="secondary" outlined v-bind="attrs" v-on="on" hide-details
+      <v-text-field v-model="hourDisplay" readonly dense color="secondary" outlined v-bind="attrs" v-on="on" hide-details
         placeholder="Jam" class="font-12"></v-text-field>
     </template>
     <v-card class="pa-4">
@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       date: '',
+      hourDisplay : '',
       menu: false,
       menuStart: false,
       menuEnd: false,
@@ -136,6 +137,7 @@ export default {
         start : this.startHour,
         end : this.endHour ? this.endHour : this.startHour
       }
+      this.hourDisplay = `${this.startHour} : ${this.endHour} `
       this.$emit('setHour', params)
       this.menu = false
     }

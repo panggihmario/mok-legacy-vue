@@ -7,8 +7,6 @@
     :dataset-id-key="datasetIdKey" 
     :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width"
     :height="height" />
-    <button @click="updating">click me</button>
-    {{ dynamicData }}
   </div>
 
 </template>
@@ -32,7 +30,7 @@ import {
 ChartJS.register(
   Title,
   Tooltip,
-  Legend,
+  // Legend,
   LineElement,
   LinearScale,
   CategoryScale,
@@ -81,7 +79,6 @@ export default {
   },
   computed : {
     dynamicData () {
-      console.log("dataChart", this.dataChart)
       return this.dataChart
     }
   },
@@ -108,11 +105,6 @@ export default {
           },
         ],
       },
-      // dataChart :
-      //   {
-      //     labels : [],
-      //     datasets : []
-      //   },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -126,7 +118,6 @@ export default {
   watch : {
     chartData : {
       handler (value) {
-      console.log("watch",value)
       this.dataChart.labels = value.labels
       this.dataChart.datasets = value.datasets
       },
@@ -134,22 +125,6 @@ export default {
     }
   },
   methods : {
-    updating() {
-      console.log('log')
-      this.dataChart.labels = [
-      "January",
-          "February",
-          "March",
-          "April",
-      ]
-      this.dataChart.datasets = [
-      {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [40, 39, 10, 40, 39, 80, 40],
-          },
-      ]
-    },
     renderChart () {
       this.dataChart.labels = this.chartData.labels
       this.dataChart.datasets = this.chartData.datasets

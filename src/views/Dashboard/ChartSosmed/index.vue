@@ -3,29 +3,10 @@
     <Header-Content label="Dashboard" :list="items" />
     <Filters
       @setData="setData"
-    />
-    <div class="bitcoin-price mt-6">
-      <svg
-        style="width:0; height:0; position:absolute;"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <defs>
-          <linearGradient id="btcFill" x1="1" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#9CD0FF"></stop>
-            <stop offset="100%" stop-color="#ffffff"></stop>
-          </linearGradient>
-        </defs>
-      </svg>
-      <!-- <Chart
-        classChart="chart-user"
-        :labels="labels"
-        :datasets="datasets"
-      /> -->
+    >
       <LineChart 
         :chartData="chartData"/>
-
-    </div>
+    </Filters>
   </div>
 </template>
 

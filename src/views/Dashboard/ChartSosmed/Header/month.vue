@@ -127,15 +127,16 @@ export default {
       this.displayMonth = months.length > 1 ? `${startMonth} - ${endMonth}` : `${startMonth}`
       this.menu = false
       const formatStartMonth = moment(months[0]).format('YYYY-MM')
-      const epochStartMonth = moment(formatStartMonth).valueOf()
+      const epochStartMonth = moment(formatStartMonth).subtract(7,'hour').valueOf()
       const formatEndMonth = months.length > 1 && moment(months[1]).format('YYYY-MM')
-      const epochEndMonth =  moment(months.length > 1 ? formatEndMonth : formatStartMonth).endOf('month').valueOf()
+      const epochEndMonth =  moment(months.length > 1 ? formatEndMonth : formatStartMonth).endOf('month').subtract(7 ,'hour').valueOf()
       const params = {
         startAt : moment(months[0]).format('MM'),
         endAt : months.length > 1 ? moment(months[1]).format('MM') : moment(months[0]).format('MM'),
         epochStartAt : epochStartMonth,
         epochEndAt : epochEndMonth
       }
+      console.log(params)
       this.$emit('setMonth', params)
     }
   }

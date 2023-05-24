@@ -3,7 +3,7 @@
       <div class="d-flex justify-space-between align-center">
         <div :class="k['dash__label']">User Activity</div>
         <div :class="k['dash__actions']" >
-          <custom-button>
+          <custom-button @click="handleResetFilter">
             <div class="primary--text">Reset Filter</div>
           </custom-button>
           <Trending
@@ -25,6 +25,7 @@
           <Date
             v-if="payload.timeline === 'day' || payload.timeline === 'hour'"
             @setDate="setDate"
+            :display="display.date"
           />
           <Month
             v-if="payload.timeline === 'month' "
@@ -41,7 +42,11 @@
           <custom-button @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
       </div>
-      <!-- {{ payload }} -->
+      <div :class="k['dash__header-label']">
+        <b>213 Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>23 Jan 2022</b>
+      </div>
+      {{ payload }}
+      <slot></slot>
     </div>
 </template>
 <script>
@@ -69,6 +74,12 @@ export default {
   data () {
     return {
       keyword : '',
+      display : {
+        date : '',
+        totalPost : '',
+        channel : 'Semua Channel',
+        username : 'Semua User'
+      },
       payload: {
         timeline: "day",
         isTrending : false,
@@ -78,9 +89,6 @@ export default {
         endDateAt : '',
         startHourAt : '',
         endHourAt : '',
-        startMonthAt : '',
-        endMonthAt : '',
-
       },
       itemsList : [],
       items: [
@@ -98,8 +106,28 @@ export default {
     ...mapActions({
       fetchStatisticsUserSeen : 'dashboard/fetchStatisticsUserSeen' 
     }),
+    resetPayloadFilter () {
+      return {
+        timeline: "day",
+        isTrending : false,
+        performerId : '',
+        channelCode : '',
+        startDateAt : '',
+        endDateAt : '',
+        startHourAt : '',
+        endHourAt : '',
+        // startMonthAt : '',
+        // endMonthAt : '',
+      }
+    },
+    handleResetFilter () {
+      console.log("reset here")
+      this.display.date = ''
+      Object.assign(this.$data.payload, this.resetPayloadFilter())
+      return this.initChart()
+    },
     initChart () {
-      const startDateAt = moment().subtract(7, 'hour').valueOf()
+      const startDateAt = moment().startOf('day').subtract(7, 'hour').valueOf()
       const endDateAt = moment().endOf('day').subtract(7, 'hour').valueOf()
       const payload = {
         filterBy : this.payload.timeline,
@@ -107,14 +135,13 @@ export default {
           isTrending : false,
           startDateAt ,
           endDateAt ,
-          startHourAt : 0,
-          endHourAt : 23
         }
       }
+      console.log(payload)
       return this.fetchStatisticsUserSeen(payload)
         .then(response => {
           this.$emit('setData', response)
-          console.log(response)
+          return response
         })
         .catch(err => {
           console.log(err.response)
@@ -135,11 +162,12 @@ export default {
           ...this.payload.timeline === 'month' && {endMonthAt : this.payload.endMonthAt}
         },
       }
-      console.log(payload)
       return this.fetchStatisticsUserSeen(payload)
         .then(response => {
-          console.log(response)
           this.$emit('setData', response)
+        })
+        .catch(() => {
+          return this.initChart()
         })
     },
     handleTrending(value) {
@@ -156,12 +184,11 @@ export default {
     setMonth (value) {
       this.payload.startDateAt = value.epochStartAt
       this.payload.endDateAt = value.epochEndAt
-      this.payload.startMonthAt = value.startAt,
-      this.payload.endMonthAt = value.endAt
     },
     setDate (value) {
       this.payload.startDateAt = value.startEpoch
       this.payload.endDateAt = value.endEpoch
+      this.display.date = value.displayDate
     },
     resetDay () {
       this.payload.startDateAt = ''

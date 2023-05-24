@@ -97,17 +97,20 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn text class="text-capitalize" @click="cancelDate">
-                Cancel
-              </v-btn>
-              <v-btn
-                color="primary"
-                text
-                class="text-capitalize"
-                @click="submitDate"
-              >
-                Save
-              </v-btn>
+              <custom-button  
+              class="mr-2" 
+              size="small"  
+              @click="cancelDate"
+            >
+              <div class="primary--text">Reset</div>
+            </custom-button>
+              <custom-button 
+              size="small" 
+              color="secondary"
+              @click="submitDate"
+            >
+              Ok
+            </custom-button>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -117,6 +120,7 @@
 </template>
 
 <script>
+import moment  from 'moment';
 export default {
   props: {
     payloadData: {
@@ -150,13 +154,6 @@ export default {
     },
   }),
   watch: {
-    startDate(value) {
-      console.log(value)
-      // this.payloadData.startDateAt = this.startDate;
-    },
-    endDate(value) {
-      // this.payloadData.endDateAt = this.endDate;
-    },
     tab() {
       this.startDate = null;
       this.endDate = null;
@@ -253,9 +250,16 @@ export default {
     },
     submitDate() {
       this.menu = false
+      console.log(this.startDate)
+      const startYear = moment({year : this.startDate}).format('YYYY-MM-DD')
+      const endYear = moment({year : this.endDate ? this.endDate : this.startDate}).endOf('year').format('YYYY-MM-DD')
+      console.log(endYear)
+      const epochStartYear = moment(startYear).subtract(7, 'hour').valueOf()
+      const epochEndYear = moment(endYear).subtract(7, 'hour').valueOf()
+      console.log(epochStartYear)
       const params = {
-        startYear : this.startDate,
-        endYear : this.endDate
+        startYear : epochStartYear,
+        endYear : epochEndYear
       }
       this.$emit('setYear', params)
     },

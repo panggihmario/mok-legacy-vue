@@ -9,7 +9,7 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
-        v-model="displayDate"
+        v-model="display"
         readonly
         dense
         color="secondary"
@@ -78,8 +78,12 @@ export default {
   data () {
     return {
       menu : false,
-      displayDate : '',
       paramsDate : []
+    }
+  },
+  props : {
+    display : {
+      type : String
     }
   },
   computed : {
@@ -113,13 +117,14 @@ export default {
       const start = this.formatter(dateRange[0]);
       const end = this.formatter(dateRange[1]);
       const fullDate = `${start} - ${end}`;
-      this.displayDate = dateRange.length > 1 ? fullDate : `${start}`
       this.menu = false
       const startEpoch = moment(dateRange[0]).subtract(7, 'hour').valueOf()
-      const endEpoch = dateRange.length > 1 ? moment(dateRange[1]).subtract(7, 'hour').valueOf() : startEpoch
+      const endEpoch = dateRange.length > 1 ? moment(dateRange[1]).endOf('day').subtract(7, 'hour').valueOf() : startEpoch
+      const displayDate = dateRange.length > 1 ? fullDate : `${start}`
       const params = {
         startEpoch,
-        endEpoch
+        endEpoch,
+        displayDate
       }
       this.$emit('setDate', params)
     },

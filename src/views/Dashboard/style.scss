@@ -74,6 +74,11 @@
 }
 
 .dash {
+  &__header-label {
+    color: var(--charcoal-color);
+    font-size: 12px;
+    margin: 12px 0;
+  }
   &__width-box {
     width: 150px;
   }
