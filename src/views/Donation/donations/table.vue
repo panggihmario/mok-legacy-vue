@@ -15,7 +15,7 @@
         <div :class="[table.list, table.ellipsis]">{{ item.title }} </div>
       </template>
       <template v-slot:item.username="{item}">
-        <div :class="table.list">{{ item.initiator.username }}</div>   
+        <div :class="table.list">{{ item.initiator && item.initiator.username }}</div>   
       </template>
       <template v-slot:item.createAt="{item}">
         <div :class="table.list">{{ convertToHumanDate(item.createAt) }}</div>
