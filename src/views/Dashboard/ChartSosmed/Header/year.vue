@@ -10,24 +10,8 @@
           max-width="430px"
         >
           <template v-slot:activator="{ on, attrs }">
-            <!-- <v-btn
-              color="whitesnow"
-              height="40px"
-              class="text-capitalize black--text"
-              outlined
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{
-                endDate == null
-                  ? "Year"
-                  : endDate == startDate
-                  ? endDate
-                  : `${startDate} - ${endDate}`
-              }}
-            </v-btn> -->
             <v-text-field
-              v-model="displayYear"
+              v-model="display"
               readonly
               dense
               color="secondary"
@@ -130,6 +114,10 @@ export default {
       type: String,
       default: "",
     },
+    display : {
+      type : String
+    }
+
   },
   data: () => ({
     displayYear : '',
@@ -250,16 +238,15 @@ export default {
     },
     submitDate() {
       this.menu = false
-      console.log(this.startDate)
       const startYear = moment({year : this.startDate}).format('YYYY-MM-DD')
       const endYear = moment({year : this.endDate ? this.endDate : this.startDate}).endOf('year').format('YYYY-MM-DD')
-      console.log(endYear)
       const epochStartYear = moment(startYear).subtract(7, 'hour').valueOf()
       const epochEndYear = moment(endYear).subtract(7, 'hour').valueOf()
-      console.log(epochStartYear)
       const params = {
         startYear : epochStartYear,
-        endYear : epochEndYear
+        endYear : epochEndYear,
+        displayStartYear : this.startDate,
+        displayEndYear : this.endDate
       }
       this.$emit('setYear', params)
     },

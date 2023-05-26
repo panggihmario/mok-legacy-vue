@@ -8,6 +8,7 @@
     outlined
     item-text="name"
     item-value="code"
+    return-object
     dense
     hide-details
     class="font-12"
@@ -29,7 +30,11 @@ export default {
         return this.channelCode
       },
       set(value) {
-        this.$emit('setChannelCode', value)
+        const payload = {
+          name : value.name,
+          code : value.code
+        }
+        this.$emit('setChannelCode', payload)
       }
     }
   },

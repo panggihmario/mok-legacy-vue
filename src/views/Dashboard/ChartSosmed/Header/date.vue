@@ -119,7 +119,7 @@ export default {
       const fullDate = `${start} - ${end}`;
       this.menu = false
       const startEpoch = moment(dateRange[0]).subtract(7, 'hour').valueOf()
-      const endEpoch = dateRange.length > 1 ? moment(dateRange[1]).endOf('day').subtract(7, 'hour').valueOf() : startEpoch
+      const endEpoch = moment(dateRange.length > 1 ? dateRange[1] : dateRange[0]).endOf('day').subtract(7, 'hour').valueOf()
       const displayDate = dateRange.length > 1 ? fullDate : `${start}`
       const params = {
         startEpoch,

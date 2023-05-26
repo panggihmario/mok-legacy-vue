@@ -1,13 +1,14 @@
 <template>
-  <v-menu v-model="menu" ref="menu" :close-on-content-click="false" :return-value.sync="date"
+  <v-menu :disabled="isDisable"  v-model="menu" ref="menu" :close-on-content-click="false" :return-value.sync="date"
     transition="scale-transition" offset-y>
     <template v-slot:activator="{ on, attrs }">
-      <v-text-field v-model="hourDisplay" readonly dense color="secondary" outlined v-bind="attrs" v-on="on" hide-details
+      <v-text-field v-model="display" readonly dense color="secondary" outlined v-bind="attrs" v-on="on" hide-details
         placeholder="Jam" class="font-12"></v-text-field>
     </template>
     <v-card class="pa-4">
       <v-menu
         v-model="menuStart"
+
       >
         <template v-slot:activator="{ on, attrs }">
           <v-menu
@@ -31,7 +32,8 @@
             </template>
             <v-time-picker
               v-if="menuStart"
-              :value="firstPicker"
+
+              v-model="firstPicker"
               flat
               format="24hr"
               range
@@ -98,6 +100,14 @@
 
 <script>
 export default {
+  props : {
+    isDisable : {
+      type : Boolean
+    },
+    display : {
+      type : String
+    }
+  },
   data() {
     return {
       date: '',
@@ -107,7 +117,7 @@ export default {
       menuEnd: false,
       startHour : '',
       endHour  : '',
-      firstPicker  : null,
+      firstPicker  : '',
       secondPicker : null,
       payload: {
         year: "",
@@ -121,6 +131,8 @@ export default {
   },
   methods: {
     handleFirstPicker (v) {
+      console.log(this.firstPicker)
+      console.log(v)
       this.menuStart = false
       this.startHour = v
     },
@@ -132,11 +144,31 @@ export default {
       this.startHour = ''
       this.endHour = ''
     },
+    checkTime(i) {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    },
+    setDisplay(start, end) {
+      let finalResult, startResult, endResult
+      startResult = this.checkTime(start)
+      if(end) {
+        endResult = this.checkTime(end)
+        finalResult = `${startResult} - ${endResult}`
+      }else {
+        finalResult = `${startResult}`
+      }
+      return finalResult
+    },
     savePicker () {
+      const display = this.setDisplay(this.startHour, this.endHour)
       const params = {
         start : this.startHour,
-        end : this.endHour ? this.endHour : this.startHour
+        end : this.endHour ? this.endHour : this.startHour,
+        displayHour : display
       }
+      console.log(params)
       this.hourDisplay = `${this.startHour} : ${this.endHour} `
       this.$emit('setHour', params)
       this.menu = false

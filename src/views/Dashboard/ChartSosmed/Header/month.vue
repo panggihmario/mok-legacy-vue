@@ -136,7 +136,6 @@ export default {
         epochStartAt : epochStartMonth,
         epochEndAt : epochEndMonth
       }
-      console.log(params)
       this.$emit('setMonth', params)
     }
   }

@@ -10,6 +10,7 @@
       item-value="id"
       item-color="secondary"
       dense
+      return-object
       hide-details
       class="font-12"
       item-text="username"
@@ -33,7 +34,11 @@ export default {
         return this.performerId
       },
       set(value) {
-        this.$emit('setPerfomerId', value)
+        const params = {
+          id : value.id,
+          name : value.username
+        }
+        this.$emit('setPerfomerId', params)
       }
     }
   },
