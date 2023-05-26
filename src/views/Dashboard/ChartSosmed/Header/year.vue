@@ -5,29 +5,23 @@
         <v-menu
           v-model="menu"
           :close-on-content-click="false"
-          :nudge-width="200"
+          :nudge-width="400"
           offset-y
           max-width="430px"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="whitesnow"
-              height="40px"
-              class="text-capitalize black--text"
-              depressed
-              dark
+            <v-text-field
+              v-model="display"
+              readonly
+              dense
+              color="secondary"
+              placeholder="Tahun"
+              outlined
               v-bind="attrs"
               v-on="on"
-            >
-              {{
-                endDate == null
-                  ? "Year"
-                  : endDate == startDate
-                  ? endDate
-                  : `${startDate} - ${endDate}`
-              }}
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
+              hide-details
+              class="font-12"
+            ></v-text-field>
           </template>
 
           <v-card>
@@ -37,7 +31,7 @@
                   <div
                     class="d-flex flex-wrap flex-wrap-reverse flex-row-reverse mt-2"
                   >
-                    <div v-for="(y, i) in 12" :key="i" class="col-2 pa-1">
+                    <div v-for="(y, i) in 5" :key="i" class="col-2 pa-1">
                       <div
                         class="d-flex justify-center align-center box-year__list cursor-pointer"
                         :class="{
@@ -87,17 +81,20 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn text class="text-capitalize" @click="cancelDate">
-                Cancel
-              </v-btn>
-              <v-btn
-                color="primary"
-                text
-                class="text-capitalize"
-                @click="menu = false"
-              >
-                Save
-              </v-btn>
+              <custom-button  
+              class="mr-2" 
+              size="small"  
+              @click="cancelDate"
+            >
+              <div class="primary--text">Reset</div>
+            </custom-button>
+              <custom-button 
+              size="small" 
+              color="secondary"
+              @click="submitDate"
+            >
+              Ok
+            </custom-button>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -107,6 +104,7 @@
 </template>
 
 <script>
+import moment  from 'moment';
 export default {
   props: {
     payloadData: {
@@ -116,8 +114,13 @@ export default {
       type: String,
       default: "",
     },
+    display : {
+      type : String
+    }
+
   },
   data: () => ({
+    displayYear : '',
     fav: true,
     menu: false,
     message: false,
@@ -137,28 +140,8 @@ export default {
       dateFirst: "",
       dateLast: "",
     },
-    months: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mei",
-      "Jun",
-      "Jul",
-      "Agu",
-      "Sep",
-      "Okt",
-      "Nov",
-      "Des",
-    ],
   }),
   watch: {
-    startDate() {
-      this.payloadData.startDateAt = this.startDate;
-    },
-    endDate() {
-      this.payloadData.endDateAt = this.endDate;
-    },
     tab() {
       this.startDate = null;
       this.endDate = null;
@@ -170,7 +153,6 @@ export default {
   },
   mounted() {
     this.getToday();
-    // this.getFirstDayLastDay();
   },
   methods: {
     getToday() {
@@ -254,7 +236,20 @@ export default {
       this.keyFocusEnd = null;
       this.menu = false;
     },
-    submitDate() {},
+    submitDate() {
+      this.menu = false
+      const startYear = moment({year : this.startDate}).format('YYYY-MM-DD')
+      const endYear = moment({year : this.endDate ? this.endDate : this.startDate}).endOf('year').format('YYYY-MM-DD')
+      const epochStartYear = moment(startYear).subtract(7, 'hour').valueOf()
+      const epochEndYear = moment(endYear).subtract(7, 'hour').valueOf()
+      const params = {
+        startYear : epochStartYear,
+        endYear : epochEndYear,
+        displayStartYear : this.startDate,
+        displayEndYear : this.endDate
+      }
+      this.$emit('setYear', params)
+    },
   },
 };
 </script>
