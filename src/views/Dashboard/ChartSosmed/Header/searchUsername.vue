@@ -26,6 +26,9 @@ export default {
   props : {
     performerId : {
       type : String
+    },
+    isReset : {
+      type : Boolean
     }
   },
   computed : {
@@ -52,6 +55,11 @@ export default {
   watch : {
     keyword(value) {
       value && value !== this.item && this.handleSearchUser(value)
+    },
+    isReset (value) {
+      if(!value) {
+        this.items = []
+      }
     }
   },
   methods : {
