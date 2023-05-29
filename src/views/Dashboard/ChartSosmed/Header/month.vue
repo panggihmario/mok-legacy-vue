@@ -57,7 +57,6 @@
               Ok
             </custom-button>
           </div>
-          
         </v-col>
       </v-row>
     </v-card>
@@ -131,8 +130,8 @@ export default {
       const formatEndMonth = months.length > 1 && moment(months[1]).format('YYYY-MM')
       const epochEndMonth =  moment(months.length > 1 ? formatEndMonth : formatStartMonth).endOf('month').subtract(7 ,'hour').valueOf()
       const params = {
-        startAt : moment(months[0]).format('MM'),
-        endAt : months.length > 1 ? moment(months[1]).format('MM') : moment(months[0]).format('MM'),
+        startAt : moment(months[0]).format('MMMM'),
+        endAt : months.length > 1 ? moment(months[1]).format('MMMM') : moment(months[0]).format('MMMM'),
         epochStartAt : epochStartMonth,
         epochEndAt : epochEndMonth
       }
