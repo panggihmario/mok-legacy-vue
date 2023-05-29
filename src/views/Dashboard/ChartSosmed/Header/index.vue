@@ -14,6 +14,7 @@
           <SearchUsername
             :performerId="payload.performerId"
             @setPerfomerId="setPerfomerId"
+            :isReset=isReset
           />
           <Channels
             :channelCode="payload.channelCode"
@@ -43,12 +44,24 @@
             @setHour="setHour"
             :isDisable="disableHour"
           />
-          <custom-button @click="handleFilter" color="secondary" >Show Chart</custom-button>
+          <custom-button :loading="isLoading" @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
       </div>
-      <div v-if="isBanner" :class="k['dash__header-label']">
+      <div v-if="isBanner && !isNoData" :class="k['dash__header-label']">
         <b>{{ display.totalPost }} Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>{{ display.timeLabel }}</b>
       </div>
+      <div v-if="isNoData" :class="k['dash__header-nodata']">
+        <v-icon color="secondary" small>info</v-icon>
+        <div> Data Belum Tersedia</div>
+      </div>
+    <v-snackbar
+      v-model="snackbar"
+      right
+      top
+      color="primary"
+    >
+      Silahkan Plih Tanggal / Bulan / Tahun
+    </v-snackbar>
       <slot></slot>
     </div>
 </template>
@@ -77,7 +90,10 @@ export default {
   data () {
     return {
       keyword : '',
+      snackbar : false,
+      isNoData : false,
       isBanner : false,
+      isLoading : false,
       display : {
         date : '',
         year : '',
@@ -109,12 +125,7 @@ export default {
     }
   },
   mounted() {
-    this.initChart()
-  },
-  watch : {
-    payload (value) {
-      console.log(value)
-    }
+    this.initChart('day')
   },
   methods : {
     ...mapActions({
@@ -145,14 +156,15 @@ export default {
     },
     handleResetFilter () {
       this.isReset = false
+      this.isNoData = false
       this.disableHour = true
       Object.assign(this.$data.display, this.resetDisplayFilter())
       Object.assign(this.$data.payload, this.resetPayloadFilter())
-      return this.initChart()
+      return this.initChart('day')
     },
-    initChart () {
-      const startDateAt = moment().startOf('day').subtract(7, 'hour').valueOf()
-      const endDateAt = moment().endOf('day').subtract(7, 'hour').valueOf()
+    initChart (timeline) {
+      const startDateAt = moment().startOf(timeline).subtract(7, 'hour').valueOf()
+      const endDateAt = moment().endOf(timeline).subtract(7, 'hour').valueOf()
       const payload = {
         filterBy : this.payload.timeline,
         params : {
@@ -176,26 +188,47 @@ export default {
         })
     },
     handleFilter () {
-      const payload = {
-        filterBy : this.payload.timeline,
-        params : {
-          isTrending : this.payload.isTrending,
-          ...this.payload.performerId && {performerId : this.payload.performerId},
-          ...this.payload.channelCode && {channelCode : this.payload.channelCode},
-          startDateAt : this.payload.startDateAt,
-          endDateAt : this.payload.endDateAt,
-          ...this.payload.endHourAt && {endHourAt : this.payload.endHourAt},
-          ...this.payload.startHourAt && {startHourAt : this.payload.startHourAt},
-        },
+      if(this.payload.startDateAt) {
+        this.isLoading = true
+        const payload = {
+          filterBy : this.payload.timeline,
+          params : {
+            isTrending : this.payload.isTrending,
+            ...this.payload.performerId && {performerId : this.payload.performerId},
+            ...this.payload.channelCode && {channelCode : this.payload.channelCode},
+            startDateAt : this.payload.startDateAt,
+            endDateAt : this.payload.endDateAt,
+            ...this.payload.endHourAt && {endHourAt : this.payload.endHourAt},
+            ...(this.payload.startHourAt || this.payload.startHourAt === 0 ) && {startHourAt : this.payload.startHourAt},
+          },
       }
+      this.isNoData = false
       return this.fetchStatisticsUserSeen(payload)
         .then(response => {
           this.isBanner = true
+          const datasets = response.datasets[0]
+          const totalPost = datasets.totalPost
+          this.display.totalPost = totalPost
           this.$emit('setData', response)
+          this.isLoading = false
+          const allEqual = datasets.data.every( v => v === 0 )
+          if(allEqual) {
+            this.isNoData = true
+          }else{
+            this.isNoData = false
+          }
         })
-        .catch(() => {
-          return this.initChart()
+        .catch((err) => {
+          this.isLoading = false
+          return this.initChart('day')
         })
+      }else{
+        this.snackbar = true
+        setTimeout(() => {
+          this.snackbar = false
+        },1000)
+      }
+     
     },
     handleTrending(value) {
       this.isReset = true
@@ -229,7 +262,12 @@ export default {
       this.isReset = true
       this.payload.startDateAt = value.epochStartAt
       this.payload.endDateAt = value.epochEndAt
-      this.display.timeLabel = `${value.startAt} ${value.endAt}`
+      if(value.startAt === value.endAt){
+        this.display.timeLabel = `${value.startAt}`
+      }else{
+        this.display.timeLabel = `${value.startAt} - ${value.endAt}`
+      }
+      
     },
     setDate (value) {
       this.isBanner = false
@@ -243,10 +281,12 @@ export default {
     resetDay () {
       this.payload.startDateAt = ''
       this.payload.endDateAt = ''
+      this.display.date = ''
     },
     resetHour () {
       this.payload.startHourAt = ''
       this.payload.endHourAt = ''
+      this.display.hour = ''
     },
     resetMonth () {
       this.resetDay()
@@ -258,7 +298,21 @@ export default {
       this.isReset = true
       this.isBanner = false
       this.payload.timeline = value
+      this.disableHour = true
       this.resetMonth()
+      // return this.initChart(value)
+      // .then(response => { 
+      //     this.$emit('setData', response)
+      //     const datasets = response.datasets[0]
+      //     const totalPost = datasets.totalPost
+      //     const currentDate = moment(response.firstDate).format('DD MMM YYYY')
+      //     this.display.totalPost = totalPost
+      //     this.display.timeLabel = currentDate
+      //     this.isBanner = true
+      //     return response })
+      //   .catch(err => {
+      //     console.log(err.response)
+      //   })
     },
     setChannelCode (value) {
       this.isReset = true

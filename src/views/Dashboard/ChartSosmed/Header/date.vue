@@ -65,9 +65,10 @@
               Ok
             </custom-button>
           </div>
-          
+          <div v-if="isMaxRange" class="isMaxRange">Hanya dapat memilih tanggal dengan range 30 days</div>
         </v-col>
       </v-row>
+      
     </v-card>
   </v-menu>
 </template>
@@ -78,7 +79,8 @@ export default {
   data () {
     return {
       menu : false,
-      paramsDate : []
+      paramsDate : [],
+      isMaxRange : false
     }
   },
   props : {
@@ -155,6 +157,9 @@ export default {
         const c = end.diff(start, 'days')
         if(c > 30 ) {
           this.choosenDate = []
+          this.isMaxRange = true
+        }else{
+          this.isMaxRange = false
         }
       }
       
@@ -163,6 +168,11 @@ export default {
 }
 </script>
 
-<style lang="scss" module="k" src="../../style.scss">
-
+<style lang="scss" >
+.isMaxRange {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--primary-color);
+  margin: 12px 0;
+}
 </style>
