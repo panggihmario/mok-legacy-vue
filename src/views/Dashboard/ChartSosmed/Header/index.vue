@@ -306,6 +306,7 @@ export default {
       this.isReset = true
       this.isBanner = false
       this.payload.timeline = value
+      this.display.year = ''
       this.disableHour = true
       this.resetMonth()
       // return this.initChart(value)
