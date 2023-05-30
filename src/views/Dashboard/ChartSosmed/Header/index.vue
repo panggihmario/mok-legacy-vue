@@ -48,7 +48,7 @@
         </div>
       </div>
       <div v-if="isBanner && !isNoData" :class="k['dash__header-label']">
-        <b>{{ display.totalPost }} Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>{{ display.timeLabel }}</b>
+        <b>{{ display.totalPost }} Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>{{ display.timeLabel }}</b> <span v-if="display.hourLabel">di jam</span> <b>{{ display.hourLabel }}</b>
       </div>
       <div v-if="isNoData" :class="k['dash__header-nodata']">
         <v-icon color="secondary" small>info</v-icon>
@@ -100,6 +100,7 @@ export default {
         hour : '',
         totalPost : '',
         timeLabel : '',
+        hourLabel : '',
         channel : 'Semua Channel',
         username : 'Semua User'
       },
@@ -149,6 +150,7 @@ export default {
         year : '',
         hour : '',
         totalPost : '',
+        hourLabel : '',
         timeLabel : '',
         channel : 'Semua Channel',
         username : 'Semua User'
@@ -186,6 +188,9 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
+    },
+    setDisplayTimeLabel (payload) {
+
     },
     handleFilter () {
       if(this.payload.startDateAt) {
@@ -240,6 +245,8 @@ export default {
       this.payload.startHourAt = value.start
       this.payload.endHourAt = value.end
       this.display.hour = value.displayHour
+      const c = `${value.displayHour}`
+      this.display.hourLabel = c
       this.isBanner = false
     },
     setYear (value) {
@@ -258,14 +265,15 @@ export default {
     },
     setMonth (value) {
       this.isBanner = false
-      this.disableHour = false
       this.isReset = true
       this.payload.startDateAt = value.epochStartAt
       this.payload.endDateAt = value.epochEndAt
       if(value.startAt === value.endAt){
         this.display.timeLabel = `${value.startAt}`
+        this.disableHour = true
       }else{
         this.display.timeLabel = `${value.startAt} - ${value.endAt}`
+        this.disableHour = false
       }
       
     },
