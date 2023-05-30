@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import moment from "moment"
 export default {
   props : {
     isDisable : {
@@ -159,12 +160,15 @@ export default {
       }
       return finalResult
     },
+    convertHourToUtc0 (value) {
+      const hourUTC = moment().hour(value).subtract(7, 'hour').format('H')
+      return hourUTC
+    },
     savePicker () {
       const display = this.setDisplay(this.startHour, this.endHour)
-
       const params = {
-        start : this.startHour,
-        end : this.endHour ? this.endHour : this.startHour,
+        start : this.convertHourToUtc0(this.startHour),
+        end : this.convertHourToUtc0(this.endHour ? this.endHour : this.startHour),
         displayHour : display
       }
       this.hourDisplay = `${this.startHour} : ${this.endHour} `
