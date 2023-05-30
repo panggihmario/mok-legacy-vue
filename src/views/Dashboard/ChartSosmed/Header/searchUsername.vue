@@ -54,13 +54,26 @@ export default {
   },
   watch : {
     keyword(value) {
-      value && value !== this.item && this.handleSearchUser(value)
+      if(value) {
+        value && value !== this.item && this.handleSearchUser(value)
+      }else{
+        const params = {
+          id : '',
+          name : ''
+        }
+        this.$emit('setPerfomerId', params)
+        return this.handleSearchUser('a')
+      }
+      
     },
     isReset (value) {
       if(!value) {
         this.items = []
       }
     }
+  },
+  mounted() {
+    return this.handleSearchUser('a')
   },
   methods : {
     ...mapActions({
@@ -72,6 +85,13 @@ export default {
         .then(response => {
           const responseData = response.data.data
           this.items = responseData
+        })
+        .catch(() => {
+          const params = {
+          id : '',
+          name : ''
+        }
+        this.$emit('setPerfomerId', params)
         })
     }
   }

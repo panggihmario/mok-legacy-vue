@@ -131,8 +131,6 @@ export default {
   },
   methods: {
     handleFirstPicker (v) {
-      console.log(this.firstPicker)
-      console.log(v)
       this.menuStart = false
       this.startHour = v
     },
@@ -155,7 +153,7 @@ export default {
       startResult = this.checkTime(start)
       if(end) {
         endResult = this.checkTime(end)
-        finalResult = `${startResult} - ${endResult}`
+        finalResult = `${startResult}:00 - ${endResult}:00`
       }else {
         finalResult = `${startResult}`
       }
@@ -163,12 +161,12 @@ export default {
     },
     savePicker () {
       const display = this.setDisplay(this.startHour, this.endHour)
+
       const params = {
         start : this.startHour,
         end : this.endHour ? this.endHour : this.startHour,
         displayHour : display
       }
-      console.log(params)
       this.hourDisplay = `${this.startHour} : ${this.endHour} `
       this.$emit('setHour', params)
       this.menu = false
