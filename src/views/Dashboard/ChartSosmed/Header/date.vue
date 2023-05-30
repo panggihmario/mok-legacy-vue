@@ -126,7 +126,7 @@ export default {
       const params = {
         startEpoch,
         endEpoch,
-        displayDate
+        displayDate,
       }
       this.$emit('setDate', params)
     },

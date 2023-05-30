@@ -119,23 +119,28 @@ export default {
     },
     savePicker (){
       const months = this.picker
-      const numberStartMonth = moment(months[0]).format('M')
-      const numberEndMonth = moment(months[1]).format('M')
-      const startMonth = moment().month(numberStartMonth - 1).format('MMMM')
-      const endMonth = moment().month(numberEndMonth - 1).format('MMMM')
-      this.displayMonth = months.length > 1 ? `${startMonth} - ${endMonth}` : `${startMonth}`
-      this.menu = false
-      const formatStartMonth = moment(months[0]).format('YYYY-MM')
-      const epochStartMonth = moment(formatStartMonth).subtract(7,'hour').valueOf()
-      const formatEndMonth = months.length > 1 && moment(months[1]).format('YYYY-MM')
-      const epochEndMonth =  moment(months.length > 1 ? formatEndMonth : formatStartMonth).endOf('month').subtract(7 ,'hour').valueOf()
-      const params = {
-        startAt : moment(months[0]).format('MMMM'),
-        endAt : months.length > 1 ? moment(months[1]).format('MMMM') : moment(months[0]).format('MMMM'),
-        epochStartAt : epochStartMonth,
-        epochEndAt : epochEndMonth
+      if(months.length > 0) {
+        const numberStartMonth = moment(months[0]).format('M')
+        const numberEndMonth = moment(months[1]).format('M')
+        const startMonth = moment().month(numberStartMonth - 1).format('MMMM')
+        const endMonth = moment().month(numberEndMonth - 1).format('MMMM')
+        this.displayMonth = months.length > 1 ? `${startMonth} - ${endMonth}` : `${startMonth}`
+        this.menu = false
+        const formatStartMonth = moment(months[0]).format('YYYY-MM')
+        const epochStartMonth = moment(formatStartMonth).subtract(7,'hour').valueOf()
+        const formatEndMonth = months.length > 1 && moment(months[1]).format('YYYY-MM')
+        const epochEndMonth =  moment(months.length > 1 ? formatEndMonth : formatStartMonth).endOf('month').subtract(7 ,'hour').valueOf()
+        const params = {
+          startAt : moment(months[0]).format('MMMM'),
+          endAt : months.length > 1 ? moment(months[1]).format('MMMM') : moment(months[0]).format('MMMM'),
+          epochStartAt : epochStartMonth,
+          epochEndAt : epochEndMonth
+        }
+        this.$emit('setMonth', params)
+      }else{
+        this.menu = false
       }
-      this.$emit('setMonth', params)
+      
     }
   }
 }
