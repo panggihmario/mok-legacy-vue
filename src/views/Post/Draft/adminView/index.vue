@@ -144,6 +144,7 @@ export default {
             size : 10,
             tab : 'draft',
             page : 0,
+            sort :'createAt,DESC'
           }
           this.dialogReject = false
           this.isLoadingMultiple = false
