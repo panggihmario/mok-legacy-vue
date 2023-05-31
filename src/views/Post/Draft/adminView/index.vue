@@ -19,6 +19,7 @@
       :headers="headers" 
       hide-default-footer 
       class="grey--text" 
+      :class="feed['my-table']"
       :items="feeds" 
       show-select
       v-model="selected"
@@ -137,6 +138,7 @@ export default {
       })
       return this.multipleReject(idSelected)
         .then(response => {
+          this.selected = []
           this.message = response.data.message
           const payload = {
             size : 10,
@@ -186,7 +188,6 @@ export default {
       headers: [
         {
           text: "Media",
-          class: "whitesnow",
           sortable: false,
           value: "media",
           filterable: false,
@@ -194,7 +195,6 @@ export default {
         },
         {
           text: "Caption",
-          class: "whitesnow",
           value: "description",
           sortable: false,
           filterable: false,
@@ -202,28 +202,24 @@ export default {
         },
         {
           text: "Channel",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "channel",
         },
         {
           text: "Submitted",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "date",
         },
         {
           text: "User",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "user",
         },
         {
           text: "Schedule",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "schedule",
@@ -236,6 +232,11 @@ export default {
 </script>
 
 <style lang="scss" module="feed">
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
+}
 .fonts {
   font-size: 12px;
   font-weight: 500;
