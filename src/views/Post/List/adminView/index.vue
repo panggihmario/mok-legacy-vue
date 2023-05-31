@@ -123,7 +123,7 @@ export default {
       },
       deep: true,
       immediate: true
-  }
+    }
   },
   computed: {
     ...mapState({
