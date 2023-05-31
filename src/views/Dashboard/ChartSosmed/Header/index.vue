@@ -28,6 +28,7 @@
             v-if="payload.timeline === 'day' || payload.timeline === 'hour'"
             @setDate="setDate"
             :display="display.date"
+            ref="filterDate"
           />
           <Month
             v-if="payload.timeline === 'month' "
@@ -160,6 +161,7 @@ export default {
       this.isReset = false
       this.isNoData = false
       this.disableHour = true
+      this.$refs.filterDate && this.$refs.filterDate.onReset()
       Object.assign(this.$data.display, this.resetDisplayFilter())
       Object.assign(this.$data.payload, this.resetPayloadFilter())
       return this.initChart('day')
@@ -270,10 +272,10 @@ export default {
       this.payload.endDateAt = value.epochEndAt
       if(value.startAt === value.endAt){
         this.display.timeLabel = `${value.startAt}`
-        this.disableHour = true
+        this.disableHour = false
       }else{
         this.display.timeLabel = `${value.startAt} - ${value.endAt}`
-        this.disableHour = false
+        this.disableHour = true
       }
       
     },

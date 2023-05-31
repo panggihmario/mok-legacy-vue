@@ -184,6 +184,19 @@ export default {
           throw err;
         });
     },
+    multipleReject ({state, dispatch}, payload) {
+      const params = {
+        url : `${state.pathFeedSocial}/multiple-reject`,
+        data : payload
+      }
+      return dispatch("postWithToken", params, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        })
+    },
     searchFeed({ state, dispatch, commit }, payload) {
       const data = {
         url: `${state.pathFeedSocial}/search`,
