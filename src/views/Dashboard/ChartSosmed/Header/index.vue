@@ -44,6 +44,7 @@
             :display="display.hour"
             @setHour="setHour"
             :isDisable="disableHour"
+            ref="filterHour"
           />
           <custom-button :loading="isLoading" @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
@@ -164,6 +165,7 @@ export default {
       this.$refs.filterDate && this.$refs.filterDate.onReset()
       Object.assign(this.$data.display, this.resetDisplayFilter())
       Object.assign(this.$data.payload, this.resetPayloadFilter())
+      this.resetMonth()
       return this.initChart('day')
     },
     initChart (timeline) {
@@ -190,9 +192,6 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
-    },
-    setDisplayTimeLabel (payload) {
-
     },
     handleFilter () {
       if(this.payload.startDateAt) {
@@ -270,6 +269,7 @@ export default {
       this.isReset = true
       this.payload.startDateAt = value.epochStartAt
       this.payload.endDateAt = value.epochEndAt
+      this.resetHour()
       if(value.startAt === value.endAt){
         this.display.timeLabel = `${value.startAt}`
         this.disableHour = false
@@ -297,6 +297,8 @@ export default {
       this.payload.startHourAt = ''
       this.payload.endHourAt = ''
       this.display.hour = ''
+      this.display.hourLabel = ''
+      this.$refs.filterHour.cancelDate()
     },
     resetMonth () {
       this.resetDay()
@@ -311,19 +313,6 @@ export default {
       this.display.year = ''
       this.disableHour = true
       this.resetMonth()
-      // return this.initChart(value)
-      // .then(response => { 
-      //     this.$emit('setData', response)
-      //     const datasets = response.datasets[0]
-      //     const totalPost = datasets.totalPost
-      //     const currentDate = moment(response.firstDate).format('DD MMM YYYY')
-      //     this.display.totalPost = totalPost
-      //     this.display.timeLabel = currentDate
-      //     this.isBanner = true
-      //     return response })
-      //   .catch(err => {
-      //     console.log(err.response)
-      //   })
     },
     setChannelCode (value) {
       this.isReset = true
@@ -335,7 +324,12 @@ export default {
       this.isReset = true
       this.isBanner = false
       this.payload.performerId = value.id
-      this.display.username = value.name
+      if(value.id) {
+        this.display.username = value.name
+      }else{
+        this.display.username = 'Semua User'
+      }
+      
     },
   }
 }
