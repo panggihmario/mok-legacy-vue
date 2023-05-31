@@ -13,3 +13,12 @@ $font-size-24: 24px;
 $border-radius-root: 4px;
 $dialog-border-radius: 16px !important;
 
+:root {
+  --primary-color : #{$primary};
+  --gainsboro-color : #{$gainsboro};
+  --secondary-color : #{$secondary};
+  --charcoal-color : #{$charcoal};
+  --error-color : #{$error};
+  --warning-color : #{$warning};
+  --white-color : #{$truewhite};
+}
