@@ -6,182 +6,131 @@
     width="328"
     permanent
     right
+    style="padding-right: 20px; padding-left: 20px; padding-top: 8px"
   >
-    <div style="padding: 24px">
+    <div class="d-flex justify-end">
+      <v-btn
+        icon
+        size="x-small"
+        @click="actionChangeStatusPreviewTiktok(false)"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </div>
+    <div class="d-flex flex-column mt-3 mb-12">
       <h5>Konten Terpilih</h5>
       <p class="font-12 mt-2">
         Konten yang terpilih hanya akan terupload setelah kamu menekan tombol
         “Submit Post”
       </p>
-      <div>
-        <!-- <video
-          :src="previewTiktokData.video.playAddr"
-          controls
-          style="max-width: 100% !important; height: 100% !important"
-        ></video> -->
+      <div
+        class="container-img"
+        @click="
+          openInNew(
+            `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
+          )
+        "
+      >
+        <img
+          :src="previewTiktokData.video.cover"
+          class="image"
+          style="width: 100%"
+        />
+        <div class="middle">
+          <div class="d-flex flex-column">
+            <v-icon color="white">mdi-open-in-new</v-icon>
+            <span class="text">Open in new tab</span>
+          </div>
+        </div>
+      </div>
 
-        <div
-          class="container-img"
+      <div
+        v-if="isDataExist"
+        class="d-flex align-center alert-data-exist mt-3"
+        style="gap: 6px"
+      >
+        <icon-triangle-exclamation></icon-triangle-exclamation>
+        <span>Konten sudah pernah disubmit, coba konten lain</span>
+      </div>
+
+      <div class="mt-3">
+        <k-textarea
+          v-model="payload.description"
+          placeholder="Caption"
+          outlined
+          background-color="white"
+          hide-details
+          rows="2"
+          class="font-12"
+        ></k-textarea>
+        <custom-autocomplete
+          :value="payload.channel"
+          v-model="payload.channel"
+          :items="channels"
+          item-text="name"
+          placeholder="Select Channel"
+          return-object
+          hide-details
+          class="mt-3"
+        />
+        <span v-if="alertErrorChannel" class="primary--text font-12"
+          >Channel harap diisi</span
+        >
+        <v-divider class="my-3"></v-divider>
+        <span class="grey--text">Link dari postingan ini</span>
+        <div class="mt-3">
+          <k-input
+            v-model="payload.floatingLinkLabel"
+            placeholder="Placeholder"
+            class="mt-3"
+          ></k-input>
+          <span
+            v-if="alertFloatingLinkLabel.status"
+            class="primary--text font-12"
+          >
+            {{ alertFloatingLinkLabel.message }}
+          </span>
+        </div>
+        <div class="my-3">
+          <k-input
+            v-model="payload.floatingLink"
+            placeholder="https:/...."
+            class="mt-3"
+          ></k-input>
+          <span v-if="alertFloatingLink.status" class="primary--text font-12">
+            {{ alertFloatingLink.message }}
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <custom-button
+          color="white"
+          class="primary--text mr-4"
+          @click="actionChangeStatusPreviewTiktok(false)"
+        >
+          Cancel
+        </custom-button>
+        <custom-button
+          color="primary"
+          class="white--text"
+          :loading="loadingSubmit"
+          disab
           @click="
-            openInNew(
+            actionGetUrlValidation(
               `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
             )
           "
-        >
-          <img
-            :src="previewTiktokData.video.cover"
-            class="image"
-            style="width: 100%"
-          />
-          <div class="middle">
-            <div class="d-flex flex-column">
-              <v-icon color="white">mdi-open-in-new</v-icon>
-              <span class="text">Open in new tab</span>
-            </div>
-          </div>
-        </div>
-
-        <section class="row no-gutters font-12 whitesnow text-center">
-          <div class="col py-2">
-            <span>Quality : </span>
-            <span class="font-weight-medium">{{
-              previewTiktokData.video.definition
-            }}</span>
-          </div>
-          <v-divider vertical></v-divider>
-          <div class="col py-2">
-            <span>Width : </span>
-            <span class="font-weight-medium"
-              >{{ previewTiktokData.video.width }}px</span
-            >
-          </div>
-          <v-divider vertical></v-divider>
-          <div class="col py-2">
-            <span>Height : </span>
-            <span class="font-weight-medium"
-              >{{ previewTiktokData.video.height }}px</span
-            >
-          </div>
-        </section>
-
-        <div
-          v-if="
+          :disabled="
             previewTiktokData.video.height >= 1024
               ? false
               : previewTiktokData.video.width >= 1024
               ? false
               : true
           "
-          class="alert-resolution mt-3"
         >
-          <div class="d-flex">
-            <div style="margin-top: 2px; margin-right: 6px">
-              <icon-triangle-exclamation></icon-triangle-exclamation>
-            </div>
-            <div>
-              <span
-                >Video ini memiliki resolusi rendah, untuk menjaga kualitas
-                konten, gunakan video lain yang memiliki minimum resolusi 1024
-                pixel.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-2 font-12 text-break">
-          <k-textarea
-            v-model="previewTiktokPayload.description"
-            placeholder="Caption"
-            outlined
-            background-color="white"
-            rows="2"
-            class="font-12"
-            hide-details
-          ></k-textarea>
-          <custom-autocomplete
-            :value="previewTiktokPayload.channel"
-            v-model="previewTiktokPayload.channel"
-            :items="channels"
-            item-text="name"
-            placeholder="Select Channel"
-            return-object
-            class="mt-3"
-            hide-details
-          />
-          <v-divider class="my-3"></v-divider>
-          <span class="grey--text">Link dari postingan ini</span>
-          <div class="mt-3">
-            <k-input
-              v-model="previewTiktokPayload.floatingLinkLabel"
-              placeholder="Placeholder"
-              class="mt-3"
-              maxlength="30"
-            ></k-input>
-            <!-- rules="min:4|max:30"
-              errorMessage="Gunakan minimal 4 karakter" -->
-          </div>
-          <div v-if="isValid.counter != ''" class="mt-2 warning--text">
-            {{ isValid.counter }}
-          </div>
-          <div class="my-3">
-            <k-input
-              v-model="previewTiktokPayload.floatingLink"
-              placeholder="https:/...."
-              class="mt-3"
-              icon="fas fa-link"
-            ></k-input>
-            <div
-              v-if="previewTiktokPayload.floatingLink && !isValid.url"
-              class="mt-2 warning--text"
-            >
-              Gunakan format link yang sesuai contohnya <br />
-              https://youtube.com
-            </div>
-          </div>
-        </div>
-
-        <div
-          v-if="isDataExist"
-          class="d-flex align-center alert-data-exist"
-          style="gap: 6px"
-        >
-          <icon-triangle-exclamation></icon-triangle-exclamation>
-          <span>Konten sudah pernah disubmit, coba konten lain</span>
-        </div>
-
-        <div class="d-flex mt-3">
-          <custom-button
-            color="white"
-            class="primary--text mr-4"
-            @click="actionChangeStatusPreviewTiktok(false)"
-          >
-            Cancel
-          </custom-button>
-          <custom-button
-            color="primary"
-            class="white--text"
-            :loading="loadingSubmit"
-            @click="
-              actionGetUrlValidation(
-                `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
-              )
-            "
-            :disabled="
-              previewTiktokData.video.height >= 1024
-                ? false
-                : previewTiktokData.video.width >= 1024
-                ? false
-                : true
-            "
-          >
-            <!-- :disabled="
-              (previewTiktokPayload.floatingLinkLabel.length > 0 &&
-                previewTiktokPayload.floatingLinkLabel.length < 4) ||
-              previewTiktokPayload.floatingLinkLabel.length > 30
-            " -->
-            Submit Post
-          </custom-button>
-        </div>
+          Submit Post
+        </custom-button>
       </div>
 
       <v-snackbar v-model="alertSuccess" top right color="success">
@@ -202,13 +151,24 @@ import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      loadingSubmit: false,
-      alertSuccess: false,
-      alertFailed: false,
       asetKipas: "https://asset.kipaskipas.com",
       channels: [],
-      payload: {},
       tiktokUrl: "",
+      payload: {
+        description: "",
+        channel: null,
+        floatingLinkLabel: null,
+        floatingLink: null,
+        medias: [
+          {
+            id: null,
+            type: "video",
+            url: "",
+            thumbnail: {},
+            metadata: {},
+          },
+        ],
+      },
       dataResponse: {
         id: null,
         type: "video",
@@ -216,77 +176,107 @@ export default {
         thumbnail: {},
         metadata: {},
       },
+      loadingSubmit: false,
+      alertSuccess: false,
+      alertErrorChannel: false,
+      alertFailed: false,
+      errorMessage: "",
+      isDataExist: false,
       payloadFailed: {
         message: "",
       },
-      rules: {
-        counterValidation: (value) => {
-          return value.length > 0
-            ? value.length < 4
-              ? "Gunakan minimal 4 karakter"
-              : value.length >= 30
-              ? "Gunakan maksimal 30 karakter"
-              : ""
-            : "";
-        },
-        urlValidation: (value) => {
-          if (value) {
-            const pattern =
-              /^(?:(?:(?:https?|http?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/;
-            return pattern.test(value);
-          } else {
-            return;
-          }
-        },
+      alertFloatingLinkLabel: {
+        status: false,
+        message: "",
       },
-      isValid: {
-        url: true,
-        counter: "",
+      alertFloatingLink: {
+        status: false,
+        message: "",
       },
-      isDataExist: false,
     };
   },
   watch: {
-    "previewTiktokData.id"() {
-      this.isDataExist = false;
-      this.isValid.url = true;
-      this.isValid.counter = "";
-      this.previewTiktokPayload.floatingLink = "";
-      this.previewTiktokPayload.floatingLinkLabel = "";
-    },
     previewTiktokData() {
       this.isDataExist = false;
-      this.isValid.url = true;
-      this.isValid.counter = "";
-      this.previewTiktokPayload.floatingLink = "";
-      this.previewTiktokPayload.floatingLinkLabel = "";
+      this.alertErrorChannel = false;
+      this.payload.channel = null;
+      this.payload.floatingLink = null;
+      this.payload.floatingLinkLabel = null;
+      this.alertFloatingLinkLabel = {
+        status: false,
+        message: "",
+      };
+      this.alertFloatingLink = {
+        status: false,
+        message: "",
+      };
     },
-    "previewTiktokPayload.floatingLinkLabel"(val) {
-      // if (val == "") {
-      //   this.isValid.counter = "Gunakan minimal 4 karakter";
-      // } else {
-      this.isValid.counter = this.rules.counterValidation(val);
-      // }
-    },
-    "previewTiktokPayload.floatingLink"(val) {
-      this.isValid.url = this.rules.urlValidation(val);
-      if (this.previewTiktokPayload.floatingLink != "") {
-        if (this.previewTiktokPayload.floatingLinkLabel == "") {
-          this.isValid.counter = "Gunakan minimal 4 karakter";
-        }
-      } else {
-        this.isValid.counter = "";
+    "payload.channel"() {
+      if (this.payload.channel != null) {
+        this.alertErrorChannel = false;
       }
     },
-  },
-  mounted() {
-    this.handleGetChannel();
+    "payload.floatingLinkLabel"(v) {
+      if (v == "") {
+        this.payload.floatingLinkLabel = null;
+      }
+      if (v.length > 0 && v.length < 4) {
+        this.alertFloatingLinkLabel.status = true;
+        this.alertFloatingLinkLabel.message = "Gunakan minimal 4 karakter";
+      } else if (v.length > 0 && v.length > 30) {
+        this.alertFloatingLinkLabel.status = true;
+        this.alertFloatingLinkLabel.message = "Gunakan maksimal 30 karakter";
+      } else {
+        this.alertFloatingLinkLabel.status = false;
+        this.alertFloatingLinkLabel.message = "";
+      }
+    },
+    "payload.floatingLink"(v) {
+      if (v == "") {
+        this.payload.floatingLink = null;
+        this.alertFloatingLink.status = false;
+        this.alertFloatingLink.message = "";
+      }
+      const regexUrl =
+        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+      console.log(regexUrl.test(v));
+      if (v.length > 0) {
+        if (regexUrl.test(v) == false) {
+          this.alertFloatingLink.status = true;
+          this.alertFloatingLink.message =
+            "Gunakan format link yang sesuai contohnya\nhttps://youtube.com";
+        } else {
+          this.alertFloatingLink.status = false;
+          this.alertFloatingLink.message = "";
+        }
+      }
+      if (v.length > 0 && this.payload.floatingLinkLabel == null) {
+        this.alertFloatingLinkLabel.status = true;
+        this.alertFloatingLinkLabel.message = "Gunakan minimal 4 karakter";
+        if (regexUrl.test(v) == false) {
+          this.alertFloatingLink.status = true;
+          this.alertFloatingLink.message =
+            "Gunakan format link yang sesuai contohnya\nhttps://youtube.com";
+        } else {
+          this.alertFloatingLink.status = false;
+          this.alertFloatingLink.message = "";
+        }
+      }
+      if (v.length < 1 && this.payload.floatingLinkLabel == null) {
+        this.alertFloatingLinkLabel.status = false;
+        this.alertFloatingLinkLabel.message = "";
+      }
+    },
   },
   computed: {
     ...mapState({
       previewTiktokData: (state) => state.tiktok.previewTiktokData,
       previewTiktokPayload: (state) => state.tiktok.previewTiktokPayload,
     }),
+  },
+  mounted() {
+    this.handleGetChannel();
+    this.payload.description = this.previewTiktokData.desc;
   },
   methods: {
     ...mapActions({
@@ -298,19 +288,14 @@ export default {
       getTiktokVideoNoWatermark: "tiktok/getTiktokVideoNoWatermark",
       postFeed: "post/postFeed",
     }),
-    actionChangeStatusPreviewTiktok(status) {
-      this.changeStatusPreviewTiktok(status);
+    actionChangeStatusPreviewTiktok(v) {
+      return this.changeStatusPreviewTiktok(v);
     },
-    actionChangeStatusPreviewTiktokSuccess(status) {
-      this.changeStatusPreviewTiktokSuccess(status);
+    actionChangeStatusPreviewTiktokSuccess(v) {
+      return this.changeStatusPreviewTiktokSuccess(v);
     },
-    movePageDraft() {
-      this.$router.push({
-        name: "draft",
-        params: {
-          page: 1,
-        },
-      });
+    openInNew(v) {
+      window.open(v, "_blank");
     },
     async handleGetChannel() {
       const response = await this.getAllChannel();
@@ -327,15 +312,6 @@ export default {
         return response;
       }
     },
-    actionPostUrlValidation(dataPayload) {
-      return this.postTiktokUrlValidation(dataPayload)
-        .then((res) => {
-          // console.log({ res });
-        })
-        .catch((err) => {
-          // console.log({ err });
-        });
-    },
     actionGetUrlValidation(url) {
       this.tiktokUrl = url;
       return this.getTiktokUrlValidation(url)
@@ -349,14 +325,17 @@ export default {
         });
     },
     actionGetTiktokVideoNoWatermark() {
-      const url = `https://www.tiktok.com/@${this.previewTiktokData.author.uniqueId}/video/${this.previewTiktokData.video.id}`;
-      if (this.previewTiktokPayload.channel == null) {
-        this.alertFailed = true;
-        setTimeout(() => {
-          this.alertFailed = false;
-        }, 3000);
-        this.payloadFailed.message = "Harap Pilih Channel";
+      const url = this.tiktokUrl;
+      if (this.payload.channel == null) {
+        this.alertErrorChannel = true;
       } else {
+        if (
+          this.alertFloatingLinkLabel.status == true ||
+          this.alertFloatingLink.status == true
+        ) {
+          this.payload.floatingLinkLabel = null;
+          this.payload.floatingLink = null;
+        }
         this.loadingSubmit = true;
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
@@ -477,11 +456,11 @@ export default {
       return new File([u8arr], filename, { type: mime });
     },
     actionPostFeed() {
-      this.previewTiktokPayload.medias[0] = this.dataResponse;
-      if (this.previewTiktokPayload.description == null) {
-        this.previewTiktokPayload.description = "";
+      this.payload.medias[0] = this.dataResponse;
+      if (this.payload.description == null) {
+        this.payload.description = "";
       }
-      return this.postFeed(this.previewTiktokPayload)
+      return this.postFeed(this.payload)
         .then((response) => {
           this.actionPostUrlValidation({
             originalUrl: this.tiktokUrl,
@@ -505,14 +484,19 @@ export default {
           }, 3000);
         });
     },
-    openInNew(v) {
-      window.open(v, "_blank");
+    movePageDraft() {
+      this.$router.push({
+        name: "draft",
+        params: {
+          page: 1,
+        },
+      });
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .container-img {
   position: relative;
   cursor: pointer;
@@ -550,10 +534,6 @@ export default {
   font-size: 12px;
   font-weight: 500;
   color: white;
-}
-
-.font-12 {
-  font-size: 12px;
 }
 
 .alert-resolution {
