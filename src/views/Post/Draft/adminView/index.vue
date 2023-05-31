@@ -142,7 +142,7 @@ export default {
           this.message = response.data.message
           const payload = {
             size : 10,
-            tab : 'list',
+            tab : 'draft',
             page : 0,
           }
           this.dialogReject = false
