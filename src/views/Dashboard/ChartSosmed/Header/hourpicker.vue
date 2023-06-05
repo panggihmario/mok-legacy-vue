@@ -130,6 +130,14 @@ export default {
       },
     }
   },
+  watch : {
+    endHour (value) {
+      if(value < this.startHour) {
+        this.endHour = this.startHour
+        this.startHour = value
+      }
+    }
+  },
   methods: {
     handleFirstPicker (v) {
       this.menuStart = false
