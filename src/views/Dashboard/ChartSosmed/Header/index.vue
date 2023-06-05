@@ -1,11 +1,13 @@
 <template>
     <div :class="k['dash__container']">
+      {{ isReset }}
       <div class="d-flex justify-space-between align-center">
         <div :class="k['dash__label']">User Activity</div>
         <div :class="k['dash__actions']" >
           <custom-button v-if="isReset" @click="handleResetFilter">
             <div class="primary--text">Reset Filter</div>
           </custom-button>
+         
           <div v-else ></div>
           <Trending
             :isTrending="payload.isTrending"
@@ -321,10 +323,10 @@ export default {
       this.display.channel = value.name
     },
     setPerfomerId(value) {
-      this.isReset = true
       this.isBanner = false
       this.payload.performerId = value.id
       if(value.id) {
+        this.isReset = true
         this.display.username = value.name
       }else{
         this.display.username = 'Semua User'
