@@ -1,6 +1,5 @@
 <template>
     <div :class="k['dash__container']">
-      {{ isReset }}
       <div class="d-flex justify-space-between align-center">
         <div :class="k['dash__label']">User Activity</div>
         <div :class="k['dash__actions']" >
