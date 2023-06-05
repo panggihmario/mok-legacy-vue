@@ -180,7 +180,11 @@ export default {
       }
     },
     async handleSearch() {
-      const response = await this.searchChannel(this.payloadSearch);
+      const payload = {
+        page: this.page - 1,
+        search: this.payloadSearch,
+      };
+      const response = await this.searchChannel(payload);
       if (response.status === 200) {
         const responseData = response.data.data;
         this.formatingResponse(responseData);

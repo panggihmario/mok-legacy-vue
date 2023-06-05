@@ -5,6 +5,7 @@ import EditArticle from "../views/Article/Editor/edit.vue";
 import Profile from "../views/Profile";
 import AccountManage from "../views/AccountManage";
 import Channel from "../views/Manager/Channel";
+import DefaultChannel from "../views/Manager/DefaultChannel";
 import ChannelCreate from "../views/Manager/Channel/create.vue";
 import ChannelEdit from "../views/Manager/Channel/edit.vue";
 import ReportedPost from "../views/Manager/Reported/Post";
@@ -87,6 +88,11 @@ const routes = [
         path: "/",
         name: "channel",
         component: Channel,
+      },
+      {
+        path: "/default-channel",
+        name: "defaultChannel",
+        component: DefaultChannel,
       },
       {
         path: "/profile",

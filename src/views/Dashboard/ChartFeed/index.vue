@@ -166,6 +166,7 @@ export default {
     fetchApi(payload) {
       return this.fetchStatisticsData(payload)
         .then((response) => {
+          console.log(response)
           const epochDate = response.firstDate
           const startDate = moment(epochDate).format('YYYY-MM-DD')
           const limitDate = moment(startDate).add(8,'days').format('YYYY-MM-DD')
