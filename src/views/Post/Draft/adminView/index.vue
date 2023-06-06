@@ -2,7 +2,7 @@
   <div :class="feed['tb__td']">
     <transition name="fade">
       <div :class="ad['tb__actions']" v-if="selected.length > 0">
-        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Hapus Konten
+        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Reject Konten
           Terpilih</custom-button>
         <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
       </div>
@@ -143,7 +143,7 @@ export default {
           const payload = {
             size : 10,
             tab : 'draft',
-            page : 0,
+            page : this.$route.params.page - 1,
             sort :'createAt,DESC'
           }
           this.dialogReject = false
