@@ -115,20 +115,26 @@ export default {
   },
   methods : {
     saveDate () {
-      const dateRange = this.choosenDate
-      const start = this.formatter(dateRange[0]);
-      const end = this.formatter(dateRange[1]);
-      const fullDate = `${start} - ${end}`;
       this.menu = false
-      const startEpoch = moment(dateRange[0]).subtract(7, 'hour').valueOf()
-      const endEpoch = moment(dateRange.length > 1 ? dateRange[1] : dateRange[0]).endOf('day').subtract(7, 'hour').valueOf()
-      const displayDate = dateRange.length > 1 ? fullDate : `${start}`
-      const params = {
-        startEpoch,
-        endEpoch,
-        displayDate,
+      if(this.choosenDate.length > 0) {
+        const dateRange = this.choosenDate
+        const start = this.formatter(dateRange[0]);
+        const end = this.formatter(dateRange[1]);
+        const fullDate = `${start} - ${end}`;
+        
+        const startEpoch = moment(dateRange[0]).subtract(7, 'hour').valueOf()
+        const endEpoch = moment(dateRange.length > 1 ? dateRange[1] : dateRange[0]).endOf('day').subtract(7, 'hour').valueOf()
+        const displayDate = dateRange.length > 1 ? fullDate : `${start}`
+        const params = {
+          startEpoch,
+          endEpoch,
+          displayDate,
+        }
+        this.$emit('setDate', params)
+      }else {
+        this.onReset()
       }
-      this.$emit('setDate', params)
+      
     },
     formatter(value) {
       const v = moment(value).format("DD/MM/YYYY");
@@ -137,6 +143,12 @@ export default {
     onReset () {
       this.choosenDate = []
       this.displayDate = ''
+      const params = {
+        startEpoch : '',
+        endEpoch : '',
+        displayDate : '',
+      }
+      this.$emit('setDate', params)
     },
     checkRangeDate(value) {
       const [first, second] = value;

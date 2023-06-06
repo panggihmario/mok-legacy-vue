@@ -234,21 +234,39 @@ export default {
       this.dEnd = null;
       this.keyFocusStart = null;
       this.keyFocusEnd = null;
-      this.menu = false;
+      // this.menu = false;
+      const params = {
+        startYear : '',
+        endYear : '',
+        displayStartYear : '',
+        displayEndYear : ''
+      }
+      this.$emit('setYear', params)
     },
     submitDate() {
       this.menu = false
-      const startYear = moment({year : this.startDate}).format('YYYY-MM-DD')
-      const endYear = moment({year : this.endDate ? this.endDate : this.startDate}).endOf('year').format('YYYY-MM-DD')
-      const epochStartYear = moment(startYear).subtract(7, 'hour').valueOf()
-      const epochEndYear = moment(endYear).subtract(7, 'hour').valueOf()
-      const params = {
-        startYear : epochStartYear,
-        endYear : epochEndYear,
-        displayStartYear : this.startDate,
-        displayEndYear : this.endDate
+      if(this.startDate) {
+        const startYear = moment({year : this.startDate}).format('YYYY-MM-DD')
+        const endYear = moment({year : this.endDate ? this.endDate : this.startDate}).endOf('year').format('YYYY-MM-DD')
+        const epochStartYear = moment(startYear).subtract(7, 'hour').valueOf()
+        const epochEndYear = moment(endYear).subtract(7, 'hour').valueOf()
+        const params = {
+          startYear : epochStartYear,
+          endYear : epochEndYear,
+          displayStartYear : this.startDate,
+          displayEndYear : this.endDate
+        }
+        this.$emit('setYear', params)
+      }else{
+        const params = {
+          startYear : '',
+          endYear : '',
+          displayStartYear : '',
+          displayEndYear : ''
+        }
+        this.$emit('setYear', params)
       }
-      this.$emit('setYear', params)
+      
     },
   },
 };
