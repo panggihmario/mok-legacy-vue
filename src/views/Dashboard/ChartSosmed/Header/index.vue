@@ -49,7 +49,9 @@
           />
           <custom-button :loading="isLoading" @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
+       
       </div>
+      <!-- {{ payload }} -->
       <div v-if="isBanner && !isNoData" :class="k['dash__header-label']">
         <b>{{ display.totalPost }} Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>{{ display.timeLabel }}</b> <span v-if="display.hourLabel">di jam</span> <b>{{ display.hourLabel }}</b>
       </div>
@@ -304,8 +306,8 @@ export default {
     resetMonth () {
       this.resetDay()
       this.resetHour()
-      this.payload.startMonthAt = ''
-      this.payload.endMonthAt = ''
+      // this.payload.startMonthAt = ''
+      // this.payload.endMonthAt = ''
     },
     setTimeline (value) {
       this.isReset = true
@@ -318,8 +320,14 @@ export default {
     setChannelCode (value) {
       this.isReset = true
       this.isBanner = false
-      this.payload.channelCode = value.code
-      this.display.channel = value.name
+      if(value.code) {
+        this.payload.channelCode = value.code
+        this.display.channel = value.name
+      }else {
+        this.payload.channelCode = ''
+        this.display.channel = 'Semua Channel'
+      }
+     
     },
     setPerfomerId(value) {
       this.isBanner = false
