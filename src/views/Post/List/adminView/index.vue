@@ -162,7 +162,7 @@ export default {
           const payload = {
             size : 10,
             tab : 'list',
-            page : 0,
+            page : this.$route.params.page - 1,
           }
           this.dialogReject = false
           this.isLoadingMultiple = false

@@ -178,7 +178,7 @@ export default {
           return this.onInitiateFetchFeeds(name, page)
         }
     },
-    onInitiateFetchFeeds (tab = this.$route.name, page = 0) {
+    onInitiateFetchFeeds (tab = this.$route.name, page = this.$route.params.page - 1) {
       const sort = this.typeOfSort(tab);
       const payload = {
         size : 10,
