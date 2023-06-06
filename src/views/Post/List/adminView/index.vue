@@ -123,7 +123,7 @@ export default {
       },
       deep: true,
       immediate: true
-  }
+    }
   },
   computed: {
     ...mapState({
@@ -157,11 +157,12 @@ export default {
       })
       return this.multipleDelete(idSelected)
         .then(response => {
+          this.selected = []
           this.message = response.data.message
           const payload = {
             size : 10,
             tab : 'list',
-            page : 0,
+            page : this.$route.params.page - 1,
           }
           this.dialogReject = false
           this.isLoadingMultiple = false

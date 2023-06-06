@@ -7,9 +7,6 @@ import './plugins'
 import vuetify from './plugins/vuetify/index'
 import i18n from './plugins/localization'
 
-
-
-
 new Vue({
 	store,
 	vuetify,

@@ -1,43 +1,43 @@
 <template>
   <div :class="feed['tb__td']">
-    <v-data-table
-      :headers="headers"
-      hide-default-footer
-      class="grey--text"
-      :items="feeds"
+    <transition name="fade">
+      <div :class="ad['tb__actions']" v-if="selected.length > 0">
+        <custom-button :loading="isLoadingMultiple" @click="openDialogDelete" size="small" color="warning">Reject Konten
+          Terpilih</custom-button>
+        <custom-button @click="clearSelected" size="small">Uncheck Konten Terpilih</custom-button>
+      </div>
+    </transition>
+    <v-snackbar v-model="alertSuccess" top :color="statusMessage">
+      {{ message }}
+    </v-snackbar>
+    <DialogReject
+      @closeDialog="closeDialog"
+      @handleDelete="rejectFeeds"
+      :dialogReject="dialogReject"
+    />
+    <v-data-table 
+      :headers="headers" 
+      hide-default-footer 
+      class="grey--text" 
+      :class="feed['my-table']"
+      :items="feeds" 
+      show-select
+      v-model="selected"
     >
       <template v-slot:body="{ items }">
         <tbody>
-          <tr 
-            v-for="item in items" 
-            :key="item.id"
-          >  
-            <td
-              @mouseover="onHover(item)"
-              @mouseleave="onLeave"
-              @mousemove="getPosition"
-              @mouseout="stopTracking"
-            >
-              <LinkDialog
-                :item="item"
-                @refreshDataFeed="refreshDataFeed"
-                :isAdmin="true"
-                :feeds="feeds"
-                
-              />
-              <div
-                v-if="item.id === selectedItem" 
-                :class="feed['tb__hover-image']"
-                id="displayAreaDraft"
-                :style="{top : `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))) )}px`  }"
-                >
-                  <img
-                    :src="thumbnailImage"
-                    :class="feed['tb__image']"
-                  />
-                </div>
+          <tr v-for="item in items" :key="item.id">
+            <td>
+              <input style="width: 20px" type="checkbox" :value="item" v-model="selected" />
             </td>
-            <td >
+            <td @mouseover="onHover(item)" @mouseleave="onLeave" @mousemove="getPosition" @mouseout="stopTracking">
+              <LinkDialog :item="item" @refreshDataFeed="refreshDataFeed" :isAdmin="true" :feeds="feeds" />
+              <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
+                :style="{ top: `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))))}px` }">
+                <img :src="thumbnailImage" :class="feed['tb__image']" />
+              </div>
+            </td>
+            <td>
               <div :class="feed['tb__caption']">{{ item.description }}</div>
             </td>
             <td>
@@ -68,12 +68,23 @@ import Actions from "./actions.vue";
 import LinkDialog from "../../containers/dialog/index.vue";
 import moment from "moment";
 import ActionsPicker from "./actionsPicker.vue";
+import DialogReject from "./dialogReject.vue"
 export default {
   components: {
     Picker,
     Actions,
     LinkDialog,
     ActionsPicker,
+    DialogReject
+  },
+  watch : {
+    '$route.params.page': {
+      handler: function(search) {
+        this.selected = []
+      },
+      deep: true,
+      immediate: true
+    }
   },
   computed: {
     ...mapState({
@@ -83,6 +94,8 @@ export default {
   methods: {
     ...mapActions({
       fetchFeedById: "post/fetchFeedById",
+      multipleReject : 'post/multipleReject',
+      fetchFeeds: "post/fetchFeeds",
     }),
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
@@ -103,7 +116,7 @@ export default {
     getPosition(e) {
       const x = e.clientX;
       const y = e.clientY;
-      document.getElementById("displayAreaDraft").style.left =  (x - 246) + 'px';
+      document.getElementById("displayAreaDraft").style.left = (x - 246) + 'px';
     },
     stopTracking() {
 
@@ -112,15 +125,70 @@ export default {
       this.selectedItem = null
       this.thumbnailImage = ""
     },
+    clearSelected () {
+      this.selected = []
+    },  
+    closeDialog() {
+      this.dialogReject = false
+    },
+    rejectFeeds () {
+      this.isLoadingMultiple = true
+      const idSelected = this.selected.map(select => {
+        return select.id
+      })
+      return this.multipleReject(idSelected)
+        .then(response => {
+          this.selected = []
+          this.message = response.data.message
+          const payload = {
+            size : 10,
+            tab : 'draft',
+            page : this.$route.params.page - 1,
+            sort :'createAt,DESC'
+          }
+          this.dialogReject = false
+          this.isLoadingMultiple = false
+          this.alertSuccess = true
+          setTimeout(() => {
+            this.alertSuccess = false
+            this.message = ''
+          },1500)
+          return this.fetchFeeds(payload)
+        })
+        .catch(err => {
+          this.isLoadingMultiple = false
+          this.dialogReject = false
+          this.onHandleFailed(err)
+        })
+    },
+    onHandleFailed(value) {
+      const response = value.response
+      this.message = response.data.message
+      this.statusMessage = 'warning'
+      this.alertSuccess = true
+      setTimeout(() => {
+        this.alertSuccess = false
+        this.message = ''
+        this.statusMessage = 'success'
+      },1500)
+    },
+    openDialogDelete () {
+      this.dialogReject = true
+    }
   },
   data() {
     return {
-      selectedItem : null,
-      thumbnailImage : "",
+      selectedItem: null,
+      thumbnailImage: "",
+      dialogReject: false,
+      alertSuccess: false,
+      isLoadingMultiple : false,
+      statusMessage: 'success',
+      message: '',
+      selected: [],
       headers: [
         {
           text: "Media",
-          class: "whitesnow",
           sortable: false,
           value: "media",
           filterable: false,
@@ -128,7 +196,6 @@ export default {
         },
         {
           text: "Caption",
-          class: "whitesnow",
           value: "description",
           sortable: false,
           filterable: false,
@@ -136,42 +203,29 @@ export default {
         },
         {
           text: "Channel",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "channel",
         },
         {
           text: "Submitted",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "date",
         },
         {
           text: "User",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "user",
         },
         {
           text: "Schedule",
-          class: "whitesnow",
           sortable: false,
           filterable: false,
           value: "schedule",
           align: "left",
         },
-        // {
-        //   text : 'Action',
-        //   class : 'whitesnow',
-        //   sortable: false,
-        //   filterable: false,
-        //   value : 'action',
-        //   align : 'center',
-        //   width : "200"
-        // }
       ],
     };
   },
@@ -179,13 +233,17 @@ export default {
 </script>
 
 <style lang="scss" module="feed">
-//$
-
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
+}
 .fonts {
   font-size: 12px;
   font-weight: 500;
   color: #777777;
 }
+
 .tb {
   &__hover-image {
     position: absolute;
@@ -202,14 +260,17 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
   &__image {
     max-width: 100%;
     border-radius: 8px;
     max-height: 100%;
   }
+
   &__td {
     position: relative;
   }
+
   &__caption {
     @extend .fonts;
     white-space: nowrap !important;
@@ -217,6 +278,7 @@ export default {
     text-overflow: ellipsis !important;
     max-width: 150px;
   }
+
   &__schedule {
     background: #ffffff;
     border: 0.6px solid #bbbbbb;
@@ -228,10 +290,12 @@ export default {
     font-size: 10px;
     cursor: pointer;
   }
+
   &__schedule:focus {
     border: 0.6px solid #bbbbbb;
     outline: none;
   }
+
   &__icon-input {
     position: absolute;
     right: 35px;
@@ -240,5 +304,4 @@ export default {
 }
 </style>
 
-<style src="../../style.scss" lang="scss" module="ad">
-</style>
+<style src="../../style.scss" lang="scss" module="ad"></style>

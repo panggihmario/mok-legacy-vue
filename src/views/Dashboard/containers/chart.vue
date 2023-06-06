@@ -149,6 +149,11 @@ export default {
       fill: #1890ff;
       stroke: #1890ff;
     }
+    .fill {
+      fill: url(#btcFill);
+      fill-opacity: 0.5;
+
+    }
   }
   .curve3{
     .stroke {

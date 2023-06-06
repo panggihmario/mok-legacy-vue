@@ -66,6 +66,11 @@ export default [
         path: "/",
         role: ["ROLE_ADMIN"],
       },
+      // {
+      //   title: "Default Channel - HOME",
+      //   path: "/default-channel",
+      //   role: ["ROLE_ADMIN"],
+      // },
       {
         title: "Reported",
         items: [
@@ -207,7 +212,7 @@ export default [
       {
         title: "Komplain",
         path: "/complaint",
-        role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT"],
+        role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT" , "ROLE_ADMIN"],
       },
       {
         title: "Finance",
