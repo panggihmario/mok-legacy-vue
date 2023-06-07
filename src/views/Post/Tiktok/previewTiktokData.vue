@@ -45,6 +45,29 @@
       </div>
 
       <div
+        v-if="
+          previewTiktokData.video.height >= 1024
+            ? false
+            : previewTiktokData.video.width >= 1024
+            ? false
+            : true
+        "
+        class="alert-resolution mt-3"
+      >
+        <div class="d-flex">
+          <div style="margin-top: 2px; margin-right: 6px">
+            <icon-triangle-exclamation></icon-triangle-exclamation>
+          </div>
+          <div>
+            <span
+              >Video ini memiliki resolusi rendah, untuk menjaga kualitas
+              konten, gunakan video lain yang memiliki minimum resolusi 1024
+              pixel.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
         v-if="isDataExist"
         class="d-flex align-center alert-data-exist mt-3"
         style="gap: 6px"
@@ -53,7 +76,7 @@
         <span>Konten sudah pernah disubmit, coba konten lain</span>
       </div>
 
-      <div class="mt-3">
+      <div>
         <k-textarea
           v-model="payload.description"
           placeholder="Caption"
@@ -199,6 +222,7 @@ export default {
     previewTiktokData() {
       this.isDataExist = false;
       this.alertErrorChannel = false;
+      this.payload.description = this.previewTiktokData.desc;
       this.payload.channel = null;
       this.payload.floatingLink = null;
       this.payload.floatingLinkLabel = null;
@@ -460,7 +484,12 @@ export default {
       if (this.payload.description == null) {
         this.payload.description = "";
       }
-      return this.postFeed(this.payload)
+      const p = {
+        ...this.payload,
+        type: "social",
+        product: null,
+      };
+      return this.postFeed(p)
         .then((response) => {
           this.actionPostUrlValidation({
             originalUrl: this.tiktokUrl,
@@ -469,11 +498,11 @@ export default {
           });
 
           this.loadingSubmit = false;
+          this.actionChangeStatusPreviewTiktok(false);
           this.actionChangeStatusPreviewTiktokSuccess(true);
           setTimeout(() => {
             this.actionChangeStatusPreviewTiktokSuccess(false);
           }, 3000);
-          this.actionChangeStatusPreviewTiktok(false);
         })
         .catch((err) => {
           this.loadingSubmit = false;
@@ -482,6 +511,15 @@ export default {
           setTimeout(() => {
             this.alertFailed = false;
           }, 3000);
+        });
+    },
+    actionPostUrlValidation(dataPayload) {
+      return this.postTiktokUrlValidation(dataPayload)
+        .then((res) => {
+          // console.log({ res });
+        })
+        .catch((err) => {
+          // console.log({ err });
         });
     },
     movePageDraft() {
