@@ -6,6 +6,7 @@
           <custom-button v-if="isReset" @click="handleResetFilter">
             <div class="primary--text">Reset Filter</div>
           </custom-button>
+         
           <div v-else ></div>
           <Trending
             :isTrending="payload.isTrending"
@@ -44,10 +45,13 @@
             :display="display.hour"
             @setHour="setHour"
             :isDisable="disableHour"
+            ref="filterHour"
           />
           <custom-button :loading="isLoading" @click="handleFilter" color="secondary" >Show Chart</custom-button>
         </div>
+       
       </div>
+      <!-- {{ payload }} -->
       <div v-if="isBanner && !isNoData" :class="k['dash__header-label']">
         <b>{{ display.totalPost }} Post</b> dilihat oleh <b>{{ display.username }}</b>  dalam <b>{{ display.channel }}</b> pada <b>{{ display.timeLabel }}</b> <span v-if="display.hourLabel">di jam</span> <b>{{ display.hourLabel }}</b>
       </div>
@@ -164,6 +168,7 @@ export default {
       this.$refs.filterDate && this.$refs.filterDate.onReset()
       Object.assign(this.$data.display, this.resetDisplayFilter())
       Object.assign(this.$data.payload, this.resetPayloadFilter())
+      this.resetMonth()
       return this.initChart('day')
     },
     initChart (timeline) {
@@ -190,9 +195,6 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
-    },
-    setDisplayTimeLabel (payload) {
-
     },
     handleFilter () {
       if(this.payload.startDateAt) {
@@ -270,6 +272,7 @@ export default {
       this.isReset = true
       this.payload.startDateAt = value.epochStartAt
       this.payload.endDateAt = value.epochEndAt
+      this.resetHour()
       if(value.startAt === value.endAt){
         this.display.timeLabel = `${value.startAt}`
         this.disableHour = false
@@ -297,12 +300,14 @@ export default {
       this.payload.startHourAt = ''
       this.payload.endHourAt = ''
       this.display.hour = ''
+      this.display.hourLabel = ''
+      this.$refs.filterHour.cancelDate()
     },
     resetMonth () {
       this.resetDay()
       this.resetHour()
-      this.payload.startMonthAt = ''
-      this.payload.endMonthAt = ''
+      // this.payload.startMonthAt = ''
+      // this.payload.endMonthAt = ''
     },
     setTimeline (value) {
       this.isReset = true
@@ -311,31 +316,29 @@ export default {
       this.display.year = ''
       this.disableHour = true
       this.resetMonth()
-      // return this.initChart(value)
-      // .then(response => { 
-      //     this.$emit('setData', response)
-      //     const datasets = response.datasets[0]
-      //     const totalPost = datasets.totalPost
-      //     const currentDate = moment(response.firstDate).format('DD MMM YYYY')
-      //     this.display.totalPost = totalPost
-      //     this.display.timeLabel = currentDate
-      //     this.isBanner = true
-      //     return response })
-      //   .catch(err => {
-      //     console.log(err.response)
-      //   })
     },
     setChannelCode (value) {
       this.isReset = true
       this.isBanner = false
-      this.payload.channelCode = value.code
-      this.display.channel = value.name
+      if(value.code) {
+        this.payload.channelCode = value.code
+        this.display.channel = value.name
+      }else {
+        this.payload.channelCode = ''
+        this.display.channel = 'Semua Channel'
+      }
+     
     },
     setPerfomerId(value) {
-      this.isReset = true
       this.isBanner = false
       this.payload.performerId = value.id
-      this.display.username = value.name
+      if(value.id) {
+        this.isReset = true
+        this.display.username = value.name
+      }else{
+        this.display.username = 'Semua User'
+      }
+      
     },
   }
 }

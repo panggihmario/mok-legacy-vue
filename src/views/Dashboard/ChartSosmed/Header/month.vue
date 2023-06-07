@@ -111,6 +111,14 @@ export default {
     },
     onReset () {
       this.picker = []
+      this.displayMonth = ''
+      const params = {
+          startAt : '',
+          endAt : '',
+          epochStartAt : '',
+          epochEndAt : ''
+        }
+        this.$emit('setMonth', params)
     },
     monthFormater (value) {
       const numberOfMonth = moment(value).format('M')

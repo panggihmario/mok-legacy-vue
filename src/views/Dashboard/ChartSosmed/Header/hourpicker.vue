@@ -130,6 +130,14 @@ export default {
       },
     }
   },
+  watch : {
+    endHour (value) {
+      if(value < this.startHour) {
+        this.endHour = this.startHour
+        this.startHour = value
+      }
+    }
+  },
   methods: {
     handleFirstPicker (v) {
       this.menuStart = false
@@ -142,6 +150,12 @@ export default {
     cancelDate() {
       this.startHour = ''
       this.endHour = ''
+      const params = {
+          start : '',
+          end : '',
+          displayHour : ''
+        }
+      this.$emit('setHour', params)
     },
     checkTime(i) {
       if (i < 10) {
@@ -165,15 +179,19 @@ export default {
       return hourUTC
     },
     savePicker () {
-      const display = this.setDisplay(this.startHour, this.endHour)
-      const params = {
-        start : this.convertHourToUtc0(this.startHour),
-        end : this.convertHourToUtc0(this.endHour ? this.endHour : this.startHour),
-        displayHour : display
+      if(this.startHour || this.startHour === 0) {
+        const display = this.setDisplay(this.startHour, this.endHour)
+        const params = {
+          start : this.convertHourToUtc0(this.startHour),
+          end : this.convertHourToUtc0(this.endHour ? this.endHour : this.startHour),
+          displayHour : display
+        }
+        this.hourDisplay = `${this.startHour} : ${this.endHour} `
+        this.$emit('setHour', params)
+        this.menu = false
+      }else{
+        this.menu = false
       }
-      this.hourDisplay = `${this.startHour} : ${this.endHour} `
-      this.$emit('setHour', params)
-      this.menu = false
     }
   } 
 }

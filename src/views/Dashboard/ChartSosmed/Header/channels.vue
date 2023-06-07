@@ -38,6 +38,17 @@ export default {
       }
     }
   },
+  watch : {
+    keyword (value) {
+      if(!value) {
+        const payload = {
+          name : '',
+          code : ''
+        }
+        this.$emit('setChannelCode', payload)
+      }
+    }
+  },
   data () {
     return {
       keyword : '',
