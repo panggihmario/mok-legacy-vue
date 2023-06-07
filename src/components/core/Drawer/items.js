@@ -11,7 +11,7 @@ export default [
       {
         title: "Dashboard Sosmed",
         path: "/dashboard-sosmed",
-        role: ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN" ,"ROLE_ADMIN_SOCIAL"],
       },
     ],
   },
@@ -66,11 +66,11 @@ export default [
         path: "/",
         role: ["ROLE_ADMIN"],
       },
-      {
-        title: "Default Channel - HOME",
-        path: "/default-channel",
-        role: ["ROLE_ADMIN"],
-      },
+      // {
+      //   title: "Default Channel - HOME",
+      //   path: "/default-channel",
+      //   role: ["ROLE_ADMIN"],
+      // },
       {
         title: "Reported",
         items: [
@@ -212,7 +212,7 @@ export default [
       {
         title: "Komplain",
         path: "/complaint",
-        role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT"],
+        role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT" , "ROLE_ADMIN"],
       },
       {
         title: "Finance",
