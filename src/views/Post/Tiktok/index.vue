@@ -118,7 +118,7 @@
       color="success"
       timeout="3000"
     >
-      <div class="d-flex justify-space-between">
+      <div class="d-flex justify-space-between align-center">
         <span>Success Post</span>
         <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
       </div>
