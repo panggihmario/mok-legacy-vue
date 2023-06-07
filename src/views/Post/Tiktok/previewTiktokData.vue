@@ -585,6 +585,8 @@ export default {
 
 .alert-data-exist {
   background-color: $primarylowtint;
+  border: 1px solid $warning;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
   padding: 6px;
