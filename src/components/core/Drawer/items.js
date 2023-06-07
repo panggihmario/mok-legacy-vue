@@ -66,11 +66,11 @@ export default [
         path: "/",
         role: ["ROLE_ADMIN"],
       },
-      // {
-      //   title: "Default Channel - HOME",
-      //   path: "/default-channel",
-      //   role: ["ROLE_ADMIN"],
-      // },
+      {
+        title: "Default Channel - HOME",
+        path: "/default-channel",
+        role: ["ROLE_ADMIN"],
+      },
       {
         title: "Reported",
         items: [
