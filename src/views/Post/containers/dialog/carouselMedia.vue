@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-carousel
-      height="456"
+      height="665"
       v-model="slidePosition"
       hide-delimiters
       :show-arrows="false"
@@ -14,7 +14,6 @@
         reverse-transition="fade-transition"
         transition="fade-transition"
       >
-       <!-- <div class="red--text"> {{`videodialog-${i}-${item.id}`}} </div> -->
         <video
           v-if="item.type === 'video'"
           controls
@@ -23,7 +22,7 @@
           :class="d.vid"
         />
         <div :class="d['container-image']" v-else>
-          <v-img
+          <img
             :class="d.img"
             :src="item.thumbnail.medium"
             :lazy-src="item.thumbnail.small"
@@ -130,6 +129,11 @@ export default {
     item : {
       type : Object
     },
+  },
+  computed : {
+    isContain () {
+      console.log(this.item)
+    }
   },
   methods: {
     ...mapActions({

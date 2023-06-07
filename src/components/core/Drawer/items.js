@@ -11,7 +11,7 @@ export default [
       {
         title: "Dashboard Sosmed",
         path: "/dashboard-sosmed",
-        role: ["ROLE_ADMIN"],
+        role: ["ROLE_ADMIN" ,"ROLE_ADMIN_SOCIAL"],
       },
     ],
   },
