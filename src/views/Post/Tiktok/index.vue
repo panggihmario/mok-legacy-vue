@@ -118,8 +118,10 @@
       color="success"
       timeout="3000"
     >
-      <span>Success Post</span>
-      <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+      <div class="d-flex justify-space-between align-center">
+        <span>Success Post</span>
+        <v-btn outlined text @click="movePageDraft">See Draft</v-btn>
+      </div>
     </v-snackbar>
     <v-snackbar v-model="alertFailed" top right color="primary" timeout="3000">
       <span>Error</span>
@@ -420,7 +422,7 @@ export default {
               (blob) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function() {
+                reader.onloadend = function () {
                   var base64data = reader.result;
                   resolve(base64data);
                 };

@@ -434,7 +434,12 @@ export default {
         });
     },
     handleSearchChannel(v) {
-      return this.searchChannel(v)
+      const payload = {
+        page : 0,
+        search : v,
+        size : 20
+      }
+      return this.searchChannel(payload)
         .then((response) => {
           this.itemsChannel = response.data.data.content;
         })
