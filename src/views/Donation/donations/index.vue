@@ -113,12 +113,13 @@ export default {
     onEnter() {
       this.statusFind = this.keyword.length > 0 ? 'search' : ''
       const payload = {
-        page : this.page - 1,
+        page : 0,
         search : this.keyword
       }
       this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          this.page = 1
           this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages

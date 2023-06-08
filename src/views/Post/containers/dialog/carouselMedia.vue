@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-carousel
-      height="665"
       v-model="slidePosition"
       hide-delimiters
       :show-arrows="false"
       class="mb-4"
+      height="100%"
     >
       <v-carousel-item
         v-for="(item, i) in feed.medias"
@@ -13,21 +13,8 @@
         :key="i"
         reverse-transition="fade-transition"
         transition="fade-transition"
-      >
-        <video
-          v-if="item.type === 'video'"
-          controls
-          :src="item.url"
-          :id="`videodialog-${i}-${item.id}`"
-          :class="d.vid"
-        />
-        <div :class="d['container-image']" v-else>
-          <img
-            :class="d.img"
-            :src="item.thumbnail.medium"
-            :lazy-src="item.thumbnail.small"
-          />
-        </div>
+      > 
+        <Media :item="item" :i="i" />
       </v-carousel-item>
     </v-carousel>
     <div class="d-flex align-start  black--text">
@@ -74,8 +61,8 @@
         v-if="isAdmin && !isPublish"
         :loading="loading"
         @click="publishFeed"
-        class="ml-4"
-        size="small"
+        class="ml-2"
+        size="x-small"
         color='secondary'
       >
        Post Content Sekarang
@@ -99,9 +86,11 @@
 import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import moment from "moment";
+import Media from "./media.vue"
 export default {
   components: {
     DeletedBy,
+    Media
   },
   data() {
     return {
