@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate';
-import {required , alpha_dash}   from 'vee-validate/dist/rules';
+import {required , alpha_dash, max}   from 'vee-validate/dist/rules';
 import * as rules from 'vee-validate/dist/rules';
 
 Object.keys(rules).forEach(rule => {
@@ -19,6 +19,13 @@ extend('alpha_dash', {
 	message (fieldname){
 		const [realFieldName] = fieldname.split("-")
 		return `${realFieldName} hanya dapat berupa huruf, angka dan underscore`
+	}
+})
+
+extend('max', {
+	...max,
+	message(fieldname, value) {
+		return `The ${fieldname} field may not be greater than ${value.length} characters`
 	}
 })
 

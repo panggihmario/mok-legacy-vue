@@ -84,7 +84,15 @@ export default {
     handleDelete() {
       const id = this.$route.params.id;
       return this.deleteUser(id).then(() => {
-        this.$router.push("/user");
+        this.$router.push({
+          name : 'User',
+          params : {
+            page : 1
+          },
+          query : {
+            search : ''
+          }
+        });
       });
     },
     async onSubmit(params) {
@@ -124,7 +132,6 @@ export default {
       const response = await this.getAccountById(params);
       if (response.status === 200) {
         const responseData = response.data.data;
-        console.log(responseData)
         const tempData = { ...this.data };
         const dataById = {
           ...tempData,
@@ -140,7 +147,6 @@ export default {
         };
         this.oldPassword = responseData.password;
         this.data = dataById;
-        console.log(dataById);
       }
     },
   },

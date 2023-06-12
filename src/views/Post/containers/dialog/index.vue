@@ -19,7 +19,7 @@
       </div>
       <v-card width="850px">
         <v-carousel
-          height="750"
+          height="100%"
           hide-delimiter-background
           hide-delimiters
           :show-arrows="false"
