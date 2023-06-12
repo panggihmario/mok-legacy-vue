@@ -34,7 +34,7 @@ export default {
       type: String
     },
     rules: {
-      type: String
+      type: [String, Object]
     },
     colorbg : {
       type : String,

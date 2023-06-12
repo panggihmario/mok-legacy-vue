@@ -22,6 +22,8 @@
             Video ini memiliki resolusi rendah, klik tombol “Gukanan Video” untuk tetap menggunakan video ini, atau klik “Ubah Video” jika ingin mengganti dengan video lain
           </div>
         </div>
+
+        <div v-if="!isMediasExist" class="error-message warning--text">Medias are required!</div>
     
         <k-textarea 
           title="Caption" 
@@ -29,6 +31,7 @@
           :counter="1000" 
           rules="required" 
           rows="8" 
+          errorMessage="Caption is required"
         />
         <v-row>
           <v-col cols="6">
@@ -87,6 +90,7 @@ export default {
       description: "",
       isLink : false,
       isWarning : false,
+      isMediasExist : true,
       title: '',
       testUrl: "",
       file: "",
@@ -129,13 +133,15 @@ export default {
     emitedFilter(value) {
       this.channels = value
     },
-    submitForm() {
-      this.loading = true;
+    checkMediasAreExist () {
       const payloadMedias = this.medias.filter((m) => {
         if (m.url) {
           return m;
         }
       });
+      return payloadMedias
+    },
+    setPayloadForPostFeed (payloadMedias) {
       const payload = {
         type: "social",
         medias: [...payloadMedias],
@@ -145,31 +151,17 @@ export default {
         floatingLink :this.floatingLink,
         floatingLinkLabel : this.floatingLinkLabel
       };
-      console.log(payload)
-      // return this.postFeed(payload)
-      //   .then(() => {
-      //     this.alertSucces = true;
-      //     setTimeout(() => {
-      //       this.alertSucces = false;
-      //       this.loading = false;
-      //       this.$router.push({
-      //         name: "draft",
-      //         params: {
-      //           page: 1,
-      //         },
-      //       });
-      //     }, 1500);
-      //   })
-      //   .catch(() => {
-      //     this.loading = false;
-      //     this.alertFailed = true;
-      //     setTimeout(() => {
-      //       this.alertFailed = false;
-      //     }, 1500);
-      //   });
-      if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ){
-        this.isLink = false
-        return this.postFeed(payload)
+      return payload
+    },
+    checkFloatingUrl () {
+      if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ) {
+        return true
+      }else{
+        return false
+      }
+    },
+    handlePostApi (payload) {
+      return this.postFeed(payload)
         .then(() => {
           this.alertSucces = true;
           setTimeout(() => {
@@ -190,10 +182,31 @@ export default {
             this.alertFailed = false;
           }, 1500);
         });
+    },
+    submitForm() {
+      this.loading = true;
+      const medias = this.checkMediasAreExist()
+      if(medias.length > 0) {
+        this.isMediasExist = true
+        const payload = this.setPayloadForPostFeed(medias)
+        const isFloatinUrl = this.checkFloatingUrl()
+        if(isFloatinUrl) {
+          this.isLink = false
+          return this.handlePostApi(payload)
+        }else{
+          this.isLink = true
+          this.loading = false
+          setTimeout(() => {
+            this.isLink = false
+          }, 1800)
+        }
       }else{
-        this.isLink = true
+        this.isMediasExist = false
+        this.loading = false
+        setTimeout(() => {
+          this.isMediasExist = true
+        },1500)
       }
-    
     },
     async getResponseChannel() {
       const response = await this.getAllChannel();
@@ -252,5 +265,10 @@ export default {
   font-weight: 500;
   padding: 6px;
   margin: 4px 0 16px 0;
+}
+
+.error-message {
+  font-size: 11px;
+  font-weight: 500;
 }
 </style>
