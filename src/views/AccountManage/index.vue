@@ -224,6 +224,7 @@ export default {
       const id = this.idUser;
       const response = await this.deleteAccount(id);
       if (response.status === 200) {
+        console.log(response)
         this.handleResponseListAdmin();
         this.dialog = false;
         this.idUser = "";
