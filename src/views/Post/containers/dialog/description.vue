@@ -17,11 +17,6 @@
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
        
-        <!-- <textarea 
-          :class="d['dg__text-area']" 
-          v-model="modelDescription" 
-          :readonly="isPublish"
-        /> -->
         <k-textarea 
           title="Caption" 
           v-model="modelDescription" 
@@ -58,6 +53,15 @@
               />
               </v-col>
               <v-col cols="6" >
+                <!-- <custom-input
+                dense
+                v-model="modelFloatingLink" 
+                  label="-"
+                  icon="fas fa-link"
+                  placeholder="https:/...."
+                  :rules="{regex: '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'}"
+                  errorMessage='Gunakan format link yang sesuai contohnya https://youtube.com'
+                /> -->
                 <k-input 
                   v-model="modelFloatingLink" 
                   label="-"
@@ -184,7 +188,6 @@ export default {
     }),
     saveCaption() {
       this.loading = true;
-      console.log(this.floatingLinkLabel, this.floatingLink)
       setTimeout(() => {
         this.$emit("saveCaption", this.channelValue);
         this.loading = false;

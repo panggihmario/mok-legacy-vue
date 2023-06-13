@@ -7,7 +7,6 @@
       :value="value"
       v-on="inputListener"
     />
-
     <div v-if="errors" class="editor__error-message error--text">{{ errors[0] }}</div>
   </ValidationProvider>
 </template>
@@ -51,6 +50,9 @@ export default {
     rules: {
       type: String,
     },
+    counter : {
+      type : [Number , String]
+    }
   },
   data() {
     return {

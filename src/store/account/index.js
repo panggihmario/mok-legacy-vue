@@ -31,12 +31,12 @@ export default {
         return error;
       }
     },
-    async getListRole({ state }) {
+    async getListRole({ state }, payload) {
       let response;
       try {
         response = await this._vm
           .$httpWithToken()
-          .get(`${state.pathAccount}/roles`);
+          .get(`${state.pathAccount}/roles/${payload}`);
         return response;
       } catch (error) {
         return error;
@@ -95,6 +95,17 @@ export default {
         response = await this._vm
           .$httpWithToken()
           .put(`${state.pathAccount}/${payload.id}`, payload.data);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    },
+    async updateAccountUser({ state }, payload) {
+      let response;
+      try {
+        response = await this._vm
+          .$httpWithToken()
+          .put(`${state.pathAccount}/users/${payload.id}`, payload.data);
         return response;
       } catch (error) {
         return error;
