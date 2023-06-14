@@ -4,7 +4,8 @@
     <v-text-field
       solo
       flat
-
+      outlined
+      dense
       class="field"
       v-bind="$attrs"
       :value="value"
