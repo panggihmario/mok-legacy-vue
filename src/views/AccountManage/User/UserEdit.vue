@@ -67,12 +67,13 @@ export default {
   methods: {
     ...mapActions({
       getAccountById: "account/getAccountById",
-      updateAccount: "account/updateAccount",
+      updateAccount: "account/updateAccountUser",
       deleteUser: "account/deleteUser",
       getListRole: "account/getListRole",
     }),
     handleGetListRole() {
-      return this.getListRole().then((response) => {
+      const payload = 'EXTERNAL'
+      return this.getListRole(payload).then((response) => {
         const responsData = response.data.data
           this.listAccountType = response.data.data
           const filterData = responsData.filter(d => {

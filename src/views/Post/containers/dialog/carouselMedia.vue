@@ -9,7 +9,7 @@
     >
       <v-carousel-item
         v-for="(item, i) in feed.medias"
-        hide-delimiters
+
         :key="i"
         reverse-transition="fade-transition"
         transition="fade-transition"
@@ -209,8 +209,13 @@ export default {
       this.menu = false;
     },
     slideRight() {
+      // this.slidePosition++;
+      if (this.slidePosition === this.feed.medias.length - 1) {
+        this.slidePosition = 0;
+      } else {
+        this.slidePosition++;
+      }
       this.stopVideo();
-      this.slidePosition++;
       // this.playVideo();
     },
     stopVideo() {
@@ -221,13 +226,15 @@ export default {
         if (m.type === "video") {
           if (idx === slide) {
             idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+          }else{
+            idVideo = ''
           }
         }
       });
       if (idVideo) {
-        // idVideo.pause()
-        idVideo.load()
-        // idVideo.currentTime = 0;
+        idVideo.pause()
+        // idVideo.load()
+        idVideo.currentTime = 0;
       }
     },
     playVideo() {

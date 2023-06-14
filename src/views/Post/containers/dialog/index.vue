@@ -110,13 +110,17 @@ export default {
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
-      this.$refs.items[0].stopVideo()
+      // this.$refs.items[0].stopVideo()
       this.$refs.items.forEach((c, idx) => {
-        this.$refs.items[idx].stopVideo()
+        c.$refs.carouselMedia.stopVideo()
       })
       this.dialog = false;
+      console.log(this.$refs.items)
       this.$emit("refreshDataFeed");
       this.isPublish = []
+      const v = document.querySelector('video')
+      console.log(v)
+      v.pause()
     },
     openMedia() {
       this.dialog = true;

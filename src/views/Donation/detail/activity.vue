@@ -61,7 +61,7 @@
           v-model="content" 
           :value="content" 
           name="Content" 
-          rules="max:1010"
+          rules="max:10000"
         />
         <div class="d-flex justify-end mt-2" style="gap : 8px">
           <custom-button @click="closeDialog" size="small">Batalkan</custom-button>
