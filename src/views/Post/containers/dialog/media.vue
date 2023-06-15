@@ -19,9 +19,17 @@
         :style="{ objectFit : isContain }"
         alt="media"
         controls
+        muted
         playsinline="playsinline"
+        preload="none"
+        :poster="item.thumbnail.medium"
       >
       </video>
+      <!-- <VideoPlayer
+        v-if="item.type === 'video'"
+        :options="videoOptions"
+        :style="{ objectFit : isContain }"
+      /> -->
       <img
         v-else
         :class="d.img"
@@ -31,14 +39,18 @@
         alt="media"
         loading="lazy"
       />
-     
+      
     </div>
   </div>
   
 </template>
 
 <script>
+import VideoPlayer from './video.vue';
 export default {
+  components : {
+    VideoPlayer
+  },
   props : {
     item : {
       type : Object
@@ -49,7 +61,17 @@ export default {
   },
   data () {
     return {
-      status : true
+      status : true,
+      videoOptions: {
+        controls: true,
+        sources: [
+          {
+            src:
+              this.item.url,
+              type: 'video/mp4'
+          }
+        ]
+      }
     }
   },
   methods : {
@@ -65,13 +87,6 @@ export default {
         console.log(err)
         // playButton.classList.remove("playing");
       }
-      // if (video.paused == true) {
-      //   video.load()
-      //   video.play();
-      //   this.status = false 
-      // } else {
-      //   video.pause();
-      // }
     }
   },
   computed : {
