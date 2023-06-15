@@ -188,12 +188,14 @@ export default {
       if (this.confirmPassword != "") {
         payload = {
           ...this.data,
+          accountType : this.data.role.replace("ROLE_", "")
         };
         this.emitChange(payload);
       } else {
         payload = {
           ...this.data,
           password: null,
+          accountType : this.data.role.replace("ROLE_", "")
         };
         this.emitChange(payload);
       }

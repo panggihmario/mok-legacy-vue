@@ -25,7 +25,8 @@ extend('alpha_dash', {
 extend('max', {
 	...max,
 	message(fieldname, value) {
-		return `The ${fieldname} field may not be greater than ${value.length} characters`
+		// return `The ${fieldname} field may not be greater than ${value.length} characters`
+		return 'Karakter terlalu banyak, silahkan kurangi teks'
 	}
 })
 
