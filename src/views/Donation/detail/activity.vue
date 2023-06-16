@@ -51,13 +51,18 @@
       </v-timeline-item>
     </v-timeline>
 
-    <!-- <text-editor v-if="isDialog"  v-model="content" :value="content" name="Content" /> -->
     <!-- DIALOG -->
     <v-dialog max-width="900"   v-model="isDialog" >
       <v-card  class="pa-4">
         <div :class="d['activity__dialog-title']" class="mb-2">Update Kabar Terkini</div>
         <div :class="d['activity__dialog-subtitle']" class="mb-1">Tulis Kabar Terkini</div>
-        <text-editor v-if="isEditor" v-model="content" :value="content" name="Content" />
+        <text-editor 
+          v-if="isEditor" 
+          v-model="content" 
+          :value="content" 
+          name="Content" 
+          rules="max:10000"
+        />
         <div class="d-flex justify-end mt-2" style="gap : 8px">
           <custom-button @click="closeDialog" size="small">Batalkan</custom-button>
           <custom-button @click="handlePostActivity" size="small" color="primary">Publikasikan Kabar

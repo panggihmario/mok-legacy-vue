@@ -2,7 +2,7 @@
   <div>
     <div @click="openMedia" :class="d.link">Lihat Post</div>
     <v-dialog 
-      v-model="dialog" width="850px"  
+      v-model="dialog" width="662px"  
       @click:outside="closeDialog"
       persistent
     >
@@ -19,7 +19,7 @@
       </div>
       <v-card width="850px">
         <v-carousel
-          height="552"
+          height="100%"
           hide-delimiter-background
           hide-delimiters
           :show-arrows="false"
@@ -110,13 +110,17 @@ export default {
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
-      this.$refs.items[0].stopVideo()
+      // this.$refs.items[0].stopVideo()
       this.$refs.items.forEach((c, idx) => {
-        this.$refs.items[idx].stopVideo()
+        c.$refs.carouselMedia.stopVideo()
       })
       this.dialog = false;
+      console.log(this.$refs.items)
       this.$emit("refreshDataFeed");
       this.isPublish = []
+      const v = document.querySelector('video')
+      console.log(v)
+      v.pause()
     },
     openMedia() {
       this.dialog = true;

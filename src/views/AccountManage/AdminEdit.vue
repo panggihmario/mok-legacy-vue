@@ -69,7 +69,9 @@ export default {
       getListRole: "account/getListRole",
     }),
     handleGetListRole() {
-      return this.getListRole().then((response) => {
+      const payload = 'MANAGEMENT'
+      return this.getListRole(payload).then((response) => {
+        console.log(response)
         const listRole = response.data.data;
         for (let i = 0; i < listRole.length; i++) {
           this.listAccountType.push(listRole[i].replace("ROLE_", ""));
@@ -78,18 +80,19 @@ export default {
     },
     async onSubmit(params) {
       const id = this.$route.params.id;
+      const role = `ROLE_${params.accountType}`
       let data = {};
       if (params.password) {
         const newParams = {
           ...params,
-          role: params.accountType
+          role
         };
         data = newParams;
       } else {
         const newParams = {
           ...params,
           password: this.oldPassword,
-          role: params.accountType
+          role
         };
         data = newParams;
       }

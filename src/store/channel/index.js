@@ -97,6 +97,7 @@ export default {
             params: {
               page: payload.page,
               name: payload.search,
+              size : payload.size
             },
           });
         return response;

@@ -20,7 +20,7 @@
         :class="{ 'warning--text': value.length > counter }"
       >
         <div>
-          <span v-if="isError && errorMessage" class="warning--text">{{
+          <span v-if="errors.length > 0 && errorMessage" class="warning--text">{{
             errorMessage
           }}</span>
         </div>

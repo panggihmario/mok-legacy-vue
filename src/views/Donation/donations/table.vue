@@ -26,6 +26,9 @@
       <template v-slot:item.targetAmount="{item}">
         <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
       </template>
+      <template v-slot:item.amountCollected="{item}">
+        <div :class="table.list"> {{ item.amountCollected ? `Rp ${item.amountCollected.toLocaleString('id')}` : '-' }}</div>   
+      </template>
       <template v-slot:item.status="{ item }">
         <div :class="table.list" class="d-flex justify-center">
           {{ item.status }} 
@@ -127,6 +130,12 @@ export default {
         {
           text : 'Target Dana Terkumpul',
           value : 'targetAmount',
+          class: "whitesnow",
+          width: "150",
+        },
+        {
+          text : 'Dana Terkumpul',
+          value : 'amountCollected',
           class: "whitesnow",
           width: "150",
         },
