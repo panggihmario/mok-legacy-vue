@@ -69,6 +69,7 @@ export default {
     value: {
       type: [String, Number, Object],
       require: true,
+      default : ''
     },
     rules: {
       type: [String, Object],

@@ -67,12 +67,13 @@ export default {
   methods: {
     ...mapActions({
       getAccountById: "account/getAccountById",
-      updateAccount: "account/updateAccount",
+      updateAccount: "account/updateAccountUser",
       deleteUser: "account/deleteUser",
       getListRole: "account/getListRole",
     }),
     handleGetListRole() {
-      return this.getListRole().then((response) => {
+      const payload = 'EXTERNAL'
+      return this.getListRole(payload).then((response) => {
         const responsData = response.data.data
           this.listAccountType = response.data.data
           const filterData = responsData.filter(d => {
@@ -84,7 +85,15 @@ export default {
     handleDelete() {
       const id = this.$route.params.id;
       return this.deleteUser(id).then(() => {
-        this.$router.push("/user");
+        this.$router.push({
+          name : 'User',
+          params : {
+            page : 1
+          },
+          query : {
+            search : ''
+          }
+        });
       });
     },
     async onSubmit(params) {
@@ -124,7 +133,6 @@ export default {
       const response = await this.getAccountById(params);
       if (response.status === 200) {
         const responseData = response.data.data;
-        console.log(responseData)
         const tempData = { ...this.data };
         const dataById = {
           ...tempData,
@@ -140,7 +148,6 @@ export default {
         };
         this.oldPassword = responseData.password;
         this.data = dataById;
-        console.log(dataById);
       }
     },
   },

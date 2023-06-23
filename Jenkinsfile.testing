@@ -1,0 +1,126 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    environment {
+        ENV = 'env_test'
+        CONFIG_PATH = '/home/koanba/devops/config/frontend'
+        CONFIG_MOK = "${CONFIG_PATH}/${ENV}/mok"
+        ARTIFACT_LOCATION = '/home/koanba/devops/artifact/frontend'
+        WRAP_MOK = "${ARTIFACT_LOCATION}/${ENV}/mok"
+        ARTIFACT_MOK = 'artifact-mok.tar'
+        JENKINS_IP = '192.168.0.102'
+    }
+
+    stages {
+        stage('Building') {
+            steps {
+                script {
+                    slackSend(
+                        channel: '#server-notif',
+                        tokenCredentialId: 'slack-secret',
+                        color: 'good',
+                        message: "*${env.JOB_NAME}* - ${currentBuild.displayName} Build process started"
+                    )
+                }
+
+                sh '''
+                whoami
+                cp "${CONFIG_MOK}/.env" .
+                rm -rf dist
+                npm install
+                npm run build
+                cd dist/
+                rm -rf "${ARTIFACT_MOK}"
+                tar cvf "${ARTIFACT_MOK}" *
+                rm -rf "${WRAP_MOK}/${ARTIFACT_MOK}"
+                cp "${ARTIFACT_MOK}" "${WRAP_MOK}/"
+                '''
+
+                slackSend(
+                    channel: '#server-notif',
+                    tokenCredentialId: 'slack-secret',
+                    color: 'good',
+                    message: "*${env.JOB_NAME}* - ${currentBuild.displayName} Build process completed"
+                )
+
+                archiveArtifacts artifacts: 'dist/*.tar', onlyIfSuccessful: true
+            }
+        }
+
+        stage('Release') {
+            steps {
+                script {
+                    slackSend(
+                        channel: '#server-notif',
+                        tokenCredentialId: 'slack-secret',
+                        color: 'good',
+                        message: "*${env.JOB_NAME}* - ${currentBuild.displayName} Release process started"
+                    )
+
+                    def k = 'Release-MOK-To-KOANBA-TEST-01'
+                    def paramData = k.split('-')
+                    def appName = paramData[1]
+                    def serverName = k.replaceAll('Release-' + appName + '-To-', '')
+                    println('Starting release process for ' + appName + ' on server ' + serverName)
+
+                    node(serverName) {
+                        def artifactPath = "${WRAP_MOK}/${ARTIFACT_MOK}"
+                        def releaseHome = "/usr/share/nginx/html/frontend"
+
+                        sh 'cat > ~/.ssh/known_hosts'
+                        sh "ssh-keyscan -p 50567 -t ecdsa ${JENKINS_IP} >> ~/.ssh/known_hosts"
+                        sh "scp -P 50567 koanba@${JENKINS_IP}:${artifactPath} /tmp"
+                        sh "mkdir -p ${releaseHome}"
+                        sh "rm -rf ${releaseHome}/mok"
+                        sh "mkdir ${releaseHome}/mok"
+                        sh "cd ${releaseHome}/mok"
+                        sh "tar -xvf /tmp/${ARTIFACT_MOK}"
+
+                        slackSend(
+                            channel: '#build',
+                            tokenCredentialId: 'slack-secret',
+                            color: 'good',
+                            message: "*Latest Frontend MOK env_test application can be previewed at:* https://test-mok.kipaskipas.com/"
+                        )
+                    }
+
+                    slackSend(
+                        channel: '#server-notif',
+                        tokenCredentialId: 'slack-secret',
+                        color: 'good',
+                        message: "*${env.JOB_NAME}* - ${currentBuild.displayName} Release process completed"
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            slackSend(
+                channel: '#server-notif',
+                tokenCredentialId: 'slack-secret',
+                color: 'good',
+                message: "*${env.JOB_NAME}* - ${currentBuild.displayName} :white_check_mark: ${currentBuild.currentResult} after ${currentBuild.durationString.replace(' and counting', '')} (<${currentBuild.absoluteUrl}|Open>)\n*Commit Message*: ${COMMIT_MESSAGE}\n*Git Author*: ${GIT_AUTHOR}\n*GitHub*"
+            )
+        }
+        failure {
+            slackSend(
+                channel: '#server-notif',
+                tokenCredentialId: 'slack-secret',
+                color: 'danger',
+                message: "*${env.JOB_NAME}* - ${currentBuild.displayName} :x: ${currentBuild.currentResult} after ${currentBuild.durationString.replace(' and counting', '')} (<${currentBuild.absoluteUrl}|Open>)\n*Commit Message*: ${COMMIT_MESSAGE}\n*Git Author*: ${GIT_AUTHOR}\n*GitHub*"
+            )
+        }
+        unstable {
+            slackSend(
+                channel: '#server-notif',
+                tokenCredentialId: 'slack-secret',
+                color: 'warning',
+                message: "*${env.JOB_NAME}* - ${currentBuild.displayName} :warning: ${currentBuild.currentResult} after ${currentBuild.durationString.replace(' and counting', '')} (<${currentBuild.absoluteUrl}|Open>)\n*Commit Message*: ${COMMIT_MESSAGE}\n*Git Author*: ${GIT_AUTHOR}\n*GitHub*"
+            )
+        }
+    }
+}

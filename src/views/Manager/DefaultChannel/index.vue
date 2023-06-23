@@ -1,34 +1,55 @@
 <template>
   <div>
     <HeaderContent label="Default Channel Home" :list="crumbs" :items="items">
-      <div class="d-flex" style="gap: 8px">
-        <custom-button>Batal</custom-button>
+      <div v-if="isPinEdited" class="d-flex" style="gap: 8px">
+        <custom-button @click="cancelEdit">Batal</custom-button>
         <custom-button
           color="primary"
           class="white--text"
           @click="actionSubmitPinnedChannel"
+          :disable="defaultFirst == undefined || defaultFirst == null"
           >Simpan</custom-button
         >
       </div>
     </HeaderContent>
 
     <section>
-      <v-row no-gutters>
-        <v-col cols="6" class="pr-2">
-          <div style="border: 1px solid gainsboro">
-            <v-text-field
-              v-model="payloadSearch"
-              placeholder="Search"
-              outlined
-              dense
-              hide-details
-              class="pa-2 font-12"
+      <div class="d-flex" style="width: 100%">
+        <section
+          class="mr-1"
+          style="
+            width: 50%;
+            min-width: 300px;
+            overflow: auto;
+            border: 1px solid gainsboro;
+          "
+        >
+          <v-text-field
+            v-model="payloadSearch"
+            placeholder="Search"
+            outlined
+            dense
+            hide-details
+            class="pa-2 font-12"
+          >
+            <template v-slot:append>
+              <v-icon size="16px" class="mt-1">fas fa-search</v-icon>
+            </template>
+          </v-text-field>
+          <div>
+            <div
+              v-if="isLoadingListChannel"
+              class="d-flex justify-center align-center"
+              style="height: 50px"
             >
-              <template v-slot:append>
-                <v-icon size="16px" class="mt-1">fas fa-search</v-icon>
-              </template>
-            </v-text-field>
-            <v-simple-table height="600px">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="20"
+                width="2"
+              ></v-progress-circular>
+            </div>
+            <v-simple-table v-else height="600px">
               <template v-slot:default>
                 <thead>
                   <tr class="whitesnow">
@@ -40,7 +61,7 @@
                     <th class="text-left"></th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="itemsShowed.length > 0">
                   <tr v-for="(item, idx) in itemsShowed" :key="idx">
                     <td class="font-12">{{ idx + 1 }}</td>
                     <td class="text-center">
@@ -63,12 +84,29 @@
                     </td>
                   </tr>
                 </tbody>
+                <tbody v-else>
+                  <tr>
+                    <td colspan="6">
+                      <span class="warning--text font-12"
+                        >Channel tidak ditemukan, gunakan keyword lain untuk
+                        memunculkan channel yang ingin kamu gunakan!.</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
               </template>
             </v-simple-table>
           </div>
-        </v-col>
-
-        <v-col cols="6" style="border: 1px solid gainsboro">
+        </section>
+        <section
+          class="ml-1"
+          style="
+            width: 50%;
+            min-width: 300px;
+            overflow: auto;
+            border: 1px solid gainsboro;
+          "
+        >
           <div
             class="d-flex align-center bg-primary-low-tint font-12 pa-3"
             style="height: 56px; width: 100%; gap: 8px"
@@ -79,147 +117,199 @@
               oleh user</span
             >
           </div>
-          <section
-            class="d-flex align-center whitesnow font-12"
-            style="height: 48px; border-bottom: 1px solid gainsboro !important"
+          <div
+            v-if="defaultFirst == undefined || defaultFirst == null"
+            class="d-flex align-center warning--text font-12 pa-3"
+            style="height: 48px; width: 100%; gap: 8px"
           >
-            <div class="d-flex align-center" style="width: 52px; padding: 8px">
-              Urutan
-            </div>
-            <div class="d-flex align-center" style="width: 59px; padding: 8px">
-              Gambar
-            </div>
-            <div
-              class="d-flex align-center"
-              style="width: 113.5px; padding: 8px"
-            >
-              Nama Channel
-            </div>
-            <div
-              class="d-flex align-center"
-              style="width: 113.5px; padding: 8px"
-            >
-              Dibuat Oleh
-            </div>
-            <div class="d-flex align-center" style="width: 104px; padding: 8px">
-              Sensitif Channel
-            </div>
-            <div class="d-flex align-center" style="width: 106px; padding: 8px">
-              Pertama Dibuka
-            </div>
-            <div
-              class="d-flex align-center"
-              style="width: 60px; padding: 8px"
-            ></div>
-          </section>
+            <span style="font-weight: 500">
+              Pilih channel sebagai default saat <b><i>pertama dibuka</i></b>
+            </span>
+          </div>
+          <div
+            v-if="isRemoveFirstOpen"
+            class="d-flex align-center warning--text font-12 pa-3"
+            style="height: 48px; width: 100%; gap: 8px"
+          >
+            <span style="font-weight: 500">
+              Pilih channel lain sebagai default sebelum menghapus channel
+              default
+            </span>
+          </div>
 
-          <section
-            v-for="(item, idx) in menuStatic"
-            :key="item.name"
-            class="d-flex align-center font-12"
-            style="border-bottom: 1px solid gainsboro"
-          >
-            <div style="width: 52px; padding: 8px">{{ idx + 1 }}</div>
-            <div
-              class="d-flex justify-center align-center"
-              style="width: 59px; padding: 8px"
-            >
-              <img :src="item.icon" height="31px" alt="" />
-            </div>
-            <div style="width: 113.5px; padding: 8px">{{ item.name }}</div>
-            <div style="width: 113.5px; padding: 8px">
-              {{ item.createBy }}
-            </div>
-            <div style="width: 104px; padding: 8px"></div>
-            <div
-              class="font-12 d-flex justify-center align-center"
-              style="width: 106px; padding: 8px"
-            >
-              <v-radio-group
-                v-model="defaultFirst"
-                dense
-                hide-details
-                style="margin-top: 0px !important; padding-top: 0px !important"
+          <div style="height: 100%; width: 100%; overflow: auto">
+            <div style="width: 100%; min-width: 600px">
+              <section
+                class="d-flex align-center font-12"
+                style="border-bottom: 1px solid gainsboro"
               >
-                <v-radio :key="idx" :value="idx"></v-radio>
-              </v-radio-group>
-            </div>
-            <div
-              class="d-flex justify-end align-center"
-              style="width: 60px; padding: 8px"
-            ></div>
-          </section>
-          <draggable
-            :list="pinnedChannels"
-            :disabled="!enabledDrag"
-            class="list-group"
-            ghost-class="ghost"
-            @start="dragging = true"
-            @end="dragging = false"
-          >
-            <section
-              v-for="(item, idx) in pinnedChannels"
-              :key="item.name"
-              class="d-flex align-center font-12"
-              style="border-bottom: 1px solid gainsboro"
-            >
-              <div style="width: 52px; padding: 8px">
-                {{ idx + 1 + menuStatic.length }}
-              </div>
-              <div
-                class="d-flex justify-center align-center"
-                style="width: 59px; padding: 8px"
-              >
-                <img :src="item.icon" height="31px" alt="" />
-              </div>
-              <div style="width: 113.5px; padding: 8px">{{ item.name }}</div>
-              <div style="width: 113.5px; padding: 8px">
-                {{ item.createBy }}
-              </div>
-              <div style="width: 104px; padding: 8px"></div>
-              <div
-                class="font-12 d-flex justify-center align-center"
-                style="width: 106px; padding: 8px"
-              >
-                <v-radio-group
-                  v-model="defaultFirst"
-                  dense
-                  hide-details
-                  style="
-                    margin-top: 0px !important;
-                    padding-top: 0px !important;
-                  "
-                >
-                  <v-radio
-                    :key="idx"
-                    :value="idx + menuStatic.length"
-                  ></v-radio>
-                </v-radio-group>
-              </div>
-              <div
-                class="d-flex justify-end align-center"
-                style="width: 60px; padding: 8px"
-              >
-                <div class="d-flex justify-space-between" style="width: 50px">
-                  <v-btn x-small icon @click="removeFromItemDefault(idx)">
-                    <v-icon size="16px" color="primary">mdi-close</v-icon>
-                  </v-btn>
-                  <v-btn
-                    x-small
-                    icon
-                    class="cursor-grab"
-                    :class="{ 'cursor-grabbing': dragging }"
-                  >
-                    <v-icon size="16px" color="gainsboro"
-                      >fas fa-grip-vertical</v-icon
-                    >
-                  </v-btn>
+                <div class="text-center" style="width: 60px; padding: 8px">
+                  <span>Urutan</span>
                 </div>
-              </div>
-            </section>
-          </draggable>
-        </v-col>
-      </v-row>
+                <div class="text-center" style="width: 100px; padding: 8px">
+                  <span>Gambar</span>
+                </div>
+                <div style="width: 120px; padding: 8px">
+                  <span>Nama Channel</span>
+                </div>
+                <div style="width: 110px; padding: 8px">
+                  <span>Dibuat Oleh</span>
+                </div>
+                <div style="width: 120px; padding: 8px">
+                  <span>Sensitif Channel</span>
+                </div>
+                <div
+                  class="font-12 d-flex justify-center align-center"
+                  style="width: 120px; padding: 8px"
+                >
+                  <span>Pertama Dibuka</span>
+                </div>
+                <div
+                  class="d-flex justify-end align-center"
+                  style="width: 58px"
+                ></div>
+              </section>
+              <section
+                v-for="(item, idx) in menuStatic"
+                :key="item.name"
+                class="d-flex align-center font-12"
+                style="border-bottom: 1px solid gainsboro"
+              >
+                <div class="text-center" style="width: 60px; padding: 8px">
+                  {{ idx + 1 }}
+                </div>
+                <div
+                  class="d-flex justify-center align-center"
+                  style="width: 100px; padding: 8px"
+                >
+                  <img :src="item.icon" height="31px" alt="" />
+                </div>
+                <div style="width: 113.5px; padding: 8px; overflow: hidden">
+                  {{ item.name }}
+                </div>
+                <div style="width: 110px; padding: 8px">
+                  {{ item.createBy }}
+                </div>
+                <div style="width: 120px; padding: 8px"></div>
+                <div
+                  class="font-12 d-flex justify-center align-center"
+                  style="width: 120px; padding: 8px"
+                >
+                  <v-radio-group
+                    v-model="defaultFirst"
+                    dense
+                    hide-details
+                    style="
+                      margin-top: 0px !important;
+                      padding-top: 0px !important;
+                    "
+                  >
+                    <v-radio :key="item.name" :value="item.name"></v-radio>
+                  </v-radio-group>
+                </div>
+                <div
+                  class="d-flex justify-end align-center"
+                  style="width: 58px"
+                ></div>
+              </section>
+              <draggable
+                :list="pinnedChannels"
+                :disabled="!enabledDrag"
+                class="list-group"
+                ghost-class="ghost"
+                @start="dragging = true"
+                @end="dragging = false"
+              >
+                <section
+                  v-for="(item, idx) in pinnedChannels"
+                  :key="item.name"
+                  class="d-flex align-center font-12"
+                  style="border-bottom: 1px solid gainsboro"
+                >
+                  <div class="text-center" style="width: 60px; padding: 8px">
+                    {{ idx + 1 + menuStatic.length }}
+                  </div>
+                  <div
+                    class="d-flex justify-center align-center"
+                    style="width: 100px; padding: 8px"
+                  >
+                    <img :src="item.icon" height="31px" alt="" />
+                  </div>
+                  <div style="width: 120px; padding: 8px; overflow: hidden">
+                    {{ item.name }}
+                  </div>
+                  <div style="width: 110px; padding: 8px">
+                    {{ item.createBy }}
+                  </div>
+                  <div style="width: 120px; padding: 8px"></div>
+                  <div
+                    class="font-12 d-flex justify-center align-center"
+                    style="width: 120px; padding: 8px"
+                  >
+                    <v-radio-group
+                      v-model="defaultFirst"
+                      dense
+                      hide-details
+                      style="
+                        margin-top: 0px !important;
+                        padding-top: 0px !important;
+                      "
+                    >
+                      <v-radio :key="item.name" :value="item.name"></v-radio>
+                    </v-radio-group>
+                  </div>
+                  <div
+                    class="d-flex justify-end align-center"
+                    style="width: 58px"
+                  >
+                    <div
+                      class="d-flex justify-space-between"
+                      style="width: 50px"
+                    >
+                      <v-btn
+                        x-small
+                        icon
+                        @click="removeFromItemDefault(idx, item.name)"
+                      >
+                        <v-icon size="16px" color="primary">mdi-close</v-icon>
+                      </v-btn>
+                      <v-btn
+                        x-small
+                        icon
+                        class="cursor-grab"
+                        :class="{ 'cursor-grabbing': dragging }"
+                      >
+                        <v-icon size="16px" color="gainsboro"
+                          >fas fa-grip-vertical</v-icon
+                        >
+                      </v-btn>
+                    </div>
+                  </div>
+                </section>
+              </draggable>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <v-snackbar
+        top
+        right
+        v-model="alertSuccess"
+        color="success"
+        :timeout="3000"
+      >
+        Success
+      </v-snackbar>
+      <v-snackbar
+        top
+        right
+        v-model="alertFailed"
+        color="primary"
+        :timeout="3000"
+      >
+        {{ errorMessage }}
+      </v-snackbar>
     </section>
   </div>
 </template>
@@ -252,9 +342,14 @@ export default {
       itemsDefault: [],
       payloadSearch: "",
       defaultFirst: null,
+      isPinEdited: false,
       isLoadingListChannel: false,
+      isRemoveFirstOpen: false,
       page: 1,
       totalPages: 1,
+      alertSuccess: false,
+      alertFailed: false,
+      errorMessage: "",
     };
   },
   watch: {
@@ -269,48 +364,22 @@ export default {
       }
     },
     dragging() {
-      this.defaultFirst = 0;
+      this.isRemoveFirstOpen = false;
+      this.isPinEdited = true;
+    },
+    defaultFirst() {
+      this.isRemoveFirstOpen = false;
+      this.isPinEdited = true;
     },
     payloadSearch() {
       this.page = 1;
+      this.isLoadingListChannel = true;
       if (this.payloadSearch == "") {
         this.itemsShowed = [];
         this.handleGetListChannel();
       } else {
         this.itemsShowed = [];
         this.handleSearchListChannel();
-      }
-    },
-    // menuStatic() {
-    //   this.menuStatic.forEach((item, idx) => {
-    //     if (item.isFirstOpen) {
-    //       this.defaultFirst = 0;
-    //     }
-    //   });
-    // },
-    // pinnedChannels() {
-    //   this.pinnedChannels.forEach((item, idx) => {
-    //     if (item.isFirstOpen) {
-    //       this.defaultFirst = 0;
-    //     }
-    //   });
-    // },
-    defaultFirst(nVal, oVal) {
-      if (nVal >= this.menuStatic.length) {
-        let n = nVal - this.menuStatic.length;
-        this.pinnedChannels[n].isFirstOpen = true;
-      } else {
-        this.menuStatic[nVal].isFirstOpen = true;
-      }
-      if (oVal != null && oVal >= this.menuStatic.length) {
-        let n = oVal - this.menuStatic.length;
-        this.pinnedChannels[n]
-          ? (this.pinnedChannels[n].isFirstOpen = false)
-          : null;
-      } else {
-        this.menuStatic[oVal]
-          ? (this.menuStatic[oVal].isFirstOpen = false)
-          : null;
       }
     },
   },
@@ -350,7 +419,9 @@ export default {
         this.page++;
         this.items = this.formatingResponse(res);
         this.itemsShowed = this.formatingResponse(res);
+        this.isLoadingListChannel = false;
       } else {
+        this.isLoadingListChannel = false;
         return response;
       }
     },
@@ -385,7 +456,9 @@ export default {
           this.itemsSearch.push(item);
           this.itemsShowed.push(item);
         });
+        this.isLoadingListChannel = false;
       } else {
+        this.isLoadingListChannel = false;
         return response;
       }
     },
@@ -398,9 +471,9 @@ export default {
       if (response.status === 200) {
         const res = response.data.data;
         this.menuStatic = res.menuStatic;
-        res.menuStatic.forEach((item, idx) => {
+        res.menuStatic.forEach((item) => {
           if (item.isFirstOpen) {
-            this.defaultFirst = idx;
+            this.defaultFirst = item.name;
           }
           this.itemsDefault.push({
             channelId: item.id,
@@ -412,9 +485,9 @@ export default {
           });
         });
         this.pinnedChannels = res.pinnedChannels;
-        res.pinnedChannels.forEach((item, idx) => {
+        res.pinnedChannels.forEach((item) => {
           if (item.isFirstOpen) {
-            this.defaultFirst = idx + res.menuStatic.length;
+            this.defaultFirst = item.name;
           }
           this.itemsDefault.push({
             id: item.id,
@@ -431,6 +504,8 @@ export default {
       }
     },
     moveToItemDefault(item) {
+      this.isPinEdited = true;
+      this.isRemoveFirstOpen = false;
       this.pinnedChannels.push({
         id: null,
         channelId: item.id,
@@ -441,8 +516,16 @@ export default {
         sequence: this.pinnedChannels.length + 1,
       });
     },
-    removeFromItemDefault(idx) {
-      this.pinnedChannels.splice(idx - this.menuStatic.length, 1);
+    removeFromItemDefault(idx, name) {
+      if (this.defaultFirst == name) {
+        this.isRemoveFirstOpen = true;
+      } else {
+        this.confirmRemoveItemDefault(idx);
+      }
+    },
+    confirmRemoveItemDefault(idx) {
+      this.isPinEdited = true;
+      this.pinnedChannels.splice(idx, 1);
     },
     checkDisableButton(item) {
       let value = false;
@@ -453,6 +536,10 @@ export default {
       });
       return value;
     },
+    cancelEdit() {
+      this.isPinEdited = false;
+      this.handleGetListChannelPinned();
+    },
     actionSubmitPinnedChannel() {
       const payload = {
         menuStatic: [],
@@ -462,26 +549,36 @@ export default {
       this.menuStatic.forEach((item) => {
         payload.menuStatic.push({
           id: item.id,
-          isFirstOpen: item.isFirstOpen,
+          isFirstOpen: this.defaultFirst == item.name ? true : false,
           sequence: item.sequence,
         });
       });
       this.pinnedChannels.forEach((item, idx) => {
         payload.pinnedChannels.push({
           channelId: item.channelId,
-          isFirstOpen: item.isFirstOpen,
+          isFirstOpen: this.defaultFirst == item.name ? true : false,
           sequence: idx + 1,
         });
       });
 
       return this.createChannelPinned(payload)
         .then((res) => {
-          if (res.data.code == "1000") {
+          if (
+            res.data
+              ? res.data.code == "1000"
+              : res.response.data.code == "1000"
+          ) {
+            this.alertSuccess = true;
+            this.handleGetListChannelPinned();
+          } else {
+            this.alertFailed = true;
+            this.errorMessage = res.response.data.data;
           }
-          this.handleGetListChannelPinned();
+          this.isPinEdited = false;
         })
         .catch((err) => {
-          console.log({ err });
+          this.alertFailed = true;
+          this.errorMessage = err;
         });
     },
   },
@@ -489,6 +586,24 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.grid-container {
+  display: grid;
+}
+.grid-item {
+  border: 1px solid gainsboro;
+}
+.item-1 {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+.item-2 {
+  grid-column: 2;
+  grid-row: 1;
+}
+.item-3 {
+  grid-column: 2;
+  grid-row: 2;
+}
 .font-12 {
   font-size: 12px !important;
 }
