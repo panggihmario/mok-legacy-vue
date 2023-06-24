@@ -3,7 +3,6 @@
     <HeaderContent
       :list="items"
       :label="$t('title.accountCreate')"
-      @click="handleClick"
     />
     <FormAdmin
       :data="data"
@@ -79,15 +78,13 @@ export default {
       getListRole: "account/getListRole",
     }),
     handleGetListRole() {
-      return this.getListRole().then((response) => {
+      const payload = 'MANAGEMENT'
+      return this.getListRole(payload).then((response) => {
         const listRole = response.data.data;
         for (let i = 0; i < listRole.length; i++) {
           this.listAccountType.push(listRole[i].replace("ROLE_", ""));
         }
       });
-    },
-    handleClick() {
-      console.log("saved");
     },
     getResponse(payload) {
       this.status = payload.status;

@@ -4,7 +4,7 @@
     <v-text-field
       solo
       flat
-
+      dense
       class="field"
       v-bind="$attrs"
       :value="value"
@@ -34,7 +34,7 @@ export default {
       type: String
     },
     rules: {
-      type: String
+      type: [String, Object]
     },
     colorbg : {
       type : String,
