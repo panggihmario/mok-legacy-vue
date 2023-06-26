@@ -10,9 +10,7 @@
         :style="{ objectFit : isContain }"
         alt="media"
         controls
-        muted
         playsinline="playsinline"
-        preload="none"
         :poster="item.thumbnail.medium"
       />
       <img
