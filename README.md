@@ -1,4 +1,4 @@
-# cms-news
+# cms-kipaskipas
 
 ## Project setup
 ```
