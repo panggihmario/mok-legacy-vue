@@ -10,7 +10,11 @@
     </div>
 
     <div class="map__action">
-      <custom-button @click="saveCoordinate" size="small" color="primary">
+      <custom-button 
+        @click="saveCoordinate" 
+        :disabled="isDisable"
+        size="small" 
+        color="primary">
         Simpan Lokasi
       </custom-button>
     </div>
@@ -32,6 +36,7 @@ export default {
   setup(props, { emit }) {
     const address = ref("");
     const autocomplete = ref(null)
+    const isDisable = ref(true)
     const isMap = ref(false)
     const coordinate = reactive({
       latitude: "",
@@ -46,6 +51,11 @@ export default {
     const onLocation = function () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
+          if(position) {
+            isDisable.value = false
+          }else{
+            isDisable.value = true
+          }
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           getAddressFrom(latitude, longitude);
@@ -135,7 +145,8 @@ export default {
       coordinate,
       saveCoordinate,
       openMap,
-      isMap
+      isMap,
+      isDisable
     };
   },
 }

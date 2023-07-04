@@ -123,7 +123,6 @@ export default {
       );
       auto.addListener("place_changed", () => {
         let place = auto.getPlace()
-        console.log({ place })
         const latitude = place.geometry.location.lat()
         const longitude = place.geometry.location.lng()
         showUserLocationOnTheMap(latitude, longitude)

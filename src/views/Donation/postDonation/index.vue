@@ -131,6 +131,7 @@
             label="Initiator"
             errorMessage="Pilih satu verified user yang bertindak sebagai initiator/penanggung jawab"
             rules="required"
+            @resetData="resetDataInitiator"
            />
           <k-input 
             v-model="payloadDonation.recipientName" 
@@ -273,6 +274,9 @@ export default {
       fetchListDonationCategory : 'donation/fetchListDonationCategory',
       postDonation : 'donation/postDonation'
     }),
+    resetDataInitiator () {
+      this.initiator = {}
+    },
     onCancel() {
       this.$router.push({
         name : 'donations'
