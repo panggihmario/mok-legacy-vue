@@ -68,7 +68,10 @@ export default {
   },
   watch: {
     search: function (val) {
-      if (val) {
+      if(val === "") {
+        this.$emit('resetData')
+      }
+      if (val || val === "") {
         const query = val.toLowerCase();
         if (val === "") {
           this.results = this.items
@@ -79,6 +82,7 @@ export default {
           this.results = result
         }
       } else {
+        
         this.results = this.items
       }
 
@@ -122,18 +126,12 @@ export default {
         this.isTop = false
       }
     },
-    filterResults() {
-      this.results = this.items.filter(
-        (item) => item.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-      );
-    },
     openList() {
       this.isOpen = !this.isOpen;
       this.results = this.items
     },
     setResult(item) {
       if(item) {
-        console.log(item)
         this.search = item[this.itemText];
         this.itemId = item.id
         this.isOpen = false;
