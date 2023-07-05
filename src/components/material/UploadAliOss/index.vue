@@ -14,12 +14,15 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
+import TcVod from "vod-js-sdk-v6";
 import { cos } from "../../../plugins/httpRequest";
 export default {
   data() {
     return {
       loadingUpload: false,
       errorMessage : '',
+      tcVod : {},
       asetKipas: "https://asset.kipaskipas.com",
       media: {
         size: "",
@@ -91,7 +94,25 @@ export default {
       default: 'Upload Foto'
     }
   },
+  mounted() {
+    this.tcVod = new TcVod({
+        getSignature: this.getSignature
+      });
+  },
   methods: {
+    getSignature() {
+      return axios
+        .post(
+          "https://test-tencent-signature.kipaskipas.com/",
+          JSON.stringify({
+            Action: "GetUgcUploadSign"
+          })
+        )
+        .then(function(response) {
+          // return response.data.data.sign;
+          return response.data.signature;
+        });
+    },
     dimensionVideo(file) {
       return new Promise((resolve, reject) => {
         const url = URL.createObjectURL(file);
@@ -139,25 +160,40 @@ export default {
         response: {},
       };
       const file = e.target.files[0];
-      this.file = file;
-      const type = file.type.split("/");
-      const typeMedia = type[0];
-      const dimensions = await this.getDimension(typeMedia, file);
-      this.loadingUpload = true;
-      this.$emit("response", result);
-      const isValid = this.validationMedia(typeMedia, dimensions, file);
-      if (isValid) {
-        if(typeMedia === 'video') {
-          this.checkResolution(file,typeMedia, dimensions)
-          // return this.saveFileToTencent(file,typeMedia, dimensions)
-        }else{
-          return this.saveFileToAliOss(file, typeMedia, dimensions);
-        }
-      } else {
-        const tempResult = this.printError(file);
-        this.$emit("response", tempResult);
-        this.loadingUpload = false;
-      }
+      console.log(file)
+      var uploader = this.tcVod.upload({
+        mediaFile: file
+      });
+      uploader.on('media_progress', function(info) {
+        console.log(info.percent) // The upload progress
+      })
+      uploader
+        .done()
+        .then(function(doneResult) {
+          console.log("===>",doneResult)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      // this.file = file;
+      // const type = file.type.split("/");
+      // const typeMedia = type[0];
+      // const dimensions = await this.getDimension(typeMedia, file);
+      // this.loadingUpload = true;
+      // this.$emit("response", result);
+      // const isValid = this.validationMedia(typeMedia, dimensions, file);
+      // if (isValid) {
+      //   if(typeMedia === 'video') {
+      //     this.checkResolution(file,typeMedia, dimensions)
+      //   }else{
+      //     return this.saveFileToAliOss(file, typeMedia, dimensions);
+      //   }
+      // } else {
+      //   const tempResult = this.printError(file);
+      //   this.$emit("response", tempResult);
+      //   this.loadingUpload = false;
+      // }
     },
     checkResolution (file,typeMedia, dimensions) {
       const width = dimensions.width

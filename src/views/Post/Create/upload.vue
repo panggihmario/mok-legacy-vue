@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import axios from "axios"
+import TcVod from "vod-js-sdk-v6";
 import mixins from "@/mixins/upload.js";
 export default {
   mixins: [mixins],
