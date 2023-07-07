@@ -268,6 +268,7 @@ export default {
       this.isFilter = false;
       return this.fetchPostAllUserTrending(payload)
         .then((response) => {
+          console.log(response)
           let res = response.data.data;
           this.loadingListActive = false;
           this.tableItemsActive = res.content;
