@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.4.14-rc0",
+  "version": "2.4.14-rc1",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -27,7 +27,7 @@
     "@rajesh896/video-thumbnails-generator": "^2.3.9",
     "@vueuse/core": "^9.12.0",
     "ali-oss": "^6.17.1",
-    "axios": "^0.19.2",
+    "axios": "1.4.0",
     "chart.js": "3.9.1",
     "core-js": "^3.6.4",
     "cos-js-sdk-v5": "^1.4.15",

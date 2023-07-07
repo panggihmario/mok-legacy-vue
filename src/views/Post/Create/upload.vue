@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import axios from "axios"
-import TcVod from "vod-js-sdk-v6";
 import mixins from "@/mixins/upload.js";
 export default {
   mixins: [mixins],
@@ -89,8 +87,12 @@ export default {
         this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
         const params = {
           position,
-          response : payload.response
+          response : {
+            ...payload.response,
+            vodFileId : payload.vodFileId
+          }
         }
+        console.log(params)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }
