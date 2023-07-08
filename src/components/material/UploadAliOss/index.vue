@@ -193,10 +193,10 @@ export default {
             return payload
           })
           // .then(payload => {
-          //   const params = {
-          //     file_id : payload.vodFileId,
-          //     transcode_template_id : 100800
-          //   }
+            // const params = {
+            //   file_id : payload.vodFileId,
+            //   transcode_template_id : 100800
+            // }
           //   const url = process.env.VUE_APP_VOD_PROCESS_MEDIA_URL
           //   return axios.post(url, params, {
           //     auth : {
