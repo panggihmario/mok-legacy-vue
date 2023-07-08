@@ -14,12 +14,15 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
+import TcVod from "vod-js-sdk-v6";
 import { cos } from "../../../plugins/httpRequest";
 export default {
   data() {
     return {
       loadingUpload: false,
-      errorMessage : '',
+      errorMessage: '',
+      tcVod: {},
       asetKipas: "https://asset.kipaskipas.com",
       media: {
         size: "",
@@ -46,20 +49,20 @@ export default {
     id: {
       type: [String, Number],
     },
-    limitResolution : {
-      type : Number
+    limitResolution: {
+      type: Number
     },
     minVideoHeight: {
       type: Number,
       default: 200,
     },
-    maxVideoHeight : {
-      type : Number,
-      default : 2048
+    maxVideoHeight: {
+      type: Number,
+      default: 2048
     },
-    maxVideoWidth : {
-      type : Number,
-      default : 2048
+    maxVideoWidth: {
+      type: Number,
+      default: 2048
     },
     label: {
       type: String,
@@ -91,7 +94,25 @@ export default {
       default: 'Upload Foto'
     }
   },
+  mounted() {
+    this.tcVod = new TcVod({
+      getSignature: this.getSignature
+    });
+  },
+ 
   methods: {
+    getSignature() {
+      return axios
+        .get("https://test-tencent-signature.kipaskipas.com/", JSON.stringify({
+            Action: "GetUgcUploadSign"
+          }))
+        .then(function (response) {
+          return response.data.data.signature;
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     dimensionVideo(file) {
       return new Promise((resolve, reject) => {
         const url = URL.createObjectURL(file);
@@ -149,7 +170,6 @@ export default {
       if (isValid) {
         if(typeMedia === 'video') {
           this.checkResolution(file,typeMedia, dimensions)
-          // return this.saveFileToTencent(file,typeMedia, dimensions)
         }else{
           return this.saveFileToAliOss(file, typeMedia, dimensions);
         }
@@ -159,17 +179,41 @@ export default {
         this.loadingUpload = false;
       }
     },
-    checkResolution (file,typeMedia, dimensions) {
+    checkResolution(file, typeMedia, dimensions) {
       const width = dimensions.width
       const height = dimensions.height
-      if(width >= this.limitResolution || height >= this.limitResolution) {
-        return this.saveFileToTencent(file,typeMedia, dimensions)
-      }else{
+      if (width >= this.limitResolution || height >= this.limitResolution) {
+        Promise.all([this.saveFileToTencent(file, typeMedia, dimensions), this.saveVodTencent(file)])
+          .then(response => {
+            const payload = {
+              ...response[0],
+              vodFileId : response[1]
+            }
+            this.$emit("response", payload);
+            return payload
+          })
+          // .then(payload => {
+          //   const params = {
+          //     file_id : payload.vodFileId,
+          //     transcode_template_id : 100800
+          //   }
+          //   const url = process.env.VUE_APP_VOD_PROCESS_MEDIA_URL
+          //   return axios.post(url, params, {
+          //     auth : {
+          //       username : 'admin_koanba',
+          //       password : 'K04nb4tw2#p45s'
+          //     },
+          //     headers : {
+          //       'Content-Type' : `application/json`
+          //     }
+          //   })
+          // })
+      } else {
         const result = {
-          status : 'low resolution',
-          response : null,
-          isLowResolution : true,
-          bundle : {
+          status: 'low resolution',
+          response: null,
+          isLowResolution: true,
+          bundle: {
             file,
             typeMedia,
             dimensions
@@ -178,10 +222,23 @@ export default {
         this.$emit("response", result);
       }
     },
+    saveVodTencent(file) {
+      const uploader = this.tcVod.upload({
+        mediaFile: file
+      });
+      uploader.on('media_progress', function (info) {
+        console.log(info.percent) // The upload progress
+      })
+      return uploader.done()
+        .then(function (doneResult) {
+          const fileId = doneResult.fileId
+          return fileId
+        })
+    },
     saveFileToTencent(file, typeMedia, dimensions) {
       let data = {
         ...this.dataResponse,
-        type : typeMedia,
+        type: typeMedia,
         metadata: {
           width: dimensions.width,
           height: dimensions.height,
@@ -195,9 +252,9 @@ export default {
       const protocol = window.location.protocol
       return cos.uploadFile({
         Bucket: process.env.VUE_APP_TENCENT_BUCKET,
-        Region: process.env.VUE_APP_TENCENT_REGION, 
+        Region: process.env.VUE_APP_TENCENT_REGION,
         Key: filePath,
-        Body: file, 
+        Body: file,
         onProgress: function (progressData) {
           // console.log(JSON.stringify(progressData));
         }
@@ -217,7 +274,8 @@ export default {
             response: temp,
             status: "success",
           };
-          this.$emit("response", result);
+          // this.$emit("response", result);
+          return result
         })
         .catch(err => {
           console.log(err)
@@ -379,14 +437,14 @@ export default {
     printError(file) {
       const result = {
         status: "failed",
-        message : this.errorMessage,
+        message: this.errorMessage,
       };
       return result;
     },
     validationMedia(typeMedia, dimensions, file) {
       const type = file.type.split('/')
       const typeFile = type[1]
-      if(this.typeAllowed) {
+      if (this.typeAllowed) {
         const isInclude = this.typeAllowed.includes(typeFile)
         if (this.typeAllowed && !isInclude) {
           this.errorMessage = `Hanya boleh ${this.typeAllowed.join(' ')}`
@@ -401,18 +459,18 @@ export default {
         ) {
           return false;
         }
-        if(typeMedia === 'video'  ) {
+        if (typeMedia === 'video') {
           const heightVideo = dimensions.height;
           const widthVideo = dimensions.width
-          if(heightVideo < this.minVideoHeight) {
+          if (heightVideo < this.minVideoHeight) {
             this.errorMessage = `Min height is ${this.minVideoHeight}`
             return false
           }
-          if(heightVideo > this.maxVideoHeight) {
+          if (heightVideo > this.maxVideoHeight) {
             this.errorMessage = `Max height is ${this.maxVideoHeight}`
             return false
           }
-          if(widthVideo > this.maxVideoWidth) {
+          if (widthVideo > this.maxVideoWidth) {
             this.errorMessage = `Max width is ${this.maxVideoHeight}`
             return false
           }

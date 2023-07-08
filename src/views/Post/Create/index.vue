@@ -189,6 +189,7 @@ export default {
       if(medias.length > 0) {
         this.isMediasExist = true
         const payload = this.setPayloadForPostFeed(medias)
+        console.log(payload)
         const isFloatinUrl = this.checkFloatingUrl()
         if(isFloatinUrl) {
           this.isLink = false
