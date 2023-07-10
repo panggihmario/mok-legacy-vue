@@ -13,14 +13,14 @@
           </span>
           <custom-button 
             color="secondary"
-            @click="handleUpload('upload-admin')"
+            @click="handleUpload('upload-account-admin')"
             size="small"
             :loading="isLoading"
           >
             Upload-foto
           </custom-button>
           <upload-oss
-            id="upload-admin"
+            id="upload-account-admin"
             style="display: none" 
             @response="getResponse"
             :typeAllowed="['jpeg','png', 'jpg']"
@@ -168,10 +168,10 @@ export default {
   },
   methods: {
     getResponse(payload) {
-      this.data.photo = payload.response.url
       if(payload.status === 'loading') {
         this.isLoading = true
       }else{
+        this.data.photo = payload.response.url
         this.isLoading = false
       }
     },

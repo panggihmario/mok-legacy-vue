@@ -3,18 +3,30 @@
     <div class="mt-8">
       <div class="d-flex align-center">
         <v-avatar size="100" color="grey" class="mr-4">
-          <img v-if="data.photo" :src="data.photo" />
+          <img 
+            v-if="data.photo" 
+            :src="data.photo" 
+            style="object-fit: contain;"
+          />
         </v-avatar>
         <div class="d-flex flex-column">
           <span
             class="account-edit__subtitle font-weight-medium charcoal--text mb-3"
             >Unggah foto profil</span
           >
-          <custom-upload
-            typeUpload="accounts"
-            id="create"
-            @response="getResponse"
+          <custom-button 
             color="secondary"
+            @click="handleUpload('upload-account-user')"
+            size="small"
+            :loading="isLoading"
+          >
+            Upload-foto
+          </custom-button>
+          <upload-oss
+            id="upload-account-user"
+            style="display: none" 
+            @response="getResponse"
+            :typeAllowed="['jpeg','png', 'jpg']"
           />
         </div>
       </div>
@@ -166,7 +178,8 @@ export default {
       confirmPassword: "",
       errorPassword: "",
       dialog : false,
-      loadingDelete : false
+      loadingDelete : false,
+      isLoading : false
     };
   },
   methods: {
@@ -182,6 +195,9 @@ export default {
     },
     openDialog() {
       this.dialog = true
+    },
+    handleUpload(id) {
+      document.getElementById(id).click();
     },
     handleSubmit() {
       let payload;
@@ -210,7 +226,13 @@ export default {
     },
     getResponse(payload) {
       this.status = payload.status;
-      this.data.photo = payload.response.url;
+      // this.data.photo = payload.response.url;
+      if(payload.status === 'loading') {
+        this.isLoading = true
+      }else{
+        this.data.photo = payload.response.url
+        this.isLoading = false
+      }
     },
   },
 };
