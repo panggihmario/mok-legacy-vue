@@ -210,7 +210,7 @@ export default {
     saveVodTencent(file, currentDateEpoch) {
       const uploader = this.tcVod.upload({
         mediaFile: file,
-        mediaName : `${VIDEO}_${currentDateEpoch}`
+        mediaName : `VIDEO_${currentDateEpoch}`
       });
       uploader.on('media_progress', function (info) {
         console.log(info.percent) // The upload progress
