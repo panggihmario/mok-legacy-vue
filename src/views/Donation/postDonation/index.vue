@@ -98,7 +98,7 @@
               :minDate="minDate"
               :value="payloadDonation.expiredAt"
             />
-            <k-checkbox v-model="isEnded" label="Tidak ada batas waktu"  />
+            <k-checkbox v-model="payloadDonation.isEnded" label="Tidak ada batas waktu"  />
           </div>
           <k-select 
             title="Kategori" 
@@ -131,6 +131,7 @@
             label="Initiator"
             errorMessage="Pilih satu verified user yang bertindak sebagai initiator/penanggung jawab"
             rules="required"
+            @resetData="resetDataInitiator"
            />
           <k-input 
             v-model="payloadDonation.recipientName" 
@@ -197,9 +198,12 @@ export default {
         },
         province : {
           id : this.province.id
-        }
+        },
       }
       return dataForm
+    },
+    isEnded () {
+      return this.payloadDonation.isEnded
     }
   },
   watch : {
@@ -225,6 +229,14 @@ export default {
     isForm(value) {
       let schema = yup.object().shape({
         title: yup.string().required(),
+        isEnded : yup.boolean(),
+        expiredAt : yup.string().when("isEnded", (value) => {
+          if(value) {
+            return yup.string().nullable()
+          }else{
+            return yup.string().required()
+          }
+        }),
         description : yup.string().required(),
         recipientName : yup.string().required(),
         latitude : yup.string().required(),
@@ -262,6 +274,9 @@ export default {
       fetchListDonationCategory : 'donation/fetchListDonationCategory',
       postDonation : 'donation/postDonation'
     }),
+    resetDataInitiator () {
+      this.initiator = {}
+    },
     onCancel() {
       this.$router.push({
         name : 'donations'
@@ -322,7 +337,7 @@ export default {
         },
         province : {
           id : this.province.id
-        }
+        },
       }
       this.isLoading = true
       return this.postDonation(payload)
@@ -374,7 +389,6 @@ export default {
       }
     },
     getResponseVideo(media) {
-      console.log(media)
       if(media.status === 'success') {
         this.showVideoDonation = media.response.url
         this.$set(this.medias, 1, media.response)
@@ -420,7 +434,6 @@ export default {
       categories : [],
       category : {},
       isAmount: false,
-      isEnded : false,
       showImageDonation: '',
       showVideoDonation: "",
       isPlay : false,
@@ -433,6 +446,7 @@ export default {
         expiredAt: null,
         latitude: "",
         longitude : "",
+        isEnded : false
       },
       item: {
         value: 'day',

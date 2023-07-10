@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.4.12-rc4",
+  "version": "2.4.14-rc3",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -27,7 +27,8 @@
     "@rajesh896/video-thumbnails-generator": "^2.3.9",
     "@vueuse/core": "^9.12.0",
     "ali-oss": "^6.17.1",
-    "axios": "^0.19.2",
+    "axios": "1.4.0",
+    "chart.js": "3.9.1",
     "core-js": "^3.6.4",
     "cos-js-sdk-v5": "^1.4.15",
     "handsontable": "^12.3.1",
@@ -37,7 +38,9 @@
     "register-service-worker": "^1.6.2",
     "sortablejs": "^1.15.0",
     "vee-validate": "^3.2.5",
+    "vod-js-sdk-v6": "^1.6.1",
     "vue": "2.7.0",
+    "vue-chartjs": "4.1.2",
     "vue-currency-input": "^3.0.3",
     "vue-i18n": "^8.18.2",
     "vue-router": "^3.1.5",
@@ -46,9 +49,7 @@
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.2.30",
     "vuex": "^3.1.2",
-    "yup": "^0.32.11",
-    "chart.js": "3.9.1",
-    "vue-chartjs": "4.1.2"
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",

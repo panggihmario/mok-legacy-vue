@@ -1,17 +1,8 @@
 <template>
   <div :class="d['container-box']">
-  
-    <div :class="d['container-image']" >
-      <!-- <v-icon 
-        dark 
-        large 
-        v-if="item.type === 'video' && isPlay "
-        :class="d['icon-play']"
-        @click="onPlayVideo(`videodialog-${i}-${item.id}`)"
-      >
-        fas fa-play-circle
-      </v-icon> -->
-      <video
+    <div >
+      <div :class="d['container-media']"  >
+        <video
         v-if="item.type === 'video'"
         :src="item.url"
         :id="`videodialog-${i}-${item.id}`"
@@ -19,27 +10,26 @@
         :style="{ objectFit : isContain }"
         alt="media"
         controls
-        muted
         playsinline="playsinline"
-        preload="none"
         :poster="item.thumbnail.medium"
-      >
-      </video>
-      <!-- <VideoPlayer
-        v-if="item.type === 'video'"
-        :options="videoOptions"
-        :style="{ objectFit : isContain }"
-      /> -->
+      />
       <img
         v-else
-        :class="d.img"
+        :class="d.vid"
         :src="item.thumbnail.medium"
         :lazy-src="item.thumbnail.small"
         :style="{ objectFit : isContain }"
         alt="media"
         loading="lazy"
       />
-      
+      </div>
+      <div :class="d['container-nav']">
+        <v-icon size="15px" color="white">fas fa-home</v-icon>
+        <v-icon size="15px" color="white">fas fa-shopping-cart</v-icon>
+        <v-icon size="15px" color="white">fas fa-plus</v-icon>
+        <v-icon size="15px" color="white">fas fa-bell</v-icon>
+        <v-icon size="15px" color="white">far fa-user</v-icon>
+      </div>
     </div>
   </div>
   

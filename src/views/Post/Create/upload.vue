@@ -87,8 +87,12 @@ export default {
         this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
         const params = {
           position,
-          response : payload.response
+          response : {
+            ...payload.response,
+            vodFileId : payload.vodFileId
+          }
         }
+        console.log(params)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }
