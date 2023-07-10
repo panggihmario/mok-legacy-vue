@@ -3,18 +3,27 @@
     <div class="mt-8">
       <div class="d-flex align-center">
         <v-avatar size="100" color="grey" class="mr-4">
-          <img v-if="data.photo" :src="data.photo" />
+          <img v-if="data.photo" :src="data.photo" style="object-fit: contain;"  />
         </v-avatar>
         <div class="d-flex flex-column">
           <span
             class="account-edit__subtitle font-weight-medium charcoal--text mb-3"
-            >Unggah foto profil</span
           >
-          <custom-upload
-            id="create"
+            Unggah foto profil
+          </span>
+          <custom-button 
             color="secondary"
+            @click="handleUpload('upload-admin')"
+            size="small"
+            :loading="isLoading"
+          >
+            Upload-foto
+          </custom-button>
+          <upload-oss
+            id="upload-admin"
+            style="display: none" 
             @response="getResponse"
-            typeUpload="accounts"
+            :typeAllowed="['jpeg','png', 'jpg']"
           />
         </div>
       </div>
@@ -132,6 +141,7 @@ export default {
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",
       errorPassword: "",
+      isLoading : false
     };
   },
   props: {
@@ -158,8 +168,15 @@ export default {
   },
   methods: {
     getResponse(payload) {
-      // this.status = payload.status;
-      this.data.photo = payload.response.url;
+      this.data.photo = payload.response.url
+      if(payload.status === 'loading') {
+        this.isLoading = true
+      }else{
+        this.isLoading = false
+      }
+    },
+    handleUpload(id) {
+      document.getElementById(id).click();
     },
     handleSubmit() {
       this.$emit("onSubmit", this.data);
@@ -174,4 +191,5 @@ export default {
     font-size: $font-size-24
   &__subtitle
     font-size: $font-size-12
+    cursor: pointer
 </style>
