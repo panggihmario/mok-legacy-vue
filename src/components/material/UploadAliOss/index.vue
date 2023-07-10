@@ -183,7 +183,8 @@ export default {
       const width = dimensions.width
       const height = dimensions.height
       if (width >= this.limitResolution || height >= this.limitResolution) {
-        Promise.all([this.saveFileToTencent(file, typeMedia, dimensions), this.saveVodTencent(file)])
+        const currentDateEpoch = moment(new Date).valueOf()
+        Promise.all([this.saveFileToTencent(file, typeMedia, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
           .then(response => {
             const payload = {
               ...response[0],
@@ -192,22 +193,6 @@ export default {
             this.$emit("response", payload);
             return payload
           })
-          // .then(payload => {
-            // const params = {
-            //   file_id : payload.vodFileId,
-            //   transcode_template_id : 100800
-            // }
-          //   const url = process.env.VUE_APP_VOD_PROCESS_MEDIA_URL
-          //   return axios.post(url, params, {
-          //     auth : {
-          //       username : 'admin_koanba',
-          //       password : 'K04nb4tw2#p45s'
-          //     },
-          //     headers : {
-          //       'Content-Type' : `application/json`
-          //     }
-          //   })
-          // })
       } else {
         const result = {
           status: 'low resolution',
@@ -222,9 +207,10 @@ export default {
         this.$emit("response", result);
       }
     },
-    saveVodTencent(file) {
+    saveVodTencent(file, currentDateEpoch) {
       const uploader = this.tcVod.upload({
-        mediaFile: file
+        mediaFile: file,
+        mediaName : `${VIDEO}_${currentDateEpoch}`
       });
       uploader.on('media_progress', function (info) {
         console.log(info.percent) // The upload progress
@@ -235,7 +221,7 @@ export default {
           return fileId
         })
     },
-    saveFileToTencent(file, typeMedia, dimensions) {
+    saveFileToTencent(file, typeMedia, dimensions, currentDateEpoch) {
       let data = {
         ...this.dataResponse,
         type: typeMedia,
@@ -246,7 +232,7 @@ export default {
         }
       }
       this.dataResponse = data
-      const currentDateEpoch = moment(new Date).valueOf()
+      // const currentDateEpoch = moment(new Date).valueOf()
       const fileType = file.type.split("/")[1]
       const filePath = `tmp/source/${currentDateEpoch}.${fileType}`
       const protocol = window.location.protocol
