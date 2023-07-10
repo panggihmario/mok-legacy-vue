@@ -369,8 +369,10 @@ export default {
               this.actionPostToDraft(`https://${res.Location}`);
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
                 this.dataResponse.url = `https://${res.Location}`;
+                this.dataResponse.vodFileId = res.vodFileId;
               } else {
                 this.dataResponse.url = `https://${res.Location}`;
+                this.dataResponse.vodFileId = res.vodFileId;
               }
             } else {
               this.loadingSubmit = false;
