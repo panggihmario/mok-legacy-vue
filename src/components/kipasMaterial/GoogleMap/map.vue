@@ -3,8 +3,8 @@
     <div class="map__title">Pin Lokasi</div>
     <div>
       <div class="field__input">
-
-        <input id="autocomplete" ref="autocomplete" v-model="address" />
+        
+        <input  id="autocomplete" ref="autocomplete" v-model="address" />
       </div>
       <div id="map" class="map__box"></div>
     </div>
@@ -24,7 +24,7 @@
 
 <script>
 import Label from "../Label"
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import axios from "axios";
 export default {
   components: {
@@ -41,6 +41,14 @@ export default {
     const coordinate = reactive({
       latitude: "",
       longitude: ""
+    })
+
+    watch(address, (value) => {
+      if(!value) {
+        isDisable.value = true
+      }else{
+        isDisable.value = false
+      }
     })
 
     const openMap = function () {
@@ -131,6 +139,7 @@ export default {
         coordinate,
         address : address.value
       }
+      console.log(params)
       emit("saveLocation", params)
       closeDialog()
     }
@@ -146,7 +155,7 @@ export default {
       saveCoordinate,
       openMap,
       isMap,
-      isDisable
+      isDisable,
     };
   },
 }

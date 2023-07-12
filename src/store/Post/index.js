@@ -385,7 +385,7 @@ export default {
       const data = {
         url: `${state.pathTrendingFeeds}/actives`,
         data: {
-          id: payload.id,
+          ...payload
         },
       };
       return dispatch("postWithToken", data, { root: true })
@@ -408,5 +408,13 @@ export default {
           throw err;
         });
     },
+    postPriority({dispatch}, payload) {
+      const data = {
+        url : `admin/trending-feeds/actives/priority/${payload}`
+      }
+      return dispatch("putWithToken", data, {root : true})
+        .then(response => {return response})
+        .catch(err => { throw err })
+    }
   },
 };
