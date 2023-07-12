@@ -364,8 +364,14 @@ export default {
         })
     },
     getLocation (params) {
-      this.payloadDonation.latitude = params.coordinate.latitude
-      this.payloadDonation.longitude = params.coordinate.longitude
+      if(params.address) {
+        this.payloadDonation.latitude = params.coordinate.latitude
+        this.payloadDonation.longitude = params.coordinate.longitude
+      }else{
+        this.payloadDonation.latitude = ""
+      this.payloadDonation.longitude = ""
+      }
+      
     },
     onVideo() {
       const video = document.getElementById('video-donation')
