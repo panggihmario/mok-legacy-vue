@@ -128,7 +128,12 @@
       </v-btn>
     </v-dialog>
     <DialogDelete :dialogDelete="dialogDelete" @closeDialogDelete="closeDialogDelete" @handleDelete="handleDelete" />
-    <v-dialog v-model="dialogPushNotif" width="410">
+    <DialogPushNotif
+      :dialogPushNotif="dialogPushNotif"
+      @closeDialogPushNotif="closeDialogPushNotif"
+      @actionPushNotif="actionPushNotif"
+    />
+    <!-- <v-dialog v-model="dialogPushNotif" width="410">
       <v-card>
         <div class="d-flex no-gutters">
           <div class="text-end pt-6" style="width: 40px">
@@ -156,7 +161,7 @@
           </div>
         </div>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
     <v-snackbar :timeout="3000" top right v-model="alertSuccess" color="success">
       Jadikan Trending Success
@@ -172,11 +177,13 @@ import { mapActions } from "vuex";
 import moment from "moment";
 import DialogDelete from "./dialogDelete.vue";
 import DatePicker from "./datePicker.vue"
+import dialogPushNotifVue from "./dialogPushNotif.vue";
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   components: {
     DialogDelete,
-    DatePicker
+    DatePicker,
+    DialogPushNotif : dialogPushNotifVue
   },
   data() {
     return {
