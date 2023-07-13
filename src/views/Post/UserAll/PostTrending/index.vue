@@ -65,32 +65,11 @@
         </template>
       </v-data-table>
     </div>
-
-    <v-dialog v-model="dialogPriority" width="356" >
-      <v-card class="card-priority"  >
-        <v-icon @click="closeDialogPriority" class="card-priority__close" size="small">fas fa-times</v-icon>
-        <v-icon color="secondary">fas fa-exclamation-circle</v-icon>
-        <div>
-          <div class="card-priority__label">
-            Apakah kamu yakin ingin menjadikan postingan ini sebagai Postingan Priority?
-          </div>
-          <div class="card-priority__content">
-            Setelah diubah menjadi postingan priority (Diprioritaskan), maka kamu tidak akan bisa mengubah status priority ini sampai postingan ini berhenti menjadi trending.
-          </div>
-          <div class="d-flex" style="gap: 8px;">
-            <custom-button size="small">Batalkan</custom-button>
-            <custom-button 
-              size="small" 
-              color="secondary"
-              @click="handlePriority"
-            >
-              Jadikan Postingan ini Priority
-            </custom-button>
-          </div>
-        </div>
-      </v-card>
-    </v-dialog>
-
+    <DialogPriority
+      @closeDialogPriority="closeDialogPriority"
+      @handlePriority="handlePriority"
+      :dialogPriority="dialogPriority"
+    />
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
         <span class="silver--text"
@@ -219,6 +198,12 @@
       </v-btn>
     </v-dialog>
 
+    <DialogPushNotif
+      :dialogPushNotif="dialogPushNotif"
+      @closeDialogPushNotif="closeDialogPushNotif"
+      @actionPushNotif="actionPushNotif"
+    />
+
     <v-dialog v-model="dialogPushNotif" width="410">
       <v-card >
         <div class="d-flex no-gutters">
@@ -273,8 +258,13 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-
+import dialogPriority from "./dialogPriority.vue";
+import dialogPushNotif from "./dialogPushNotif.vue";
 export default {
+  components : {
+    DialogPriority : dialogPriority,
+    DialogPushNotif : dialogPushNotif
+  },
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   data() {
     return {
@@ -339,16 +329,15 @@ export default {
       this.dialogPriority = true
       this.idPost = id
     },
-    closeDialogPriority () {
-      this.dialogPriority = false
+    closeDialogPriority (value) {
+      this.dialogPriority = value
       this.idPost = ''
     },
     handlePriority () {
-      this.loadingPriority = true
       return this.postPriority(this.idPost)
         .then(() => {
           this.loadingPriority = false
-          this.closeDialogPriority()
+          this.closeDialogPriority(false)
           this.$emit('refreshPriority')
         })
         .catch(err => {
@@ -380,8 +369,8 @@ export default {
       this.dialogPushNotif = true;
       this.dialogPushNotifId = id;
     },
-    closeDialogPushNotif() {
-      this.dialogPushNotif = false;
+    closeDialogPushNotif(value) {
+      this.dialogPushNotif = value;
       this.dialogPushNotifId = "";
     },
     formatingDate(rawDate) {
