@@ -46,6 +46,7 @@
           :totalElements="totalElementsActive"
           @onChangePage="changePage"
           @actionPushNotif="actionPushNotif"
+          @refreshPriority="refreshPriority"
         ></Post-All-Trending>
       </div>
       <div v-else-if="tab == 2">
@@ -260,6 +261,9 @@ export default {
           this.loadingListCandidate = false;
         });
     },
+    refreshPriority() {
+      this.handleGetListUserPostTrending()
+    },
     handleGetListUserPostTrending() {
       let payload = {
         page: this.pageActive - 1,
@@ -268,7 +272,6 @@ export default {
       this.isFilter = false;
       return this.fetchPostAllUserTrending(payload)
         .then((response) => {
-          console.log(response)
           let res = response.data.data;
           this.loadingListActive = false;
           this.tableItemsActive = res.content;

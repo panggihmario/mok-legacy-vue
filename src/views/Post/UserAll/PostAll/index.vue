@@ -180,15 +180,29 @@
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
                 </div>
+                <div class="d-flex align-center" style="gap: 5px;">
+                  <input id="isPrior" type="checkbox" v-model="priority" />
+                  <label for="isPrior" class="post-actions__label" >Priority</label>
+                </div>
               </div>
-              <div class="col">
-                <v-btn
-                  block
+              <div class="col post-actions">
+                <div class="post-actions__label">Trending sampai</div>
+                <DatePicker
+                  @getEpoch="getEpoch"
+                />
+                <!-- <v-btn
                   color="secondary"
                   class="text-capitalize"
                   @click="actionPostFeedAsTrendingById(tableItemsDialog.id)"
                   >Jadikan Trending</v-btn
+                > -->
+                <custom-button
+                  color="secondary"
+                  size="small"
+                  @click="actionPostFeedAsTrendingById(tableItemsDialog.id)"
                 >
+                  Jadikan Trending
+                </custom-button>
               </div>
             </div>
           </div>
@@ -289,10 +303,12 @@
 import { mapActions } from "vuex";
 import moment from "moment";
 import DialogDelete from "./dialogDelete.vue";
+import DatePicker from "./datePicker.vue"
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   components: {
     DialogDelete,
+    DatePicker
   },
   data() {
     return {
@@ -319,6 +335,8 @@ export default {
       alertError: false,
       dialogDelete: false,
       idPost: "",
+      epochExpiredTrending : '',
+      priority : false
     };
   },
   watch: {
@@ -350,6 +368,9 @@ export default {
       postFeedAsTrendingById: "post/postFeedAsTrendingById",
       deleteFeed: "account/deleteFeed",
     }),
+    getEpoch(value) {
+      this.epochExpiredTrending = value
+    },
     handleDelete() {
       const idPost = this.idPost;
       return this.deleteFeed(idPost)
@@ -368,6 +389,7 @@ export default {
     },
     closeDialogDelete(value) {
       this.dialogDelete = value;
+      this.epochExpiredTrending = ''
     },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
@@ -375,6 +397,7 @@ export default {
     handleGetUserPostDetail(id) {
       const payload = {
         id: id,
+        
       };
       this.loadingDetail = true;
       return this.fetchPostAllUserDetailById(payload)
@@ -392,6 +415,8 @@ export default {
     actionPostFeedAsTrendingById(id) {
       const payload = {
         id: id,
+        isPriority : this.priority,
+        trendingExpiredAt : this.epochExpiredTrending
       };
       this.stopVideo();
       this.loadingMakeTrending = true;
@@ -458,6 +483,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.post-actions {
+  display: flex;
+  gap : 8px;
+  align-items: center;
+  justify-content: flex-end;
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: $black;
+  }
+}
+
 .show-post {
   color: $secondary;
   text-decoration: underline;

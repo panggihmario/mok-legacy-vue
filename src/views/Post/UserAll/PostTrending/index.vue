@@ -41,22 +41,55 @@
                   >
                 </div>
               </td>
-              <td class="font-12 text-center">
-                <v-btn
-                  small
+              <td class="font-12 text-center flex-actions " style="gap: 10px;">
+                <custom-button
                   color="secondary"
-                  class="text-capitalize"
-                  style="border-radius: 5px"
+                  size="x-small"
                   @click="openDialogPushNotif(item.id)"
                 >
-                  Push Notif
-                </v-btn>
+                  Push Notif 
+                </custom-button>
+                <div v-if="item.isPriority">
+                  <div class="flex-actions isPriority">
+                    <v-icon color="grey" size="small">fas fa-check-square</v-icon>
+                    <div class="grey--text">Priority</div>
+                  </div>
+                </div>
+                <div v-else  class="flex-actions" @click="openDialogPriority(item.id)">
+                  <v-icon size="small">far fa-square</v-icon>
+                  <div>Priority</div>
+                </div>
               </td>
             </tr>
           </tbody>
         </template>
       </v-data-table>
     </div>
+
+    <v-dialog v-model="dialogPriority"  width="356" >
+      <v-card class="card-priority">
+        <v-icon @click="closeDialogPriority" class="card-priority__close" size="small">fas fa-times</v-icon>
+        <v-icon color="secondary">fas fa-exclamation-circle</v-icon>
+        <div>
+          <div class="card-priority__label">
+            Apakah kamu yakin ingin menjadikan postingan ini sebagai Postingan Priority?
+          </div>
+          <div class="card-priority__content">
+            Setelah diubah menjadi postingan priority (Diprioritaskan), maka kamu tidak akan bisa mengubah status priority ini sampai postingan ini berhenti menjadi trending.
+          </div>
+          <div class="d-flex" style="gap: 8px;">
+            <custom-button size="small">Batalkan</custom-button>
+            <custom-button 
+              size="small" 
+              color="secondary"
+              @click="handlePriority"
+            >
+              Jadikan Postingan ini Priority
+            </custom-button>
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
 
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
@@ -271,6 +304,8 @@ export default {
       },
       // loadingList: false,
       loadingDetail: false,
+      loadingPriority : false,
+      dialogPriority : false,
       loadingMakeTrending: false,
       dialogPost: false,
       dialogPostDataIdx: 0,
@@ -278,6 +313,7 @@ export default {
       dialogPushNotif: false,
       dialogPushNotifId: "",
       page: 1,
+      idPost : ''
       // totalPages: 0,
     };
   },
@@ -306,9 +342,29 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchPostAllUserTrendingDetailById:
-        "post/fetchPostAllUserTrendingDetailById",
+      fetchPostAllUserTrendingDetailById: "post/fetchPostAllUserTrendingDetailById",
+      postPriority : 'post/postPriority'
     }),
+    openDialogPriority (id) {
+      this.dialogPriority = true
+      this.idPost = id
+    },
+    closeDialogPriority () {
+      this.dialogPriority = false
+      this.idPost = ''
+    },
+    handlePriority () {
+      this.loadingPriority = true
+      return this.postPriority(this.idPost)
+        .then(() => {
+          this.loadingPriority = false
+          this.closeDialogPriority()
+          this.$emit('refreshPriority')
+        })
+        .catch(err => {
+          this.loadingPriority = false
+        })
+    },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
     },
@@ -376,6 +432,42 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card-priority {
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: black;
+  }
+  &__content {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: $charcoal;
+    margin: 8px 0 23px 0;
+  }
+  &__close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    cursor: pointer;
+  }
+}
+.flex-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+  & .isPriority {
+    cursor: default;
+  }
+}
 .show-post {
   color: $secondary;
   text-decoration: underline;
