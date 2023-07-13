@@ -67,7 +67,27 @@ export default {
       return this.getListChannel()
         .then(response => {
           const responseData = response.data.data
-          this.items = responseData
+          const filerResponseData = responseData.filter(data => {
+            if(data.code === 'tiktok' || data.code === 'chinatiktok' || data.code === 'general') {
+              return {
+                ...data
+              }
+            }
+          })
+          
+          const changeCodeGeneral = filerResponseData.map(data => {
+            if(data.code === 'general') {
+              return {
+                ...data,
+                code : 'home'
+              }
+            }else{
+              return {
+                ...data
+              }
+            }
+          })
+          this.items = changeCodeGeneral
         })
         .catch(() => {
           this.channels = []
