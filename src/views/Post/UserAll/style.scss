@@ -1,0 +1,33 @@
+.notif {
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: var(--black-color);
+  }
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: black;
+  }
+  &__content {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    color: $charcoal;
+    margin: 8px 0 23px 0;
+  }
+  &__close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    cursor: pointer;
+  }
+}
