@@ -66,8 +66,8 @@
       </v-data-table>
     </div>
 
-    <v-dialog v-model="dialogPriority"  width="356" >
-      <v-card class="card-priority">
+    <v-dialog v-model="dialogPriority" width="356" >
+      <v-card class="card-priority"  >
         <v-icon @click="closeDialogPriority" class="card-priority__close" size="small">fas fa-times</v-icon>
         <v-icon color="secondary">fas fa-exclamation-circle</v-icon>
         <div>
@@ -171,38 +171,28 @@
               </div>
             </div>
 
-            <div class="d-flex align-center mx-6 mt-3 mb-6">
-              <div>
-                <v-btn
-                  icon
-                  tile
-                  @click="changeDialogPostImg(-1)"
-                  :disabled="dialogPostMediasIdx == 0"
-                >
-                  <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  tile
-                  @click="changeDialogPostImg(1)"
-                  :disabled="
-                    dialogPostMediasIdx == tableItemsDialog.medias.length - 1
-                  "
-                >
-                  <v-icon>mdi-chevron-right</v-icon>
-                </v-btn>
+            <div class="trending__bottom">
+              <div v-if="tableItemsDialog.medias.length > 1"  class="trending__action-arrow" >
+                <div v-if="dialogPostMediasIdx == 0"  class="trending__box-arrow disable">
+                  <v-icon size="12px">fas fa-chevron-left</v-icon>
+                </div>
+                <div v-else @click="changeDialogPostImg(-1)" class="trending__box-arrow">
+                  <v-icon size="12px">fas fa-chevron-left</v-icon>
+                </div>
+                <div v-if="dialogPostMediasIdx == tableItemsDialog.medias.length - 1"  class="trending__box-arrow disable">
+                  <v-icon size="12px">fas fa-chevron-right</v-icon>
+                </div>
+                <div v-else @click="changeDialogPostImg(1)" class="trending__box-arrow">
+                  <v-icon size="12px">fas fa-chevron-right</v-icon>
+                </div>
               </div>
-              <div
-                class="primarylowtint ml-2 px-2"
-                style="height: 24px; border-radius: 4px"
-              >
-                <span class="font-12"
-                  >Postingan tampil menjadi trending dalam waktu
+              <div class="trending__notes">
+                Postingan tampil menjadi trending dalam waktu
                   {{ tableItemsDialog.trendingExpired }} jam setelah status
-                  postingan berubah menjadi trending!</span
-                >
+                  postingan berubah menjadi trending!
               </div>
             </div>
+
           </div>
         </div>
         <div
@@ -230,7 +220,7 @@
     </v-dialog>
 
     <v-dialog v-model="dialogPushNotif" width="410">
-      <v-card>
+      <v-card >
         <div class="d-flex no-gutters">
           <div class="text-end pt-6" style="width: 40px">
             <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
@@ -432,33 +422,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-priority {
-  padding: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  position: relative;
-  &__label {
-    font-size: 14px;
-    font-weight: 800;
-    line-height: normal;
-    color: black;
-  }
-  &__content {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    color: $charcoal;
-    margin: 8px 0 23px 0;
-  }
-  &__close {
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    cursor: pointer;
-  }
-}
 .flex-actions {
   display: flex;
   gap: 5px;
@@ -505,3 +468,6 @@ export default {
   font-size: 12px;
 }
 </style>
+
+
+<style lang="scss" src="./style.scss" scoped ></style>
