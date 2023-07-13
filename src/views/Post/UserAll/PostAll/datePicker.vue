@@ -47,7 +47,7 @@ export default {
   methods : {
     handlePickDate () {
       this.menuDate = false
-      const epochDate = moment(this.date).endOf('day').add(7, 'hours').valueOf()
+      const epochDate = moment(this.date).endOf('day').valueOf()
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
       this.$emit('getEpoch', epochDate)
