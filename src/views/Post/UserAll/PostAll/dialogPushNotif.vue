@@ -9,16 +9,16 @@
         </div>
         <div class="notif__content">
           Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
-            bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
-            ini karena akan sangat mengganggu user nantinya.
-          </div>
-          <div class="d-flex" style="gap: 8px;">
+          bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
+          ini karena akan sangat mengganggu user nantinya.
+        </div>
+        <div class="d-flex" style="gap: 8px;">
           <custom-button @click="closeDialogPushNotif" size="small">Batalkan</custom-button>
           <custom-button size="small" color="secondary" @click="actionPushNotif">
             Jadikan Postingan ini Priority
           </custom-button>
-          </div>
         </div>
+      </div>
     </v-card>
   </v-dialog>
 </template>

@@ -65,11 +65,7 @@
         </template>
       </v-data-table>
     </div>
-    <DialogPriority
-      @closeDialogPriority="closeDialogPriority"
-      @handlePriority="handlePriority"
-      :dialogPriority="dialogPriority"
-    />
+  
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
         <span class="silver--text"
@@ -87,6 +83,17 @@
         @input="changePage"
       ></v-pagination>
     </div>
+
+    <DialogPriority
+      @closeDialogPriority="closeDialogPriority"
+      @handlePriority="handlePriority"
+      :dialogPriority="dialogPriority"
+    />
+    <DialogPushNotif
+      :dialogPushNotif="dialogPushNotif"
+      @closeDialogPushNotif="closeDialogPushNotif"
+      @actionPushNotif="actionPushNotif"
+    />
 
     <v-dialog v-model="dialogPost" width="880">
       <v-btn
@@ -196,61 +203,6 @@
       >
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
-    </v-dialog>
-
-    <DialogPushNotif
-      :dialogPushNotif="dialogPushNotif"
-      @closeDialogPushNotif="closeDialogPushNotif"
-      @actionPushNotif="actionPushNotif"
-    />
-
-    <v-dialog v-model="dialogPushNotif" width="410">
-      <v-card >
-        <div class="d-flex no-gutters">
-          <div class="text-end pt-6" style="width: 40px">
-            <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
-          </div>
-          <div class="font-12 pt-6 px-4" style="width: 340px">
-            <span class="font-14 black--text"
-              >Apakah kamu yakin ingin melakukan push notif untuk konten
-              ini?</span
-            >
-            <p class="mt-2 pr-4 grey--text">
-              Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
-              bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
-              ini karena akan sangat mengganggu user nantinya.
-            </p>
-            <div class="d-flex justify-space-between mb-6">
-              <v-btn
-                x-small
-                height="29"
-                width="146"
-                depressed
-                class="text-capitalize"
-                style="border-radius: 8px"
-                @click="closeDialogPushNotif"
-                >Batalkan Push Notif</v-btn
-              >
-              <v-btn
-                x-small
-                height="29"
-                width="150"
-                depressed
-                class="text-capitalize"
-                color="secondary"
-                style="border-radius: 8px"
-                @click="actionPushNotif"
-                >Push Notif Sekarang</v-btn
-              >
-            </div>
-          </div>
-          <div class="d-flex justify-end" style="width: 30px">
-            <v-btn rounded icon>
-              <v-icon size="18" @click="closeDialogPushNotif">mdi-close</v-icon>
-            </v-btn>
-          </div>
-        </div>
-      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -363,13 +315,14 @@ export default {
     },
     actionPushNotif() {
       this.$emit("actionPushNotif", this.dialogPushNotifId);
-      this.closeDialogPushNotif();
+      this.closeDialogPushNotif(false);
     },
     openDialogPushNotif(id) {
       this.dialogPushNotif = true;
       this.dialogPushNotifId = id;
     },
     closeDialogPushNotif(value) {
+      console.log(value)
       this.dialogPushNotif = value;
       this.dialogPushNotifId = "";
     },
