@@ -229,15 +229,8 @@ export default {
     },
     isForm(value) {
       let schema = yup.object().shape({
-        title: yup.string().required(),
-        isEnded : yup.boolean(),
-        expiredAt : yup.string().when("isEnded", (value) => {
-          if(value) {
-            return yup.string().nullable()
-          }else{
-            return yup.string().required()
-          }
-        }),
+           
+        targetAmount : yup.number().max(999999999),
         description : yup.string().required(),
         recipientName : yup.string().required(),
         latitude : yup.string().required(),
