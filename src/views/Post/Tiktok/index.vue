@@ -173,6 +173,9 @@ export default {
       userFeedHashtag: [],
       hashtagId: "",
       hashtagCursor: 0,
+      userSource: "",
+      hashtagSource: "",
+      fypSource: "",
       selectedItem: null,
       cursorFirst: null,
       payload: {
@@ -285,7 +288,7 @@ export default {
       return this.getUserDetail(payload)
         .then((response) => {
           this.loadingUsername = false;
-          this.userInfo = response.data.userInfo.user;
+          this.userInfo = response.data;
         })
         .catch((err) => {
           this.loadingUsername = false;
@@ -305,15 +308,16 @@ export default {
         url: "/public/posts",
         count: 20,
         secUid: this.userInfo.secUid,
+        uniqueId: this.userInfo.uniqueId,
         cursor: this.userFeedUsernameCursor,
       };
       return this.getUserFeed(payload)
         .then((response) => {
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
-          this.userFeedUsernameCursor = response.data.cursor;
-          for (let i = 0; i < response.data.itemList.length; i++) {
-            const element = response.data.itemList[i];
+          this.userFeedUsernameCursor = response.cursor;
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
             this.userFeedUsername.push(element);
           }
         })
@@ -331,13 +335,15 @@ export default {
       };
       this.loadingHashtag = true;
       this.userFeedHashtag = [];
+      this.hashtagSource = "";
       this.hashtagId = "";
       this.hashtagCursor = 0;
       this.changeStatusPreviewTiktok(false);
       return this.getFeedByHashtag(payload)
         .then((response) => {
           let data = response.data;
-          this.hashtagId = data.hashtags.challengeInfoList[0].challenge.id;
+          this.hashtagId = data.id;
+          // this.hashtagSource = response.source;
           this.actionGetHashtagPost();
         })
         .catch((err) => {
@@ -348,22 +354,22 @@ export default {
         });
     },
     actionGetHashtagPost() {
-      let response = {
+      let payload = {
         url: "public/hashtag",
         cursor: this.hashtagCursor,
         count: 20,
         challengeId: this.hashtagId,
       };
       this.loadingLoadmoreHashtag = true;
-      return this.getHashtagPost(response)
+      return this.getHashtagPost(payload)
         .then((response) => {
-          let data = response.data;
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
-          this.hashtagCursor = data.cursor;
-          data.itemList.map((list) => {
-            this.userFeedHashtag.push(list);
-          });
+          this.hashtagCursor = response.cursor;
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
+            this.userFeedHashtag.push(element);
+          }
         })
         .catch((err) => {
           this.loadingHashtag = false;
@@ -385,8 +391,8 @@ export default {
         .then((response) => {
           this.loading = false;
           this.loadingLoadmore = false;
-          for (let i = 0; i < response.data.itemList.length; i++) {
-            const element = response.data.itemList[i];
+          for (let i = 0; i < response.data.length; i++) {
+            const element = response.data[i];
             this.userFeed.push(element);
           }
         })
