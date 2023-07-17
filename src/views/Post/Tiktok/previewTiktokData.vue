@@ -32,6 +32,7 @@
         "
       >
         <img
+          id="tiktokImg"
           :src="previewTiktokData.cover"
           class="image"
           style="width: 100%"
@@ -138,10 +139,9 @@
           color="primary"
           class="white--text"
           :loading="loadingSubmit"
-          disab
           @click="
             actionGetUrlValidation(
-              `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
+              `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.videoId}`
             )
           "
           :disabled="
