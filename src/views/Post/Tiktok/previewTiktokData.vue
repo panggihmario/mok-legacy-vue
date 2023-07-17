@@ -32,7 +32,7 @@
         "
       >
         <img
-          :src="previewTiktokData.video.cover"
+          :src="previewTiktokData.cover"
           class="image"
           style="width: 100%"
         />
@@ -46,9 +46,9 @@
 
       <div
         v-if="
-          previewTiktokData.video.height >= 1024
+          previewTiktokData.height >= 1024
             ? false
-            : previewTiktokData.video.width >= 1024
+            : previewTiktokData.width >= 1024
             ? false
             : true
         "
@@ -145,9 +145,9 @@
             )
           "
           :disabled="
-            previewTiktokData.video.height >= 1024
+            previewTiktokData.height >= 1024
               ? false
-              : previewTiktokData.video.width >= 1024
+              : previewTiktokData.width >= 1024
               ? false
               : true
           "
