@@ -81,7 +81,8 @@
                 currencyDisplay: 'hidden' ,
                 hideGroupingSeparatorOnFocus: false,
                 valueRange : {
-                  min : 10000
+                  min : 10000,
+                  max : 999999999
                 }
               }" 
               :isDisable="isDisableCurrency"
