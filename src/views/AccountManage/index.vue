@@ -257,7 +257,6 @@ export default {
       const totalData = response.data.data.totalPages;
       this.pageCount = totalData;
       const dataResponse = response.data.data.content;
-      console.log("data", dataResponse);
       const formatResponse = dataResponse.map((d) => {
         return {
           id: d.id,

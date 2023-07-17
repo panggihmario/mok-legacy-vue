@@ -66,7 +66,7 @@ export default {
       const createAt = moment(value.createAt)
       const expiredAt = moment(value.expiredAt)
       const isPass = moment(expiredAt).diff(moment(), 'miliseconds')
-      if(expiredAt) {
+      if(value.expiredAt) {
         if(isPass > 0 ) {
           this.isEnded = false
           const durationData = moment.duration(expiredAt.diff(moment()))

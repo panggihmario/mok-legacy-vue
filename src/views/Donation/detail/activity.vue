@@ -123,6 +123,11 @@ export default {
         this.isEditor = true
       },100)
     },
+    openDetailContent(data) {
+      this.detailContent = data
+      this.content = data.description
+      this.openDialog()
+    },
     openDialogConfirm (data) {
       this.isDelete = true
       this.detailContent = data
@@ -151,11 +156,7 @@ export default {
       putActivity : 'donation/putActivity',
       deleteActivity : 'donation/deleteActivity'
     }),
-    openDetailContent(data) {
-      this.detailContent = data
-      this.content = data.description
-      this.isDialog = true
-    },
+   
     handleActivity() {
       const payload = {
         id: this.$route.params.id,
