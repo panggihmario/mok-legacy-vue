@@ -25,7 +25,6 @@
               <div :class="d['activity__icon']" @click="openDetailContent(ac)">
                 <v-icon size="12px">fas fa-edit</v-icon>
               </div>
-
             </div>
           </v-col>
           <v-col v-if="ac.type === 'WITHDRAW' ">
@@ -52,7 +51,7 @@
     </v-timeline>
 
     <!-- DIALOG -->
-    <v-dialog max-width="900"   v-model="isDialog" >
+    <v-dialog max-width="900" @click:outside="closeDialog"  v-model="isDialog" >
       <v-card  class="pa-4">
         <div :class="d['activity__dialog-title']" class="mb-2">Update Kabar Terkini</div>
         <div :class="d['activity__dialog-subtitle']" class="mb-1">Tulis Kabar Terkini</div>
@@ -71,7 +70,8 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog width="495" v-model="isDelete">
+    <v-dialog  
+      width="495" v-model="isDelete" @click:outside="onCloseDeleteDialog">
       <v-card :class="d.dialog">
         <div :class="d['dialog-close']" @click="onCloseDeleteDialog">
           <v-icon  size="20px">fas fa-times</v-icon>
@@ -123,6 +123,11 @@ export default {
         this.isEditor = true
       },100)
     },
+    openDetailContent(data) {
+      this.detailContent = data
+      this.content = data.description
+      this.openDialog()
+    },
     openDialogConfirm (data) {
       this.isDelete = true
       this.detailContent = data
@@ -151,11 +156,7 @@ export default {
       putActivity : 'donation/putActivity',
       deleteActivity : 'donation/deleteActivity'
     }),
-    openDetailContent(data) {
-      this.detailContent = data
-      this.content = data.description
-      this.isDialog = true
-    },
+   
     handleActivity() {
       const payload = {
         id: this.$route.params.id,

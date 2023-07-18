@@ -1,0 +1,65 @@
+.trending {
+  &__bottom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+  }
+  &__action-arrow {
+    display: flex;
+    gap: 8px;
+  }
+  &__box-arrow {
+    border-radius: 4px;
+    padding: 5px 7px;
+    background-color: $whitesmoke;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    &.disable {
+      cursor: default;
+      background-color: white;
+    }
+  }
+  &__notes {
+    font-size: 12px;
+    font-weight: 400;
+    color: $black;
+    border-radius: 4px;
+    background: var(--primary-low-tint, #FFEBEF);
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.card-priority {
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: black;
+  }
+  &__content {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    color: $charcoal;
+    margin: 8px 0 23px 0;
+  }
+  &__close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    cursor: pointer;
+  }
+}

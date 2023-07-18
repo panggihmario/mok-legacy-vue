@@ -1,22 +1,13 @@
 <template>
   <div>
     <div>
-      <v-data-table
-        :headers="tableHeaders"
-        :items="tableItems"
-        :loading="loadingList"
-        disable-filtering
-        disable-sort
-        disable-pagination
-        hide-default-footer
-      >
+      <v-data-table :headers="tableHeaders" :items="tableItems" :loading="loadingList" disable-filtering disable-sort
+        disable-pagination hide-default-footer>
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="(item, idx) in items" :key="idx">
               <td class="font-12">
-                <span class="show-post" @click="openDialogPost(item.id, idx)"
-                  >Lihat Post</span
-                >
+                <span class="show-post" @click="openDialogPost(item.id, idx)">Lihat Post</span>
               </td>
               <td class="font-12 grey--text font-weight-medium">
                 <div class="text-truncate" style="width: 200px">
@@ -31,36 +22,19 @@
               </td>
               <td class="font-12 grey--text font-weight-medium">
                 <div class="d-flex align-center">
-                  <v-icon
-                    size="46px"
-                    :color="item.isAllMp4Ready ? 'green' : 'red'"
-                    style="margin-right: -16px"
-                    >mdi-circle-small</v-icon
-                  >
-                  <span :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
-                    >MP4</span
-                  >
+                  <v-icon size="46px" :color="item.isAllMp4Ready ? 'green' : 'red'"
+                    style="margin-right: -16px">mdi-circle-small</v-icon>
+                  <span :class="item.isAllMp4Ready ? 'green--text' : 'red--text'">MP4</span>
                 </div>
               </td>
               <td class="font-12 grey--text font-weight-medium">
                 {{ formatingDate(item.createAt) }}
               </td>
-              <td
-                class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium"
-              >
-                <custom-button
-                  class="mr-2"
-                  size="x-small"
-                  color="secondary"
-                  @click="openDialogPushNotif(item.id)"
-                >
+              <td class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium">
+                <custom-button class="mr-2" size="x-small" color="secondary" @click="openDialogPushNotif(item.id)">
                   Push Notif
                 </custom-button>
-                <v-icon
-                  size="15px"
-                  color="warning"
-                  @click="openDialogDelete(item.id)"
-                >
+                <v-icon size="15px" color="warning" @click="openDialogDelete(item.id)">
                   fa-solid fa-trash
                 </v-icon>
               </td>
@@ -72,71 +46,37 @@
 
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
-        <span class="silver--text"
-          >Total Post :
+        <span class="silver--text">Total Post :
           <span class="black--text">{{ totalElements }}</span>
         </span>
       </div>
-      <v-pagination
-        v-model="page"
-        :length="totalPages"
-        total-visible="7"
-        class="col d-flex justify-end"
-        prev-icon="mdi-menu-left"
-        next-icon="mdi-menu-right"
-        @input="changePage"
-      ></v-pagination>
+      <v-pagination v-model="page" :length="totalPages" total-visible="7" class="col d-flex justify-end"
+        prev-icon="mdi-menu-left" next-icon="mdi-menu-right" @input="changePage"></v-pagination>
     </div>
 
     <v-dialog v-model="dialogPost" width="880">
-      <v-btn
-        rounded
-        icon
-        x-large
-        elevation="2"
-        color="white"
-        class="nav__btn-left mx-2"
-        @click="changeDialogPostData(-1)"
-      >
+      <v-btn rounded icon x-large elevation="2" color="white" class="nav__btn-left mx-2"
+        @click="changeDialogPostData(-1)">
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
       <v-card>
-        <div
-          v-if="!loadingDetail && tableItemsDialog.createBy"
-          class="d-flex align-center"
-        >
+        <div v-if="!loadingDetail && tableItemsDialog.createBy" class="d-flex align-center">
           <div class="pt-7" style="width: 100%">
             <div class="row no-gutters mx-6">
               <div class="col">
-                <div
-                  class="black"
-                  style="
+                <div class="black" style="
                     width: 362px;
                     height: 456px;
                     border-radius: 8px;
                     overflow: hidden;
-                  "
-                >
-                  <video
-                    v-if="
-                      tableItemsDialog.medias[dialogPostMediasIdx].url.includes(
-                        'mp4'
-                      )
-                    "
-                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
-                    controls
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
-                    alt=""
-                    class="vid"
-                  />
-                  <v-img
-                    v-else
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
-                    alt=""
-                    contain
-                    width="100%"
-                    height="100%"
-                  />
+                  ">
+                  <video v-if="tableItemsDialog.medias[dialogPostMediasIdx].url.includes(
+                    'mp4'
+                  )
+                    " :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
+                    controls :src="tableItemsDialog.medias[dialogPostMediasIdx].url" alt="" class="vid" />
+                  <v-img v-else :src="tableItemsDialog.medias[dialogPostMediasIdx].url" alt="" contain width="100%"
+                    height="100%" />
                 </div>
               </div>
               <div class="col font-12">
@@ -144,121 +84,74 @@
                   <span class="font-10">User</span>
                   <p>@{{ tableItemsDialog.createBy }}</p>
                 </div>
-                <div
-                  class="whitesnow mt-5 pa-2"
-                  style="height: 400px; overflow: auto"
-                >
+                <div class="whitesnow mt-5 pa-2" style="height: 400px; overflow: auto">
                   {{ tableItemsDialog.description }}
                 </div>
               </div>
             </div>
-
-            <div class="row no-gutters mx-6 mt-3 mb-6">
-              <div class="col">
-                <div
-                  v-if="
-                    tableItemsDialog.medias &&
-                    tableItemsDialog.medias.length > 1
-                  "
-                >
-                  <v-btn
-                    icon
-                    tile
-                    @click="changeDialogPostImg(-1)"
-                    :disabled="dialogPostMediasIdx == 0"
-                  >
+              <div class="d-flex justify-space-between align-center px-6 py-2">
+                <div class="d-flex">
+                  <div  v-if="tableItemsDialog.medias &&
+                  tableItemsDialog.medias.length > 1
+                  ">
+                  <v-btn icon tile @click="changeDialogPostImg(-1)" :disabled="dialogPostMediasIdx == 0">
                     <v-icon>mdi-chevron-left</v-icon>
                   </v-btn>
-                  <v-btn
-                    icon
-                    tile
-                    @click="changeDialogPostImg(1)"
-                    :disabled="
-                      dialogPostMediasIdx == tableItemsDialog.medias.length - 1
-                    "
-                  >
+                  <v-btn icon tile @click="changeDialogPostImg(1)" :disabled="dialogPostMediasIdx == tableItemsDialog.medias.length - 1
+                    ">
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
                 </div>
+                <div class="d-flex align-center" style="gap: 5px;">
+                    <input id="isPrior" type="checkbox" v-model="priority" />
+                    <label for="isPrior" class="post-actions__label">Priority</label>
+                  </div>
+                </div>
+                <div class="post-actions">
+                  <div class="post-actions__label">Trending sampai</div>
+                  <DatePicker @getEpoch="getEpoch" />
+                  <custom-button color="secondary" size="small"
+                    @click="actionPostFeedAsTrendingById(tableItemsDialog.id)">
+                    Jadikan Trending
+                  </custom-button>
+                </div>
               </div>
-              <div class="col">
-                <v-btn
-                  block
-                  color="secondary"
-                  class="text-capitalize"
-                  @click="actionPostFeedAsTrendingById(tableItemsDialog.id)"
-                  >Jadikan Trending</v-btn
-                >
-              </div>
-            </div>
           </div>
         </div>
-        <div
-          v-else
-          class="d-flex justify-center align-center"
-          style="height: 556px"
-        >
-          <v-progress-circular
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
+        <div v-else class="d-flex justify-center align-center" style="height: 556px">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>
       </v-card>
-      <v-btn
-        rounded
-        icon
-        x-large
-        elevation="2"
-        color="white"
-        class="nav__btn-right mx-2"
-        @click="changeDialogPostData(1)"
-      >
+      <v-btn rounded icon x-large elevation="2" color="white" class="nav__btn-right mx-2"
+        @click="changeDialogPostData(1)">
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-dialog>
-    <DialogDelete
-      :dialogDelete="dialogDelete"
-      @closeDialogDelete="closeDialogDelete"
-      @handleDelete="handleDelete"
+    <DialogDelete :dialogDelete="dialogDelete" @closeDialogDelete="closeDialogDelete" @handleDelete="handleDelete" />
+    <DialogPushNotif
+      :dialogPushNotif="dialogPushNotif"
+      @closeDialogPushNotif="closeDialogPushNotif"
+      @actionPushNotif="actionPushNotif"
     />
-    <v-dialog v-model="dialogPushNotif" width="410">
+    <!-- <v-dialog v-model="dialogPushNotif" width="410">
       <v-card>
         <div class="d-flex no-gutters">
           <div class="text-end pt-6" style="width: 40px">
             <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
           </div>
           <div class="font-12 pt-6 px-4" style="width: 340px">
-            <span class="font-14 black--text"
-              >Apakah kamu yakin ingin melakukan push notif untuk konten
-              ini?</span
-            >
+            <span class="font-14 black--text">Apakah kamu yakin ingin melakukan push notif untuk konten
+              ini?</span>
             <p class="mt-2 pr-4 grey--text">
               Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
               bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
               ini karena akan sangat mengganggu user nantinya.
             </p>
             <div class="d-flex justify-space-between mb-6">
-              <v-btn
-                x-small
-                height="29"
-                width="146"
-                depressed
-                class="text-capitalize"
-                style="border-radius: 8px"
-                @click="closeDialogPushNotif"
-                >Batalkan Push Notif</v-btn
-              >
-              <v-btn
-                x-small
-                height="29"
-                width="150"
-                depressed
-                class="text-capitalize"
-                color="secondary"
-                style="border-radius: 8px"
-                @click="actionPushNotif"
-                >Push Notif Sekarang</v-btn
-              >
+              <v-btn x-small height="29" width="146" depressed class="text-capitalize" style="border-radius: 8px"
+                @click="closeDialogPushNotif">Batalkan Push Notif</v-btn>
+              <v-btn x-small height="29" width="150" depressed class="text-capitalize" color="secondary"
+                style="border-radius: 8px" @click="actionPushNotif">Push Notif Sekarang</v-btn>
             </div>
           </div>
           <div class="d-flex justify-end" style="width: 30px">
@@ -268,15 +161,9 @@
           </div>
         </div>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
-    <v-snackbar
-      :timeout="3000"
-      top
-      right
-      v-model="alertSuccess"
-      color="success"
-    >
+    <v-snackbar :timeout="3000" top right v-model="alertSuccess" color="success">
       Jadikan Trending Success
     </v-snackbar>
     <v-snackbar :timeout="3000" top right v-model="alertError" color="error">
@@ -289,10 +176,14 @@
 import { mapActions } from "vuex";
 import moment from "moment";
 import DialogDelete from "./dialogDelete.vue";
+import DatePicker from "./datePicker.vue"
+import dialogPushNotifVue from "./dialogPushNotif.vue";
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   components: {
     DialogDelete,
+    DatePicker,
+    DialogPushNotif : dialogPushNotifVue
   },
   data() {
     return {
@@ -319,6 +210,8 @@ export default {
       alertError: false,
       dialogDelete: false,
       idPost: "",
+      epochExpiredTrending: '',
+      priority: false
     };
   },
   watch: {
@@ -350,6 +243,9 @@ export default {
       postFeedAsTrendingById: "post/postFeedAsTrendingById",
       deleteFeed: "account/deleteFeed",
     }),
+    getEpoch(value) {
+      this.epochExpiredTrending = value
+    },
     handleDelete() {
       const idPost = this.idPost;
       return this.deleteFeed(idPost)
@@ -368,6 +264,7 @@ export default {
     },
     closeDialogDelete(value) {
       this.dialogDelete = value;
+      this.epochExpiredTrending = ''
     },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
@@ -375,6 +272,7 @@ export default {
     handleGetUserPostDetail(id) {
       const payload = {
         id: id,
+
       };
       this.loadingDetail = true;
       return this.fetchPostAllUserDetailById(payload)
@@ -392,6 +290,8 @@ export default {
     actionPostFeedAsTrendingById(id) {
       const payload = {
         id: id,
+        isPriority: this.priority,
+        trendingExpiredAt: this.epochExpiredTrending
       };
       this.stopVideo();
       this.loadingMakeTrending = true;
@@ -458,6 +358,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.post-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: $black;
+  }
+}
+
 .show-post {
   color: $secondary;
   text-decoration: underline;

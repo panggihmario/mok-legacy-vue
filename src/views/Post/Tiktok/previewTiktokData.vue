@@ -32,7 +32,8 @@
         "
       >
         <img
-          :src="previewTiktokData.video.cover"
+          id="tiktokImg"
+          :src="previewTiktokData.cover"
           class="image"
           style="width: 100%"
         />
@@ -46,9 +47,9 @@
 
       <div
         v-if="
-          previewTiktokData.video.height >= 1024
+          previewTiktokData.height >= 1024
             ? false
-            : previewTiktokData.video.width >= 1024
+            : previewTiktokData.width >= 1024
             ? false
             : true
         "
@@ -101,10 +102,10 @@
         >
         <v-divider class="my-3"></v-divider>
         <span class="grey--text">Link dari postingan ini</span>
-        <div class="mt-3">
+        <div>
           <k-input
             v-model="payload.floatingLinkLabel"
-            placeholder="Placeholder"
+            placeholder="Title"
             class="mt-3"
           ></k-input>
           <span
@@ -114,7 +115,7 @@
             {{ alertFloatingLinkLabel.message }}
           </span>
         </div>
-        <div class="my-3">
+        <div class="mb-3">
           <k-input
             v-model="payload.floatingLink"
             placeholder="https:/...."
@@ -138,16 +139,15 @@
           color="primary"
           class="white--text"
           :loading="loadingSubmit"
-          disab
           @click="
             actionGetUrlValidation(
-              `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.id}`
+              `https://www.tiktok.com/@${previewTiktokData.author.uniqueId}/video/${previewTiktokData.videoId}`
             )
           "
           :disabled="
-            previewTiktokData.video.height >= 1024
+            previewTiktokData.height >= 1024
               ? false
-              : previewTiktokData.video.width >= 1024
+              : previewTiktokData.width >= 1024
               ? false
               : true
           "
