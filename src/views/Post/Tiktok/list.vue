@@ -24,7 +24,7 @@
               class="d-flex justify-center align-center black"
               style="height: 302px; overflow: hidden"
             >
-              <img :src="item.video.cover" alt="" style="width: 100%" />
+              <img :src="item.cover" alt="" style="width: 100%" />
             </div>
 
             <div
@@ -41,13 +41,13 @@
 
             <div class="d-flex align-center mt-2">
               <v-avatar size="20px" class="mr-2">
-                <v-img :src="item.author.avatarThumb"></v-img>
+                <v-img :src="item.author.avatar"></v-img>
               </v-avatar>
               <span class="text-break font-10">{{ item.author.nickname }}</span>
               <v-spacer></v-spacer>
               <v-icon x-small color="red" class="mr-1">fa-heart</v-icon>
               <span class="font-10">{{
-                formatThousandToKMB(item.stats.diggCount)
+                formatThousandToKMB(item.diggCount)
               }}</span>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default {
   methods: {
     formatDate(rawDate) {
       const secondRawDate = rawDate;
-      const newDate = moment.unix(secondRawDate).format("DD-MM-YYYY");
+      const newDate = moment.unix(secondRawDate).format("DD MMM YYYY");
       return newDate;
     },
     selectFocus(idx, item) {

@@ -65,32 +65,7 @@
         </template>
       </v-data-table>
     </div>
-
-    <v-dialog v-model="dialogPriority"  width="356" >
-      <v-card class="card-priority">
-        <v-icon @click="closeDialogPriority" class="card-priority__close" size="small">fas fa-times</v-icon>
-        <v-icon color="secondary">fas fa-exclamation-circle</v-icon>
-        <div>
-          <div class="card-priority__label">
-            Apakah kamu yakin ingin menjadikan postingan ini sebagai Postingan Priority?
-          </div>
-          <div class="card-priority__content">
-            Setelah diubah menjadi postingan priority (Diprioritaskan), maka kamu tidak akan bisa mengubah status priority ini sampai postingan ini berhenti menjadi trending.
-          </div>
-          <div class="d-flex" style="gap: 8px;">
-            <custom-button size="small">Batalkan</custom-button>
-            <custom-button 
-              size="small" 
-              color="secondary"
-              @click="handlePriority"
-            >
-              Jadikan Postingan ini Priority
-            </custom-button>
-          </div>
-        </div>
-      </v-card>
-    </v-dialog>
-
+  
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
         <span class="silver--text"
@@ -108,6 +83,17 @@
         @input="changePage"
       ></v-pagination>
     </div>
+
+    <DialogPriority
+      @closeDialogPriority="closeDialogPriority"
+      @handlePriority="handlePriority"
+      :dialogPriority="dialogPriority"
+    />
+    <DialogPushNotif
+      :dialogPushNotif="dialogPushNotif"
+      @closeDialogPushNotif="closeDialogPushNotif"
+      @actionPushNotif="actionPushNotif"
+    />
 
     <v-dialog v-model="dialogPost" width="880">
       <v-btn
@@ -171,38 +157,28 @@
               </div>
             </div>
 
-            <div class="d-flex align-center mx-6 mt-3 mb-6">
-              <div>
-                <v-btn
-                  icon
-                  tile
-                  @click="changeDialogPostImg(-1)"
-                  :disabled="dialogPostMediasIdx == 0"
-                >
-                  <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  tile
-                  @click="changeDialogPostImg(1)"
-                  :disabled="
-                    dialogPostMediasIdx == tableItemsDialog.medias.length - 1
-                  "
-                >
-                  <v-icon>mdi-chevron-right</v-icon>
-                </v-btn>
+            <div class="trending__bottom">
+              <div v-if="tableItemsDialog.medias.length > 1"  class="trending__action-arrow" >
+                <div v-if="dialogPostMediasIdx == 0"  class="trending__box-arrow disable">
+                  <v-icon size="12px">fas fa-chevron-left</v-icon>
+                </div>
+                <div v-else @click="changeDialogPostImg(-1)" class="trending__box-arrow">
+                  <v-icon size="12px">fas fa-chevron-left</v-icon>
+                </div>
+                <div v-if="dialogPostMediasIdx == tableItemsDialog.medias.length - 1"  class="trending__box-arrow disable">
+                  <v-icon size="12px">fas fa-chevron-right</v-icon>
+                </div>
+                <div v-else @click="changeDialogPostImg(1)" class="trending__box-arrow">
+                  <v-icon size="12px">fas fa-chevron-right</v-icon>
+                </div>
               </div>
-              <div
-                class="primarylowtint ml-2 px-2"
-                style="height: 24px; border-radius: 4px"
-              >
-                <span class="font-12"
-                  >Postingan tampil menjadi trending dalam waktu
+              <div class="trending__notes">
+                Postingan tampil menjadi trending dalam waktu
                   {{ tableItemsDialog.trendingExpired }} jam setelah status
-                  postingan berubah menjadi trending!</span
-                >
+                  postingan berubah menjadi trending!
               </div>
             </div>
+
           </div>
         </div>
         <div
@@ -228,63 +204,19 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </v-dialog>
-
-    <v-dialog v-model="dialogPushNotif" width="410">
-      <v-card>
-        <div class="d-flex no-gutters">
-          <div class="text-end pt-6" style="width: 40px">
-            <v-icon color="secondary" size="20">mdi-alert-circle</v-icon>
-          </div>
-          <div class="font-12 pt-6 px-4" style="width: 340px">
-            <span class="font-14 black--text"
-              >Apakah kamu yakin ingin melakukan push notif untuk konten
-              ini?</span
-            >
-            <p class="mt-2 pr-4 grey--text">
-              Postingan ini akan disebarkan ke seluruh user kipaskipas dalam
-              bentuk notifikasi, hati-hati untuk tidak terlalu sering melakukan
-              ini karena akan sangat mengganggu user nantinya.
-            </p>
-            <div class="d-flex justify-space-between mb-6">
-              <v-btn
-                x-small
-                height="29"
-                width="146"
-                depressed
-                class="text-capitalize"
-                style="border-radius: 8px"
-                @click="closeDialogPushNotif"
-                >Batalkan Push Notif</v-btn
-              >
-              <v-btn
-                x-small
-                height="29"
-                width="150"
-                depressed
-                class="text-capitalize"
-                color="secondary"
-                style="border-radius: 8px"
-                @click="actionPushNotif"
-                >Push Notif Sekarang</v-btn
-              >
-            </div>
-          </div>
-          <div class="d-flex justify-end" style="width: 30px">
-            <v-btn rounded icon>
-              <v-icon size="18" @click="closeDialogPushNotif">mdi-close</v-icon>
-            </v-btn>
-          </div>
-        </div>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-
+import dialogPriority from "./dialogPriority.vue";
+import dialogPushNotif from "./dialogPushNotif.vue";
 export default {
+  components : {
+    DialogPriority : dialogPriority,
+    DialogPushNotif : dialogPushNotif
+  },
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   data() {
     return {
@@ -349,16 +281,15 @@ export default {
       this.dialogPriority = true
       this.idPost = id
     },
-    closeDialogPriority () {
-      this.dialogPriority = false
+    closeDialogPriority (value) {
+      this.dialogPriority = value
       this.idPost = ''
     },
     handlePriority () {
-      this.loadingPriority = true
       return this.postPriority(this.idPost)
         .then(() => {
           this.loadingPriority = false
-          this.closeDialogPriority()
+          this.closeDialogPriority(false)
           this.$emit('refreshPriority')
         })
         .catch(err => {
@@ -384,14 +315,15 @@ export default {
     },
     actionPushNotif() {
       this.$emit("actionPushNotif", this.dialogPushNotifId);
-      this.closeDialogPushNotif();
+      this.closeDialogPushNotif(false);
     },
     openDialogPushNotif(id) {
       this.dialogPushNotif = true;
       this.dialogPushNotifId = id;
     },
-    closeDialogPushNotif() {
-      this.dialogPushNotif = false;
+    closeDialogPushNotif(value) {
+      console.log(value)
+      this.dialogPushNotif = value;
       this.dialogPushNotifId = "";
     },
     formatingDate(rawDate) {
@@ -432,33 +364,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-priority {
-  padding: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  position: relative;
-  &__label {
-    font-size: 14px;
-    font-weight: 800;
-    line-height: normal;
-    color: black;
-  }
-  &__content {
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    color: $charcoal;
-    margin: 8px 0 23px 0;
-  }
-  &__close {
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    cursor: pointer;
-  }
-}
 .flex-actions {
   display: flex;
   gap: 5px;
@@ -505,3 +410,6 @@ export default {
   font-size: 12px;
 }
 </style>
+
+
+<style lang="scss" src="./style.scss" scoped ></style>

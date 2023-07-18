@@ -10,7 +10,6 @@
       <div :class="d['detail__line']"></div>
       <Activity/>
     </div>
-    
   </div>
 </template>
 

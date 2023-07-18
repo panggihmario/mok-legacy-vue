@@ -12,8 +12,6 @@
         {{ errorMessage }}
       </div>
     </div>
-
-
     <v-dialog width="564" v-model="isMap">
       <Map @saveLocation="getLocation" />
     </v-dialog>
@@ -59,82 +57,9 @@ export default {
 
     const openMap = function () {
       isMap.value = true
-      init()
     }
 
-    const onLocation = function () {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          getAddressFrom(latitude, longitude);
-          showUserLocationOnTheMap(latitude, longitude);
-        });
-
-      } else {
-        console.log("your browser does not support geolocation Api");
-      }
-    };
-
-    const getAddressFrom = function (lat, long) {
-      coordinate.latitude = lat
-      coordinate.longitude = long
-      const apiKey = process.env.VUE_APP_GOOGLE_MAP_API
-      axios
-        .get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`
-        )
-        .then((response) => {
-          address.value = response.data.results[0].formatted_address;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-
-    const showUserLocationOnTheMap = function (lat, longitude) {
-      const ele = document.getElementById("map");
-      let position = new google.maps.Map(ele, {
-        zoom: 15,
-        center: new google.maps.LatLng(lat, longitude),
-        mapTypeControl: false
-      });
-      let marker = new google.maps.Marker({
-        position: new google.maps.LatLng(lat, longitude),
-        map: position,
-        draggable: true,
-        clickable: true,
-        crossOnDrag: false,
-        optimized: false,
-      });
-
-      google.maps.event.addListener(marker, "dragend", function () {
-        let actual = marker
-        let lat = actual.getPosition().lat();
-        let lng = actual.getPosition().lng();
-        getAddressFrom(lat, lng)
-      })
-
-    };
-
-    const init = function () {
-      let auto = new google.maps.places.Autocomplete(
-        document.getElementById("autocomplete")
-      );
-      auto.addListener("place_changed", () => {
-        let place = auto.getPlace()
-        const latitude = place.geometry.location.lat()
-        const longitude = place.geometry.location.lng()
-        showUserLocationOnTheMap(latitude, longitude)
-      })
-      // onLocation()
-    };
-
-
-    onMounted(init)
-
     return {
-      onLocation,
       address,
       autocomplete,
       coordinate,

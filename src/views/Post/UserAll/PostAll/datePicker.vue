@@ -23,6 +23,7 @@
       v-model="date"
       color="secondary"
       @input="handlePickDate"
+      :min="currentDate"
     ></v-date-picker>
   </v-menu>
 </template>
@@ -37,10 +38,16 @@ export default {
       displayDate: ''
     }
   },
+  computed : {
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
+    },
+  },
   methods : {
     handlePickDate () {
       this.menuDate = false
-      const epochDate = moment(this.date).add(7, 'hours').valueOf()
+      const epochDate = moment(this.date).endOf('day').valueOf()
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
       this.$emit('getEpoch', epochDate)
