@@ -295,11 +295,13 @@ export default {
     getMoreProvinces() {
       this.loadingProvince = true
       if(this.page <= this.totalPages - 1 && this.loadingProvince) {
+        console.log(this.page , "====", this.totalPages)
         const payload = {
           page : this.page
-      }
+        }
       return this.getProvince(payload)
         .then(response => {
+          console.log(response.content)
           this.page ++
           response.content.forEach(cont => {
             this.provinces.push(cont)
@@ -307,6 +309,7 @@ export default {
           this.loadingProvince = false
         })
       }else{
+        console.log('masuk else')
         this.loadingProvince = false
         return
       }
