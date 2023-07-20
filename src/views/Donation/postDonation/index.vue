@@ -115,7 +115,6 @@
             :items="provinces" 
             v-model="province" 
             height="300"
-            @scroll-end="getMoreProvinces"
             rules="required"
             errorMessage="Pilih profinsi lokasi yayasan/pusat penggalangan dana"
           />
@@ -292,22 +291,17 @@ export default {
           this.initiators = response
         })
     },
-    getMoreProvinces() {
-      if(this.page <= this.totalPages - 1) {
-        const payload = {
-        page : this.page
-      }
+    getMoreProvinces(page) {
+      const payload = {
+          page
+        }
       return this.getProvince(payload)
         .then(response => {
-          this.page ++
           response.content.forEach(cont => {
             this.provinces.push(cont)
           })
-          
+          this.loadingProvince = false
         })
-      }else{
-        return
-      }
     },
     handleProvince() {
       const payload = {
@@ -317,6 +311,12 @@ export default {
         .then(response => {
           this.provinces = response.content
           this.totalPages = response.totalPages
+          return response.totalPages
+        })
+        .then(total => {
+          for (let i = 1; i < total; i++) {
+            this.getMoreProvinces(i)
+          } 
         })
     },
     onSubmit() {
@@ -414,6 +414,7 @@ export default {
   data() {
     return {
       amount: 0,
+      loadingProvince : false,
       errorMessageVideo : '',
       errorMessageImage : '',
       isDisableCurrency : false,
