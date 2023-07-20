@@ -22,6 +22,15 @@
           <div :class="d['detail-title']"> {{ item.title }} </div>
           <div :class="d['detail-time']">
             <div :class="d['detail-time-icon']">
+              <v-icon size="10px" color="primary">fas fa-coins</v-icon>
+            </div>
+            <div  class="d-flex justify-space-between" :class="d['detail-duration']">
+              <div>Target Pengumpulan Dana</div>
+              <div>Rp {{ item.targetAmount.toLocaleString('id') }}</div>
+            </div>
+          </div>
+          <div :class="d['detail-time']">
+            <div :class="d['detail-time-icon']">
               <v-icon size="10px" color="primary">far fa-clock</v-icon>
             </div>
             <div v-if="isEnded || item.status === 'Inactive'" class="d-flex justify-space-between" :class="d['detail-duration']">
@@ -65,6 +74,7 @@ export default {
 
       const createAt = moment(value.createAt)
       const expiredAt = moment(value.expiredAt)
+      console.log(value)
       const isPass = moment(expiredAt).diff(moment(), 'miliseconds')
       if(value.expiredAt) {
         if(isPass > 0 ) {

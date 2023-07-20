@@ -92,12 +92,14 @@ export default {
   data() {
     return {
       show: false,
+      loading : false
     }
   },
   methods: {
     scrolling(event) {
       const element = event.currentTarget || event.target
       if (element && element.scrollHeight - element.scrollTop === element.clientHeight) {
+        this.loading = true
         this.$emit('scroll-end')
       }
     },
