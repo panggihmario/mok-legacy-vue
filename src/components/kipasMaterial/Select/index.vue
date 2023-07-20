@@ -100,7 +100,9 @@ export default {
       const element = event.currentTarget || event.target
       if (element && element.scrollHeight - element.scrollTop === element.clientHeight) {
         this.loading = true
-        this.$emit('scroll-end')
+          this.$emit('scroll-end')
+      }else{
+        this.loading = false
       }
     },
     openOptions() {
