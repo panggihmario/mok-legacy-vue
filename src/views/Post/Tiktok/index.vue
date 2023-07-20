@@ -324,6 +324,8 @@ export default {
         .catch((err) => {
           this.loadingUsername = false;
           this.loadingLoadmoreUsername = false;
+          this.alertFailed = true;
+          this.payloadError = err.response.data.data;
         });
     },
     actionGetFeedByHashtag() {
@@ -374,6 +376,8 @@ export default {
         .catch((err) => {
           this.loadingHashtag = false;
           this.loadingLoadmoreHashtag = false;
+          this.alertFailed = true;
+          this.payloadError = err.response.data.data;
         });
     },
     actionGetFeedExplore() {
