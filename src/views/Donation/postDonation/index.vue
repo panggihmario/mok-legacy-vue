@@ -293,9 +293,10 @@ export default {
         })
     },
     getMoreProvinces() {
-      if(this.page <= this.totalPages - 1) {
+      this.loadingProvince = true
+      if(this.page <= this.totalPages - 1 && this.loadingProvince) {
         const payload = {
-        page : this.page
+          page : this.page
       }
       return this.getProvince(payload)
         .then(response => {
@@ -303,9 +304,10 @@ export default {
           response.content.forEach(cont => {
             this.provinces.push(cont)
           })
-          
+          this.loadingProvince = false
         })
       }else{
+        this.loadingProvince = false
         return
       }
     },
@@ -414,6 +416,7 @@ export default {
   data() {
     return {
       amount: 0,
+      loadingProvince : false,
       errorMessageVideo : '',
       errorMessageImage : '',
       isDisableCurrency : false,
