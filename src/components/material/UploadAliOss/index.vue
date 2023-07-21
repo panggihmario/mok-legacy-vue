@@ -104,7 +104,10 @@ export default {
     getSignature() {
       const signatureUrl = process.env.VUE_APP_SIGNATURE_TENCENT
       return axios
-        .get(signatureUrl)
+        // .get(signatureUrl)
+        .get(signatureUrl, JSON.stringify({
+            Action: "GetUgcUploadSign"
+          }))
         .then(function (response) {
           console.log(response)
           return response.data.data.signature;
