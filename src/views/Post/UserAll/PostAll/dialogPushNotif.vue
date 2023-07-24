@@ -15,7 +15,7 @@
         <div class="d-flex" style="gap: 8px;">
           <custom-button @click="closeDialogPushNotif" size="small">Batalkan</custom-button>
           <custom-button size="small" color="secondary" @click="actionPushNotif">
-            Jadikan Postingan ini Priority
+            Push Notif Sekarang
           </custom-button>
         </div>
       </div>
