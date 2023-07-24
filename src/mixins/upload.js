@@ -1,9 +1,12 @@
 import moment from "moment"
 import { cos } from "../plugins/httpRequest"
+import TcVod from "vod-js-sdk-v6";
+import axios from "axios"
 export default {
   data () {
     return {
       asetKipas: "https://asset.kipaskipas.com",
+      tcVod: {},
       dataResponse: {
         id: null,
         type: "",
@@ -14,8 +17,50 @@ export default {
     }
   },
   methods : {
-    uploadWithTencent ({file,typeMedia, dimensions}) {
+    getSignature() {
+      const signatureUrl = process.env.VUE_APP_SIGNATURE_TENCENT
+      return axios
+        .get(signatureUrl, JSON.stringify({
+            Action: "GetUgcUploadSign"
+          }))
+        .then(function (response) {
+          console.log(response)
+          return response.data.data.signature;
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    uploadVideo ({file, dimensions}) {
+      this.tcVod = new TcVod({
+        getSignature: this.getSignature
+      });
       const currentDateEpoch = moment(new Date).valueOf()
+      return Promise.all([this.uploadWithTencent(file, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
+        .then(response => {
+          const [uploadResult, id] = response
+          const params = {
+            ...uploadResult,
+            vodFileId : id
+          }
+          return params
+        })
+    },
+    saveVodTencent(file, currentDateEpoch) {
+      const uploader = this.tcVod.upload({
+        mediaFile: file,
+        mediaName : `VIDEO_${currentDateEpoch}`
+      });
+      uploader.on('media_progress', function (info) {
+        console.log(info.percent) // The upload progress
+      })
+      return uploader.done()
+        .then(function (doneResult) {
+          const fileId = doneResult.fileId
+          return fileId
+        })
+    },
+    uploadWithTencent (file, dimensions,currentDateEpoch) {
       const fileType = file.type.split("/")[1]
       const filePath = `tmp/source/${currentDateEpoch}.${fileType}`
       const protocol = window.location.protocol
