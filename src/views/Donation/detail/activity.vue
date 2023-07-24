@@ -140,6 +140,7 @@ export default {
       this.isDialog = false
       this.content = ''
       this.isEditor = false
+      this.detailContent = {}
     },
     onDelete() {
       const id = this.detailContent.id
@@ -181,9 +182,7 @@ export default {
         }
         return this.putActivity(payload)
           .then(() => {
-            this.isDialog = false
-            this.content = ''
-            this.detailContent = {}
+            this.closeDialog()
             this.handleActivity()
           })
       } else {
@@ -196,8 +195,7 @@ export default {
         }
         return this.postActivity(payload)
           .then(() => {
-            this.isDialog = false
-            this.content = ''
+            this.closeDialog()
             this.handleActivity()
           })
       }
