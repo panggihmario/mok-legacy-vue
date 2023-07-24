@@ -66,7 +66,8 @@
                   placeholder="Masukan nama kategori"
                   v-model="dataPayload.params.name"
                   :isError="isErrorSubmit"
-                  errorMessage="Sudah ada kategori dengan nama ini"
+                  :errorMessage="errorSubmitMessage"
+                  rules="max:100"
                 ></k-input>
               </section>
               <section class="d-flex" style="gap: 8px">
@@ -136,7 +137,7 @@ export default {
       isSuccessSubmit: false,
       isErrorUpload: false,
       isErrorSubmit: false,
-      errorSubmitMessage: "",
+      errorSubmitMessage: "Tidak boleh lebih dari 100 karakter",
     };
   },
   watch: {
@@ -212,7 +213,7 @@ export default {
         })
         .catch((err) => {
           this.isErrorSubmit = true;
-          this.errorSubmitMessage = err.response.data.data;
+          this.errorSubmitMessage = "Sudah ada kategori dengan nama ini";
           setTimeout(() => {
             this.isErrorSubmit = false;
           }, 3000);
