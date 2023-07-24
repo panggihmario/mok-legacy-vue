@@ -12,7 +12,7 @@
         <custom-button 
           size="x-small"
           color="warning"
-          @click="useVideo">Gunakan video
+          @click="useVideo(id)">Gunakan video
         </custom-button>
         <custom-button 
           size="x-small"
@@ -59,17 +59,22 @@ export default {
     }
   },
   methods : {
-    useVideo() {
+    useVideo(id) {
       this.isLowResolution = false
       this.$emit('displayWarning', false)
-      this.uploadWithTencent(this.bundle)
+      console.log(this.bundle)
+      return this.uploadVideo(this.bundle)
         .then(payload => {
           const idUpload = this.id.split('-')
           const position = idUpload[1]
           this.image =  payload.response.thumbnail.large
+          const response = {
+            ...payload.response,
+            vodFileId : payload.vodFileId
+          }
           const params = {
             position,
-            response : payload.response
+            response
           }
           this.$emit('saveImageOnPayload',params)
           this.visible = false
@@ -92,7 +97,6 @@ export default {
             vodFileId : payload.vodFileId
           }
         }
-        console.log(params)
         this.$emit('saveImageOnPayload',params)
         this.visible = false
       }
