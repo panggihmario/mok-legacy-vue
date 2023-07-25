@@ -102,11 +102,14 @@ export default {
  
   methods: {
     getSignature() {
+      const signatureUrl = process.env.VUE_APP_SIGNATURE_TENCENT
       return axios
-        .get("https://test-tencent-signature.kipaskipas.com/", JSON.stringify({
+        // .get(signatureUrl)
+        .get(signatureUrl, JSON.stringify({
             Action: "GetUgcUploadSign"
           }))
         .then(function (response) {
+          console.log(response)
           return response.data.data.signature;
         })
         .catch(err => {
