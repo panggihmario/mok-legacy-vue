@@ -74,7 +74,7 @@
 import { mapActions } from "vuex";
 import moment from "moment";
 import TableList from "./table.vue";
-import DialogPost from "./dialogPost.vue";
+import DialogPost from "./dialogPostAll.vue";
 import DialogDelete from "./dialogDelete.vue";
 import DatePicker from "./datePicker.vue";
 import dialogPushNotifVue from "./dialogPushNotif.vue";
