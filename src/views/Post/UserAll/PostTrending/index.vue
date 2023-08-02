@@ -1,71 +1,16 @@
 <template>
   <div>
     <div>
-      <v-data-table
-        :headers="tableHeaders"
-        :items="tableItems"
-        :loading="loadingList"
-        disable-filtering
-        disable-sort
-        disable-pagination
-        hide-default-footer
-      >
-        <template v-slot:body="{ items }">
-          <tbody>
-            <tr v-for="(item, idx) in items" :key="idx">
-              <td class="font-12">
-                <span class="show-post" @click="openDialogPost(item.id, idx)"
-                  >Lihat Post</span
-                >
-              </td>
-              <td class="font-12">
-                <div class="text-truncate" style="width: 200px">
-                  {{ item.description }}
-                </div>
-              </td>
-              <td class="font-12">{{ item.channel.name }}</td>
-              <td class="font-12">{{ item.createBy }}</td>
-              <td class="font-12">{{ item.trendingBy }}</td>
-              <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
-              <td class="font-12 grey--text font-weight-medium">
-                <div class="d-flex align-center">
-                  <v-icon
-                    size="46px"
-                    :color="item.isMp4Ready ? 'green' : 'red'"
-                    style="margin-right: -16px"
-                    >mdi-circle-small</v-icon
-                  >
-                  <span
-                    :class="item.isMp4Ready ? 'green--text' : 'red--text'"
-                    >MP4</span
-                  >
-                </div>
-              </td>
-              <td class="font-12 text-center flex-actions " style="gap: 10px;">
-                <custom-button
-                  color="secondary"
-                  size="x-small"
-                  @click="openDialogPushNotif(item.id)"
-                >
-                  Push Notif 
-                </custom-button>
-                <div v-if="item.isPriority">
-                  <div class="flex-actions isPriority">
-                    <v-icon color="grey" size="small">fas fa-check-square</v-icon>
-                    <div class="grey--text">Priority</div>
-                  </div>
-                </div>
-                <div v-else  class="flex-actions" @click="openDialogPriority(item.id)">
-                  <v-icon size="small">far fa-square</v-icon>
-                  <div>Priority</div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-data-table>
+      <Table-List
+        :tableHeaders="tableHeaders"
+        :tableItems="tableItems"
+        :loadingList="loadingList"
+        @openDialogPost="openDialogPost"
+        @openDialogPushNotif="openDialogPushNotif"
+        @openDialogPriority="openDialogPriority"
+      ></Table-List>
     </div>
-  
+
     <div class="row no-gutters mt-4 font-12">
       <div class="col d-flex align-center pl-4">
         <span class="silver--text"
@@ -95,127 +40,33 @@
       @actionPushNotif="actionPushNotif"
     />
 
-    <v-dialog v-model="dialogPost" width="880">
-      <v-btn
-        rounded
-        icon
-        x-large
-        elevation="2"
-        color="white"
-        class="nav__btn-left mx-2"
-        @click="changeDialogPostData(-1)"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-      <v-card>
-        <div
-          v-if="!loadingDetail && tableItemsDialog.createBy"
-          class="d-flex align-center"
-        >
-          <div class="pt-7" style="width: 100%">
-            <div class="row no-gutters mx-6">
-              <div class="col">
-                <div
-                  class="black"
-                  style="
-                    width: 362px;
-                    height: 456px;
-                    border-radius: 8px;
-                    overflow: hidden;
-                  "
-                >
-                  <video
-                    v-if="
-                      tableItemsDialog.medias[dialogPostMediasIdx].url.includes(
-                        'mp4'
-                      )
-                    "
-                    :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
-                    controls
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
-                    alt=""
-                    class="vid"
-                  />
-                  <v-img
-                    v-else
-                    :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
-                    alt=""
-                    contain
-                    width="100%"
-                    height="100%"
-                  />
-                </div>
-              </div>
-              <div class="col font-12">
-                <div>
-                  <span class="font-10">User</span>
-                  <p>@{{ tableItemsDialog.createBy }}</p>
-                </div>
-                <div class="whitesnow mt-5 pa-2" style="min-height: 400px">
-                  {{ tableItemsDialog.description }}
-                </div>
-              </div>
-            </div>
-
-            <div class="trending__bottom">
-              <div v-if="tableItemsDialog.medias.length > 1"  class="trending__action-arrow" >
-                <div v-if="dialogPostMediasIdx == 0"  class="trending__box-arrow disable">
-                  <v-icon size="12px">fas fa-chevron-left</v-icon>
-                </div>
-                <div v-else @click="changeDialogPostImg(-1)" class="trending__box-arrow">
-                  <v-icon size="12px">fas fa-chevron-left</v-icon>
-                </div>
-                <div v-if="dialogPostMediasIdx == tableItemsDialog.medias.length - 1"  class="trending__box-arrow disable">
-                  <v-icon size="12px">fas fa-chevron-right</v-icon>
-                </div>
-                <div v-else @click="changeDialogPostImg(1)" class="trending__box-arrow">
-                  <v-icon size="12px">fas fa-chevron-right</v-icon>
-                </div>
-              </div>
-              <div class="trending__notes">
-                Postingan tampil menjadi trending dalam waktu
-                  {{ tableItemsDialog.trendingExpired }} jam setelah status
-                  postingan berubah menjadi trending!
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div
-          v-else
-          class="d-flex justify-center align-center"
-          style="height: 556px"
-        >
-          <v-progress-circular
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-        </div>
-      </v-card>
-      <v-btn
-        rounded
-        icon
-        x-large
-        elevation="2"
-        color="white"
-        class="nav__btn-right mx-2"
-        @click="changeDialogPostData(1)"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-dialog>
+    <DialogPost
+      :dialogPost="dialogPost"
+      :loadingDetail="loadingDetail"
+      :tableItemsDialog="tableItemsDialog"
+      :dialogPostMediasIdx="dialogPostMediasIdx"
+      @closeDialog="(v) => (dialogPost = v)"
+      @priority="(v) => (priority = v)"
+      @changeDialogPostData="changeDialogPostData"
+      @changeDialogPostImg="changeDialogPostImg"
+    ></DialogPost>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
+import TableList from "./table.vue";
+import DialogPost from "./dialogPost.vue";
 import dialogPriority from "./dialogPriority.vue";
 import dialogPushNotif from "./dialogPushNotif.vue";
+
 export default {
-  components : {
-    DialogPriority : dialogPriority,
-    DialogPushNotif : dialogPushNotif
+  components: {
+    TableList,
+    DialogPost,
+    DialogPriority: dialogPriority,
+    DialogPushNotif: dialogPushNotif,
   },
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   data() {
@@ -236,8 +87,8 @@ export default {
       },
       // loadingList: false,
       loadingDetail: false,
-      loadingPriority : false,
-      dialogPriority : false,
+      loadingPriority: false,
+      dialogPriority: false,
       loadingMakeTrending: false,
       dialogPost: false,
       dialogPostDataIdx: 0,
@@ -245,7 +96,7 @@ export default {
       dialogPushNotif: false,
       dialogPushNotifId: "",
       page: 1,
-      idPost : ''
+      idPost: "",
       // totalPages: 0,
     };
   },
@@ -274,27 +125,28 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchPostAllUserTrendingDetailById: "post/fetchPostAllUserTrendingDetailById",
-      postPriority : 'post/postPriority'
+      fetchPostAllUserTrendingDetailById:
+        "post/fetchPostAllUserTrendingDetailById",
+      postPriority: "post/postPriority",
     }),
-    openDialogPriority (id) {
-      this.dialogPriority = true
-      this.idPost = id
+    openDialogPriority(id) {
+      this.dialogPriority = true;
+      this.idPost = id;
     },
-    closeDialogPriority (value) {
-      this.dialogPriority = value
-      this.idPost = ''
+    closeDialogPriority(value) {
+      this.dialogPriority = value;
+      this.idPost = "";
     },
-    handlePriority () {
+    handlePriority() {
       return this.postPriority(this.idPost)
         .then(() => {
-          this.loadingPriority = false
-          this.closeDialogPriority(false)
-          this.$emit('refreshPriority')
+          this.loadingPriority = false;
+          this.closeDialogPriority(false);
+          this.$emit("refreshPriority");
         })
-        .catch(err => {
-          this.loadingPriority = false
-        })
+        .catch((err) => {
+          this.loadingPriority = false;
+        });
     },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
@@ -322,7 +174,6 @@ export default {
       this.dialogPushNotifId = id;
     },
     closeDialogPushNotif(value) {
-      console.log(value)
       this.dialogPushNotif = value;
       this.dialogPushNotifId = "";
     },
@@ -330,10 +181,10 @@ export default {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
       return cek;
     },
-    openDialogPost(id, idx) {
+    openDialogPost(v) {
       this.dialogPost = true;
-      this.dialogPostDataIdx = idx;
-      this.handleGetUserPostDetail(id);
+      this.dialogPostDataIdx = v.idx;
+      this.handleGetUserPostDetail(v.id);
     },
     changeDialogPostImg(v) {
       this.dialogPostMediasIdx += v;
@@ -411,5 +262,4 @@ export default {
 }
 </style>
 
-
-<style lang="scss" src="./style.scss" scoped ></style>
+<style lang="scss" src="./style.scss" scoped></style>
