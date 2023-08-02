@@ -67,7 +67,7 @@
           <k-textarea 
             title="Deskripsi" 
             v-model="payloadDonation.description" 
-            :counter="1000"
+            :counter="20000"
           />
         </div>
         <div :class="d.second">
