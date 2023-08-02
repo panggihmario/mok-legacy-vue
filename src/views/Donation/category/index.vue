@@ -109,7 +109,7 @@
 import HeaderContent from "@/containers/HeaderContent";
 import { mapActions } from "vuex";
 import Table from "./table.vue";
-
+import yup from "yup"
 export default {
   components: {
     HeaderContent,
