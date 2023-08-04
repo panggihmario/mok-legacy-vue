@@ -77,10 +77,7 @@
                 <custom-button
                   color="primary"
                   style="width: 257px"
-                  :disabled="
-                    dataPayload.params.icon == '' ||
-                    dataPayload.params.name == ''
-                  "
+                  :disabled="isDisable"
                   @click="actionSaveCategory"
                   >Simpan Kategori</custom-button
                 >
@@ -109,7 +106,7 @@
 import HeaderContent from "@/containers/HeaderContent";
 import { mapActions } from "vuex";
 import Table from "./table.vue";
-import yup from "yup"
+import * as yup from 'yup';
 export default {
   components: {
     HeaderContent,
@@ -132,6 +129,7 @@ export default {
         },
       },
       page: 1,
+      isDisable: true,
       totalPages: 0,
       isDialog: false,
       isSuccessSubmit: false,
@@ -140,7 +138,34 @@ export default {
       errorSubmitMessage: "Tidak boleh lebih dari 100 karakter",
     };
   },
+  computed : {
+    isForm () {
+      const dataForm = {
+        ...this.dataPayload,
+      }
+      return dataForm
+    }
+  },
   watch: {
+    dataPayload : {
+      handler : function (value) {
+        let schema = yup.object({
+          params : yup.object().shape({
+            icon : yup.string().required(),
+            name : yup.string().required().max(100)
+          })
+        })
+        schema.isValid(value)
+          .then(valid => {
+            if(valid) {
+              this.isDisable = false
+            }else{
+              this.isDisable = true
+            }
+          })
+      },
+      deep : true
+    },
     isDialog() {
       if (!this.isDialog) {
         this.isErrorUpload = false;
