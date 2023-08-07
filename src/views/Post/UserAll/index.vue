@@ -474,7 +474,7 @@ export default {
     },
     changeTab(v) {
       const listTab = ["candidates", "trending", "notification"];
-      this.$router.push(`/post/user/${listTab[v]}/1`);
+      // this.$router.push(`/post/user/${listTab[v]}/1`);
       this.tab = v;
     },
     changePage(v) {
