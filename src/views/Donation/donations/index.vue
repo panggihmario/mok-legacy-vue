@@ -84,9 +84,13 @@ export default {
     },
     onFilter(params) {
       this.statusFind = 'filter'
-      this.params = {...params}
-      const payload = {
+      const data = {
         ...params,
+        search : this.keyword
+      }
+      this.params = data
+      const payload = {
+        ...data,
         page : this.page - 1
       }
       this.isLoading = true
