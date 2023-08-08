@@ -82,16 +82,10 @@ export default {
     refreshData() {
       this.handleDonations()
     },
-    onFilter(params) {
-      this.statusFind = 'filter'
-      this.params = {...params}
-      const payload = {
-        ...params,
-        page : this.page - 1
-      }
-      this.isLoading = true
+    handleData (payload) {
       return this.fetchDonations(payload)
         .then(response => {
+          this.page = 1
           this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
@@ -102,31 +96,42 @@ export default {
           this.isLoading = false
         })
     },
-    openExpand() {
-      this.isExpand = true
-    },  
-    onCloseExpand() {
-      this.isExpand = false
-      this.statusFind = ''
-      this.handleDonations()
-    },
-    onEnter() {
-      this.statusFind = this.keyword.length > 0 ? 'search' : ''
+    onFilter(params) {
+      this.statusFind = 'filter'
+      this.params =  {...params}
       const payload = {
+        ...params,
         page : 0,
         search : this.keyword
       }
       this.isLoading = true
-      return this.fetchDonations(payload)
-        .then(response => {
-          this.page = 1
-          this.isLoading = false
-          const content = response.content
-          const totalPages = response.totalPages
-          this.totalPages = totalPages
-          this.donations = content
-        })
-        .catch(() => { this.isLoading = false })
+      console.log(payload)
+      return this.handleData(payload)
+    },
+    openExpand() {
+      this.isExpand = true
+    },  
+    onCloseExpand(item) {
+      this.isExpand = false
+      this.statusFind = ''
+      const payload = {
+        ...item,
+        search : this.keyword,
+        page : 0
+      }
+      this.isLoading = true
+      this.params = item
+      return this.handleData(payload)
+    },
+    onEnter() {
+      this.statusFind = this.keyword.length > 0 ? 'search' : ''
+      const payload = {
+        ...this.params,
+        search : this.keyword,
+        page : 0
+      }
+      this.isLoading = true
+      return this.handleData(payload)
     },
     onInput(e) {
       this.page = e
