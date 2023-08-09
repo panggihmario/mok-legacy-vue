@@ -67,7 +67,7 @@
           <k-textarea 
             title="Deskripsi" 
             v-model="payloadDonation.description" 
-            :counter="1000"
+            :counter="20000"
           />
         </div>
         <div :class="d.second">
@@ -380,7 +380,7 @@ export default {
     getResponseImage(media) {
       if(media.status === 'success') {
         this.showImageDonation = media.response.url
-        this.$set(this.medias, 0, media.response)
+        this.medias.unshift(media.response)
       }
       if(media.status === 'failed') {
         this.errorMessageImage = media.message
@@ -391,7 +391,7 @@ export default {
     getResponseVideo(media) {
       if(media.status === 'success') {
         this.showVideoDonation = media.response.url
-        this.$set(this.medias, 1, media.response)
+        this.medias.push(media.response)
       }
       if(media.status === 'failed') {
         this.errorMessageVideo = media.message

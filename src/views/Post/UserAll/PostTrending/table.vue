@@ -99,4 +99,13 @@ export default {
   text-decoration: underline;
   cursor: pointer;
 }
+.flex-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+  & .isPriority {
+    cursor: default;
+  }
+}
 </style>

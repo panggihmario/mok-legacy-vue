@@ -128,7 +128,7 @@ export default {
       ],
       tabLabel: ["username"],
       tab: "",
-      keywordUsername: "pstore_jakarta",
+      keywordUsername: "",
       keywordHashtag: "",
       userId: "",
       dataListUsername: [],

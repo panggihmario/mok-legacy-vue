@@ -161,15 +161,19 @@ export default {
   methods: {
     closeDialog() {
       this.$emit("closeDialog", false);
+      this.priority = false
     },
     changeDialogPostData(v) {
       this.$emit("changeDialogPostData", v);
+      this.priority = false
     },
     changeDialogPostImg(v) {
       this.$emit("changeDialogPostImg", v);
+      this.priority = false
     },
     actionPostFeedAsTrendingById(v) {
       this.$emit("actionPostFeedAsTrendingById", v);
+      this.priority = false
     },
     getEpoch(value) {
       this.$emit("getEpoch", value);
