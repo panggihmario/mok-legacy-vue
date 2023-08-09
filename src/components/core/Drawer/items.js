@@ -123,6 +123,11 @@ export default [
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
+        title: "Instagram Mirroring",
+        path: "/post/instagram",
+        role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+      },
+      {
         title: "Tiktok Mirroring",
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],

@@ -37,6 +37,48 @@ const pathPost = [
     },
   },
   {
+    path: "/post/instagram",
+    name: "instagramMirroring",
+    component: () => import("@/views/Post/Instagram/index.vue"),
+    meta: {
+      page: "postInstagram",
+    },
+    children: [
+      {
+        path: "",
+        name: "instagram username",
+        component: () => import("@/views/Post/Instagram/username/index.vue"),
+        meta: {
+          page: "postInstagram",
+        },
+      },
+      {
+        path: ":page",
+        name: "instagram username with page",
+        component: () => import("@/views/Post/Instagram/username/index.vue"),
+        meta: {
+          page: "postInstagram",
+        },
+      },
+      {
+        path: "hashtag",
+        name: "instagram hashtag",
+        component: () => import("@/views/Post/Instagram/hashtag/index.vue"),
+        meta: {
+          page: "postInstagram",
+        },
+      },
+      {
+        path: "hashtag/:page",
+        name: "instagram hashtag with page",
+        component: () => import("@/views/Post/Instagram/hashtag/index.vue"),
+        meta: {
+          page: "postInstagram",
+        },
+      },
+    ],
+  },
+  {
     path: "/post",
     name: "listFeed",
     component: () => import("@/views/Post/index.vue"),
