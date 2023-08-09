@@ -47,6 +47,18 @@ export default {
         this.actionChangePreviewStatus({ node: { id: this.focusId } });
       }
     },
+    previewTiktokData() {
+      this.payload.floatingLink = null;
+      this.payload.floatingLinkLabel = null;
+      this.alertFloatingLinkLabel = {
+        status: false,
+        message: "",
+      };
+      this.alertFloatingLink = {
+        status: false,
+        message: "",
+      };
+    },
     previewTiktokFailed() {
       this.alertFailed = this.previewTiktokFailed;
     },
