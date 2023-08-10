@@ -1,10 +1,11 @@
 <template>
   <div :class="d['container-box']">
     <div >
+      <!-- {{ vodUrl }} -->
       <div :class="d['container-media']"  >
         <video
         v-if="item.type === 'video'"
-        :src="item.url"
+        :src="vodUrl"
         :id="`videodialog-${i}-${item.id}`"
         :class="d.vid"
         :style="{ objectFit : isContain }"
@@ -80,6 +81,30 @@ export default {
     }
   },
   computed : {
+    vodUrl () {
+      // console.log(this.item)
+      const item = this.item
+      console.log(item)
+      if(item.vodUrl) {
+        return item.vodUrl
+      }else{
+        const url = item.url
+        // console.log('masuk else')
+        // const url = 'https://asset2.kipaskipas.com/media/source/1691643848750.mp4'
+        const hrefURL = new URL(url)
+        const pathName = hrefURL.pathname
+        const origin = hrefURL.origin
+        const splitPathName = pathName.split('/')
+        const lastIndex = splitPathName.pop()
+        const splitLastIndex = lastIndex.split('.')
+        const [first, second] = splitLastIndex
+        const newFormatFileUrl = `${first}_h265.${second}`
+        const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`
+        const fullPath = `${origin}${joinPathName}`
+        console.log(fullPath)
+        return fullPath
+      }
+    },
     isPlay() {
       return this.status
     },
