@@ -14,6 +14,9 @@
     <Preview-Douyin-Data
       v-if="previewTiktok && page === 'postDouyin'"
     ></Preview-Douyin-Data>
+    <Preview-Instagram-Data
+      v-if="previewTiktok && page === 'postInstagram'"
+    ></Preview-Instagram-Data>
   </div>
 </template>
 
@@ -23,6 +26,7 @@ import DrawerNews from "../../components/core/Drawer/news";
 import DrawerDetail from "../Product/drawer";
 import PreviewTiktokData from "../../views/Post/Tiktok/previewTiktokData.vue";
 import PreviewDouyinData from "../../views/Post/Tiktok/douyin/preview.vue";
+import PreviewInstagramData from "../../views/Post/Instagram/preview/index.vue";
 
 export default {
   components: {
@@ -30,6 +34,7 @@ export default {
     DrawerDetail,
     PreviewTiktokData,
     PreviewDouyinData,
+    PreviewInstagramData,
   },
   mounted() {
     this.page = this.$route.meta.page;
@@ -54,6 +59,8 @@ export default {
       } else if (this.previewTiktok && this.page === "postTiktok") {
         return "auto-space-right-tiktok";
       } else if (this.previewTiktok && this.page === "postDouyin") {
+        return "auto-space-right-tiktok";
+      } else if (this.previewTiktok && this.page === "postInstagram") {
         return "auto-space-right-tiktok";
       } else {
         return "auto-space";

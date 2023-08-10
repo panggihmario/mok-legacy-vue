@@ -21,7 +21,8 @@ import manageHashtag from "./manage/hashtag";
 import master from "./master";
 import productCategory from "./product/category";
 import helper from "./helper";
-import area from "./area"
+import area from "./area";
+import instagram from "./instagram";
 
 Vue.use(Vuex);
 
@@ -49,13 +50,15 @@ export default new Vuex.Store({
     master,
     productCategory,
     helper,
-    area
+    area,
+    instagram,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
     viewNews: false,
     previewTiktok: false,
     previewTiktokSuccess: false,
+    previewTiktokFailed: false,
   },
   mutations: {
     setViewNews(state, payload) {
@@ -66,6 +69,9 @@ export default new Vuex.Store({
     },
     setPreviewTiktokSuccess(state, payload) {
       state.previewTiktokSuccess = payload;
+    },
+    setPreviewTiktokFailed(state, payload) {
+      state.previewTiktokFailed = payload;
     },
   },
   getters: {
@@ -82,6 +88,9 @@ export default new Vuex.Store({
     },
     changeStatusPreviewTiktokSuccess({ commit }, params) {
       commit("setPreviewTiktokSuccess", params);
+    },
+    changeStatusPreviewTiktokFailed({ commit }, params) {
+      commit("setPreviewTiktokFailed", params);
     },
     getWithToken(ctx, data) {
       return this._vm.$httpWithToken().get(data.url, {
