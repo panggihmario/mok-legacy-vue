@@ -62,7 +62,6 @@ export default {
     useVideo(id) {
       this.isLowResolution = false
       this.$emit('displayWarning', false)
-      console.log(this.bundle)
       return this.uploadVideo(this.bundle)
         .then(payload => {
           const idUpload = this.id.split('-')
@@ -84,6 +83,7 @@ export default {
       document.getElementById(id).click();
     },
     getImage(payload) {
+      console.log(payload)
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]

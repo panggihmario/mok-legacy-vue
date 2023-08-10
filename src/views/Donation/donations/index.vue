@@ -98,16 +98,14 @@ export default {
     },
     onFilter(params) {
       this.statusFind = 'filter'
-      const data = {
+      this.params =  {...params}
+      const payload = {
         ...params,
+        page : 0,
         search : this.keyword
       }
-      this.params = data
-      const payload = {
-        ...data,
-        page : 0
-      }
       this.isLoading = true
+      console.log(payload)
       return this.handleData(payload)
     },
     openExpand() {

@@ -96,6 +96,7 @@ export default {
     getFeedById(id) {
       return this.fetchFeedById(id)
         .then(response => {
+          console.log(response)
           this.description = response.description;
           this.detailFeed = response
           this.floatingLink = response.floatingLink
@@ -137,7 +138,6 @@ export default {
           return this.fetchFeedById(id);
         })
         .then((response) => {
-          console.log("response after update", response)
           this.description = response.description;
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
