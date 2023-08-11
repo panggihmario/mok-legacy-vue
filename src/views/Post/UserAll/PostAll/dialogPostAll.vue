@@ -36,7 +36,7 @@
                   "
                   :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
                   controls
-                  :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
+                  :src="vodUrl"
                   alt=""
                   class="vid"
                 />
@@ -152,6 +152,29 @@ export default {
     return {
       priority: false,
     };
+  },
+  computed : {
+    vodUrl () {
+      // tableItemsDialog.medias[dialogPostMediasIdx].url
+      const item = this.tableItemsDialog.medias[this.dialogPostMediasIdx]
+      console.log(item)
+      if(item.vodUrl) {
+        return item.vodUrl
+      }else{
+        const url = item.url
+        const hrefURL = new URL(url)
+        const pathName = hrefURL.pathname
+        const origin = hrefURL.origin
+        const splitPathName = pathName.split('/')
+        const lastIndex = splitPathName.pop()
+        const splitLastIndex = lastIndex.split('.')
+        const [first, second] = splitLastIndex
+        const newFormatFileUrl = `${first}_h265.${second}`
+        const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`
+        const fullPath = `${origin}${joinPathName}`
+        return fullPath
+      }
+    }
   },
   watch: {
     priority() {
