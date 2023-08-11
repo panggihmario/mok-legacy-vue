@@ -390,8 +390,13 @@ export default {
     },
     getResponseVideo(media) {
       if(media.status === 'success') {
+        const vodFileId = media.vodFileId
         this.showVideoDonation = media.response.url
-        this.medias.push(media.response)
+        const data = {
+          ...media.response,
+          vodFileId
+        }
+        this.medias.push(data)
       }
       if(media.status === 'failed') {
         this.errorMessageVideo = media.message

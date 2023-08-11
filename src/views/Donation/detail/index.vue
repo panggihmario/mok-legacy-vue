@@ -61,6 +61,24 @@ export default {
     ...mapActions({
       fetchDetailDonation : 'donation/fetchDetailDonation'
     }),
+    getVodUrl (item) {
+      if(item.vodUrl) {
+        return item.vodUrl
+      }else{
+        const url = item.url
+        const hrefURL = new URL(url)
+        const pathName = hrefURL.pathname
+        const origin = hrefURL.origin
+        const splitPathName = pathName.split('/')
+        const lastIndex = splitPathName.pop()
+        const splitLastIndex = lastIndex.split('.')
+        const [first, second] = splitLastIndex
+        const newFormatFileUrl = `${first}_h265.${second}`
+        const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`
+        const fullPath = `${origin}${joinPathName}`
+        return fullPath
+      }
+    },
     handleDetail () {
       const id = this.$route.params.id
       return this.fetchDetailDonation(id)
@@ -73,7 +91,9 @@ export default {
               image = media.url
             }else{
               this.video = media.url
-              video = media.url
+              const url = this.getVodUrl(media)
+              video = url
+              
             }
           })
           this.donation = Object.assign({} , this.donation ,{
