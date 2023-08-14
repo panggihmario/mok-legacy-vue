@@ -19,6 +19,24 @@ export default {
     };
   },
   methods: {
+    vodUrl (item) {
+      if(item.vodUrl) {
+        return item.vodUrl
+      }else{
+        const url = item.url
+        const hrefURL = new URL(url)
+        const pathName = hrefURL.pathname
+        const origin = hrefURL.origin
+        const splitPathName = pathName.split('/')
+        const lastIndex = splitPathName.pop()
+        const splitLastIndex = lastIndex.split('.')
+        const [first, second] = splitLastIndex
+        const newFormatFileUrl = `${first}_h265.${second}`
+        const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`
+        const fullPath = `${origin}${joinPathName}`
+        return fullPath
+      }
+    },
     formatingDate(rawDate) {
       const newDt = new Date(rawDate);
       const day = newDt.getDate();
