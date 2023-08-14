@@ -241,6 +241,7 @@ export default {
           this.errorSubmitMessage = "Sudah ada kategori dengan nama ini";
           setTimeout(() => {
             this.isErrorSubmit = false;
+            this.errorSubmitMessage = ""
           }, 3000);
         });
     },
