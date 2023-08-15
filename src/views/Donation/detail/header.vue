@@ -63,7 +63,9 @@
 
 <script>
 import moment  from 'moment'
+
 export default {
+
   props: {
     item: {
       type: Object
@@ -71,10 +73,8 @@ export default {
   },
   watch : {
     item(value) {
-
-      const createAt = moment(value.createAt)
-      const expiredAt = moment(value.expiredAt)
       console.log(value)
+      const expiredAt = moment(value.expiredAt)
       const isPass = moment(expiredAt).diff(moment(), 'miliseconds')
       if(value.expiredAt) {
         if(isPass > 0 ) {

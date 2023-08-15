@@ -19,7 +19,9 @@ import { mapActions } from "vuex";
 import MediaContent from "./header.vue"
 import Amount from "./amount.vue"
 import Activity from "./activity.vue"
+import mixins from "@/mixins/global.js"
 export default {
+  mixins: [mixins],
   components : {
     HeaderContent,
     MediaContent,
@@ -73,7 +75,9 @@ export default {
               image = media.url
             }else{
               this.video = media.url
-              video = media.url
+              const url = this.vodUrl(media)
+              video = url
+              
             }
           })
           this.donation = Object.assign({} , this.donation ,{
