@@ -179,6 +179,7 @@ export default {
       this.loadingDetail = true;
       return this.fetchPostAllUserDetailById(payload)
         .then((response) => {
+          console.log(response)
           this.loadingDetail = false;
           this.tableItemsDialog = {
             id,
