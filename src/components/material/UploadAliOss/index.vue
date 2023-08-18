@@ -14,15 +14,13 @@
 
 <script>
 import moment from "moment";
-import axios from "axios";
-import TcVod from "vod-js-sdk-v6";
-import { cos } from "../../../plugins/httpRequest";
+import mixins from "@/mixins/upload.js";
 export default {
+  mixins: [mixins],
   data() {
     return {
       loadingUpload: false,
       errorMessage: '',
-      tcVod: {},
       asetKipas: "https://asset.kipaskipas.com",
       media: {
         size: "",
@@ -94,28 +92,7 @@ export default {
       default: 'Upload Foto'
     }
   },
-  mounted() {
-    this.tcVod = new TcVod({
-      getSignature: this.getSignature
-    });
-  },
- 
   methods: {
-    getSignature() {
-      const signatureUrl = process.env.VUE_APP_SIGNATURE_TENCENT
-      return axios
-        // .get(signatureUrl)
-        .get(signatureUrl, JSON.stringify({
-            Action: "GetUgcUploadSign"
-          }))
-        .then(function (response) {
-          console.log(response)
-          return response.data.data.signature;
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
     dimensionVideo(file) {
       return new Promise((resolve, reject) => {
         const url = URL.createObjectURL(file);
@@ -172,6 +149,10 @@ export default {
       const isValid = this.validationMedia(typeMedia, dimensions, file);
       if (isValid) {
         if(typeMedia === 'video') {
+          const payload = {
+            file,
+            dimensions
+          }
           this.checkResolution(file,typeMedia, dimensions)
         }else{
           return this.saveFileToAliOss(file, typeMedia, dimensions);
@@ -187,13 +168,17 @@ export default {
       const height = dimensions.height
       if (width >= this.limitResolution || height >= this.limitResolution) {
         const currentDateEpoch = moment(new Date).valueOf()
-        Promise.all([this.saveFileToTencent(file, typeMedia, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
+        const payload = {
+          file,
+          dimensions
+        }
+        return this.uploadVideo(payload)
           .then(response => {
-            const payload = {
-              ...response[0],
-              vodFileId : response[1]
+            const result = {
+              ...response,
+              status : 'success'
             }
-            this.$emit("response", payload);
+            this.$emit("response", result);
             return payload
           })
       } else {
@@ -209,66 +194,6 @@ export default {
         }
         this.$emit("response", result);
       }
-    },
-    saveVodTencent(file, currentDateEpoch) {
-      const uploader = this.tcVod.upload({
-        mediaFile: file,
-        mediaName : `VIDEO_${currentDateEpoch}`
-      });
-      uploader.on('media_progress', function (info) {
-        console.log(info.percent) // The upload progress
-      })
-      return uploader.done()
-        .then(function (doneResult) {
-          const fileId = doneResult.fileId
-          return fileId
-        })
-    },
-    saveFileToTencent(file, typeMedia, dimensions, currentDateEpoch) {
-      let data = {
-        ...this.dataResponse,
-        type: typeMedia,
-        metadata: {
-          width: dimensions.width,
-          height: dimensions.height,
-          size: file.size
-        }
-      }
-      this.dataResponse = data
-      // const currentDateEpoch = moment(new Date).valueOf()
-      const fileType = file.type.split("/")[1]
-      const filePath = `tmp/source/${currentDateEpoch}.${fileType}`
-      const protocol = window.location.protocol
-      return cos.uploadFile({
-        Bucket: process.env.VUE_APP_TENCENT_BUCKET,
-        Region: process.env.VUE_APP_TENCENT_REGION,
-        Key: filePath,
-        Body: file,
-        onProgress: function (progressData) {
-          // console.log(JSON.stringify(progressData));
-        }
-      })
-        .then(response => {
-          const urlResponse = `${protocol}//${response.Location}`
-          this.dataResponse.url = urlResponse
-          return this.createThumbnail(file, 0.0)
-        })
-        .then((thumbnail) => {
-          const temp = {
-            ...this.dataResponse,
-            thumbnail,
-          };
-          this.dataResponse = temp;
-          let result = {
-            response: temp,
-            status: "success",
-          };
-          // this.$emit("response", result);
-          return result
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     saveFileToAliOss(file, type, dimensions) {
       let data = {
@@ -297,26 +222,18 @@ export default {
             url = `${this.asetKipas}/${response.name}`
             const thumbProd = `${this.asetKipas}/${pathTemp}`
             this.dataResponse.url = url
-            if (type === 'video') {
-              return this.createThumbnail(file, 0.0)
-            } else {
               return {
                 large: thumbProd,
                 medium: thumbProd,
                 small: thumbProd
               }
-            }
           } else {
             this.dataResponse.url = response.url;
-            if (type === "video") {
-              return this.createThumbnail(file, 0.0);
-            } else {
               return {
                 large: pathThumbnail,
                 medium: pathThumbnail,
                 small: pathThumbnail
               }
-            }
           }
         })
         .then((thumbnail) => {
@@ -335,93 +252,6 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-    },
-    createThumbnail(file, seekTo) {
-      const currentDateEpoch = moment(new Date()).valueOf();
-      const filePath = `/img/tmp/media/${currentDateEpoch}.jpg`;
-      let response;
-      return this.drawImageOnCanvas(file, seekTo)
-        .then((base64data) => {
-          const d = this.dataURLtoFile(base64data, `${+new Date()}.jpg`);
-          return this.$storeOss.put(filePath, d);
-        })
-        .then((resp) => {
-          response = resp;
-          return this.$storeOss.putACL(filePath, "public-read");
-        })
-        .then(() => {
-          const urlObject = new URL(response.url)
-          const nameUrl = response.name.split('/')
-          nameUrl.splice(1, 1)
-          const pathTemp = nameUrl.join('/')
-          const pathThumbnail = `${urlObject.origin}/${pathTemp}`
-          if (process.env.VUE_APP_SERVER_STATUS === "production") {
-            const url = `${this.asetKipas}/${response.name}`
-            const thumbUrl = `${this.asetKipas}/${pathTemp}`
-            return {
-              large: url,
-              medium: thumbUrl,
-              small: thumbUrl
-            }
-          } else {
-            return {
-              large: response.url,
-              medium: pathThumbnail,
-              small: pathThumbnail
-            }
-          }
-        });
-    },
-    drawImageOnCanvas(file, seekTo) {
-      return new Promise((resolve, reject) => {
-        const videoPlayer = document.createElement("video");
-        videoPlayer.setAttribute("src", URL.createObjectURL(file));
-        videoPlayer.crossOrigin = "anonymous";
-        videoPlayer.load();
-        videoPlayer.addEventListener("error", (ex) => {
-          reject("error when loading video file", ex);
-        });
-
-        videoPlayer.addEventListener("loadedmetadata", () => {
-          if (videoPlayer.duration < seekTo) {
-            reject("video is too short.");
-            return;
-          }
-          setTimeout(() => {
-            videoPlayer.currentTime = seekTo;
-          }, 200);
-          videoPlayer.addEventListener("seeked", () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = videoPlayer.videoWidth;
-            canvas.height = videoPlayer.videoHeight;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
-            ctx.canvas.toBlob(
-              (blob) => {
-                var reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = function () {
-                  var base64data = reader.result;
-                  resolve(base64data);
-                };
-              },
-              "image/jpeg",
-              0.75 /* quality */
-            );
-          });
-        });
-      });
-    },
-    dataURLtoFile(dataurl, filename) {
-      let arr = dataurl.split(",");
-      let mime = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]);
-      let n = bstr.length;
-      let u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, { type: mime });
     },
     printError(file) {
       const result = {
