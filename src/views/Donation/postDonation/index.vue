@@ -227,8 +227,7 @@ export default {
       }
     },
     isForm(value) {
-      let schema = yup.object().shape({
-           
+      let schema = yup.object().shape({    
         targetAmount : yup.number().max(999999999),
         description : yup.string().required(),
         recipientName : yup.string().required(),
@@ -390,8 +389,13 @@ export default {
     },
     getResponseVideo(media) {
       if(media.status === 'success') {
+        const vodFileId = media.vodFileId
         this.showVideoDonation = media.response.url
-        this.medias.push(media.response)
+        const data = {
+          ...media.response,
+          vodFileId
+        }
+        this.medias.push(data)
       }
       if(media.status === 'failed') {
         this.errorMessageVideo = media.message
