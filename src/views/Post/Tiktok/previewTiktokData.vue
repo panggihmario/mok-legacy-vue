@@ -370,9 +370,11 @@ export default {
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
                 this.dataResponse.url = `https://${res.Location}`;
                 this.dataResponse.vodFileId = res.vodFileId;
+                this.dataResponse.vodUrl = res.vodUrl;
               } else {
                 this.dataResponse.url = `https://${res.Location}`;
                 this.dataResponse.vodFileId = res.vodFileId;
+                this.dataResponse.vodUrl = res.vodUrl;
               }
             } else {
               this.loadingSubmit = false;
