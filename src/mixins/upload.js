@@ -38,10 +38,11 @@ export default {
       const currentDateEpoch = moment(new Date).valueOf()
       return Promise.all([this.uploadWithTencent(file, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
         .then(response => {
-          const [uploadResult, id] = response
+          const [uploadResult, vodResult] = response
           const params = {
-            ...uploadResult,
-            vodFileId : id
+            ...uploadResult.response,
+            vodFileId : vodResult.fileId,
+            vodUrl : vodResult.vodUrl
           }
           return params
         })
@@ -49,7 +50,7 @@ export default {
     saveVodTencent(file, currentDateEpoch) {
       const uploader = this.tcVod.upload({
         mediaFile: file,
-        mediaName : `VIDEO_${currentDateEpoch}`
+        mediaName : `${currentDateEpoch}`
       });
       uploader.on('media_progress', function (info) {
         console.log(info.percent) // The upload progress
@@ -57,7 +58,11 @@ export default {
       return uploader.done()
         .then(function (doneResult) {
           const fileId = doneResult.fileId
-          return fileId
+          const vodUrl = doneResult.video.url
+          return {
+            fileId,
+            vodUrl
+          }
         })
     },
     uploadWithTencent (file, dimensions,currentDateEpoch) {
