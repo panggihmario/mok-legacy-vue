@@ -85,7 +85,6 @@ export default {
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
-      fetchFeedById: "post/fetchFeedById",
     }),
     setChange(value) {
       this.isChanging = value
@@ -119,7 +118,6 @@ export default {
       this.$emit("refreshDataFeed");
       this.isPublish = []
       const v = document.querySelector('video')
-      console.log(v)
       v.pause()
     },
     openMedia() {
