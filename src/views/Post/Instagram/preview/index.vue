@@ -568,10 +568,14 @@ export default {
                 this.payload.medias[
                   idx ? idx : 0
                 ].url = `https://${res.Location}`;
+                this.payload.medias[idx ? idx : 0].vodFileId = res.vodFileId;
+                this.payload.medias[idx ? idx : 0].vodUrl = res.vodUrl;
               } else {
                 this.payload.medias[
                   idx ? idx : 0
                 ].url = `https://${res.Location}`;
+                this.payload.medias[idx ? idx : 0].vodFileId = res.vodFileId;
+                this.payload.medias[idx ? idx : 0].vodUrl = res.vodUrl;
               }
             } else {
               if (this.previewData.node.__typename == "GraphSidecar") {
