@@ -243,8 +243,10 @@ export default {
           };
           this.dataResponse = temp;
           let result = {
-            response: temp,
-            status: "success",
+            // response: temp,
+            // status: "success",
+            ...temp,
+            status : 'success'
           };
           this.$emit("response", result);
           return this.$storeOss.putACL(filePath, "public-read");
