@@ -82,11 +82,13 @@ export default {
       document.getElementById(id).click();
     },
     getImage(payload) {
+      console.log("payload", payload)
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
       if(payload.status === 'success' ){
         const typeMedia = payload.type
+        console.log("type", typeMedia)
         this.image = typeMedia === 'image' ? payload.url : payload.thumbnail.large
         const params = {
           position,
