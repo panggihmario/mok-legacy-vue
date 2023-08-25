@@ -378,8 +378,8 @@ export default {
     },
     getResponseImage(media) {
       if(media.status === 'success') {
-        this.showImageDonation = media.response.url
-        this.medias.unshift(media.response)
+        this.showImageDonation = media.url
+        this.medias.unshift({...media})
       }
       if(media.status === 'failed') {
         this.errorMessageImage = media.message
