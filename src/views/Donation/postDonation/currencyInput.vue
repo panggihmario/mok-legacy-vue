@@ -36,7 +36,7 @@ export default {
     const { inputRef, numberValue } = useCurrencyInput(props.options, false)
 
     watchDebounced(numberValue, (value) => emit("input", value), {
-      debounce: 1000,
+      debounce: 0,
     });
     return { inputRef }
   }
