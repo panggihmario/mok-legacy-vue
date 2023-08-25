@@ -378,7 +378,7 @@ export default {
     },
     getResponseImage(media) {
       if(media.status === 'success') {
-        this.showImageDonation = media.response.url
+        this.showImageDonation = media.url
         this.medias.unshift(media.response)
       }
       if(media.status === 'failed') {
