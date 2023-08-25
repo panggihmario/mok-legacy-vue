@@ -82,7 +82,7 @@
                 hideGroupingSeparatorOnFocus: false,
                 valueRange : {
                   min : 10000,
-                  max : 999999999
+                  max : 10000000000
                 }
               }" 
               :isDisable="isDisableCurrency"
