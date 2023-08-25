@@ -228,7 +228,7 @@ export default {
     },
     isForm(value) {
       let schema = yup.object().shape({    
-        targetAmount : yup.number().max(999999999),
+        targetAmount : yup.number().max(10000000000),
         description : yup.string().required(),
         recipientName : yup.string().required(),
         latitude : yup.string().required(),
