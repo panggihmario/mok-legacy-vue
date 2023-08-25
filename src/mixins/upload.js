@@ -24,7 +24,6 @@ export default {
             Action: "GetUgcUploadSign"
           }))
         .then(function (response) {
-          console.log(response)
           return response.data.data.signature;
         })
         .catch(err => {
@@ -57,6 +56,7 @@ export default {
       })
       return uploader.done()
         .then(function (doneResult) {
+          console.log(doneResult)
           const fileId = doneResult.fileId
           const vodUrl = doneResult.video.url
           return {
