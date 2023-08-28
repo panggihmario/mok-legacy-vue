@@ -171,7 +171,7 @@ export default {
       if(payload.status === 'loading') {
         this.isLoading = true
       }else{
-        this.data.photo = payload.response.url
+        this.data.photo = payload.url
         this.isLoading = false
       }
     },

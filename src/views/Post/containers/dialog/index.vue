@@ -58,13 +58,13 @@ import Description from "./description.vue";
 import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import CarouselMedia from "./carouselMedia.vue";
-import Items from "./items.vue"
+import items from "./itemsFile.vue";
 export default {
   components: {
     Description,
     DeletedBy,
     CarouselMedia,
-    Items
+    Items : items
   },
   props: {
     item: Object,
