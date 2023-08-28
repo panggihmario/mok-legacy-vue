@@ -105,9 +105,10 @@ export default {
   },
   mounted() {
     const query = this.$route.query.keyword
+    const name = this.$route.name
+    this.keyword = query
     if(query) {
       const page = this.$route.params.page
-      const name = this.$route.name
       this.isFilter = true
       return this.onFilterByPage(page, name, query)
     }else{
