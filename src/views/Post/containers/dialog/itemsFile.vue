@@ -97,7 +97,7 @@ export default {
     getFeedById(id) {
       return this.fetchFeedById(id)
         .then(response => {
-          console.log(response)
+          // console.log(response)
           const medias = response.medias
           medias.forEach((media, idx, array) => {
             if(media.type === 'video' && !media.vodUrl) {
@@ -110,12 +110,11 @@ export default {
               }
             }
           })
-          console.log(medias)
-          this.description = response.description;
           this.detailFeed = {
             ...response,
             medias
           }
+          this.description = response.description;
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
         })
@@ -152,13 +151,8 @@ export default {
       }
       return this.updatePostFeed(payload)
         .then(() => {
-          return this.fetchFeedById(id);
+          return this.getFeedById(id);
         })
-        .then((response) => {
-          this.description = response.description;
-          this.floatingLink = response.floatingLink
-          this.floatingLinkLabel = response.floatingLinkLabel
-        });
     },
     getFeed (id) {
       console.log('getFeed', id)
