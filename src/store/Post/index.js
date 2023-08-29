@@ -255,6 +255,7 @@ export default {
             index: idx,
           };
         });
+        console.log(responseData)
         commit("setFeeds", contentWithIndex);
         commit("setTotalPages", totalPages);
         commit("setTotalElements", totalElements);

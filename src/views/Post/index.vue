@@ -108,7 +108,7 @@ export default {
     const name = this.$route.name
     this.keyword = query
     if(query) {
-      const page = this.$route.params.page
+      const page = this.$route.params.page - 1
       this.isFilter = true
       return this.onFilterByPage(page, name, query)
     }else{
@@ -143,13 +143,14 @@ export default {
             keyword : this.keyword
           }
         })
-        if(this.isParamsFilter  ) {
-          const page = value - 1
-          return this.onFilterByPage(page, name)
-        }else{
-          return this.onInitiateFetchFeeds(name, value - 1)
-        }
-        
+        const page = value - 1
+        return this.onFilterByPage(page, name)
+        // if(this.isParamsFilter  ) {
+        //   const page = value - 1
+        //   return this.onFilterByPage(page, name)
+        // }else{
+        //   return this.onInitiateFetchFeeds(name, value - 1)
+        // }
       }
     }
   },
@@ -271,7 +272,6 @@ export default {
           endProceedAt : processDate.endAt,
           statusProcess : isStatusProcess
         }
-        // console.log(payload)
         return this.filterFeed(payload)
           .then(() => {
             this.$router.push({
