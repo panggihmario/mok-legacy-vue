@@ -13,6 +13,7 @@ export default {
         url: "",
         thumbnail: {},
         metadata: {},
+        vodFileId : ''
       },
     }
   },
@@ -35,15 +36,41 @@ export default {
         getSignature: this.getSignature
       });
       const currentDateEpoch = moment(new Date).valueOf()
-      return Promise.all([this.uploadWithTencent(file, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
+      // return Promise.all([this.uploadWithTencent(file, dimensions, currentDateEpoch), this.saveVodTencent(file,currentDateEpoch)])
+      return this.saveVodTencent(file,currentDateEpoch)
         .then(response => {
-          const [uploadResult, vodResult] = response
-          const params = {
-            ...uploadResult.response,
-            vodFileId : vodResult.fileId,
-            vodUrl : vodResult.vodUrl
-          }
-          return params
+          const vodResult = response
+          // const params = {
+          //   ...uploadResult.response,
+          //   vodFileId : vodResult.fileId,
+          //   vodUrl : vodResult.vodUrl
+          // }
+          this.dataResponse.vodFileId = vodResult.fileId
+          this.dataResponse.vodUrl = vodResult.vodUrl
+          this.dataResponse.url = vodResult.vodUrl
+          return this.createThumbnail(file, 0.0)
+        })
+        .then((thumbnail) => {
+          console.log("thumbnail", thumbnail)
+          const temp = {
+            ...this.dataResponse,
+            thumbnail,
+            type : 'video',
+            metadata: {
+              width: dimensions.width,
+              height: dimensions.height,
+              size: file.size
+            }
+          };
+          let result = {
+            ...temp,
+            status: "success",
+          };
+          console.log("result", result)
+          return result
+        })
+        .catch((err) => {
+          throw err
         })
     },
     saveVodTencent(file, currentDateEpoch) {

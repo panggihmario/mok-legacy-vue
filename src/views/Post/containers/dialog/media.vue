@@ -12,7 +12,7 @@
         alt="media"
         controls
         playsinline="playsinline"
-        :poster="item.thumbnail.medium"
+        :poster="item.thumbnail.large"
       />
       <img
         v-else
