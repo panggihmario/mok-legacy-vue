@@ -156,7 +156,7 @@ export default {
   },
   watch : {
     keyword : function (value) {
-      if(value.length > 0 ){
+      if(value && value.length > 0 ){
         this.isFilter = true
       }else{
         this.isFilter = false

@@ -95,7 +95,7 @@ export default {
       return this.fetchFeedById(item.id).then((response) => {
         const medias = response.medias
         const [media] = medias
-        const thumbnail = media.thumbnail.medium
+        const thumbnail = media.thumbnail.large
         this.thumbnailImage = thumbnail
       });
     },
