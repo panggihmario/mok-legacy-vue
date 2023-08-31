@@ -40,7 +40,7 @@
               
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
+              <div :class="ad['dg__desc']">{{ item.channel && item.channel.name }}</div>
             </td>
             <td>
               <div :class="ad['dg__desc']">{{ item.createBy }}</div>

@@ -41,7 +41,7 @@
               <div :class="feed['tb__caption']">{{ item.description }}</div>
             </td>
             <td>
-              <div :class="feed['tb__caption']">{{ item.channel.name }}</div>
+              <div :class="feed['tb__caption']">{{ item.channel && item.channel.name }}</div>
             </td>
             <td>
               <div :class="feed['tb__caption']">
