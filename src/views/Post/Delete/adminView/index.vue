@@ -37,7 +37,7 @@
              
             </td>
             <td>
-              <div :class="ad['tb__caption']">{{ item.channel.name }}</div>
+              <div :class="ad['tb__caption']">{{ item.channel && item.channel.name }}</div>
             </td>
             <td>
               <div :class="ad['tb__caption']">{{ item.publishBy }}</div>

@@ -114,7 +114,7 @@ export default [
     items: [
       {
         title: "Post Feed",
-        path: "/post/1",
+        path: "/post/draft/1",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
       {
