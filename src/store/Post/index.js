@@ -88,6 +88,19 @@ export default {
     },
   },
   actions: {
+    fetchVodUrl ({state, dispatch}, payload) {
+      const data = {
+        url : `${state.pathFeedSocial}/vod/info/${payload}`,
+      }
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          const responseData = response.data.data;
+          return responseData;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
     fetchFeedById({ state, dispatch }, payload) {
       const data = {
         url: `${state.pathFeedSocial}/${payload}`,

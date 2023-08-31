@@ -40,7 +40,7 @@
               
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.channel.name }}</div>
+              <div :class="ad['dg__desc']">{{ item.channel && item.channel.name }}</div>
             </td>
             <td>
               <div :class="ad['dg__desc']">{{ item.createBy }}</div>
@@ -96,7 +96,7 @@ export default {
       return this.fetchFeedById(item.id).then((response) => {
         const medias = response.medias
         const [media] = medias
-        const thumbnail = media.thumbnail.medium
+        const thumbnail = media.thumbnail.large
         this.thumbnailImage = thumbnail
       });
     },

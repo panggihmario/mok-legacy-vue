@@ -82,7 +82,7 @@
                 hideGroupingSeparatorOnFocus: false,
                 valueRange : {
                   min : 10000,
-                  max : 999999999
+                  max : 10000000000
                 }
               }" 
               :isDisable="isDisableCurrency"
@@ -228,7 +228,7 @@ export default {
     },
     isForm(value) {
       let schema = yup.object().shape({    
-        targetAmount : yup.number().max(999999999),
+        targetAmount : yup.number().max(10000000000),
         description : yup.string().required(),
         recipientName : yup.string().required(),
         latitude : yup.string().required(),
@@ -378,8 +378,8 @@ export default {
     },
     getResponseImage(media) {
       if(media.status === 'success') {
-        this.showImageDonation = media.response.url
-        this.medias.unshift(media.response)
+        this.showImageDonation = media.url
+        this.medias.unshift({...media})
       }
       if(media.status === 'failed') {
         this.errorMessageImage = media.message
@@ -389,11 +389,9 @@ export default {
     },
     getResponseVideo(media) {
       if(media.status === 'success') {
-        const vodFileId = media.vodFileId
-        this.showVideoDonation = media.response.url
+        this.showVideoDonation = media.url
         const data = {
-          ...media.response,
-          vodFileId
+          ...media,
         }
         this.medias.push(data)
       }

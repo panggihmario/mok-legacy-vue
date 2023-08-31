@@ -58,13 +58,13 @@ import Description from "./description.vue";
 import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import CarouselMedia from "./carouselMedia.vue";
-import Items from "./items.vue"
+import items from "./itemsFile.vue";
 export default {
   components: {
     Description,
     DeletedBy,
     CarouselMedia,
-    Items
+    Items : items
   },
   props: {
     item: Object,
@@ -85,7 +85,6 @@ export default {
   methods: {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
-      fetchFeedById: "post/fetchFeedById",
     }),
     setChange(value) {
       this.isChanging = value
@@ -119,7 +118,6 @@ export default {
       this.$emit("refreshDataFeed");
       this.isPublish = []
       const v = document.querySelector('video')
-      console.log(v)
       v.pause()
     },
     openMedia() {

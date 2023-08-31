@@ -66,10 +66,9 @@ export default {
         .then(payload => {
           const idUpload = this.id.split('-')
           const position = idUpload[1]
-          this.image =  payload.response.thumbnail.large
+          this.image =  payload.thumbnail.large
           const response = {
-            ...payload.response,
-            vodFileId : payload.vodFileId
+            ...payload,
           }
           const params = {
             position,
@@ -83,18 +82,18 @@ export default {
       document.getElementById(id).click();
     },
     getImage(payload) {
-      console.log(payload)
+      console.log("payload", payload)
       this.image = ''
       const idUpload = this.id.split('-')
       const position = idUpload[1]
       if(payload.status === 'success' ){
-        const typeMedia = payload.response.type
-        this.image = typeMedia === 'image' ? payload.response.url : payload.response.thumbnail.large
+        const typeMedia = payload.type
+        console.log("type", typeMedia)
+        this.image = typeMedia === 'image' ? payload.url : payload.thumbnail.large
         const params = {
           position,
           response : {
-            ...payload.response,
-            vodFileId : payload.vodFileId
+            ...payload,
           }
         }
         this.$emit('saveImageOnPayload',params)
