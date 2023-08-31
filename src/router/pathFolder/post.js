@@ -80,7 +80,7 @@ const pathPost = [
   },
   {
     path: "/post",
-    name: "listFeed",
+    // name: "listFeed",
     component: () => import("@/views/Post/index.vue"),
     children: [
       {
@@ -102,7 +102,7 @@ const pathPost = [
         props: (route) => ({ query: route.query.keyword }),
       },
       {
-        path: ":page",
+        path: "draft/:page",
         name: "draft",
         component: () => import("@/views/Post/Draft/index.vue"),
         props: (route) => ({ query: route.query.keyword }),
