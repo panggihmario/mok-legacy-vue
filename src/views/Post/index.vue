@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent 
-    :list="list" label="Post Feed" marginBottom="16">
+      :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -12,12 +12,14 @@
       </custom-button>
     </HeaderContent>
     <!-- <k-input label="label input" ></k-input> -->
+    <!-- :to="{ name: tab.name, params: { page: 1 } }" -->
     <div class="d-flex">
-      <v-tabs color="primary" left class="mb-4">
+      <v-tabs 
+        v-model="tab"  
+        color="primary" left class="mb-4">
         <v-tab
           v-for="(tab, idx) in tabs"
           :key="idx"
-          :to="{ name: tab.name, params: { page: 1 } }"
           exact
           @click="changeTab(tab.name)"
         >
@@ -107,8 +109,10 @@ export default {
     const query = this.$route.query.keyword
     const name = this.$route.name
     this.keyword = query
+    const pos = this.tabs.map(e => e.name).indexOf(name);
+    this.tab = pos
     if(query) {
-      const page = this.$route.params.page
+      const page = this.$route.params.page - 1
       this.isFilter = true
       return this.onFilterByPage(page, name, query)
     }else{
@@ -143,19 +147,14 @@ export default {
             keyword : this.keyword
           }
         })
-        if(this.isParamsFilter  ) {
-          const page = value - 1
-          return this.onFilterByPage(page, name)
-        }else{
-          return this.onInitiateFetchFeeds(name, value - 1)
-        }
-        
+        const page = value - 1
+        return this.onFilterByPage(page, name)
       }
     }
   },
   watch : {
     keyword : function (value) {
-      if(value.length > 0 ){
+      if(value && value.length > 0 ){
         this.isFilter = true
       }else{
         this.isFilter = false
@@ -192,6 +191,7 @@ export default {
     changeTab(tab) {
       this.isFilter = false
       this.isParamsFilter = false
+      this.keyword = ""
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
@@ -271,7 +271,6 @@ export default {
           endProceedAt : processDate.endAt,
           statusProcess : isStatusProcess
         }
-        // console.log(payload)
         return this.filterFeed(payload)
           .then(() => {
             this.$router.push({
@@ -439,6 +438,7 @@ export default {
       channel: null,
       alertError: false,
       errorMessage: "",
+      tab : null,
       list: [
         {
           text: "Konten Feed",
