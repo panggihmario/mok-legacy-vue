@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderContent 
-    :list="list" label="Post Feed" marginBottom="16">
+      :list="list" label="Post Feed" marginBottom="16">
       <custom-button
         color="kellygreen"
         class="white--text"
@@ -12,12 +12,14 @@
       </custom-button>
     </HeaderContent>
     <!-- <k-input label="label input" ></k-input> -->
+    <!-- :to="{ name: tab.name, params: { page: 1 } }" -->
     <div class="d-flex">
-      <v-tabs color="primary" left class="mb-4">
+      <v-tabs 
+        v-model="tab"  
+        color="primary" left class="mb-4">
         <v-tab
           v-for="(tab, idx) in tabs"
           :key="idx"
-          :to="{ name: tab.name, params: { page: 1 } }"
           exact
           @click="changeTab(tab.name)"
         >
@@ -107,6 +109,8 @@ export default {
     const query = this.$route.query.keyword
     const name = this.$route.name
     this.keyword = query
+    const pos = this.tabs.map(e => e.name).indexOf(name);
+    this.tab = pos
     if(query) {
       const page = this.$route.params.page - 1
       this.isFilter = true
@@ -434,6 +438,7 @@ export default {
       channel: null,
       alertError: false,
       errorMessage: "",
+      tab : null,
       list: [
         {
           text: "Konten Feed",
