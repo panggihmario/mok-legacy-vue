@@ -364,15 +364,15 @@ export default {
         return this.getTiktokVideoNoWatermark(url)
           .then((response) => {
             let res = response.data.data;
-            if (res.Location) {
+            if (res.vodUrl) {
               this.loadingSubmit = false;
-              this.actionPostToDraft(`https://${res.Location}`);
+              this.actionPostToDraft(res.vodUrl);
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
-                this.dataResponse.url = `https://${res.Location}`;
+                this.dataResponse.url = res.vodUrl;
                 this.dataResponse.vodFileId = res.vodFileId;
                 this.dataResponse.vodUrl = res.vodUrl;
               } else {
-                this.dataResponse.url = `https://${res.Location}`;
+                this.dataResponse.url = res.vodUrl;
                 this.dataResponse.vodFileId = res.vodFileId;
                 this.dataResponse.vodUrl = res.vodUrl;
               }
