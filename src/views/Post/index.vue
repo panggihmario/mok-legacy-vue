@@ -145,12 +145,6 @@ export default {
         })
         const page = value - 1
         return this.onFilterByPage(page, name)
-        // if(this.isParamsFilter  ) {
-        //   const page = value - 1
-        //   return this.onFilterByPage(page, name)
-        // }else{
-        //   return this.onInitiateFetchFeeds(name, value - 1)
-        // }
       }
     }
   },
@@ -193,6 +187,7 @@ export default {
     changeTab(tab) {
       this.isFilter = false
       this.isParamsFilter = false
+      this.keyword = ""
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
