@@ -544,36 +544,24 @@ export default {
         })
           .then((response) => {
             let res = response.data;
-            if (res.Location) {
+            if (res.vodUrl) {
               if (type == "video") {
-                this.actionPostToDraftVideo(
-                  `https://${res.Location}`,
-                  item,
-                  idx
-                );
+                this.actionPostToDraftVideo(res.vodUrl, item, idx);
                 if (this.previewData.node.__typename == "GraphSidecar") {
                   this.sidecarProcess++;
                 }
               } else {
-                this.actionPostToDraftImage(
-                  `https://${res.Location}`,
-                  item,
-                  idx
-                );
+                this.actionPostToDraftImage(res.vodUrl, item, idx);
                 if (this.previewData.node.__typename == "GraphSidecar") {
                   this.sidecarProcess++;
                 }
               }
               if (process.env.VUE_APP_SERVER_STATUS === "production") {
-                this.payload.medias[
-                  idx ? idx : 0
-                ].url = `https://${res.Location}`;
+                this.payload.medias[idx ? idx : 0].url = res.vodUrl;
                 this.payload.medias[idx ? idx : 0].vodFileId = res.vodFileId;
                 this.payload.medias[idx ? idx : 0].vodUrl = res.vodUrl;
               } else {
-                this.payload.medias[
-                  idx ? idx : 0
-                ].url = `https://${res.Location}`;
+                this.payload.medias[idx ? idx : 0].url = res.vodUrl;
                 this.payload.medias[idx ? idx : 0].vodFileId = res.vodFileId;
                 this.payload.medias[idx ? idx : 0].vodUrl = res.vodUrl;
               }
