@@ -49,7 +49,7 @@ export default {
       this.menuDate = false
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
-      const currentEnd = moment(this.date).endOf('day').format("YYYY-MM-DD hh:mm")
+      const currentEnd = moment(this.date).endOf('days').format("YYYY-MM-DD HH:mm")
       const current = moment().format("ss.SSS")
       const total = `${currentEnd}:${current}`
       const epochTotal = moment(total).valueOf()
