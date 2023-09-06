@@ -47,7 +47,6 @@ export default {
   methods : {
     handlePickDate () {
       this.menuDate = false
-      const epochDate = moment(this.date).endOf('day').valueOf()
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
       const currentEnd = moment(this.date).endOf('day').format("YYYY-MM-DD hh:mm")
