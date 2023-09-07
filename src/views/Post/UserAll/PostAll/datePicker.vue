@@ -47,10 +47,13 @@ export default {
   methods : {
     handlePickDate () {
       this.menuDate = false
-      const epochDate = moment(this.date).endOf('day').valueOf()
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
-      this.$emit('getEpoch', epochDate)
+      const currentEnd = moment(this.date).endOf('days').format("YYYY-MM-DD HH:mm")
+      const current = moment().format("ss.SSS")
+      const total = `${currentEnd}:${current}`
+      const epochTotal = moment(total).valueOf()
+      this.$emit('getEpoch', epochTotal)
     }
   }
 }
