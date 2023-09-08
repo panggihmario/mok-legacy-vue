@@ -1,9 +1,8 @@
 <template>
-  <div :class="d['container-box']">
+  <!-- <div :class="d['container-box']"> -->
     <div >
-      <!-- {{ vodUrl }} -->
       <div :class="d['container-media']"  >
-        <video
+        <!-- <video
         v-if="item.type === 'video'"
         :src="vodUrl"
         :id="`videodialog-${i}-${item.id}`"
@@ -13,6 +12,10 @@
         controls
         playsinline="playsinline"
         :poster="item.thumbnail.large"
+        /> -->
+      <VideoPlayer
+        v-if="item.type === 'video'"
+        :options="videoOptions" 
       />
       <img
         v-else
@@ -32,7 +35,7 @@
         <v-icon size="15px" color="white">far fa-user</v-icon>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
   
 </template>
 
@@ -58,8 +61,8 @@ export default {
         sources: [
           {
             src:
-              this.item.url,
-              type: 'video/mp4'
+              this.item.vodUrl,
+             
           }
         ]
       }
