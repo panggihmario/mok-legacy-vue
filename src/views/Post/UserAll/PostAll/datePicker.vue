@@ -40,7 +40,7 @@ export default {
   },
   computed : {
     currentDate() {
-      const d = moment().format("YYYY-MM-DD");
+      const d = moment().add(1, 'day').format("YYYY-MM-DD")
       return d;
     },
   },
@@ -49,9 +49,9 @@ export default {
       this.menuDate = false
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
-      const currentEnd = moment(this.date).endOf('days').format("YYYY-MM-DD HH:mm")
-      const current = moment().format("ss.SSS")
-      const total = `${currentEnd}:${current}`
+      const currentEnd = moment(this.date).format("YYYY-MM-DD")
+      const current = moment().format("hh:mm:ss")
+      const total = `${currentEnd} ${current}`
       const epochTotal = moment(total).valueOf()
       this.$emit('getEpoch', epochTotal)
     }

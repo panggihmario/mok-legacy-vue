@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.4.30-rc1",
+  "version": "2.4.30-rc2",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
