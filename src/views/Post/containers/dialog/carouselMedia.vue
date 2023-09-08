@@ -17,6 +17,7 @@
         <Media :item="item" :i="i" />
       </v-carousel-item>
     </v-carousel>
+    <!-- <Media v-if="feed.medias.length > 0" :item="feed.medias[0]" :i="0" /> -->
     <div class="d-flex align-start  black--text">
       <div class="d-flex" v-if="feed.medias.length > 1">
         <div :class="d['box-icon']" @click="slideLeft">
