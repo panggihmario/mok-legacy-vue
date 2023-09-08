@@ -40,17 +40,20 @@ export default {
   },
   computed : {
     currentDate() {
-      const d = moment().format("YYYY-MM-DD");
+      const d = moment().add(1, 'day').format("YYYY-MM-DD")
       return d;
     },
   },
   methods : {
     handlePickDate () {
       this.menuDate = false
-      const epochDate = moment(this.date).endOf('day').valueOf()
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
-      this.$emit('getEpoch', epochDate)
+      const currentEnd = moment(this.date).format("YYYY-MM-DD")
+      const current = moment().format("hh:mm:ss")
+      const total = `${currentEnd} ${current}`
+      const epochTotal = moment(total).valueOf()
+      this.$emit('getEpoch', epochTotal)
     }
   }
 }
