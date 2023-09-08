@@ -75,7 +75,7 @@ export default {
 <style>
 video {
   /* override other styles to make responsive */
-  width: 485px   !important;
-  height: 286px   !important;
+  width: 100%   !important;
+  height: 100%   !important;
 }
 </style>
