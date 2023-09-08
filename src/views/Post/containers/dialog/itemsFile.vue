@@ -97,7 +97,7 @@ export default {
     getFeedById(id) {
       return this.fetchFeedById(id)
         .then(response => {
-          // console.log(response)
+          console.log(response)
           const medias = response.medias
           medias.forEach((media, idx, array) => {
             if(media.type === 'video' && !media.vodUrl) {

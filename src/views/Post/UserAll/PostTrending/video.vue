@@ -1,5 +1,12 @@
 <template>
-    <video ref="videoPlayer" class="video-js video-custom"></video>
+  <div>
+    <video
+      ref="videoPlayer"
+      class="video-js video-custom"
+      width="100%"
+      height="100%"
+    ></video>
+  </div>
 </template>
 
 <script>
@@ -37,6 +44,7 @@ export default {
     };
   },
   mounted() {
+    console.log("play video");
     this.player = videojs(this.$refs.videoPlayer, this.options, () => {
       this.player.log("onPlayerReady", this);
     });
