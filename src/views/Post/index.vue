@@ -148,7 +148,7 @@ export default {
           }
         })
         const page = value - 1
-        return this.onFilterByPage(page, name)
+       
       }
     }
   },
@@ -159,6 +159,10 @@ export default {
       }else{
         this.isFilter = false
       }
+    },
+    currentPage : function (value) {
+      const name = this.$route.name
+      return this.onFilterByPage(value - 1, name)
     }
   },
   methods: {
@@ -191,7 +195,7 @@ export default {
     changeTab(tab) {
       this.isFilter = false
       this.isParamsFilter = false
-      this.keyword = ""
+      // this.keyword = ""
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
@@ -202,11 +206,14 @@ export default {
       this.setDisplayProcessDate('')
       this.currentPage = 1
       this.expand = false
+      if(this.keyword) {
+        this.keyword = ""
+      }
       return this.onInitiateFetchFeeds(tab)
         .then(() => {
           this.$router.push({
             name : tab,
-            page : 1
+            page : 1,
           }).catch(() =>{})
         })
     },
@@ -339,6 +346,7 @@ export default {
           endProceedAt : processDate.endAt,
           statusProcess : isStatusProcess
         }
+        console.log("filter",payload)
         return this.filterFeed(payload)
     },
     resetFields(routerName) {
