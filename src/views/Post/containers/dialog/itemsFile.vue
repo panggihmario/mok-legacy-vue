@@ -1,5 +1,5 @@
 <template>
-  <div height="552px" width="850px">
+  <div ref="itemsfile" height="552px" width="850px">
     <v-row no-gutters>
       <v-col cols="6">
         <div :class="d.left">
@@ -11,6 +11,7 @@
             @triggerNextAction="triggerNextAction"
             :description="description"
             @setIsPublish="setIsPublish"
+            :dialog="dialog"
           />
         </div>
       </v-col>
@@ -58,12 +59,22 @@ export default {
     feeds : {
       type : Array
     },
+    dialog : {
+      type : Boolean
+    }
     
   },
   watch : {
     feedPosition (prev) {
       const id = this.feeds[prev].id
       return this.getFeedById(id)
+    },
+    dialog(value) {
+      if(value) {
+        const id = this.item.id
+        this.getFeedById(id)
+      }
+     
     }
   },
   data () {
@@ -88,6 +99,11 @@ export default {
       fetchFeedById: "post/fetchFeedById",
       fetchVodUrl : 'post/fetchVodUrl'
     }),
+    resetData () {
+      this.detailFeed = {
+        medias : []
+      }
+    },
     setFloatingLabel (value) {
       this.floatingLinkLabel = value
     },
@@ -95,9 +111,11 @@ export default {
       this.floatingLink = value
     },
     getFeedById(id) {
+      this.detailFeed = {
+        medias : []
+      }
       return this.fetchFeedById(id)
         .then(response => {
-          console.log(response)
           const medias = response.medias
           medias.forEach((media, idx, array) => {
             if(media.type === 'video' && !media.vodUrl) {
@@ -155,7 +173,7 @@ export default {
         })
     },
     getFeed (id) {
-      console.log('getFeed', id)
+      // console.log('getFeed', id)
     },
   }
 }
