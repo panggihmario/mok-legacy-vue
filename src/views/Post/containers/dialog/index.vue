@@ -93,7 +93,7 @@ export default {
       this.isPublish[this.feedPosition] = true
     },
     slideRight() {
-      const video = videojs(`videodialog`)
+      // const video = videojs(`videodialog`)
       // video.dispose()
       if (this.feeds.length - 1 === this.feedPosition) {
         this.feedPosition = 0;
@@ -102,7 +102,7 @@ export default {
       }
     },
     slideLeft() {
-      const video = videojs(`videodialog`)
+      // const video = videojs(`videodialog`)
       // video.dispose()
       
       if (this.feedPosition === 0) {
@@ -116,17 +116,14 @@ export default {
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
-      this.$refs.items[0].resetData()
-      // this.$refs.items.forEach((c, idx) => {
-      //   c.$refs.carouselMedia.stopVideo()
-      // })
-      const video = videojs(`videodialog`)
-      video.pause()
+      const d = document.getElementsByTagName('video')
+      if(d.length > 0) {
+        const video = videojs(`videodialog`)
+          video.pause()
+      }
       this.dialog = false;
       this.$emit("refreshDataFeed");
       this.isPublish = []
-      // const v = document.querySelector('video')
-      // v.pause()
     },
     openMedia() {
       this.dialog = true;
