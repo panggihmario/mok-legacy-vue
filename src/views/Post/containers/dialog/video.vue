@@ -22,8 +22,10 @@ export default {
     },
   },
   watch: {
-    player(value) {
-      console.log(value)
+    dialog(value) {
+      if (this.player) {
+        this.player.dispose();
+      }
     },
   },
   data() {
