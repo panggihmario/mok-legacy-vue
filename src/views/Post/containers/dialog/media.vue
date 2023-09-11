@@ -28,6 +28,7 @@
         :style="{ objectFit : isContain }"
         alt="media"
         loading="lazy"
+        :id="`videodialog`"
       />
       </div>
       <div :class="d['container-nav']">
