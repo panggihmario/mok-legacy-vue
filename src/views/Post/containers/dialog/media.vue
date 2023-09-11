@@ -66,6 +66,9 @@ export default {
       videoOptions: {
         controls: true,
         // autoplay: true,
+        controlBar : {
+          fullscreenToggle: false,
+        },
         sources: [
           {
             src:
