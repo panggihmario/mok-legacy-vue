@@ -50,7 +50,7 @@ export default {
       const display = moment(this.date).format('DD/MM/YYYY')
       this.displayDate = display
       const currentEnd = moment(this.date).format("YYYY-MM-DD")
-      const current = moment().format("hh:mm:ss")
+      const current = moment().format("HH:mm:ss")
       const total = `${currentEnd} ${current}`
       const epochTotal = moment(total).valueOf()
       this.$emit('getEpoch', epochTotal)

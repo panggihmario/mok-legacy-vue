@@ -34,6 +34,7 @@
               @closeDialog="closeDialog"
               :feedPosition="feedPosition"
               :feeds="feeds"
+              :dialog="dialog"
             />
           </v-carousel-item>
         </v-carousel>
@@ -59,6 +60,7 @@ import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import CarouselMedia from "./carouselMedia.vue";
 import items from "./itemsFile.vue";
+import videojs from "video.js";
 export default {
   components: {
     Description,
@@ -91,6 +93,8 @@ export default {
       this.isPublish[this.feedPosition] = true
     },
     slideRight() {
+      // const video = videojs(`videodialog`)
+      // video.dispose()
       if (this.feeds.length - 1 === this.feedPosition) {
         this.feedPosition = 0;
       } else {
@@ -98,6 +102,9 @@ export default {
       }
     },
     slideLeft() {
+      // const video = videojs(`videodialog`)
+      // video.dispose()
+      
       if (this.feedPosition === 0) {
         this.feedPosition = this.feeds.length - 1;
       } else {
@@ -109,16 +116,14 @@ export default {
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
-      // this.$refs.items[0].stopVideo()
-      this.$refs.items.forEach((c, idx) => {
-        c.$refs.carouselMedia.stopVideo()
-      })
+      const d = document.getElementsByTagName('video')
+      if(d.length > 0) {
+        const video = videojs(`videodialog`)
+          video.pause()
+      }
       this.dialog = false;
-      console.log(this.$refs.items)
       this.$emit("refreshDataFeed");
       this.isPublish = []
-      const v = document.querySelector('video')
-      v.pause()
     },
     openMedia() {
       this.dialog = true;
