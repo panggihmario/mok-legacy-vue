@@ -1,6 +1,6 @@
 <template>
   <!-- <div :class="d['container-box']"> -->
-    <div >
+    <div :class="d['container-box']">
       <div :class="d['container-media']"  >
         <!-- <video
         v-if="item.type === 'video'"
@@ -16,6 +16,9 @@
       <VideoPlayer
         v-if="item.type === 'video'"
         :options="videoOptions" 
+        :id="`videodialog`"
+        :dialog="dialog"
+        :style="{ objectFit : isContain }"
       />
       <img
         v-else
@@ -51,6 +54,9 @@ export default {
     },
     i : {
       type : Number
+    },
+    dialog : {
+      type : Boolean
     }
   },
   data () {
@@ -58,6 +64,7 @@ export default {
       status : true,
       videoOptions: {
         controls: true,
+        // autoplay: true,
         sources: [
           {
             src:

@@ -14,23 +14,20 @@ export default {
         return {};
       },
     },
-    isShow: {
+    dialog: {
       type: Boolean,
       default() {
         return false;
       },
     },
   },
-  watch: {
-    isShow() {
-      console.log("show", this.isShow);
-
-      console.log("stop video");
-      if (this.player) {
-        this.player.dispose();
-      }
-    },
-  },
+  // watch: {
+  //   dialog(value) {
+  //     if (this.player) {
+  //       this.player.dispose();
+  //     }
+  //   },
+  // },
   data() {
     return {
       player: null,
