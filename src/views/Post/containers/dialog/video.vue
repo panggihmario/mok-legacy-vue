@@ -1,5 +1,5 @@
 <template>
-    <video ref="videoPlayer" class="video-js video-custom"></video>
+    <video ref="videoPlayer" id="idVideo" class="video-js video-custom"></video>
 </template>
 
 <script>
@@ -21,13 +21,11 @@ export default {
       },
     },
   },
-  // watch: {
-  //   dialog(value) {
-  //     if (this.player) {
-  //       this.player.dispose();
-  //     }
-  //   },
-  // },
+  watch: {
+    player(value) {
+      console.log(value)
+    },
+  },
   data() {
     return {
       player: null,
@@ -37,6 +35,12 @@ export default {
     this.player = videojs(this.$refs.videoPlayer, this.options, () => {
       this.player.log("onPlayerReady", this);
     });
+    // const el = document.getElementById('idVideo')
+    // if(this.player.isFullscreen_) {
+    //   console.log('true')
+    // }else{
+    //   console.log('false')
+    // }
   },
   beforeDestroy() {
     if (this.player) {
@@ -51,9 +55,9 @@ export default {
   height: 100% !important;
   width: 100% !important;
 }
-video {
-  @media screen and (min-width : 800px) {
-    object-fit: contain !important;
+@media screen and (display-mode: fullscreen) {
+  video {
+    object-fit: contain;
   }
 }
 </style>
