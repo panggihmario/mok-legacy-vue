@@ -51,4 +51,9 @@ export default {
   height: 100% !important;
   width: 100% !important;
 }
+video {
+  @media screen and (min-width : 800px) {
+    object-fit: contain !important;
+  }
+}
 </style>
