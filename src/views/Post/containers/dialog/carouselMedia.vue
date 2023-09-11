@@ -14,9 +14,10 @@
         reverse-transition="fade-transition"
         transition="fade-transition"
       > 
-        <Media :item="item" :i="i" />
+        <Media :dialog="dialog" :item="item" :i="i" />
       </v-carousel-item>
     </v-carousel>
+    <!-- <Media v-if="feed.medias.length > 0" :item="feed.medias[0]" :i="0" /> -->
     <div class="d-flex align-start  black--text">
       <div class="d-flex" v-if="feed.medias.length > 1">
         <div :class="d['box-icon']" @click="slideLeft">
@@ -87,6 +88,7 @@ import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import moment from "moment";
 import Media from "./media.vue"
+import videojs from "video.js";
 export default {
   components: {
     DeletedBy,
@@ -116,8 +118,11 @@ export default {
       type : String
     },
     item : {
-      type : Object
+      type : Object,
     },
+    dialog : {
+      type : Boolean
+    }
   },
   computed : {
     isContain () {
@@ -190,12 +195,13 @@ export default {
       this.tempFeed = temp;
     },
     slideLeft() {
+      this.stopVideo();
       if (this.slidePosition === 0) {
         this.slidePosition = this.feed.medias.length - 1;
       } else {
         this.slidePosition--;
       }
-      this.stopVideo();
+      
       // this.playVideo();
     },
     setDate() {
@@ -209,13 +215,14 @@ export default {
       this.menu = false;
     },
     slideRight() {
+      this.stopVideo();
       // this.slidePosition++;
       if (this.slidePosition === this.feed.medias.length - 1) {
         this.slidePosition = 0;
       } else {
         this.slidePosition++;
       }
-      this.stopVideo();
+     
       // this.playVideo();
     },
     stopVideo() {
@@ -225,7 +232,8 @@ export default {
       medias.forEach((m, idx) => {
         if (m.type === "video") {
           if (idx === slide) {
-            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+            // idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+            idVideo = videojs(`videodialog`)
           }else{
             idVideo = ''
           }
@@ -234,7 +242,6 @@ export default {
       if (idVideo) {
         idVideo.pause()
         // idVideo.load()
-        idVideo.currentTime = 0;
       }
     },
     playVideo() {

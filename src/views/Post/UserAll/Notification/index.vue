@@ -82,18 +82,34 @@
                     overflow: hidden;
                   "
                 >
-                  <video
+                  <!-- <video
                     v-if="
-                      tableItemsDialog.post.medias[
-                        dialogPostMediasIdx
-                      ].url.includes('mp4')
+                      tableItemsDialog.post.medias[dialogPostMediasIdx].type ==
+                      'video'
                     "
                     :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.post.medias[dialogPostMediasIdx].id}`"
                     controls
-                    :src="tableItemsDialog.post.medias[dialogPostMediasIdx].url"
+                    :src="tableItemsDialog.post.medias[dialogPostMediasIdx].vodUrl"
                     alt=""
                     class="vid"
-                  />
+                  /> -->
+                  <Video-Player
+                    v-if="
+                      tableItemsDialog.post.medias[dialogPostMediasIdx].type ==
+                      'video'
+                    "
+                    :options="{
+                      ...videoOptions,
+                      sources: [
+                        {
+                          src: tableItemsDialog.post.medias[dialogPostMediasIdx]
+                            .vodUrl,
+                        },
+                      ],
+                    }"
+                    class="vid"
+                    :is-show="dialogPost"
+                  ></Video-Player>
                   <v-img
                     v-else
                     :src="tableItemsDialog.post.medias[dialogPostMediasIdx].url"
@@ -228,8 +244,12 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
+import VideoPlayer from "./video.vue";
 
 export default {
+  components: {
+    VideoPlayer,
+  },
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   data() {
     return {
@@ -255,6 +275,19 @@ export default {
       dialogPushNotifId: "",
       page: 1,
       // totalPages: 0,
+      videoOptions: {
+        autoplay: true,
+        controls: true,
+        controlBar: {
+          timeDivider: false,
+          durationDisplay: false,
+        },
+        sources: [
+          {
+            src: "",
+          },
+        ],
+      },
     };
   },
   watch: {

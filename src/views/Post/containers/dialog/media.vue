@@ -1,9 +1,8 @@
 <template>
-  <div :class="d['container-box']">
-    <div >
-      <!-- {{ vodUrl }} -->
+  <!-- <div :class="d['container-box']"> -->
+    <div :class="d['container-box']">
       <div :class="d['container-media']"  >
-        <video
+        <!-- <video
         v-if="item.type === 'video'"
         :src="vodUrl"
         :id="`videodialog-${i}-${item.id}`"
@@ -13,6 +12,13 @@
         controls
         playsinline="playsinline"
         :poster="item.thumbnail.large"
+        /> -->
+      <VideoPlayer
+        v-if="item.type === 'video'"
+        :options="videoOptions" 
+        :id="`videodialog`"
+        :dialog="dialog"
+        :style="{ objectFit : isContain }"
       />
       <img
         v-else
@@ -22,6 +28,7 @@
         :style="{ objectFit : isContain }"
         alt="media"
         loading="lazy"
+        :id="`videodialog`"
       />
       </div>
       <div :class="d['container-nav']">
@@ -32,7 +39,7 @@
         <v-icon size="15px" color="white">far fa-user</v-icon>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
   
 </template>
 
@@ -48,6 +55,9 @@ export default {
     },
     i : {
       type : Number
+    },
+    dialog : {
+      type : Boolean
     }
   },
   data () {
@@ -55,11 +65,15 @@ export default {
       status : true,
       videoOptions: {
         controls: true,
+        // autoplay: true,
+        controlBar : {
+          fullscreenToggle: false,
+        },
         sources: [
           {
             src:
-              this.item.url,
-              type: 'video/mp4'
+              this.item.vodUrl,
+             
           }
         ]
       }

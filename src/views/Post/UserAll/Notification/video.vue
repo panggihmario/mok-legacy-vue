@@ -1,5 +1,12 @@
 <template>
-    <video ref="videoPlayer" id="idVideo" class="video-js video-custom"></video>
+  <div>
+    <video
+      ref="videoPlayer"
+      class="video-js video-custom"
+      width="100%"
+      height="100%"
+    ></video>
+  </div>
 </template>
 
 <script>
@@ -14,7 +21,7 @@ export default {
         return {};
       },
     },
-    dialog: {
+    isShow: {
       type: Boolean,
       default() {
         return false;
@@ -22,7 +29,10 @@ export default {
     },
   },
   watch: {
-    dialog(value) {
+    isShow() {
+      console.log("show", this.isShow);
+
+      console.log("stop video");
       if (this.player) {
         this.player.dispose();
       }
@@ -34,15 +44,10 @@ export default {
     };
   },
   mounted() {
+    console.log("play video");
     this.player = videojs(this.$refs.videoPlayer, this.options, () => {
       this.player.log("onPlayerReady", this);
     });
-    // const el = document.getElementById('idVideo')
-    // if(this.player.isFullscreen_) {
-    //   console.log('true')
-    // }else{
-    //   console.log('false')
-    // }
   },
   beforeDestroy() {
     if (this.player) {
@@ -56,10 +61,5 @@ export default {
 .video-js {
   height: 100% !important;
   width: 100% !important;
-}
-@media screen and (display-mode: fullscreen) {
-  video {
-    object-fit: contain;
-  }
 }
 </style>
