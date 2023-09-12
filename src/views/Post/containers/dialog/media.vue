@@ -1,6 +1,6 @@
 <template>
   <!-- <div :class="d['container-box']"> -->
-  <div :class="d['container-box']">
+  <div :class="d['container-box']" v-if="item.vodUrl || item.thumbnail">
     <div :class="d['container-media']">
       <video-player v-if="item.type === 'video'" :id="`videodialog`" :style="{ objectFit: isContain }"
         class="vjs-custom-skin video-player" ref="videoPlayer" :options="optionsVideo">
@@ -132,8 +132,9 @@ export default {
       return this.status
     },
     optionsVideo() {
-      if (this.item.type === video) {
-        const url = new URL(this.item.vodUrl)
+      const item = this.item
+      if ( item.vodUrl && item.type === 'video') {
+        const url = new URL(item.vodUrl)
         const split = url.pathname.split(".")
         const extension = split[split.length - 1]
         const temp = { ...this.playerOptions }
