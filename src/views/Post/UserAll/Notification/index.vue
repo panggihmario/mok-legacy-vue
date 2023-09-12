@@ -98,15 +98,9 @@
                       tableItemsDialog.post.medias[dialogPostMediasIdx].type ==
                       'video'
                     "
-                    :options="{
-                      ...videoOptions,
-                      sources: [
-                        {
-                          src: tableItemsDialog.post.medias[dialogPostMediasIdx]
-                            .vodUrl,
-                        },
-                      ],
-                    }"
+                    :sources="
+                      tableItemsDialog.post.medias[dialogPostMediasIdx].vodUrl
+                    "
                     class="vid"
                     :is-show="dialogPost"
                   ></Video-Player>
@@ -244,7 +238,7 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-import VideoPlayer from "./video.vue";
+import VideoPlayer from "../video.vue";
 
 export default {
   components: {

@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import VideoPlayer from "./video.vue";
+import VideoPlayer from "../video.vue";
 
 export default {
   components: {

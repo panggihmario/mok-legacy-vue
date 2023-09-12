@@ -141,7 +141,7 @@
 
 <script>
 import DatePicker from "./datePicker.vue";
-import VideoPlayer from "./video.vue";
+import VideoPlayer from "../video.vue";
 
 export default {
   components: {

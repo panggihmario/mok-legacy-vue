@@ -1,6 +1,8 @@
 <template>
   <div>
     <video
+      autoplay
+      controls
       ref="videoPlayer"
       class="video-js video-custom"
       width="100%"
@@ -12,13 +14,14 @@
 <script>
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+
 export default {
   name: "VideoPlayer",
   props: {
-    options: {
-      type: Object,
+    sources: {
+      type: String,
       default() {
-        return {};
+        return "";
       },
     },
     isShow: {
@@ -30,9 +33,6 @@ export default {
   },
   watch: {
     isShow() {
-      console.log("show", this.isShow);
-
-      console.log("stop video");
       if (this.player) {
         this.player.dispose();
       }
@@ -41,19 +41,28 @@ export default {
   data() {
     return {
       player: null,
+      videoOptions: {
+        controlBar: {
+          timeDivider: false,
+          durationDisplay: false,
+        },
+      },
     };
   },
   mounted() {
-    console.log("play video");
-    this.player = videojs(this.$refs.videoPlayer, this.options, () => {
-      this.player.log("onPlayerReady", this);
-    });
+    this.player = videojs(
+      this.$refs.videoPlayer,
+      { ...this.videoOptions, sources: [{ src: this.sources }] },
+      () => {
+        this.player.log("onPlayerReady", this);
+      }
+    );
   },
-  beforeDestroy() {
-    if (this.player) {
-      this.player.dispose();
-    }
-  },
+  // beforeDestroy() {
+  //   if (this.player) {
+  //     this.player.dispose();
+  //   }
+  // },
 };
 </script>
 
