@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <video ref="videoPlayer" class="video-js video-custom"></video>
-  </div>
+    <!-- <video controls ref="videoPlayer" id="idVideo" class="video-js video-custom vjs-default-skin vjs-duration vjs-time-control"></video> -->
+    <video-player class="vjs-custom-skin" ref="videoPlayer" :options="options">
+    </video-player>
 </template>
 
 <script>
@@ -10,13 +10,16 @@ import "video.js/dist/video-js.css";
 export default {
   name: "VideoPlayer",
   props: {
+    url : {
+      type : String,
+    },
     options: {
       type: Object,
       default() {
         return {};
       },
     },
-    isShow: {
+    dialog: {
       type: Boolean,
       default() {
         return false;
@@ -24,10 +27,7 @@ export default {
     },
   },
   watch: {
-    isShow() {
-      console.log("show", this.isShow);
-
-      console.log("stop video");
+    dialog(value) {
       if (this.player) {
         this.player.dispose();
       }
@@ -38,16 +38,16 @@ export default {
       player: null,
     };
   },
-  mounted() {
-    this.player = videojs(this.$refs.videoPlayer, this.options, () => {
-      this.player.log("onPlayerReady", this);
-    });
-  },
-  beforeDestroy() {
-    if (this.player) {
-      this.player.dispose();
-    }
-  },
+  // mounted() {
+  //   this.player = videojs(this.$refs.videoPlayer, this.options, () => {
+  //     this.player.log("onPlayerReady", this);
+  //   });
+  // },
+  // beforeDestroy() {
+  //   if (this.player) {
+  //     this.player.dispose();
+  //   }
+  // },
 };
 </script>
 
