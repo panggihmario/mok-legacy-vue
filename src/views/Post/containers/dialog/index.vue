@@ -116,11 +116,10 @@ export default {
       this.$refs.items[0].stopVideo()
     },
     closeDialog() {
-      const d = document.getElementsByTagName('video')
-      if(d.length > 0) {
-        const video = videojs(`videodialog`)
-          video.pause()
-      }
+      const videos = [...document.getElementsByTagName('video')]
+      videos.forEach(v => {
+        v.pause()
+      })
       this.dialog = false;
       this.$emit("refreshDataFeed");
       this.isPublish = []
