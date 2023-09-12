@@ -82,34 +82,20 @@
                     overflow: hidden;
                   "
                 >
-                  <!-- <video
+                  <video-player
                     v-if="
+                      dialogPost &&
                       tableItemsDialog.post.medias[dialogPostMediasIdx].type ==
-                      'video'
+                        'video'
                     "
                     :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.post.medias[dialogPostMediasIdx].id}`"
-                    controls
-                    :src="tableItemsDialog.post.medias[dialogPostMediasIdx].vodUrl"
-                    alt=""
-                    class="vid"
-                  /> -->
-                  <Video-Player
-                    v-if="
-                      tableItemsDialog.post.medias[dialogPostMediasIdx].type ==
-                      'video'
-                    "
-                    :options="{
-                      ...videoOptions,
-                      sources: [
-                        {
-                          src: tableItemsDialog.post.medias[dialogPostMediasIdx]
-                            .vodUrl,
-                        },
-                      ],
-                    }"
-                    class="vid"
-                    :is-show="dialogPost"
-                  ></Video-Player>
+                    :style="{ objectFit: isContain }"
+                    class="vjs-custom-skin video-player"
+                    ref="videoPlayer"
+                    :options="optionsVideo"
+                    style="height: 100%; width: 100%"
+                  >
+                  </video-player>
                   <v-img
                     v-else
                     :src="tableItemsDialog.post.medias[dialogPostMediasIdx].url"
@@ -244,12 +230,12 @@
 <script>
 import { mapActions } from "vuex";
 import moment from "moment";
-import VideoPlayer from "./video.vue";
+import VideoPlayer from "../video.vue";
 
 export default {
-  components: {
-    VideoPlayer,
-  },
+  // components: {
+  //   VideoPlayer,
+  // },
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
   data() {
     return {
@@ -275,18 +261,18 @@ export default {
       dialogPushNotifId: "",
       page: 1,
       // totalPages: 0,
-      videoOptions: {
-        autoplay: true,
+      status: true,
+      playerOptions: {
+        overNative: true,
         controls: true,
-        controlBar: {
-          timeDivider: false,
-          durationDisplay: false,
+        techOrder: ["html5"],
+        sourceOrder: true,
+        flash: {
+          hls: { withCredentials: false },
+          swf: "/static/media/video-js.swf",
         },
-        sources: [
-          {
-            src: "",
-          },
-        ],
+        html5: { hls: { withCredentials: false } },
+        sources: [],
       },
     };
   },
@@ -295,10 +281,10 @@ export default {
       this.getRoute();
     },
     dialogPost() {
-      this.stopVideo();
+      // this.stopVideo();
     },
     dialogPostDataIdx() {
-      this.stopVideo();
+      // this.stopVideo();
       this.dialogPostMediasIdx = 0;
       if (this.dialogPostDataIdx < 0) {
         this.dialogPostDataIdx = this.tableItems.length - 1;
@@ -307,6 +293,87 @@ export default {
       } else {
         let id = this.tableItems[this.dialogPostDataIdx].feedId;
         this.handleGetUserPostDetail(id);
+      }
+    },
+  },
+  computed: {
+    player() {
+      console.log(this.$refs.videoPlayer.player);
+      return this.$refs.videoPlayer.player;
+    },
+    isPlay() {
+      return this.status;
+    },
+    vodUrl() {
+      const item = this.tableItemsDialog.post.medias[this.dialogPostMediasIdx];
+      if (item.vodUrl) {
+        return item.vodUrl;
+      } else {
+        const url = item.url;
+        const hrefURL = new URL(url);
+        const pathName = hrefURL.pathname;
+        const origin = hrefURL.origin;
+        const splitPathName = pathName.split("/");
+        const lastIndex = splitPathName.pop();
+        const splitLastIndex = lastIndex.split(".");
+        const [first, second] = splitLastIndex;
+        const newFormatFileUrl = `${first}_h265.${second}`;
+        const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`;
+        const fullPath = `${origin}${joinPathName}`;
+        return fullPath;
+      }
+    },
+    optionsVideo() {
+      const item = this.tableItemsDialog.post.medias[this.dialogPostMediasIdx];
+      if (item.vodUrl && item.type === "video") {
+        const url = new URL(item.vodUrl);
+        const split = url.pathname.split(".");
+        const extension = split[split.length - 1];
+        const temp = { ...this.playerOptions };
+        if (extension === "m3u8") {
+          const hls = {
+            ...temp,
+            sources: [
+              {
+                withCredentials: false,
+                type: "application/x-mpegURL",
+                src: this.tableItemsDialog.post.medias[this.dialogPostMediasIdx]
+                  .vodUrl,
+              },
+            ],
+          };
+          return hls;
+        } else {
+          const mp4 = {
+            ...temp,
+            sources: [
+              {
+                withCredentials: false,
+                type: "video/mp4",
+                src: this.tableItemsDialog.post.medias[this.dialogPostMediasIdx]
+                  .vodUrl,
+              },
+            ],
+          };
+          return mp4;
+        }
+      }
+    },
+    isContain() {
+      const metadata =
+        this.tableItemsDialog.post.medias[this.dialogPostMediasIdx].metadata;
+      const width = Number(metadata.width);
+      const height = Number(metadata.height);
+      const ratio = height / width;
+      if (width >= height) {
+        return "contain";
+      } else {
+        if (ratio < 1.5) {
+          return "contain";
+        } else {
+          // console.log("masuk else");
+          return "cover";
+        }
       }
     },
   },
@@ -363,21 +430,22 @@ export default {
     changePage() {
       this.$emit("onChangePage", this.page);
     },
-    stopVideo() {
-      const slide = this.dialogPostMediasIdx;
-      const medias = this.tableItemsDialog.post.medias;
-      let idVideo;
-      medias.forEach((m, idx) => {
-        if (m.type === "video") {
-          if (idx === slide) {
-            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
-          }
-        }
-      });
-      if (idVideo) {
-        idVideo.load();
-      }
-    },
+    // stopVideo() {
+    //   const slide = this.dialogPostMediasIdx;
+    //   const medias = this.tableItemsDialog.post.medias;
+    //   let idVideo;
+    //   this.isPlay;
+    //   medias.forEach((m, idx) => {
+    //     if (m.type === "video") {
+    //       if (idx === slide) {
+    //         idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+    //       }
+    //     }
+    //   });
+    //   if (idVideo) {
+    //     idVideo.load();
+    //   }
+    // },
   },
 };
 </script>

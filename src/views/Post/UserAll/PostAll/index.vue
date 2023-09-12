@@ -122,10 +122,10 @@ export default {
       this.getRoute();
     },
     dialogPost() {
-      this.stopVideo();
+      // this.stopVideo();
     },
     dialogPostDataIdx() {
-      this.stopVideo();
+      // this.stopVideo();
       this.dialogPostMediasIdx = 0;
       if (this.dialogPostDataIdx < 0) {
         this.dialogPostDataIdx = this.tableItems.length - 1;
@@ -179,7 +179,6 @@ export default {
       this.loadingDetail = true;
       return this.fetchPostAllUserDetailById(payload)
         .then((response) => {
-          console.log(response)
           this.loadingDetail = false;
           this.tableItemsDialog = {
             id,
@@ -196,7 +195,7 @@ export default {
         isPriority: this.priority,
         trendingExpiredAt: this.epochExpiredTrending,
       };
-      this.stopVideo();
+      // this.stopVideo();
       this.loadingMakeTrending = true;
       return this.postFeedAsTrendingById(payload)
         .then((response) => {
@@ -241,21 +240,21 @@ export default {
       this.dialogPushNotif = false;
       this.dialogPushNotifId = "";
     },
-    stopVideo() {
-      const slide = this.dialogPostMediasIdx;
-      const medias = this.tableItemsDialog.medias;
-      let idVideo;
-      medias.forEach((m, idx) => {
-        if (m.type === "video") {
-          if (idx === slide) {
-            idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
-          }
-        }
-      });
-      if (idVideo) {
-        idVideo.load();
-      }
-    },
+    // stopVideo() {
+    //   const slide = this.dialogPostMediasIdx;
+    //   const medias = this.tableItemsDialog.medias;
+    //   let idVideo;
+    //   medias.forEach((m, idx) => {
+    //     if (m.type === "video") {
+    //       if (idx === slide) {
+    //         idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
+    //       }
+    //     }
+    //   });
+    //   if (idVideo) {
+    //     idVideo.load();
+    //   }
+    // },
   },
 };
 </script>
