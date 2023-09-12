@@ -28,22 +28,20 @@
                   overflow: hidden;
                 "
               >
-                <Video-Player
+                <video-player
                   v-if="
-                    tableItemsDialog.medias[dialogPostMediasIdx].type == 'video'
+                    dialogPost &&
+                    tableItemsDialog.medias[dialogPostMediasIdx].type ==
+                      'video'
                   "
-                  :options="{
-                    ...videoOptions,
-                    sources: [
-                      {
-                        src: tableItemsDialog.medias[dialogPostMediasIdx]
-                          .vodUrl,
-                      },
-                    ],
-                  }"
-                  class="vid"
-                  :is-show="dialogPost"
-                ></Video-Player>
+                  :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
+                  :style="{ objectFit: isContain }"
+                  class="vjs-custom-skin video-player"
+                  ref="videoPlayer"
+                  :options="optionsVideo"
+                  style="height: 100%; width: 100%"
+                >
+                </video-player>
                 <v-img
                   v-else
                   :src="tableItemsDialog.medias[dialogPostMediasIdx].url"
@@ -146,7 +144,7 @@ import VideoPlayer from "../video.vue";
 export default {
   components: {
     DatePicker,
-    VideoPlayer,
+    // VideoPlayer,
   },
   props: [
     "dialogPost",
@@ -157,26 +155,31 @@ export default {
   data() {
     return {
       priority: false,
-      videoOptions: {
-        autoplay: true,
+      status: true,
+      playerOptions: {
+        overNative: true,
         controls: true,
-        controlBar: {
-          timeDivider: false,
-          durationDisplay: false,
+        techOrder: ["html5"],
+        sourceOrder: true,
+        flash: {
+          hls: { withCredentials: false },
+          swf: "/static/media/video-js.swf",
         },
-        sources: [
-          {
-            src: "",
-          },
-        ],
+        html5: { hls: { withCredentials: false } },
+        sources: [],
       },
     };
   },
   computed: {
+    player() {
+      console.log(this.$refs.videoPlayer.player);
+      return this.$refs.videoPlayer.player;
+    },
+    isPlay() {
+      return this.status;
+    },
     vodUrl() {
-      // tableItemsDialog.medias[dialogPostMediasIdx].url
       const item = this.tableItemsDialog.medias[this.dialogPostMediasIdx];
-      console.log(item);
       if (item.vodUrl) {
         return item.vodUrl;
       } else {
@@ -192,6 +195,59 @@ export default {
         const joinPathName = `${splitPathName.join("/")}/${newFormatFileUrl}`;
         const fullPath = `${origin}${joinPathName}`;
         return fullPath;
+      }
+    },
+    optionsVideo() {
+      const item = this.tableItemsDialog.medias[this.dialogPostMediasIdx];
+      if (item.vodUrl && item.type === "video") {
+        const url = new URL(item.vodUrl);
+        const split = url.pathname.split(".");
+        const extension = split[split.length - 1];
+        const temp = { ...this.playerOptions };
+        if (extension === "m3u8") {
+          const hls = {
+            ...temp,
+            sources: [
+              {
+                withCredentials: false,
+                type: "application/x-mpegURL",
+                src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
+                  .vodUrl,
+              },
+            ],
+          };
+          return hls;
+        } else {
+          const mp4 = {
+            ...temp,
+            sources: [
+              {
+                withCredentials: false,
+                type: "video/mp4",
+                src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
+                  .vodUrl,
+              },
+            ],
+          };
+          return mp4;
+        }
+      }
+    },
+    isContain() {
+      const metadata =
+        this.tableItemsDialog.medias[this.dialogPostMediasIdx].metadata;
+      const width = Number(metadata.width);
+      const height = Number(metadata.height);
+      const ratio = height / width;
+      if (width >= height) {
+        return "contain";
+      } else {
+        if (ratio < 1.5) {
+          return "contain";
+        } else {
+          // console.log("masuk else");
+          return "cover";
+        }
       }
     },
   },
