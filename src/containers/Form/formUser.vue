@@ -126,15 +126,44 @@
               ></v-checkbox>
             </div>
           </div>
-          <div @click="openDialog" :class="form['remove-label']">Remove Account </div>
-          <custom-button
-            :loading="loading"
+
+          <div v-if="$route.params.id" class="whitesnow" :class="form.box">
+            <div :class="form['title-copy']">Merupakan link penghapusan akun yang akan dikirimkan kepada seleb bersangkutan</div>
+            <div @click="copyUrl" :class="form['text-copy']">
+              <v-icon x-small color="secondary" >far fa-copy</v-icon>
+              <div>Salin Link Penghapusan</div>
+            </div>
+          </div>
+
+          <v-snackbar
+            v-model="show"
+            :timeout="3000"
             color="success"
-            class="white--text"
-            type="submit"
+            outlined
           >
-            {{ $t("button.save") }}
-          </custom-button>
+            <div>Link Telah Disalin</div>  
+
+          </v-snackbar>
+
+          <!-- <div @click="openDialog" :class="form['remove-label']">Remove Account </div> -->
+          <div :class="form.actions">
+            <custom-button
+              v-if="$route.params.id"
+              color="whitesnow"
+              class="primary--text"
+              @click="openDialog"
+            >
+              Hapus Account
+            </custom-button>
+            <custom-button
+              :loading="loading"
+              color="success"
+              class="white--text"
+              type="submit"
+            >
+              Simpan
+            </custom-button>
+          </div>
         </v-col>
         <v-col cols="6"></v-col>
       </v-row>
@@ -179,10 +208,28 @@ export default {
       errorPassword: "",
       dialog : false,
       loadingDelete : false,
-      isLoading : false
+      isLoading : false,
+      show : false
     };
   },
   methods: {
+    copyUrl() {
+      this.show = true
+      console.log(this.$route.params)
+      const username = this.data.username
+      const server = process.env.VUE_APP_SERVER_STATUS
+      const currentStatus = this.checkPositionServer(server)
+      const url = `${currentStatus}web.kipaskipas.com/delete-account/${username}`
+      navigator.clipboard.writeText(url);
+    },
+    checkPositionServer(current) {
+      switch (current) {
+        case 'testing': return 'test-';
+        case 'staging' : return 'stg-';
+        default: return ''
+          break;
+      }
+    },
     closeDialog() {
       this.dialog = false
     },
@@ -246,6 +293,39 @@ export default {
   margin-bottom: 12px;
   cursor: pointer;
 }
+.box {
+  padding: 24px;
+  display: grid;
+  gap: 6px;
+}
+.text-copy {
+  color: #1890FF;
+  font-family: Roboto;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+.title-copy {
+  color: var(--Charcoal, #4A4A4A);
+  font-family: Roboto;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 163.636% */
+  letter-spacing: 0.11px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
 </style>
 
 <style lang="sass" scoped>
