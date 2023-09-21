@@ -23,9 +23,6 @@
 <script>
 import VideoPlayer from './video.vue';
 export default {
-  // components : {
-  //   VideoPlayer
-  // },
   props: {
     item: {
       type: Object
@@ -51,13 +48,7 @@ export default {
           swf: '/static/media/video-js.swf'
         },
         html5: { hls: { withCredentials: false } },
-        sources: [
-          // {
-          //   withCredentials: false,
-          //   type: 'application/x-mpegURL',
-          //   src: this.item.vodUrl
-          // },
-        ],
+        sources: [],
       },
       videoOptions: {
         overNative: true,
@@ -70,18 +61,7 @@ export default {
 
         },
         html5: { hls: { withCredentials: false } },
-        // sources: [
-        //   {
-        //     withCredentials: false,
-        //     type: 'application/x-mpegURL',
-        //     src: this.item.vodUrl
-        //   }
-        // ]
         sources: [
-          //         {
-          //   type: 'rtmp/mp4',
-          //   src: 'rtmp://184.72.239.149/vod/&mp4:BigBuckBunny_115k.mov'
-          // }, 
           {
             withCredentials: false,
             type: 'application/x-mpegURL',
@@ -164,7 +144,6 @@ export default {
           return mp4
         }
       }
-
     },
     isContain() {
       const metadata = this.item.metadata

@@ -52,7 +52,8 @@ export default {
         amountCollected : 0,
         amountWithdraw : 0,
         createAt : '',
-        expiredAt : ''
+        expiredAt : '',
+        vod : {}
       },
     }
   },
@@ -68,7 +69,7 @@ export default {
       return this.fetchDetailDonation(id)
         .then(response => {
           const medias = response.medias
-          let image,video
+          let image,video, vod
           medias.forEach(media => {
             if(media.type === 'image'){
               this.image = media.url
@@ -77,9 +78,10 @@ export default {
               this.video = media.url
               const url = this.vodUrl(media)
               video = url
-              
+              vod = media
             }
           })
+          console.log({vod})
           this.donation = Object.assign({} , this.donation ,{
             province : response.province.name,
             initiator : response.initiator.name,
@@ -93,7 +95,9 @@ export default {
             amountWithdraw : response.amountWithdraw,
             createAt : response.createAt,
             expiredAt : response.expiredAt,
-            status : response.status
+            status : response.status,
+            vod
+
           })
         })
         .catch(err => {
