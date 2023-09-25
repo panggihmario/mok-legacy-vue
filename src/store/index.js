@@ -6,6 +6,7 @@ import news from "./news";
 import post from "./Post";
 import donation from "./donation";
 import donationCategory from "./donation/category";
+import donationBadge from "./donation/badge";
 import account from "./account";
 import complaint from "./complaint";
 import report from "./report";
@@ -35,6 +36,7 @@ export default new Vuex.Store({
     post,
     donation,
     donationCategory,
+    donationBadge,
     account,
     complaint,
     report,
