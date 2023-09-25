@@ -9,7 +9,7 @@
     <DrawerNews v-if="viewNews && page === 'news'" />
     <DrawerDetail v-if="detail && page === 'product'" />
     <Preview-Tiktok-Data
-      v-if="previewTiktok && page === 'postTiktok'"
+      v-if="page === 'postTiktok'"
     ></Preview-Tiktok-Data>
     <Preview-Douyin-Data
       v-if="previewTiktok && page === 'postDouyin'"
@@ -17,6 +17,9 @@
     <Preview-Instagram-Data
       v-if="previewTiktok && page === 'postInstagram'"
     ></Preview-Instagram-Data>
+    <Preview-List-Badge
+      v-if="page === 'badge create'"
+    ></Preview-List-Badge>
   </div>
 </template>
 
@@ -27,6 +30,7 @@ import DrawerDetail from "../Product/drawer";
 import PreviewTiktokData from "../../views/Post/Tiktok/previewTiktokData.vue";
 import PreviewDouyinData from "../../views/Post/Tiktok/douyin/preview.vue";
 import PreviewInstagramData from "../../views/Post/Instagram/preview/index.vue";
+import PreviewListBadge from "../../views/Master/Badge/create/listBadge.vue";
 
 export default {
   components: {
@@ -35,6 +39,7 @@ export default {
     PreviewTiktokData,
     PreviewDouyinData,
     PreviewInstagramData,
+    PreviewListBadge,
   },
   mounted() {
     this.page = this.$route.meta.page;

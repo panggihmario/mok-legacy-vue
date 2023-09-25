@@ -3,10 +3,10 @@
     <div class="mt-8">
       <div class="d-flex align-center">
         <v-avatar size="100" color="grey" class="mr-4">
-          <img 
-            v-if="data.photo" 
-            :src="data.photo" 
-            style="object-fit: contain;"
+          <img
+            v-if="data.photo"
+            :src="data.photo"
+            style="object-fit: contain"
           />
         </v-avatar>
         <div class="d-flex flex-column">
@@ -14,7 +14,7 @@
             class="account-edit__subtitle font-weight-medium charcoal--text mb-3"
             >Unggah foto profil</span
           >
-          <custom-button 
+          <custom-button
             color="secondary"
             @click="handleUpload('upload-account-user')"
             size="small"
@@ -24,9 +24,9 @@
           </custom-button>
           <upload-oss
             id="upload-account-user"
-            style="display: none" 
+            style="display: none"
             @response="getResponse"
-            :typeAllowed="['jpeg','png', 'jpg']"
+            :typeAllowed="['jpeg', 'png', 'jpg']"
           />
         </div>
       </div>
@@ -61,15 +61,19 @@
               dense
             />
           </div>
-          
+
           <custom-input
             :label="$t('input.username')"
             name="Username"
             :value="data.username"
             v-model="data.username"
-            :rules="{required : true , regex : '^(?=[a-z0-9._]{4,20}$)(?!^[._]|.*[._]$)[a-z0-9._]*[a-z][a-z0-9._]*$'}"
-            />
-            <!-- rules="required|alpha_dash" -->
+            :rules="{
+              required: true,
+              regex:
+                '^(?=[a-z0-9._]{4,20}$)(?!^[._]|.*[._]$)[a-z0-9._]*[a-z][a-z0-9._]*$',
+            }"
+          />
+          <!-- rules="required|alpha_dash" -->
           <custom-input
             :label="$t('input.password')"
             name="Password"
@@ -106,7 +110,21 @@
             rules="required|numeric|min:10"
           />
 
-          <div class="verified-box my-10 pa-6 font-weight-medium whitesnow">
+          <div>
+            <custom-select
+              label="Badge"
+              placeholder="Pilih badge"
+              v-model="data.donationBadgeId"
+              :items="listBadge"
+              :value="data.donationBadgeId"
+              itemLabel="id"
+              item-text="name"
+              item-value="id"
+              dense
+            />
+          </div>
+
+          <div class="verified-box pa-6 mb-6 font-weight-medium whitesnow">
             <p>Verified Account</p>
             <span>
               Akun ini sudah memenuhi
@@ -126,7 +144,9 @@
               ></v-checkbox>
             </div>
           </div>
-          <div @click="openDialog" :class="form['remove-label']">Remove Account </div>
+          <div @click="openDialog" :class="form['remove-label']">
+            Remove Account
+          </div>
           <custom-button
             :loading="loading"
             color="success"
@@ -140,12 +160,12 @@
       </v-row>
     </div>
     <Dialog-Delete
-        title="Yakin menghapus user ini?"
-        description="User yang kamu hapus tidak akan tampil di halaman user lagi"
-        :dialog="dialog"
-        @closeDialog="closeDialog"
-        @handleDelete="handleDelete"
-        :loading="loadingDelete"
+      title="Yakin menghapus user ini?"
+      description="User yang kamu hapus tidak akan tampil di halaman user lagi"
+      :dialog="dialog"
+      @closeDialog="closeDialog"
+      @handleDelete="handleDelete"
+      :loading="loadingDelete"
     ></Dialog-Delete>
   </custom-form>
 </template>
@@ -156,7 +176,7 @@ import DialogDelete from "@/components/material/Dialog/DialogDelete";
 export default {
   components: {
     Label,
-    DialogDelete
+    DialogDelete,
   },
   props: {
     loading: {
@@ -168,53 +188,57 @@ export default {
     type: {
       type: String,
     },
-    listAccountType : {
-      type : Array
-    }
+    listAccountType: {
+      type: Array,
+    },
+    listBadge: {
+      type: Array,
+    },
   },
   data() {
     return {
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",
       errorPassword: "",
-      dialog : false,
-      loadingDelete : false,
-      isLoading : false
+      dialog: false,
+      loadingDelete: false,
+      isLoading: false,
     };
   },
   methods: {
     closeDialog() {
-      this.dialog = false
+      this.dialog = false;
     },
     handleDelete() {
-      this.loadingDelete = true
+      this.loadingDelete = true;
       setTimeout(() => {
-        this.$emit('deleteUser')
-        this.loadingDelete = false
-      }, 1500)
+        this.$emit("deleteUser");
+        this.loadingDelete = false;
+      }, 1500);
     },
     openDialog() {
-      this.dialog = true
+      this.dialog = true;
     },
     handleUpload(id) {
       document.getElementById(id).click();
     },
     handleSubmit() {
-      let payload;
-      if (this.confirmPassword != "") {
-        payload = {
-          ...this.data,
-          accountType : this.data.role.replace("ROLE_", "")
-        };
-        this.emitChange(payload);
-      } else {
-        payload = {
-          ...this.data,
-          password: null,
-          accountType : this.data.role.replace("ROLE_", "")
-        };
-        this.emitChange(payload);
-      }
+      console.log(this.data);
+      // let payload;
+      // if (this.confirmPassword != "") {
+      //   payload = {
+      //     ...this.data,
+      //     accountType: this.data.role.replace("ROLE_", ""),
+      //   };
+      //   this.emitChange(payload);
+      // } else {
+      //   payload = {
+      //     ...this.data,
+      //     password: null,
+      //     accountType: this.data.role.replace("ROLE_", ""),
+      //   };
+      //   this.emitChange(payload);
+      // }
     },
     emitChange(payload) {
       if (this.confirmPassword === this.data.password) {
@@ -227,11 +251,11 @@ export default {
     getResponse(payload) {
       this.status = payload.status;
       // this.data.photo = payload.response.url;
-      if(payload.status === 'loading') {
-        this.isLoading = true
-      }else{
-        this.data.photo = payload.url
-        this.isLoading = false
+      if (payload.status === "loading") {
+        this.isLoading = true;
+      } else {
+        this.data.photo = payload.url;
+        this.isLoading = false;
       }
     },
   },
@@ -240,7 +264,7 @@ export default {
 
 <style lang="scss" module="form">
 .remove-label {
-  color: #E70000;
+  color: #e70000;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 12px;
