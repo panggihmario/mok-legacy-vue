@@ -7,6 +7,7 @@
       @onSubmit="onSubmit"
       @deleteUser="handleDelete"
       :listAccountType="listAccountType"
+      :listBadge="listBadge"
       type="edit"
     />
     <v-snackbar top right v-model="alertError" color="error">
@@ -33,6 +34,7 @@ export default {
       alertError: false,
       alertSuccess: false,
       listAccountType : [],
+      listBadge : [],
       oldPassword: "",
       items: [
         {
@@ -61,6 +63,7 @@ export default {
         isVerified: false,
         accountType: "",
         role: "",
+        donationBadgeId: "",
       },
     };
   },
@@ -70,7 +73,13 @@ export default {
       updateAccount: "account/updateAccountUser",
       deleteUser: "account/deleteUser",
       getListRole: "account/getListRole",
+      getListBadge: "donation/getListBadge",
     }),
+    handleGetListBadge() {
+      return this.getListBadge().then((res) => {
+        this.listBadge = res.data;
+      });
+    },
     handleGetListRole() {
       const payload = 'EXTERNAL'
       return this.getListRole(payload).then((response) => {
@@ -154,6 +163,7 @@ export default {
   mounted() {
     this.handleResponseById();
     this.handleGetListRole()
+    this.handleGetListBadge()
   },
 };
 </script>

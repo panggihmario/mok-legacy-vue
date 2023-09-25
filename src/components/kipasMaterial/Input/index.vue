@@ -3,16 +3,16 @@
     <div class="kipas__field-container">
       <label
         class="kipas__label"
-        :style="label ===  '-' && {color : 'transparent'} "
+        :style="label === '-' && { color: 'transparent' }"
       >
-        {{ label  }} 
+        {{ label }}
       </label>
       <div
         :class="[
           'kipas__field',
           `kipas__field-${size}-${variant}`,
-          { 'kipas__error' : isError},
-          { 'kipas__error' : errors.length > 0 },
+          { kipas__error: isError },
+          { kipas__error: errors.length > 0 },
         ]"
       >
         <input
@@ -22,14 +22,14 @@
           :maxlength="counter"
           v-on="inputListener"
         />
-        <v-icon color="charcoal" v-if="icon" size="15px" >fas fa-link</v-icon>
+        <v-icon color="charcoal" v-if="icon" size="15px">fas fa-link</v-icon>
       </div>
-      <div v-if="errors.length > 0 || isError " class="kipas__error-message">
+      <div v-if="errors.length > 0 || isError" class="kipas__error-message">
         {{ errorMessage ? errorMessage : errors[0] }}
       </div>
       <div
         v-if="counter"
-        class="d-flex justify-space-between font-10"
+        class="d-flex justify-space-between font-12"
         :class="{ 'warning--text': value.length > counter }"
       >
         <div>
@@ -38,9 +38,10 @@
           }}</span>
         </div>
         <span>
-          <span :class="value.length === counter && 'warning--text'  ">{{ value.length }} </span><span>/{{ counter }}</span>
+          <span :class="value.length === counter && 'warning--text'"
+            >{{ value.length }}/{{ counter }}</span
+          >
         </span>
-        
       </div>
     </div>
   </ValidationProvider>
@@ -49,19 +50,19 @@
 <script>
 export default {
   props: {
-    variant : {
+    variant: {
       type: String,
       default: "outlined",
     },
-    icon : {
-      type : String
+    icon: {
+      type: String,
     },
     type: {
       type: String,
       default: "text",
     },
-    errorMessage : {
-      type : String
+    errorMessage: {
+      type: String,
     },
     label: {
       type: String,
@@ -69,7 +70,7 @@ export default {
     value: {
       type: [String, Number, Object],
       require: true,
-      default : ''
+      default: "",
     },
     rules: {
       type: [String, Object],
@@ -117,7 +118,7 @@ export default {
     inputListener() {
       const vm = this;
       return Object.assign({}, this.$listeners, {
-        input: function(event) {
+        input: function (event) {
           vm.$emit("input", event.target.value);
         },
       });
@@ -126,7 +127,7 @@ export default {
 };
 </script>
 
-<style lang="scss" src="../material.scss" ></style>
+<style lang="scss" src="../material.scss"></style>
 
 <style lang="scss" scoped>
 // .utils {
