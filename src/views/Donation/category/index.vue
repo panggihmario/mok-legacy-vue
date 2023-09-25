@@ -92,6 +92,15 @@
         </div>
       </v-card>
     </v-dialog>
+    <v-pagination
+        v-if="totalPages > 1"
+        :length="totalPages"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+        total-visible="5"
+        color="primary"
+        v-model="page"
+      />
 
     <v-snackbar top right v-model="isSuccessSubmit" color="success">
       Create Success
@@ -147,6 +156,9 @@ export default {
     }
   },
   watch: {
+    page () {
+      return this.handleGetListCategory()
+    },
     dataPayload : {
       handler : function (value) {
         let schema = yup.object({
@@ -206,7 +218,7 @@ export default {
     getResponseUpload(data) {
       if (data.status == "success") {
         this.isErrorUpload = false;
-        this.dataPayload.params.icon = data.response.url;
+        this.dataPayload.params.icon = data.url;
       } else if (data.status == "failed") {
         this.isErrorUpload = true;
       }
@@ -256,7 +268,6 @@ export default {
           this.handleGetListCategory();
         })
         .catch((err) => {
-          console.log(err.response);
           this.isErrorSubmit = true;
           this.errorSubmitMessage = err.response.data.data;
           setTimeout(() => {
