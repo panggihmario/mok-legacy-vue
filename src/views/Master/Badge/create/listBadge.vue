@@ -30,7 +30,7 @@ export default {
       {
         text: "Badge",
         value: "badge",
-        width: "100",
+        width: "70",
         class: "whitesnow",
         align: "center",
       },
