@@ -2,7 +2,9 @@
   <!-- <div :class="d['container-box']"> -->
   <div :class="d['container-box']" v-if="item.vodUrl || item.thumbnail">
     <div :class="d['container-media']">
-      <video-player v-if="item.type === 'video'" :id="`videodialog`" :style="{ objectFit: isContain }"
+      <video-player 
+        
+        v-if="item.type === 'video'" :id="`videodialog`" :class="isContain"
         class="vjs-custom-skin video-player" ref="videoPlayer" :options="optionsVideo">
       </video-player>
 
@@ -34,9 +36,19 @@ export default {
       type: Boolean
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+  },
+
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
+  },
   data() {
     return {
       status: true,
+      fit : '',
       playerOptions: {
         overNative: true,
         autoplay: false,
@@ -49,6 +61,13 @@ export default {
         },
         html5: { hls: { withCredentials: false } },
         sources: [],
+        controlBar: {
+          timeDivider : false,
+          currentTimeDisplay : false,
+          timeDivider : false,
+          durationDisplay : false
+          // remainingTimeDisplay : false,
+        },
       },
       videoOptions: {
         overNative: true,
@@ -57,7 +76,10 @@ export default {
         techOrder: ['flash', 'html5'],
         sourceOrder: true,
         controlBar: {
-          fullscreenToggle: false,
+          // fullscreenToggle: false,
+          durationDisplay : false,
+          timeDivider : false,
+          currentTimeDisplay : false,
 
         },
         html5: { hls: { withCredentials: false } },
@@ -71,19 +93,32 @@ export default {
     }
   },
   methods: {
-    async onPlayVideo(id) {
-      // const id = `videodialog-${this.i}-${this.item.id}`
-      const video = document.getElementById(id)
-      try {
-        // await videoElem.play();
-        // playButton.classList.add("playing");
-        await video.play();
-        this.status = false
-      } catch (err) {
-        console.log(err)
-        // playButton.classList.remove("playing");
+    onResize() {
+      const video = document.getElementById('videodialog')
+      if(window.innerHeight === screen.height) {
+        
+        video.classList.remove('isCover')
+        video.classList.add('isContain')
+      }else{
+        const metadata = this.item.metadata
+        const width = Number(metadata.width)
+        const height = Number(metadata.height)
+        const ratio = height / width
+        if (width >= height) {
+          video.classList.remove('isCover')
+          video.classList.add('isContain')
+        } else {
+          if (ratio < 1.5) {
+            video.classList.remove('isCover')
+            video.classList.add('isContain')
+          } else {
+            console.log('else')
+            video.classList.remove('isContain')
+            video.classList.add('isCover')
+          }
+        }
       }
-    }
+    },
   },
   computed: {
     player() {
@@ -151,13 +186,12 @@ export default {
       const height = Number(metadata.height)
       const ratio = height / width
       if (width >= height) {
-        return 'contain'
+        return 'isContain'
       } else {
         if (ratio < 1.5) {
-          return 'contain'
+          return 'isContain'
         } else {
-          console.log('masuk else')
-          return 'cover'
+          return 'isCover'
         }
       }
     }
@@ -183,5 +217,19 @@ video {
 
 .video-js {
   object-fit: inherit !important;
+}
+
+.isContain {
+  object-fit: contain !important;
+}
+.isCover {
+  object-fit: cover !important;
+}
+@media all and (display-mode: fullscreen) {
+  /* every CSS goes here that you want 
+  to apply or alter in the fullscreen mode*/
+  video {
+    /* object-fit: contain !important; */
+  }
 }
 </style>
