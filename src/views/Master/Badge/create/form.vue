@@ -97,7 +97,7 @@
           color="secondary"
           class="text-capitalize font-12 font-weight-700"
           style="letter-spacing: 0; width: 120px"
-          @click="actionSubmitEdit"
+          @click="isDialogEdit = true"
           :loading="isLoadingSubmit"
           :disabled="isDisableSubmit"
         >
@@ -117,6 +117,36 @@
         </v-btn>
       </section>
     </section>
+
+    <Dialog-Edit
+      :isOpen="isDialogEdit"
+      @closeDialog="isDialogEdit = false"
+      @actionSubmitEdit="actionSubmitEdit"
+      @errorPassword="errorPassword"
+    ></Dialog-Edit>
+
+    <v-snackbar
+      v-model="isErrorUpload"
+      :timeout="3000"
+      color="warning"
+      top
+      right
+    >
+      <span style="font-size: 12px; font-weight: 500">{{
+        messageErrorUpload
+      }}</span>
+    </v-snackbar>
+    <v-snackbar
+      v-model="isErrorSubmit"
+      :timeout="3000"
+      color="warning"
+      top
+      right
+    >
+      <span style="font-size: 12px; font-weight: 500">{{
+        messageErrorSubmit
+      }}</span>
+    </v-snackbar>
   </div>
 </template>
 
@@ -125,11 +155,13 @@ import * as yup from "yup";
 import AlertWarning from "./alert.vue";
 import CurrencyInput from "./currencyInput.vue";
 import { mapState, mapActions } from "vuex";
+import DialogEdit from "./popupEdit.vue";
 
 export default {
   components: {
     AlertWarning,
     CurrencyInput,
+    DialogEdit,
   },
   data() {
     return {
@@ -144,6 +176,9 @@ export default {
       messageErrorUpload: "",
       isLoadingSubmit: false,
       isDisableSubmit: true,
+      isErrorSubmit: false,
+      messageErrorSubmit: "",
+      isDialogEdit: false,
     };
   },
   computed: {
@@ -268,7 +303,8 @@ export default {
         })
         .catch((err) => {
           this.isLoadingSubmit = false;
-          console.log(err);
+          this.isErrorSubmit = true;
+          this.messageErrorSubmit = err.response.data.message;
         });
     },
     actionSubmitEdit() {
@@ -287,8 +323,13 @@ export default {
         })
         .catch((err) => {
           this.isLoadingSubmit = false;
-          console.log(err);
+          this.isErrorSubmit = true;
+          this.messageErrorSubmit = err.response.data.message;
         });
+      },
+    errorPassword(v) {
+      this.isErrorSubmit = true;
+      this.messageErrorSubmit = v;
     },
     moveTo(v) {
       this.$router.push(v);

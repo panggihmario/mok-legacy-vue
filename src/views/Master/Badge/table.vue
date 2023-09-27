@@ -6,15 +6,20 @@
     disable-sort
     :items="items"
     class="grey--text"
+    :items-per-page="-1"
   >
     <template v-slot:item="{ item }">
       <tr>
         <td>
           <div class="d-flex justify-center align-center" style="margin: 4px">
-            <img :src="item.url" width="50px" />
+            <img :src="item.url" :width="right ? '40px' : '50px'" />
           </div>
         </td>
-        <td class="font-12">{{ item.name }}</td>
+        <td class="font-12">
+          <div :style="right ? 'width: 158px; overflow: hidden' : ''">
+            {{ item.name }}
+          </div>
+        </td>
         <td class="font-12">
           <span>{{
             `${item.min.toLocaleString("id")} - ${item.max.toLocaleString(
@@ -44,7 +49,7 @@
 
 <script>
 export default {
-  props: ["headers", "items", "noAction"],
+  props: ["headers", "items", "noAction", "right"],
   setup() {
     const openModalDelete = (id) => {
       console.log("openModalDelete", id);
