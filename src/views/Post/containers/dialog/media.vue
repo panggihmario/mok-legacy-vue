@@ -2,12 +2,9 @@
   <!-- <div :class="d['container-box']"> -->
   <div :class="d['container-box']" v-if="item.vodUrl || item.thumbnail">
     <div :class="d['container-media']">
-      <video-player 
-        
-        v-if="item.type === 'video'" :id="`videodialog`" :class="isContain"
+      <video-player :style="{objectFit : isContain}"  v-if="item.type === 'video' && optionsVideo" :id="`videodialog-${item.id}`"
         class="vjs-custom-skin video-player" ref="videoPlayer" :options="optionsVideo">
       </video-player>
-
       <img v-else :class="d.vid" :src="item.thumbnail.large" :lazy-src="item.thumbnail.small"
         :style="{ objectFit: isContain }" alt="media" loading="lazy" :id="`videodialog`" />
     </div>
@@ -48,7 +45,7 @@ export default {
   data() {
     return {
       status: true,
-      fit : '',
+      fit: '',
       playerOptions: {
         overNative: true,
         autoplay: false,
@@ -62,62 +59,26 @@ export default {
         html5: { hls: { withCredentials: false } },
         sources: [],
         controlBar: {
-          timeDivider : false,
-          currentTimeDisplay : false,
-          timeDivider : false,
-          durationDisplay : false
+          timeDivider: false,
+          currentTimeDisplay: false,
+          timeDivider: false,
+          durationDisplay: false
           // remainingTimeDisplay : false,
         },
       },
-      videoOptions: {
-        overNative: true,
-        autoplay: false,
-        controls: true,
-        techOrder: ['flash', 'html5'],
-        sourceOrder: true,
-        controlBar: {
-          // fullscreenToggle: false,
-          durationDisplay : false,
-          timeDivider : false,
-          currentTimeDisplay : false,
-
-        },
-        html5: { hls: { withCredentials: false } },
-        sources: [
-          {
-            withCredentials: false,
-            type: 'application/x-mpegURL',
-            src: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8'
-          }],
-      }
     }
   },
   methods: {
     onResize() {
-      const video = document.getElementById('videodialog')
-      if(window.innerHeight === screen.height) {
-        
-        video.classList.remove('isCover')
-        video.classList.add('isContain')
-      }else{
-        const metadata = this.item.metadata
-        const width = Number(metadata.width)
-        const height = Number(metadata.height)
-        const ratio = height / width
-        if (width >= height) {
-          video.classList.remove('isCover')
-          video.classList.add('isContain')
+      const element = document.getElementById(`videodialog-${this.item.id}`)
+      console.log()
+        if (window.innerHeight === screen.height) {
+          element.classList.add('isContain')
         } else {
-          if (ratio < 1.5) {
-            video.classList.remove('isCover')
-            video.classList.add('isContain')
-          } else {
-            console.log('else')
-            video.classList.remove('isContain')
-            video.classList.add('isCover')
-          }
+          element.classList.remove('isContain')
         }
-      }
+
+
     },
   },
   computed: {
@@ -148,11 +109,11 @@ export default {
     },
     optionsVideo() {
       const item = this.item
-      if ( item.vodUrl && item.type === 'video') {
+      const temp = { ...this.playerOptions }
+      if (item.vodUrl) {
         const url = new URL(item.vodUrl)
         const split = url.pathname.split(".")
         const extension = split[split.length - 1]
-        const temp = { ...this.playerOptions }
         if (extension === 'm3u8') {
           const hls = {
             ...temp,
@@ -178,6 +139,18 @@ export default {
           }
           return mp4
         }
+      } else {
+        const mp4 = {
+          ...temp,
+          sources: [
+            {
+              withCredentials: false,
+              type: 'video/mp4',
+              src: this.item.url
+            }
+          ]
+        }
+        return mp4
       }
     },
     isContain() {
@@ -186,12 +159,12 @@ export default {
       const height = Number(metadata.height)
       const ratio = height / width
       if (width >= height) {
-        return 'isContain'
+        return 'contain'
       } else {
         if (ratio < 1.5) {
-          return 'isContain'
+          return 'contain'
         } else {
-          return 'isCover'
+          return 'cover'
         }
       }
     }
@@ -222,10 +195,13 @@ video {
 .isContain {
   object-fit: contain !important;
 }
+
 .isCover {
-  object-fit: cover !important;
+  object-fit: cover;
 }
+
 @media all and (display-mode: fullscreen) {
+
   /* every CSS goes here that you want 
   to apply or alter in the fullscreen mode*/
   video {
