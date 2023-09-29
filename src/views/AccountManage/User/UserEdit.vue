@@ -33,8 +33,8 @@ export default {
       loading: false,
       alertError: false,
       alertSuccess: false,
-      listAccountType : [],
-      listBadge : [],
+      listAccountType: [],
+      listBadge: [],
       oldPassword: "",
       items: [
         {
@@ -81,27 +81,32 @@ export default {
       });
     },
     handleGetListRole() {
-      const payload = 'EXTERNAL'
+      const payload = "EXTERNAL";
       return this.getListRole(payload).then((response) => {
-        const responsData = response.data.data
-          this.listAccountType = response.data.data
-          const filterData = responsData.filter(d => {
-            return (d !== 'ROLE_ADMIN' && d !== 'ROLE_SYSTEM' && d !== 'ROLE_ADMIN_SOCIAL' && d !== 'ROLE_ADMIN_FINANCE' )
-          })
-          this.listAccountType = filterData
+        const responsData = response.data.data;
+        this.listAccountType = response.data.data;
+        const filterData = responsData.filter((d) => {
+          return (
+            d !== "ROLE_ADMIN" &&
+            d !== "ROLE_SYSTEM" &&
+            d !== "ROLE_ADMIN_SOCIAL" &&
+            d !== "ROLE_ADMIN_FINANCE"
+          );
+        });
+        this.listAccountType = filterData;
       });
     },
     handleDelete() {
       const id = this.$route.params.id;
       return this.deleteUser(id).then(() => {
         this.$router.push({
-          name : 'User',
-          params : {
-            page : 1
+          name: "User",
+          params: {
+            page: 1,
           },
-          query : {
-            search : ''
-          }
+          query: {
+            search: "",
+          },
         });
       });
     },
@@ -117,7 +122,7 @@ export default {
         this.loading = false;
         this.alertSuccess = true;
         setTimeout(() => {
-          const route = this.$route
+          const route = this.$route;
           this.$router.push({
             name: "User",
             params: {
@@ -154,6 +159,7 @@ export default {
           isVerified: responseData.isVerified,
           role: responseData.role,
           accountType: responseData.accountType,
+          donationBadgeId: responseData.donationBadgeId,
         };
         this.oldPassword = responseData.password;
         this.data = dataById;
@@ -162,13 +168,11 @@ export default {
   },
   mounted() {
     this.handleResponseById();
-    this.handleGetListRole()
-    this.handleGetListBadge()
+    this.handleGetListRole();
+    this.handleGetListBadge();
   },
 };
 </script>
-
-
 
 <style lang="sass" scoped>
 .account-edit
