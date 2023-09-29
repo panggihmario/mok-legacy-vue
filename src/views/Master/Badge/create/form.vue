@@ -324,9 +324,13 @@ export default {
         .catch((err) => {
           this.isLoadingSubmit = false;
           this.isErrorSubmit = true;
-          this.messageErrorSubmit = err.response.data.message;
+          if (err.response.status == 409) {
+            this.messageErrorSubmit = "Range nominal sudah terpakai";
+          } else {
+            this.messageErrorSubmit = err.response.data.message;
+          }
         });
-      },
+    },
     errorPassword(v) {
       this.isErrorSubmit = true;
       this.messageErrorSubmit = v;

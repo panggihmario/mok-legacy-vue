@@ -79,9 +79,11 @@ export default {
   watch: {
     isOpen() {
       this.dialog = true;
+      this.password = "";
     },
     dialog() {
       this.$emit("closeDialog", false);
+      this.password = "";
     },
   },
   methods: {
