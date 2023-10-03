@@ -110,7 +110,7 @@
             rules="required|numeric|min:10"
           />
 
-          <!-- <div>
+          <div>
             <custom-select
               label="Badge"
               placeholder="Pilih badge"
@@ -122,7 +122,7 @@
               item-value="id"
               dense
             />
-          </div> -->
+          </div>
 
           <div class="verified-box pa-6 mb-6 font-weight-medium whitesnow">
             <p>Verified Account</p>
@@ -236,7 +236,6 @@ export default {
   methods: {
     copyUrl() {
       this.show = true
-      console.log(this.$route.params)
       const username = this.data.username
       const server = process.env.VUE_APP_SERVER_STATUS
       const currentStatus = this.checkPositionServer(server)
