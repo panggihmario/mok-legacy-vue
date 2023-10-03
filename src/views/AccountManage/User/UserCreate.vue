@@ -64,7 +64,7 @@ export default {
         isVerified: false,
         accountType: "SELEB",
         role: "",
-        donationBadgeId: "",
+        // donationBadgeId: "",
       },
     };
   },
