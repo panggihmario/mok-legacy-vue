@@ -251,11 +251,11 @@ export default [
         path: "/bank",
         role: ["ROLE_ADMIN"],
       },
-      {
-        title: "Badge",
-        path: "/badge",
-        role: ["ROLE_ADMIN"],
-      },
+      // {
+      //   title: "Badge",
+      //   path: "/badge",
+      //   role: ["ROLE_ADMIN"],
+      // },
     ],
   },
   // {
