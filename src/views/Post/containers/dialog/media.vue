@@ -199,6 +199,9 @@ video {
 .isCover {
   object-fit: cover;
 }
+.vjs-fullscreen {
+  object-fit: contain !important;;
+}
 
 @media all and (display-mode: fullscreen) {
 
