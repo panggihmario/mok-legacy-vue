@@ -9,7 +9,7 @@
     <DrawerNews v-if="viewNews && page === 'news'" />
     <DrawerDetail v-if="detail && page === 'product'" />
     <Preview-Tiktok-Data
-      v-if="page === 'postTiktok'"
+      v-if="previewTiktok && page === 'postTiktok'"
     ></Preview-Tiktok-Data>
     <Preview-Douyin-Data
       v-if="previewTiktok && page === 'postDouyin'"

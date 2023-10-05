@@ -236,7 +236,6 @@ export default {
   methods: {
     copyUrl() {
       this.show = true
-      console.log(this.$route.params)
       const username = this.data.username
       const server = process.env.VUE_APP_SERVER_STATUS
       const currentStatus = this.checkPositionServer(server)
