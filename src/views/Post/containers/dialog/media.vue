@@ -2,10 +2,9 @@
   <!-- <div :class="d['container-box']"> -->
   <div :class="d['container-box']" v-if="item.vodUrl || item.thumbnail">
     <div :class="d['container-media']">
-      <video-player v-if="item.type === 'video'" :id="`videodialog`" :style="{ objectFit: isContain }"
+      <video-player :style="{objectFit : isContain}"  v-if="item.type === 'video' && optionsVideo" :id="`videodialog-${item.id}`"
         class="vjs-custom-skin video-player" ref="videoPlayer" :options="optionsVideo">
       </video-player>
-
       <img v-else :class="d.vid" :src="item.thumbnail.large" :lazy-src="item.thumbnail.small"
         :style="{ objectFit: isContain }" alt="media" loading="lazy" :id="`videodialog`" />
     </div>
@@ -34,9 +33,19 @@ export default {
       type: Boolean
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+  },
+
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
+  },
   data() {
     return {
       status: true,
+      fit: '',
       playerOptions: {
         overNative: true,
         autoplay: false,
@@ -49,41 +58,28 @@ export default {
         },
         html5: { hls: { withCredentials: false } },
         sources: [],
-      },
-      videoOptions: {
-        overNative: true,
-        autoplay: false,
-        controls: true,
-        techOrder: ['flash', 'html5'],
-        sourceOrder: true,
         controlBar: {
-          fullscreenToggle: false,
-
+          timeDivider: false,
+          currentTimeDisplay: false,
+          timeDivider: false,
+          durationDisplay: false
+          // remainingTimeDisplay : false,
         },
-        html5: { hls: { withCredentials: false } },
-        sources: [
-          {
-            withCredentials: false,
-            type: 'application/x-mpegURL',
-            src: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8'
-          }],
-      }
+      },
     }
   },
   methods: {
-    async onPlayVideo(id) {
-      // const id = `videodialog-${this.i}-${this.item.id}`
-      const video = document.getElementById(id)
-      try {
-        // await videoElem.play();
-        // playButton.classList.add("playing");
-        await video.play();
-        this.status = false
-      } catch (err) {
-        console.log(err)
-        // playButton.classList.remove("playing");
-      }
-    }
+    onResize() {
+      const element = document.getElementById(`videodialog-${this.item.id}`)
+      console.log()
+        if (window.innerHeight === screen.height) {
+          element.classList.add('isContain')
+        } else {
+          element.classList.remove('isContain')
+        }
+
+
+    },
   },
   computed: {
     player() {
@@ -113,11 +109,11 @@ export default {
     },
     optionsVideo() {
       const item = this.item
-      if ( item.vodUrl && item.type === 'video') {
+      const temp = { ...this.playerOptions }
+      if (item.vodUrl) {
         const url = new URL(item.vodUrl)
         const split = url.pathname.split(".")
         const extension = split[split.length - 1]
-        const temp = { ...this.playerOptions }
         if (extension === 'm3u8') {
           const hls = {
             ...temp,
@@ -143,6 +139,18 @@ export default {
           }
           return mp4
         }
+      } else {
+        const mp4 = {
+          ...temp,
+          sources: [
+            {
+              withCredentials: false,
+              type: 'video/mp4',
+              src: this.item.url
+            }
+          ]
+        }
+        return mp4
       }
     },
     isContain() {
@@ -156,7 +164,6 @@ export default {
         if (ratio < 1.5) {
           return 'contain'
         } else {
-          console.log('masuk else')
           return 'cover'
         }
       }
@@ -183,5 +190,25 @@ video {
 
 .video-js {
   object-fit: inherit !important;
+}
+
+.isContain {
+  object-fit: contain !important;
+}
+
+.isCover {
+  object-fit: cover;
+}
+.vjs-fullscreen {
+  object-fit: contain !important;;
+}
+
+@media all and (display-mode: fullscreen) {
+
+  /* every CSS goes here that you want 
+  to apply or alter in the fullscreen mode*/
+  video {
+    /* object-fit: contain !important; */
+  }
 }
 </style>
