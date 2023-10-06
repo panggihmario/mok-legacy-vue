@@ -110,7 +110,7 @@
             rules="required|numeric|min:10"
           />
 
-          <div>
+          <div v-if="$route.name == 'userEdit'">
             <custom-select
               label="Badge"
               placeholder="Pilih badge"
@@ -146,21 +146,18 @@
           </div>
 
           <div v-if="$route.params.id" class="whitesnow" :class="form.box">
-            <div :class="form['title-copy']">Merupakan link penghapusan akun yang akan dikirimkan kepada seleb bersangkutan</div>
+            <div :class="form['title-copy']">
+              Merupakan link penghapusan akun yang akan dikirimkan kepada seleb
+              bersangkutan
+            </div>
             <div @click="copyUrl" :class="form['text-copy']">
-              <v-icon x-small color="secondary" >far fa-copy</v-icon>
+              <v-icon x-small color="secondary">far fa-copy</v-icon>
               <div>Salin Link Penghapusan</div>
             </div>
           </div>
 
-          <v-snackbar
-            v-model="show"
-            :timeout="3000"
-            color="success"
-            outlined
-          >
-            <div>Link Telah Disalin</div>  
-
+          <v-snackbar v-model="show" :timeout="3000" color="success" outlined>
+            <div>Link Telah Disalin</div>
           </v-snackbar>
 
           <!-- <div @click="openDialog" :class="form['remove-label']">Remove Account </div> -->
@@ -227,26 +224,29 @@ export default {
       genderType: ["MALE", "FEMALE"],
       confirmPassword: "",
       errorPassword: "",
-      dialog : false,
-      loadingDelete : false,
-      isLoading : false,
-      show : false
+      dialog: false,
+      loadingDelete: false,
+      isLoading: false,
+      show: false,
     };
   },
   methods: {
     copyUrl() {
-      this.show = true
-      const username = this.data.username
-      const server = process.env.VUE_APP_SERVER_STATUS
-      const currentStatus = this.checkPositionServer(server)
-      const url = `${currentStatus}web.kipaskipas.com/delete-account/${username}`
+      this.show = true;
+      const username = this.data.username;
+      const server = process.env.VUE_APP_SERVER_STATUS;
+      const currentStatus = this.checkPositionServer(server);
+      const url = `${currentStatus}web.kipaskipas.com/delete-account/${username}`;
       navigator.clipboard.writeText(url);
     },
     checkPositionServer(current) {
       switch (current) {
-        case 'testing': return 'test-';
-        case 'staging' : return 'stg-';
-        default: return ''
+        case "testing":
+          return "test-";
+        case "staging":
+          return "stg-";
+        default:
+          return "";
           break;
       }
     },
@@ -319,7 +319,7 @@ export default {
   gap: 6px;
 }
 .text-copy {
-  color: #1890FF;
+  color: #1890ff;
   font-family: Roboto;
   font-size: 11px;
   font-style: normal;
@@ -331,7 +331,7 @@ export default {
   cursor: pointer;
 }
 .title-copy {
-  color: var(--Charcoal, #4A4A4A);
+  color: var(--Charcoal, #4a4a4a);
   font-family: Roboto;
   font-size: 11px;
   font-style: normal;
@@ -345,7 +345,6 @@ export default {
   gap: 16px;
   margin-top: 16px;
 }
-
 </style>
 
 <style lang="sass" scoped>
