@@ -31,8 +31,7 @@
                 <video-player
                   v-if="
                     dialogPost &&
-                    tableItemsDialog.medias[dialogPostMediasIdx].type ==
-                      'video'
+                    tableItemsDialog.medias[dialogPostMediasIdx].type == 'video'
                   "
                   :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
                   :style="{ objectFit: isContain }"
@@ -105,6 +104,7 @@
                 color="secondary"
                 size="small"
                 @click="actionPostFeedAsTrendingById(tableItemsDialog.id)"
+                :disabled="!tableItemsDialog.isVodAvailable"
               >
                 Jadikan Trending
               </custom-button>
