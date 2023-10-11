@@ -34,7 +34,7 @@
                 >mdi-circle-small</v-icon
               >
               <span :class="item.isVodAvailable ? 'green--text' : 'red--text'"
-                >MP4</span
+                >HLS</span
               >
             </div>
           </td>
