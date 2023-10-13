@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogPost" @click:outside="closeDialog" width="880">
+  <v-dialog v-model="dialogPost" @click:outside="closeDialog" width="711">
     <v-btn
       rounded
       icon
@@ -11,19 +11,19 @@
     >
       <v-icon>mdi-chevron-left</v-icon>
     </v-btn>
-    <v-card>
+    <v-card style="padding: 12px">
       <div
         v-if="!loadingDetail && tableItemsDialog.createBy"
         class="d-flex align-center"
       >
-        <div class="pt-7" style="width: 100%">
-          <div class="row no-gutters mx-6">
-            <div class="col">
+        <div>
+          <div class="d-flex">
+            <div style="margin-right: 12px">
               <div
                 class="black"
                 style="
-                  width: 362px;
-                  height: 456px;
+                  width: 307px;
+                  height: 665px;
                   border-radius: 8px;
                   overflow: hidden;
                 "
@@ -51,29 +51,44 @@
                 />
               </div>
             </div>
-            <div class="col font-12">
+
+            <div class="font-12" style="width: 360px; margin-top: 12px">
               <div>
                 <span class="font-10">User</span>
                 <p>@{{ tableItemsDialog.createBy }}</p>
               </div>
+
               <div
-                class="whitesnow mt-5 pa-2"
-                style="height: 400px; overflow: auto"
+                class="whitesnow mt-4 pa-2"
+                style="height: 300px; overflow: auto"
               >
                 {{ tableItemsDialog.description }}
               </div>
             </div>
+
+            <!-- <div>
+              <v-icon size="8px" class="cursor-pointer" @click="closeDialog"
+                >mdi-close</v-icon
+              >
+            </div> -->
           </div>
-          <div class="d-flex justify-space-between align-center px-6 py-2">
+
+          <div
+            class="d-flex justify-space-between align-center"
+            style="margin-top: 12px"
+          >
             <div class="d-flex">
               <div
                 v-if="
                   tableItemsDialog.medias && tableItemsDialog.medias.length > 1
                 "
+                class="d-flex"
+                style="gap: 8px; margin-right: 12px"
               >
                 <v-btn
                   icon
                   tile
+                  class="nav__btn-img"
                   @click="changeDialogPostImg(-1)"
                   :disabled="dialogPostMediasIdx == 0"
                 >
@@ -82,6 +97,7 @@
                 <v-btn
                   icon
                   tile
+                  class="nav__btn-img"
                   @click="changeDialogPostImg(1)"
                   :disabled="
                     dialogPostMediasIdx == tableItemsDialog.medias.length - 1
@@ -90,24 +106,37 @@
                   <v-icon>mdi-chevron-right</v-icon>
                 </v-btn>
               </div>
-              <div class="d-flex align-center" style="gap: 5px">
+              <div
+                v-if="tableItemsDialog.isVodAvailable"
+                class="d-flex align-center"
+                style="gap: 5px"
+              >
                 <input id="isPrior" type="checkbox" v-model="priority" />
                 <label for="isPrior" class="post-actions__label"
                   >Priority</label
                 >
               </div>
             </div>
-            <div class="post-actions">
+            <div class="post-actions" v-if="tableItemsDialog.isVodAvailable">
               <div class="post-actions__label">Trending sampai</div>
               <DatePicker @getEpoch="getEpoch" />
               <custom-button
                 color="secondary"
                 size="small"
                 @click="actionPostFeedAsTrendingById(tableItemsDialog.id)"
-                :disabled="!tableItemsDialog.isVodAvailable"
               >
                 Jadikan Trending
               </custom-button>
+            </div>
+            <div
+              v-else
+              class="d-flex align-center alert-hls warning--text"
+              style="width: 100%"
+            >
+              <span
+                >Menunggu proses HLS dari media dalam postingan ini, hanya bisa
+                ditrendingkan setelah proses selesai.</span
+              >
             </div>
           </div>
         </div>
@@ -302,20 +331,28 @@ export default {
 }
 
 .nav {
-  &__btn-left {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    left: 10em;
-    background: rgba($color: #000000, $alpha: 0.5);
-  }
-
-  &__btn-right {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    right: 10em;
-    background: rgba($color: #000000, $alpha: 0.5);
+  &__btn {
+    &-img {
+      color: #4a4a4a !important;
+      background-color: $whitesmoke;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+    &-left {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 10em;
+      background: rgba($color: #000000, $alpha: 0.5);
+    }
+    &-right {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      right: 10em;
+      background: rgba($color: #000000, $alpha: 0.5);
+    }
   }
 }
 
@@ -330,6 +367,20 @@ export default {
   object-fit: contain;
 }
 
+.content-card {
+  padding: 13px 12px;
+  border-radius: 6px;
+  background-color: $whitesnow;
+}
+
+.alert-hls {
+  padding: 0px 10px;
+  border-radius: 4px;
+  background-color: $primarylowtint;
+  font-size: 12px;
+  height: 24px;
+}
+
 .font-10 {
   font-size: 10px !important;
 }
@@ -340,5 +391,9 @@ export default {
 
 .font-14 {
   font-size: 14px !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogPost" @click:outside="closeDialog" width="880">
+  <v-dialog v-model="dialogPost" @click:outside="closeDialog" width="711">
     <v-btn
       rounded
       icon
@@ -11,19 +11,19 @@
     >
       <v-icon>mdi-chevron-left</v-icon>
     </v-btn>
-    <v-card>
+    <v-card style="padding: 12px">
       <div
         v-if="!loadingDetail && tableItemsDialog.createBy"
         class="d-flex align-center"
       >
-        <div class="pt-7" style="width: 100%">
-          <div class="row no-gutters mx-6">
-            <div class="col">
+        <div>
+          <div class="d-flex">
+            <div style="margin-right: 12px">
               <div
                 class="black"
                 style="
-                  width: 362px;
-                  height: 456px;
+                  width: 307px;
+                  height: 665px;
                   border-radius: 8px;
                   overflow: hidden;
                 "
@@ -31,8 +31,7 @@
                 <video-player
                   v-if="
                     dialogPost &&
-                    tableItemsDialog.medias[dialogPostMediasIdx].type ==
-                      'video'
+                    tableItemsDialog.medias[dialogPostMediasIdx].type == 'video'
                   "
                   :id="`videodialog-${dialogPostMediasIdx}-${tableItemsDialog.medias[dialogPostMediasIdx].id}`"
                   :style="{ objectFit: isContain }"
@@ -52,15 +51,26 @@
                 />
               </div>
             </div>
-            <div class="col font-12">
+
+            <div class="font-12" style="width: 360px; margin-top: 12px">
               <div>
                 <span class="font-10">User</span>
                 <p>@{{ tableItemsDialog.createBy }}</p>
               </div>
-              <div class="whitesnow mt-5 pa-2" style="min-height: 400px">
+
+              <div
+                class="whitesnow mt-4 pa-2"
+                style="height: 300px; overflow: auto"
+              >
                 {{ tableItemsDialog.description }}
               </div>
             </div>
+
+            <!-- <div>
+              <v-icon size="16px" class="cursor-pointer" @click="closeDialog"
+                >mdi-close</v-icon
+              >
+            </div> -->
           </div>
 
           <div class="trending__bottom">
@@ -280,19 +290,28 @@ export default {
   cursor: pointer;
 }
 .nav {
-  &__btn-left {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    left: 10em;
-    background: rgba($color: #000000, $alpha: 0.5);
-  }
-  &__btn-right {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    right: 10em;
-    background: rgba($color: #000000, $alpha: 0.5);
+  &__btn {
+    &-img {
+      color: #4a4a4a !important;
+      background-color: $whitesmoke;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+    &-left {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 10em;
+      background: rgba($color: #000000, $alpha: 0.5);
+    }
+    &-right {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      right: 10em;
+      background: rgba($color: #000000, $alpha: 0.5);
+    }
   }
 }
 .img {
