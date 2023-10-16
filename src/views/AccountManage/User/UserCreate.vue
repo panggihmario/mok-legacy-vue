@@ -70,19 +70,12 @@ export default {
   },
   mounted() {
     this.handleGetListRole();
-    this.handleGetListBadge();
   },
   methods: {
     ...mapActions({
       createUser: "account/createUser",
       getListRole: "account/getListRole",
-      getListBadge: "donation/getListBadge",
     }),
-    handleGetListBadge() {
-      return this.getListBadge().then((res) => {
-        this.listBadge = res.data;
-      });
-    },
     handleGetListRole() {
       const payload = "EXTERNAL";
       return this.getListRole(payload).then((response) => {
