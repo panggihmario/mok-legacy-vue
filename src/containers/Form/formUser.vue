@@ -110,11 +110,7 @@
             rules="required|numeric|min:10"
           />
 
-<<<<<<< HEAD
-          <!-- <div>
-=======
           <div v-if="$route.name == 'userEdit'">
->>>>>>> staging
             <custom-select
               label="Badge"
               placeholder="Pilih badge"
@@ -126,7 +122,7 @@
               item-value="id"
               dense
             />
-          </div> -->
+          </div> 
 
           <div class="verified-box pa-6 mb-6 font-weight-medium whitesnow">
             <p>Verified Account</p>
