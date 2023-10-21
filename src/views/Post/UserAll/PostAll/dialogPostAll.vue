@@ -107,7 +107,7 @@
                 </v-btn>
               </div>
               <div
-                v-if="tableItemsDialog.isAllMp4Ready"
+                v-if="tableItemsDialog.medias[0].isMp4Ready"
                 class="d-flex align-center"
                 style="gap: 5px"
               >
@@ -117,7 +117,7 @@
                 >
               </div>
             </div>
-            <div class="post-actions" v-if="tableItemsDialog.isAllMp4Ready">
+            <div class="post-actions" v-if="tableItemsDialog.medias[0].isMp4Ready">
               <div class="post-actions__label">Trending sampai</div>
               <DatePicker @getEpoch="getEpoch" />
               <custom-button
