@@ -76,6 +76,9 @@ export default {
   data() {
     return {};
   },
+  // mounted () {
+  //   console.log(this.tableItems)
+  // },
   methods: {
     openDialogPost(id, idx) {
       this.$emit("openDialogPost", { id, idx });
