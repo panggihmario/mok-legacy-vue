@@ -1,9 +1,9 @@
 .trending {
   &__bottom {
+    margin-top: 12px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 24px;
   }
   &__action-arrow {
     display: flex;
@@ -33,6 +33,7 @@
     padding: 5px 10px;
     display: flex;
     align-items: center;
+    width: 100%;
   }
 }
 
