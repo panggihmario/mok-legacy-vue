@@ -33,6 +33,24 @@
         />
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      outlined
+      top
+      color="warning"
+    >
+      <div v-if="errorObject">
+        <div v-if="errorObject.response.status === 401">
+        <div>{{ errorObject.response.data.error }}</div>
+        <div>{{ errorObject.response.data.error_description}}</div>
+      </div>
+      <div v-else>
+        <div>{{ errorObject.response.data.message }}</div>
+        <div>{{ errorObject.response.data.data }}</div>
+      </div>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -80,6 +98,12 @@ export default {
   data () {
     return {
       isPublish : false,
+      errorObject : null,
+      snackbar : false,
+      timeout : 3000,
+      snackbar : false,
+      errorObject : null,
+      timeout :3000,
       isChanging : false,
       description : '',
       floatingLink : '',
@@ -136,6 +160,10 @@ export default {
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
         })
+        .catch (err => {
+          this.snackbar = true
+          this.errorObject = err
+        })
     },
     stopVideo () {
       this.$refs.carouselMedia.stopVideo()
@@ -170,6 +198,10 @@ export default {
       return this.updatePostFeed(payload)
         .then(() => {
           return this.getFeedById(id);
+        })
+        .catch ((err) => {
+          this.snackbar = true
+          this.errorObject = err
         })
     },
     getFeed (id) {

@@ -139,6 +139,9 @@ export default {
           return responseData;
         })
         .catch((err) => {
+          commit("setFeeds", []);
+          commit("setTotalPages", 0);
+          commit("setTotalElements", 0);
           throw err;
         });
     },

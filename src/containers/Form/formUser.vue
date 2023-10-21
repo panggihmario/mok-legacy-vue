@@ -122,7 +122,7 @@
               item-value="id"
               dense
             />
-          </div>
+          </div> 
 
           <div class="verified-box pa-6 mb-6 font-weight-medium whitesnow">
             <p>Verified Account</p>
