@@ -29,7 +29,7 @@ const getToken = () => {
 export const serviceWithoutToken = () =>
   axios.create({
     baseURL: BASE_URL,
-    timeout: 60 * 4 * 1000,
+    timeout: 10 * 1000,
     headers: {
       "Content-Type": `application/json`,
     },
@@ -38,7 +38,7 @@ export const serviceWithoutToken = () =>
 const serviceWithToken = (token = getToken()) =>
   axios.create({
     baseURL: BASE_URL,
-    timeout: 60 * 4 * 1000,
+    timeout: 10 * 1000,
     headers: {
       Authorization: "Bearer " + token,
       "Content-Type": `application/json`,
@@ -48,7 +48,7 @@ const serviceWithToken = (token = getToken()) =>
 const serviceTiktokWithoutToken = () => {
   return axios.create({
     baseURL: BASE_TIKTOK_URL,
-    timeout: 60 * 4 * 1000,
+    timeout: 10 * 1000,
     headers: {
       "Content-Type": `application/json`,
     },
@@ -64,7 +64,7 @@ const getTiktokWithoutToken = (payload) => {
 const serviceUpload = () =>
   axios.create({
     baseURL: BASE_UPLOAD_URL,
-    timeout: 60 * 4 * 1000,
+    timeout: 10 * 1000,
     headers: {
       "Content-Type": `application/json`,
     },
@@ -73,7 +73,7 @@ const serviceUpload = () =>
 const exportFile = (token = getToken()) =>
   axios.create({
     baseURL: BASE_URL,
-    timeout: 60 * 4 * 1000,
+    timeout: 10 * 1000,
     responseType: "blob",
     headers: {
       Authorization: "Bearer " + token,
