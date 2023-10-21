@@ -46,15 +46,20 @@
         total-visible="5" color="primary" v-model="currentPage" />
     </div>
     <v-snackbar v-model="snackbar" :timeout="timeout" outlined top color="warning">
+     
       <div v-if="errorObject">
-        <div v-if="errorObject.response.status === 401">
+        <div v-if="errorObject.response">
+          <div v-if="errorObject.response.status === 401">
           <div>{{ errorObject.response.data.error }}</div>
           <div>{{ errorObject.response.data.error_description }}</div>
+          </div>
+          <div v-else>
+            <div>{{ errorObject.response.data.message }}</div>
+            <div>{{ errorObject.response.data.data }}</div>
+          </div>
         </div>
-        <div v-else>
-          <div>{{ errorObject.response.data.message }}</div>
-          <div>{{ errorObject.response.data.data }}</div>
-        </div>
+        <div v-else>  {{ errorObject }}</div>
+        
       </div>
     </v-snackbar>
     <v-alert :class="p.alert" :value="alertError" type="error">
@@ -238,6 +243,11 @@ export default {
     },
     onSubmitFilter() {
       this.isOverlay = true
+      if(!window.navigator.onLine){
+        setTimeout(() => {
+          this.isOverlay = false
+        }, 3000)
+      }
       this.isFilter = true
       this.isParamsFilter = true
       const routerName = this.$route.name;
