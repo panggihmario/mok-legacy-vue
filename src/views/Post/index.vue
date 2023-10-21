@@ -11,8 +11,6 @@
         Buat Post
       </custom-button>
     </HeaderContent>
-    <!-- <k-input label="label input" ></k-input> -->
-    <!-- :to="{ name: tab.name, params: { page: 1 } }" -->
     <div class="d-flex">
       <v-tabs 
         v-model="tab"  
@@ -89,6 +87,24 @@
         v-model="currentPage"
       />
     </div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      outlined
+      top
+      color="warning"
+    >
+      <div v-if="errorObject">
+        <div v-if="errorObject.response.status === 401">
+        <div>{{ errorObject.response.data.error }}</div>
+        <div>{{ errorObject.response.data.error_description}}</div>
+      </div>
+      <div v-else>
+        <div>{{ errorObject.response.data.message }}</div>
+        <div>{{ errorObject.response.data.data }}</div>
+      </div>
+      </div>
+    </v-snackbar>
     <v-alert :class="p.alert" :value="alertError" type="error">
       {{ errorMessage }}
     </v-alert>
@@ -191,11 +207,17 @@ export default {
         ...(sort &&  {sort : sort} )
       }
       return this.fetchFeeds(payload)
+        .then(r => {
+          return r
+        })
+        .catch(err => {
+          this.snackbar = true
+          this.errorObject = err
+        })
     },
     changeTab(tab) {
       this.isFilter = false
       this.isParamsFilter = false
-      // this.keyword = ""
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
@@ -214,7 +236,7 @@ export default {
           this.$router.push({
             name : tab,
             page : 1,
-          }).catch(() =>{})
+          })
         })
     },
     onCancel (value) {
@@ -290,7 +312,10 @@ export default {
                 keyword : this.keyword
               }
             })
-            .catch(() => {})
+            .catch((err) => {
+              this.snackbar = true
+              this.errorObject = err
+            })
           })
       }else{
         this.isParamsFilter = false
@@ -346,7 +371,6 @@ export default {
           endProceedAt : processDate.endAt,
           statusProcess : isStatusProcess
         }
-        console.log("filter",payload)
         return this.filterFeed(payload)
     },
     resetFields(routerName) {
@@ -440,12 +464,15 @@ export default {
   data() {
     return {
       channels: [],
+      timeout : 3000,
       expand : false,
       isParamsFilter : false,
       isFilter : false,
       keyword: "",
       channel: null,
       alertError: false,
+      snackbar : false,
+      errorObject : null,
       errorMessage: "",
       tab : null,
       list: [

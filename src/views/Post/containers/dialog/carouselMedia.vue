@@ -80,6 +80,24 @@
         <DeletedBy :item="feed" />
       </div>
     </div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      outlined
+      top
+      color="warning"
+    >
+      <div v-if="errorObject">
+        <div v-if="errorObject.response.status === 401">
+        <div>{{ errorObject.response.data.error }}</div>
+        <div>{{ errorObject.response.data.error_description}}</div>
+      </div>
+      <div v-else>
+        <div>{{ errorObject.response.data.message }}</div>
+        <div>{{ errorObject.response.data.data }}</div>
+      </div>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -96,6 +114,9 @@ export default {
   },
   data() {
     return {
+      errorObject : null,
+      snackbar : false,
+      timeout : 3000,
       slidePosition: 0,
       loading: false,
       humanDate: "",
@@ -103,7 +124,8 @@ export default {
       menu: false,
       date: "",
       tempFeed: null,
-      isPublish : false
+      isPublish : false,
+      
     };
   },
   props: {
@@ -148,6 +170,8 @@ export default {
         .catch((err) => {
           this.loading = false;
           this.isPublish = false
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     getPayload(humanDate) {
@@ -158,7 +182,7 @@ export default {
       if (humanDate) {
         payload = {
           id: item.id,
-          type: "schedule",
+          type: "schedule",                       
           params: {
             ...itemWithSchedule,
             medias: [...medias],

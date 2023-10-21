@@ -11,6 +11,7 @@
     v-model="selectedUser"
     solo
     flat
+    
     :search-input.sync="search"
     @focus="isFocus"
     @blur="isBlur"
