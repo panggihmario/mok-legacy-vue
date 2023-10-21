@@ -106,11 +106,11 @@ export default [
         path: "/feedback/1",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
-      {
-        title : 'Referral Code',
-        path : '/referral-code',
-        role : ['ROLE_ADMIN']
-      }
+      // {
+      //   title : 'Referral Code',
+      //   path : '/referral-code',
+      //   role : ['ROLE_ADMIN']
+      // }
     ],
   },
   {
