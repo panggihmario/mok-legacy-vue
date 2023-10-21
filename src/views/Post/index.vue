@@ -23,7 +23,7 @@
           </custom-button>
 
           <div style="width : 200px">
-            <k-input placeholder="Search" v-model="keyword" @keyup.enter="onSubmitFilter"></k-input>
+            <k-input :disabled="isOverlay" placeholder="Search" v-model="keyword" @keyup.enter="onSubmitFilter"></k-input>
           </div>
         </div>
       </div>
@@ -280,7 +280,6 @@ export default {
             this.errorObject = err
           })
       } else {
-        console.log('masuk else')
         this.isParamsFilter = false
         this.isOverlay = false
         this.$router.push({
