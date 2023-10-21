@@ -312,10 +312,11 @@ export default {
                 keyword : this.keyword
               }
             })
-            .catch((err) => {
-              this.snackbar = true
-              this.errorObject = err
-            })
+            .catch((err) => {})
+          })
+          .catch((err) => {
+            this.snackbar = true
+            this.errorObject = err
           })
       }else{
         this.isParamsFilter = false
