@@ -19,11 +19,11 @@ const socmedRoute = [
     name: "createHashtag",
     component: () => import("../../views/Manager/Hashtag/HashtagManage/CreateNewTrending"),
   },
-  // {
-  //   path: "/donation",
-  //   name: "donation",
-  //   component: () => import("../../views/Manager/Donation/index.vue"),
-  // },
+  {
+    path: "/referral-code",
+    name: "referralCode",
+    component: () => import("../../views/Manager/ReferalCode/index.vue"),
+  },
   // {
   //   path: "/donation/create",
   //   name: "donationCreate",

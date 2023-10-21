@@ -85,6 +85,24 @@
     <v-snackbar :timeout="3000" top right v-model="alertNoData" color="error">
       Data Tidak Ditemukan
     </v-snackbar>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      outlined
+      top
+      color="warning"
+    >
+      <div v-if="errorObject">
+        <div v-if="errorObject.response.status === 401">
+        <div>{{ errorObject.response.data.error }}</div>
+        <div>{{ errorObject.response.data.error_description}}</div>
+      </div>
+      <div v-else>
+        <div>{{ errorObject.response.data.message }}</div>
+        <div>{{ errorObject.response.data.data }}</div>
+      </div>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -111,6 +129,9 @@ export default {
       itemsChannel: [],
       alertSearchFailed: false,
       searchFailedData: {},
+      errorObject : null,
+      snackbar : false,
+      timeout : 3000,
       pageCandidate: 1,
       pageActive: 1,
       pageNotification: 1,
@@ -237,6 +258,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListCandidate = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     handleGetListUserPostFilter() {
@@ -259,6 +282,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListCandidate = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     refreshPriority() {
@@ -283,6 +308,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListActive = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     handleGetListUserPostTrendingFilter() {
@@ -305,6 +332,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListActive = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     handleGetListUserPostNotificationFilter() {
@@ -329,6 +358,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListNotification = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     handleGetListUserPostNotification() {
@@ -352,6 +383,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListNotification = false;
+          this.snackbar = true
+          this.errorObject = err
         });
     },
     actionGetListDataByTab(data, type) {
@@ -456,8 +489,10 @@ export default {
       this.alertPushNotifSuccess = true;
       this.actionGetListDataByTab(this.dataFilter, "filter");
     },
-    handleErrorPostTrending() {
-      this.alertFailed = true;
+    handleErrorPostTrending(err) {
+      // this.alertFailed = true;
+      this.snackbar = true
+      this.errorObject = err
     },
     actionPushNotif(id) {
       let payload = {
