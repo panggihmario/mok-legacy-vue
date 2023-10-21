@@ -31,22 +31,22 @@ export default [
       },
     ],
   },
-  {
-    action: "fas fa-folder",
-    title: "Master",
-    items: [
-      // {
-      //   title: "Dashboard",
-      //   path: "/dashboard",
-      //   role: ["ROLE_ADMIN"],
-      // },
-      {
-        title: "Category",
-        path: "/master/category",
-        role: ["ROLE_ADMIN"],
-      },
-    ],
-  },
+  // {
+  //   action: "fas fa-folder",
+  //   title: "Master",
+  //   items: [
+  //     // {
+  //     //   title: "Dashboard",
+  //     //   path: "/dashboard",
+  //     //   role: ["ROLE_ADMIN"],
+  //     // },
+  //     {
+  //       title: "Category",
+  //       path: "/master/category",
+  //       role: ["ROLE_ADMIN"],
+  //     },
+  //   ],
+  // },
   {
     action: "fas fa-user-cog",
     title: "Manager Socmed",
@@ -106,6 +106,11 @@ export default [
         path: "/feedback/1",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
       },
+      {
+        title : 'Referral Code',
+        path : '/referral-code',
+        role : ['ROLE_ADMIN']
+      }
     ],
   },
   {
@@ -254,6 +259,11 @@ export default [
       {
         title: "Badge",
         path: "/badge",
+        role: ["ROLE_ADMIN"],
+      },
+      {
+        title: "Category",
+        path: "/master/category",
         role: ["ROLE_ADMIN"],
       },
     ],
