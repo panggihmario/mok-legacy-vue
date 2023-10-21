@@ -24,7 +24,7 @@ import productCategory from "./product/category";
 import helper from "./helper";
 import area from "./area";
 import instagram from "./instagram";
-
+import manageSocmed from "./manageSocmed"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -54,6 +54,7 @@ export default new Vuex.Store({
     helper,
     area,
     instagram,
+    manageSocmed
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,

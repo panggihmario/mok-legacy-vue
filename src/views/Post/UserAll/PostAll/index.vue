@@ -102,6 +102,7 @@ export default {
       tableItemsDialog: {
         medias: [],
       },
+      errorObject : null,
       loadingDetail: false,
       dialogPost: false,
       dialogPostDataIdx: 0,
@@ -205,9 +206,10 @@ export default {
           this.alertSuccess = true;
         })
         .catch((err) => {
-          this.$emit("errorPostTrending");
+          this.$emit("errorPostTrending", err);
           this.loadingMakeTrending = false;
-          this.alertError = true;
+          // this.alertError = true;
+          // this.errorObject = err
         });
     },
     actionPushNotif() {

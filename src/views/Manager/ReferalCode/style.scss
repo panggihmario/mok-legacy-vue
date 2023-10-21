@@ -1,0 +1,62 @@
+.code {
+  &__input {
+    border-radius: 18px;
+    border: 1px solid var(--White-Smoke, #EEE);
+    background: #FFF;
+    padding: 8px 14px;
+    line-height: 0;
+    & input {
+      font-size: 10px;
+      font-weight: 500;
+      color: #777;
+      width: 70px;
+      cursor: pointer;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+.code {
+  &__table {
+    &-label {
+      color: #777;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+  &__mention {
+    padding: 12px;
+    background-color: #F9F9F9;
+    font-size: 12px;
+    font-weight: 400;
+    color: #777;
+    margin-top: 8px;
+  }
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    &-label {
+      font-size: 11px;
+      color: #777;
+      font-weight: 400;
+    }
+  }
+  &__dialog {
+    padding: 13px 16px;
+    &-label {
+      color: $charcoal;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    &-input-label {
+      color: $charcoal;
+      font-size: 11px;
+      font-weight: 500;
+    }
+  }
+}
+#input-search {
+  width: 200px;
+}
