@@ -31,11 +31,11 @@
             <div class="d-flex align-center">
               <v-icon
                 size="46px"
-                :color="item.isVodAvailable ? 'green' : 'red'"
+                :color="item.isAllMp4Ready ? 'green' : 'red'"
                 style="margin-right: -16px"
                 >mdi-circle-small</v-icon
               >
-              <span :class="item.isVodAvailable ? 'green--text' : 'red--text'"
+              <span :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
                 >HLS</span
               >
             </div>
@@ -76,6 +76,9 @@ export default {
   data() {
     return {};
   },
+  // mounted () {
+  //   console.log(this.tableItems)
+  // },
   methods: {
     openDialogPost(id, idx) {
       this.$emit("openDialogPost", { id, idx });
