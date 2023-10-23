@@ -26,14 +26,14 @@
           <td class="font-12">{{ item.trendingBy }}</td>
           <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
           <td class="font-12 grey--text font-weight-medium">
-            <div class="d-flex align-center">
+            <div class="d-flex align-center" style="gap: 2px;">
               <v-icon
-                size="46px"
-                :color="item.isAllMp4Ready ? 'green' : 'red'"
-                style="margin-right: -16px"
-                >mdi-circle-small</v-icon
+                size="8px"
+                :color="item.isVodAvailable ? 'green' : 'red'"
+                style="margin-top: -3px"
+                >mdi-circle</v-icon
               >
-              <span :class="item.isAllMp4Ready ? 'green--text' : 'red--text'"
+              <span :class="item.isVodAvailable ? 'green--text' : 'red--text'"
                 >HLS</span
               >
             </div>
