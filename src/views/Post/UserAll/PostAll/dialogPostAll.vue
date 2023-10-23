@@ -20,7 +20,7 @@
           <div class="d-flex">
             <div style="margin-right: 12px">
               <div
-                class=""
+                class="black"
                 style="
                   width: 307px;
                   height: 665px;
