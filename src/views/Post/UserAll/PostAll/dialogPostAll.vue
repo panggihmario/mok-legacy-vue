@@ -20,7 +20,7 @@
           <div class="d-flex">
             <div style="margin-right: 12px">
               <div
-                class="black"
+                class=""
                 style="
                   width: 307px;
                   height: 665px;
@@ -107,7 +107,7 @@
                 </v-btn>
               </div>
               <div
-                v-if="tableItemsDialog.medias[0].isMp4Ready"
+                v-if="tableItemsDialog.isVodAvailable"
                 class="d-flex align-center"
                 style="gap: 5px"
               >
@@ -117,7 +117,7 @@
                 >
               </div>
             </div>
-            <div class="post-actions" v-if="tableItemsDialog.medias[0].isMp4Ready">
+            <div class="post-actions" v-if="tableItemsDialog.isVodAvailable">
               <div class="post-actions__label">Trending sampai</div>
               <DatePicker @getEpoch="getEpoch" />
               <custom-button
@@ -228,11 +228,11 @@ export default {
     },
     optionsVideo() {
       const item = this.tableItemsDialog.medias[this.dialogPostMediasIdx];
-      if (item.vodUrl && item.type === "video") {
+      const temp = { ...this.playerOptions };
+      if (item.vodUrl) {
         const url = new URL(item.vodUrl);
         const split = url.pathname.split(".");
         const extension = split[split.length - 1];
-        const temp = { ...this.playerOptions };
         if (extension === "m3u8") {
           const hls = {
             ...temp,
@@ -246,21 +246,55 @@ export default {
             ],
           };
           return hls;
-        } else {
-          const mp4 = {
-            ...temp,
-            sources: [
-              {
-                withCredentials: false,
-                type: "video/mp4",
-                src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
-                  .vodUrl,
-              },
-            ],
-          };
-          return mp4;
         }
+      } else {
+        const mp4 = {
+          ...temp,
+          sources: [
+            {
+              withCredentials: false,
+              type: "video/mp4",
+              src: this.tableItemsDialog.medias[this.dialogPostMediasIdx].url,
+            },
+          ],
+        };
+        return mp4;
       }
+      // if (item.vodUrl && item.type === "video") {
+      //   console.log("VOD");
+      //   const url = new URL(item.vodUrl);
+      //   const split = url.pathname.split(".");
+      //   const extension = split[split.length - 1];
+      //   const temp = { ...this.playerOptions };
+      //   if (extension === "m3u8") {
+      //     const hls = {
+      //       ...temp,
+      //       sources: [
+      //         {
+      //           withCredentials: false,
+      //           type: "application/x-mpegURL",
+      //           src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
+      //             .vodUrl,
+      //         },
+      //       ],
+      //     };
+      //     return hls;
+      //   } else {
+      //     console.log("MP4");
+      //     const mp4 = {
+      //       ...temp,
+      //       sources: [
+      //         {
+      //           withCredentials: false,
+      //           type: "video/mp4",
+      //           src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
+      //             .url,
+      //         },
+      //       ],
+      //     };
+      //     return mp4;
+      //   }
+      // }
     },
     isContain() {
       const metadata =
