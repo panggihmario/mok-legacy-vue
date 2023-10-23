@@ -335,11 +335,11 @@ export default {
     },
     optionsVideo() {
       const item = this.tableItemsDialog.post.medias[this.dialogPostMediasIdx];
+      const temp = { ...this.playerOptions };
       if (item.vodUrl && item.type === "video") {
         const url = new URL(item.vodUrl);
         const split = url.pathname.split(".");
         const extension = split[split.length - 1];
-        const temp = { ...this.playerOptions };
         if (extension === "m3u8") {
           const hls = {
             ...temp,
