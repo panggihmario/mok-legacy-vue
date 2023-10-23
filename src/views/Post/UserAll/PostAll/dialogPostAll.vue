@@ -260,41 +260,6 @@ export default {
         };
         return mp4;
       }
-      // if (item.vodUrl && item.type === "video") {
-      //   console.log("VOD");
-      //   const url = new URL(item.vodUrl);
-      //   const split = url.pathname.split(".");
-      //   const extension = split[split.length - 1];
-      //   const temp = { ...this.playerOptions };
-      //   if (extension === "m3u8") {
-      //     const hls = {
-      //       ...temp,
-      //       sources: [
-      //         {
-      //           withCredentials: false,
-      //           type: "application/x-mpegURL",
-      //           src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
-      //             .vodUrl,
-      //         },
-      //       ],
-      //     };
-      //     return hls;
-      //   } else {
-      //     console.log("MP4");
-      //     const mp4 = {
-      //       ...temp,
-      //       sources: [
-      //         {
-      //           withCredentials: false,
-      //           type: "video/mp4",
-      //           src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
-      //             .url,
-      //         },
-      //       ],
-      //     };
-      //     return mp4;
-      //   }
-      // }
     },
     isContain() {
       const metadata =
