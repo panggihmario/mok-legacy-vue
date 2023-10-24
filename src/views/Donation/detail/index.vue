@@ -81,7 +81,6 @@ export default {
               vod = media
             }
           })
-          console.log({vod})
           this.donation = Object.assign({} , this.donation ,{
             province : response.province.name,
             initiator : response.initiator.name,

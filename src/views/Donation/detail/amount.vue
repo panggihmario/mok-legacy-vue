@@ -89,8 +89,10 @@ export default {
       }
       return this.fetchBalanceHistory(payload)
         .then(response => {
-         
-          this.debits = response
+          this.debits = response.content
+        })
+        .catch(err => {
+          console.log(err)
         })
     },
     handleWithdrawHistory() {
@@ -104,7 +106,8 @@ export default {
       }
       return this.fetchBalanceHistory(payload)
         .then(response => {
-          this.credits = response
+          console.log("credit", response)
+          this.credits = response.content
         })
     }
   }
