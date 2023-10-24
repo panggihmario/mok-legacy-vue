@@ -11,7 +11,6 @@ export default {
       .catch(err => { throw err })
   },
   searchReferralCode ({state, dispatch}, payload) {
-    console.log('search', payload)
     const data = {
       url : `${state.pathReferralCode}`,
       params : {
@@ -20,6 +19,21 @@ export default {
     }
     return dispatch('getWithToken', data , { root : true})
       .then(response => {
+        const responseData = response.data.data
+        return responseData
+      })
+      .catch(err => { throw err })
+  },
+  updateStatusReferralCode ({state, dispatch}, payload) {
+    const data = {
+      url : `${state.pathReferralCode}/${payload.referralCode}`,
+      params : {
+        status : payload.status
+      }
+    }
+    return dispatch('patchWithToken', data , { root : true})
+      .then(response => {
+        console.log(response)
         const responseData = response.data.data
         return responseData
       })

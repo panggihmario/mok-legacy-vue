@@ -17,11 +17,11 @@
           </td>
           <td>
             <custom-button class="mr-2" size="small">Detail</custom-button>
-            <custom-button v-if="item.status === 'ACTIVE' " size="small">
-              <div class="success--text"> Enable </div>
+            <custom-button @click="setStatus('INACTIVE', item)" v-if="item.status === 'ACTIVE' " size="small">
+              <div class="warning--text"> Disable </div>
             </custom-button>
-            <custom-button v-else size="small">
-              <div class="warning--text">Disable</div>
+            <custom-button @click="setStatus('ACTIVE', item)" v-else size="small">
+              <div class="success--text">Enable</div>
             </custom-button>
           </td>
         </tr>
@@ -31,10 +31,29 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   props : {
     items : {
       type : [ Array, Object]
+    }
+  },
+  methods : {
+    ...mapActions({
+      updateStatusReferralCode : 'manageSocmed/updateStatusReferralCode'
+    }),
+    setStatus (status, item) {
+      const payload = {
+        status,
+        referralCode : item.referralCode
+      }
+      return this.updateStatusReferralCode(payload)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          this.$emit("setError", err)
+        })
     }
   },
   data () {
