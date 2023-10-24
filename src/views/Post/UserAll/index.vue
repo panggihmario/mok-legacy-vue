@@ -94,15 +94,19 @@
     >
       <div v-if="errorObject">
         <div v-if="errorObject.response.status === 401">
-        <div>{{ errorObject.response.data.error }}</div>
-        <div>{{ errorObject.response.data.error_description}}</div>
-      </div>
-      <div v-else>
-        <div>{{ errorObject.response.data.message }}</div>
-        <div>{{ errorObject.response.data.data }}</div>
-      </div>
+          <div>{{ errorObject.response.data.error }}</div>
+          <div>{{ errorObject.response.data.error_description }}</div>
+        </div>
+        <div v-else>
+          <div>{{ errorObject.response.data.message }}</div>
+          <div>{{ errorObject.response.data.data }}</div>
+        </div>
       </div>
     </v-snackbar>
+
+    <v-overlay absolute :value="isOverlay">
+      <v-btn color="success"> Loading ..... </v-btn>
+    </v-overlay>
   </div>
 </template>
 
@@ -129,9 +133,9 @@ export default {
       itemsChannel: [],
       alertSearchFailed: false,
       searchFailedData: {},
-      errorObject : null,
-      snackbar : false,
-      timeout : 3000,
+      errorObject: null,
+      snackbar: false,
+      timeout: 3000,
       pageCandidate: 1,
       pageActive: 1,
       pageNotification: 1,
@@ -161,6 +165,7 @@ export default {
       alertPushNotifFailed: false,
       alertNoData: false,
       pushNotifFailedData: "",
+      isOverlay: false,
     };
   },
   watch: {
@@ -258,8 +263,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListCandidate = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     handleGetListUserPostFilter() {
@@ -269,10 +274,12 @@ export default {
       };
       this.loadingListCandidate = true;
       this.isFilter = true;
+      this.isOverlay = true;
       return this.fetchPostAllUserFilter(payload)
         .then((response) => {
           let res = response.data.data;
           this.loadingListCandidate = false;
+          this.isOverlay = false;
           this.tableItemsCandidate = res.content;
           this.totalPagesCandidate = res.totalPages;
           this.totalElementsCandidate = res.totalElements;
@@ -282,12 +289,13 @@ export default {
         })
         .catch((err) => {
           this.loadingListCandidate = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.isOverlay = false;
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     refreshPriority() {
-      this.handleGetListUserPostTrending()
+      this.handleGetListUserPostTrending();
     },
     handleGetListUserPostTrending() {
       let payload = {
@@ -308,8 +316,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListActive = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     handleGetListUserPostTrendingFilter() {
@@ -319,10 +327,12 @@ export default {
       };
       this.loadingListActive = true;
       this.isFilter = true;
+      this.isOverlay = true;
       return this.fetchPostAllUserTrendingFilter(payload)
         .then((response) => {
           let res = response.data.data;
           this.loadingListActive = false;
+          this.isOverlay = false;
           this.tableItemsActive = res.content;
           this.totalPagesActive = res.totalPages;
           this.totalElementsActive = res.totalElements;
@@ -332,8 +342,9 @@ export default {
         })
         .catch((err) => {
           this.loadingListActive = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.isOverlay = false;
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     handleGetListUserPostNotificationFilter() {
@@ -345,10 +356,12 @@ export default {
       };
       this.loadingListNotification = true;
       this.isFilter = true;
+      this.isOverlay = true;
       return this.fetchHistoryNotification(payload)
         .then((response) => {
           let res = response.data.data;
           this.loadingListNotification = false;
+          this.isOverlay = false;
           this.tableItemsNotification = res.content;
           this.totalPagesNotification = res.totalPages;
           this.totalElementsNotification = res.totalElements;
@@ -358,8 +371,9 @@ export default {
         })
         .catch((err) => {
           this.loadingListNotification = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.isOverlay = false;
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     handleGetListUserPostNotification() {
@@ -383,8 +397,8 @@ export default {
         })
         .catch((err) => {
           this.loadingListNotification = false;
-          this.snackbar = true
-          this.errorObject = err
+          this.snackbar = true;
+          this.errorObject = err;
         });
     },
     actionGetListDataByTab(data, type) {
@@ -472,10 +486,10 @@ export default {
     },
     handleSearchChannel(v) {
       const payload = {
-        page : 0,
-        search : v,
-        size : 20
-      }
+        page: 0,
+        search: v,
+        size: 20,
+      };
       return this.searchChannel(payload)
         .then((response) => {
           this.itemsChannel = response.data.data.content;
@@ -491,8 +505,8 @@ export default {
     },
     handleErrorPostTrending(err) {
       // this.alertFailed = true;
-      this.snackbar = true
-      this.errorObject = err
+      this.snackbar = true;
+      this.errorObject = err;
     },
     actionPushNotif(id) {
       let payload = {

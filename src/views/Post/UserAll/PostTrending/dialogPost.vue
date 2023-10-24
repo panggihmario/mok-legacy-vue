@@ -205,11 +205,11 @@ export default {
     },
     optionsVideo() {
       const item = this.tableItemsDialog.medias[this.dialogPostMediasIdx];
-      if (item.vodUrl && item.type === "video") {
+      const temp = { ...this.playerOptions };
+      if (item.vodUrl) {
         const url = new URL(item.vodUrl);
         const split = url.pathname.split(".");
         const extension = split[split.length - 1];
-        const temp = { ...this.playerOptions };
         if (extension === "m3u8") {
           const hls = {
             ...temp,
@@ -230,8 +230,7 @@ export default {
               {
                 withCredentials: false,
                 type: "video/mp4",
-                src: this.tableItemsDialog.medias[this.dialogPostMediasIdx]
-                  .vodUrl,
+                src: this.tableItemsDialog.medias[this.dialogPostMediasIdx].url,
               },
             ],
           };
