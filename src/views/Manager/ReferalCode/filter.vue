@@ -46,7 +46,22 @@
         @change="onChageKeywordCode"
       />
     </div>
-    
+
+    <v-snackbar v-model="snackbar" :timeout="timeout"  top color="warning">
+     <div v-if="errorObject">
+       <div v-if="errorObject.response">
+         <div v-if="errorObject.response.status === 401">
+         <div>{{ errorObject.response.data.error }}</div>
+         <div>{{ errorObject.response.data.error_description }}</div>
+         </div>
+         <div v-else>
+           <div>{{ errorObject.response.data.message }}</div>
+           <div>{{ errorObject.response.data.data }}</div>
+         </div>
+       </div>
+       <div v-else>  {{ errorObject }}</div>
+     </div>
+   </v-snackbar>
   </div>
 </template>
 
@@ -56,6 +71,9 @@ export default {
   data () {
     return {
       menu : false,
+      timeout: 3000,
+      snackbar : false,
+      errorObject : null,
       selectedUser : {},
       filterBy : 'Username',
       isUsername : true,
@@ -132,7 +150,12 @@ export default {
           this.usernames = reformatData;
           this.isLoading = false
         })
-        .catch(() => this.isLoading = false)
+        .catch((err) =>{
+          console.log(err)
+          this.snackbar = true
+          this.errorObject = err
+          this.isLoading = false
+        })
       }, 400)
     }
   },

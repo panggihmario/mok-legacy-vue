@@ -14,11 +14,26 @@
       :dialog="dialog"  
     />
     <DialogSuccess 
-      :dialogSucces="dialogSucces" 
+      :dialogSucces="dialogSucces"  
       @closeDialogSuccess="closeDialogSuccess" 
     />
     <TableCode v-if="isSearch" :items="dataCode" />
     <div v-else class="code__mention">Tidak ada data ditampilkan, silahkan cari berdasarkan username atau referral code</div>
+    <v-snackbar v-model="snackbar" :timeout="timeout"  top color="warning">
+     <div v-if="errorObject">
+       <div v-if="errorObject.response">
+         <div v-if="errorObject.response.status === 401">
+         <div>{{ errorObject.response.data.error }}</div>
+         <div>{{ errorObject.response.data.error_description }}</div>
+         </div>
+         <div v-else>
+           <div>{{ errorObject.response.data.message }}</div>
+           <div>{{ errorObject.response.data.data }}</div>
+         </div>
+       </div>
+       <div v-else>  {{ errorObject }}</div>
+     </div>
+   </v-snackbar>
   </div>
 </template>
 
@@ -40,6 +55,9 @@ export default {
   data () {
     return {
       dialog : false,
+      errorObject : null,
+      snackbar : false,
+      timeout : 3000,
       dialogSucces : false,
       isSearch : false,
       dataCode : [],
@@ -72,8 +90,11 @@ export default {
       return this.searchReferralCode(payload)
         .then(response => {
           const content = response.content
-          console.log(response)
           this.dataCode = content
+        })
+        .catch(err => {
+          this.errorObject = err
+          this.snackbar = true
         })
     },
     getCodeByUsername( value) {
