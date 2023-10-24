@@ -38,7 +38,7 @@ export const serviceWithoutToken = () =>
 const serviceWithToken = (token = getToken()) =>
   axios.create({
     baseURL: BASE_URL,
-    timeout: 10 * 1000,
+    timeout: 40 * 1000,
     headers: {
       Authorization: "Bearer " + token,
       "Content-Type": `application/json`,

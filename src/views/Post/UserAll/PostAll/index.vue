@@ -64,8 +64,15 @@
     >
       Jadikan Trending Success
     </v-snackbar>
-    <v-snackbar :timeout="3000" top right v-model="alertError" color="error">
-      Jadikan Trending Gagal
+
+    <v-snackbar v-model="alertError" :timeout="3000" outlined top color="warning">
+      <div v-if="errorObject">
+        <div v-if="errorObject.response">
+            <div>{{ errorObject.response.data.message }}</div>
+            <div>{{ errorObject.response.data.data }}</div>
+        </div>
+        <div v-else>{{ errorObject }}</div>
+      </div>
     </v-snackbar>
   </div>
 </template>
@@ -102,7 +109,7 @@ export default {
       tableItemsDialog: {
         medias: [],
       },
-      errorObject : null,
+      errorObject: null,
       loadingDetail: false,
       dialogPost: false,
       dialogPostDataIdx: 0,
@@ -208,8 +215,8 @@ export default {
         .catch((err) => {
           this.$emit("errorPostTrending", err);
           this.loadingMakeTrending = false;
-          // this.alertError = true;
-          // this.errorObject = err
+          this.alertError = true;
+          this.errorObject = err
         });
     },
     actionPushNotif() {
