@@ -2,8 +2,17 @@
   <div class="code__header">
     <div class="code__header-label">Cari Berdasarkan</div>
     <div style="width : 150px">
-      <v-select :items="items" rounded dense hide-details outlined class="code__header-label" item-text="title"
-        return-object v-model="selectedFilter" />
+      <v-select 
+        :items="items" 
+        rounded 
+        dense 
+        hide-details outlined 
+        class="code__header-label" 
+        item-text="title"
+        return-object 
+        v-model="selectedFilter" 
+        @change="onChangeFilter"
+      />
     </div>
     <div v-if="selectedFilter.value === 'username'" style="width : 200px">
       <v-autocomplete dense hide-details placeholder="Cari..." :items="usernames" item-text="username"
@@ -71,7 +80,6 @@ export default {
       errorObject: null,
       filterBy: 'Username',
       isUsername: true,
-      // keyword: '',
       items: [
         {
           title: 'Username',
@@ -97,6 +105,9 @@ export default {
       fetchListAccounts: 'post/fetchListAccounts',
       searchAccounts: 'post/searchAccounts'
     }),
+    onChangeFilter (item) {
+      this.$emit('changeFilter', item)
+    },
     onChageKeywordCode(e) {
       this.$emit('getCodeByKeyword', this.keyword)
     },
@@ -115,7 +126,10 @@ export default {
       return this.fetchListAccounts(payload)
         .then((response) => {
           this.usernames = response;
-        });
+        })
+        .catch(err => {
+          this.$emit("setError", err)
+        })
     },
   },
   mounted() {
@@ -141,9 +155,7 @@ export default {
               this.isLoading = false
             })
             .catch((err) => {
-              this.snackbar = true
-              this.errorObject = err
-              this.isLoading = false
+              this.$emit("setError", err)
             })
         }, 400)
       }else{

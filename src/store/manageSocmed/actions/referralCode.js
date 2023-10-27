@@ -26,14 +26,26 @@ export default {
   },
   updateStatusReferralCode ({state, dispatch}, payload) {
     const data = {
-      url : `${state.pathReferralCode}/${payload.referralCode}`,
+      url : `${state.pathReferralCode}/${payload.referralCode}?status=${payload.status}`,
       params : {
         status : payload.status
       }
     }
     return dispatch('patchWithToken', data , { root : true})
       .then(response => {
-        console.log(response)
+        return response
+      })
+      .catch(err => { throw err })
+  },
+  fetchDetailReferralCode ({state, dispatch}, payload) {
+    const data = {
+      url : `${state.pathReferralCode}/${payload.referralCode}/accounts`,
+      params : {
+        ...payload.params
+      }
+    }
+    return dispatch('getWithToken', data , { root : true})
+      .then(response => {
         const responseData = response.data.data
         return responseData
       })

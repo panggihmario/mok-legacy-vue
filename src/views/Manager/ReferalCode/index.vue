@@ -11,10 +11,13 @@
       :selectedUser="selectedUser"
       :referralCode="referralCode"
       @setReferralCode="setReferralCode"
+      @setError="setError"
+      @changeFilter="changeFilter"
     />
     <DialogComponent  
       @closeDialog="closeDialog" 
       @openDialogSuccess="openDialogSuccess"
+      @setError="setError"
       :dialog="dialog"  
     />
     <DialogSuccess 
@@ -25,6 +28,11 @@
       v-if="isSearch" 
       :items="dataCode" 
       @setError="setError"
+      :totalElements="totalElements"
+      :totalPages="totalPages"
+      :currentPage="currentPage"
+      @setCurrentPage="setCurrentPage"
+      @refreshData="refreshData"
     />
     <div v-else class="code__mention">Tidak ada data ditampilkan, silahkan cari berdasarkan username atau referral code</div>
    <AlertError
@@ -55,7 +63,11 @@ export default {
   data () {
     return {
       dialog : false,
-      selectedUser :  {},
+      accountId :  "",
+      selectedUser : {},
+      totalElements : 0,
+      currentPage : 1,
+      totalPages : 0,
       referralCode : '',
       errorObject : null,
       snackbar : false,
@@ -79,51 +91,80 @@ export default {
     ...mapActions({
       searchReferralCode : 'manageSocmed/searchReferralCode'
     }),
+    changeFilter () {
+      this.referralCode = ''
+      this.accountId = ""
+    },
+    refreshData () {
+      const payload = {
+        referralCode : this.referralCode,
+        accountId : this.accountId,
+        page : this.currentPage - 1,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
+    setCurrentPage(value) {
+      this.currentPage = value
+      const payload = {
+        referralCode : this.referralCode,
+        accountId : this.accountId,
+        page : value - 1,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
     setSnackBar (value) {
       this.snackbar = value
     },
     setReferralCode (value) {
       this.referralCode = value
+      this.accountId = ""
     },
     onClearUsername() {
       this.dataCode = []
       this.isSearch = false
     },
-    getCodeByKeyword ( value ) {
-      this.isSearch = true
-      const payload = {
-        referralCode : value,
-        accountId : ''
-      }
+    handleSearchApi (payload) {
       return this.searchReferralCode(payload)
         .then(response => {
           const content = response.content
+          const totalElements = response.totalElements
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
           this.dataCode = content
         })
         .catch(err => {
           this.setError(err)
         })
     },
+    getCodeByKeyword ( value ) {
+      this.currentPage = 1
+      this.isSearch = true
+      const payload = {
+        referralCode : value,
+        accountId : '',
+        page : 0,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
     setError (err) {
       this.errorObject = err
       this.snackbar = true
     },
     onSelectUser (value) {
+      this.referralCode = ""
       if(value) {
+        this.accountId = value.accountId
         this.isSearch = true
         const payload = {
           accountId : value.accountId,
-          referralCode : ''
+          referralCode : '',
+          page : this.currentPage - 1,
+          size : 10
         }
-        return this.searchReferralCode(payload)
-          .then(response => {
-            const content = response.content
-            this.dataCode = content
-          })
-          .catch(err => {
-            this.errorObject = err
-            this.snackbar = true
-          })
+        return this.handleSearchApi(payload)
       }else {
         this.isSearch = false
       }

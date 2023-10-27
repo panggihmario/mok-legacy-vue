@@ -24,16 +24,11 @@ const socmedRoute = [
     name: "referralCode",
     component: () => import("../../views/Manager/ReferalCode/index.vue"),
   },
-  // {
-  //   path: "/donation/create",
-  //   name: "donationCreate",
-  //   component: () => import("../../views/Manager/Donation/create.vue"),
-  // },
-  // {
-  //   path: "/donation/:id",
-  //   name: "donationEdit",
-  //   component: () => import("../../views/Manager/Donation/edit.vue"),
-  // },
+  {
+    path : "/referral-code/:code",
+    name : 'detailReferralCode' ,
+    component : () => import("../../views/Manager/ReferalCode/detail.vue")
+  },
   {
     path : '/feedback/:page',
     name : 'feedback',

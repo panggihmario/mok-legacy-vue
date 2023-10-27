@@ -15,12 +15,15 @@
         <v-autocomplete 
           dense hide-details 
           placeholder="Pilih Username" 
-          :items="usernames" item-text="username"
+          :items="usernames" 
+          item-text="username"
           :search-input.sync="search" 
-          return-object outlined 
+          return-object 
+          outlined 
           class="code__header-label" 
           v-model="selectedUser" 
           clearable
+          @click:clear="onClear"
         >
         </v-autocomplete>
         <div class="mt-4 d-flex justify-end">
@@ -68,6 +71,10 @@ export default {
       searchAccounts: 'post/searchAccounts',
       postReferralCode : 'manageSocmed/postReferralCode'
     }),
+    onClear() {
+      this.$emit('onClearUsername')
+      return this.fetchAdminData()
+    },
     fetchAdminData() {
       this.loading = true
       const payload = {
@@ -79,6 +86,8 @@ export default {
         });
     },
     closeDialog () {
+      this.referralCode = ''
+      this.selectedUser = {}
       this.$emit('closeDialog', false)
     },
     onSubmit () {
@@ -90,7 +99,9 @@ export default {
         .then(response => {
           this.closeDialog()
           this.$emit('openDialogSuccess')
-          console.log(response)
+        })
+        .catch(err => {
+          this.$emit('setError', err)
         })
     }
   },
@@ -132,8 +143,9 @@ export default {
         })
     },
     search(value) {
-      if (this.isLoading) return
-      this.isLoading = true
+      if (value) {
+        console.log(value)
+        this.isLoading = true
       setTimeout(() => {
         const payload = {
           value
@@ -149,8 +161,13 @@ export default {
             this.usernames = reformatData;
             this.isLoading = false
           })
-          .catch(() => this.isLoading = false)
-      }, 1000)
+          .catch((err) => {
+            this.$emit('setError', err)
+            this.isLoading = false
+          })
+      }, 500)
+      }
+     
     }
   },
 }
