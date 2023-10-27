@@ -18,6 +18,32 @@
   }
 }
 .code {
+  &__no-data {
+    color: $warning;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding: 8px;
+    background-color: $whitesnow;
+    margin-top: 8px;
+  }
+  &__detail {
+    &-label {
+      background-color: #EEE;
+      border-radius: 4px;
+      font-size: 12px;
+      padding: 4px 12px;
+      font-weight: 500;
+      color: #777;
+      display: inline;
+    }
+    &-sub {
+      color: black;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
   &__table {
     &-label {
       color: #777;
@@ -59,4 +85,10 @@
 }
 #input-search {
   width: 200px;
+}
+
+.my-table thead th {
+  background-color: #fafafa;
+  // &:first-child { border-radius: 10px 0 0 0; }
+  // &:last-child { border-radius: 0 10px 0 0; }
 }
