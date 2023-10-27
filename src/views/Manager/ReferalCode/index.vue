@@ -7,33 +7,39 @@
       @getCodeByUsername="getCodeByUsername"
       @onClearUsername="onClearUsername"
       @getCodeByKeyword="getCodeByKeyword"
+      @onSelectUser="onSelectUser"
+      :selectedUser="selectedUser"
+      :referralCode="referralCode"
+      @setReferralCode="setReferralCode"
+      @setError="setError"
+      @changeFilter="changeFilter"
     />
     <DialogComponent  
       @closeDialog="closeDialog" 
       @openDialogSuccess="openDialogSuccess"
+      @setError="setError"
       :dialog="dialog"  
     />
     <DialogSuccess 
       :dialogSucces="dialogSucces"  
       @closeDialogSuccess="closeDialogSuccess" 
     />
-    <TableCode v-if="isSearch" :items="dataCode" />
+    <TableCode 
+      v-if="isSearch" 
+      :items="dataCode" 
+      @setError="setError"
+      :totalElements="totalElements"
+      :totalPages="totalPages"
+      :currentPage="currentPage"
+      @setCurrentPage="setCurrentPage"
+      @refreshData="refreshData"
+    />
     <div v-else class="code__mention">Tidak ada data ditampilkan, silahkan cari berdasarkan username atau referral code</div>
-    <v-snackbar v-model="snackbar" :timeout="timeout"  top color="warning">
-     <div v-if="errorObject">
-       <div v-if="errorObject.response">
-         <div v-if="errorObject.response.status === 401">
-         <div>{{ errorObject.response.data.error }}</div>
-         <div>{{ errorObject.response.data.error_description }}</div>
-         </div>
-         <div v-else>
-           <div>{{ errorObject.response.data.message }}</div>
-           <div>{{ errorObject.response.data.data }}</div>
-         </div>
-       </div>
-       <div v-else>  {{ errorObject }}</div>
-     </div>
-   </v-snackbar>
+   <AlertError
+    :snackbar="snackbar"
+    :errorObject="errorObject"
+    @setSnackBar="setSnackBar"
+   />
   </div>
 </template>
 
@@ -43,6 +49,7 @@ import FilterComponent from "./filter.vue"
 import DialogComponent from "./dialogCreate.vue"
 import DialogSuccess from "./dialogSuccess.vue"
 import TableCode from "./tableReferral.vue"
+import AlertError from "./alertError.vue";
 import { mapActions } from "vuex";
 export default {
   components : {
@@ -50,11 +57,18 @@ export default {
     FilterComponent,
     DialogComponent,
     DialogSuccess,
-    TableCode
+    TableCode,
+    AlertError
   },
   data () {
     return {
       dialog : false,
+      accountId :  "",
+      selectedUser : {},
+      totalElements : 0,
+      currentPage : 1,
+      totalPages : 0,
+      referralCode : '',
       errorObject : null,
       snackbar : false,
       timeout : 3000,
@@ -77,25 +91,84 @@ export default {
     ...mapActions({
       searchReferralCode : 'manageSocmed/searchReferralCode'
     }),
+    changeFilter () {
+      this.referralCode = ''
+      this.accountId = ""
+    },
+    refreshData () {
+      const payload = {
+        referralCode : this.referralCode,
+        accountId : this.accountId,
+        page : this.currentPage - 1,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
+    setCurrentPage(value) {
+      this.currentPage = value
+      const payload = {
+        referralCode : this.referralCode,
+        accountId : this.accountId,
+        page : value - 1,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
+    setSnackBar (value) {
+      this.snackbar = value
+    },
+    setReferralCode (value) {
+      this.referralCode = value
+      this.accountId = ""
+    },
     onClearUsername() {
       this.dataCode = []
       this.isSearch = false
     },
-    getCodeByKeyword ( value ) {
-      console.log(value)
-      this.isSearch = true
-      const payload = {
-        referralCode : value
-      }
+    handleSearchApi (payload) {
       return this.searchReferralCode(payload)
         .then(response => {
           const content = response.content
+          const totalElements = response.totalElements
+          const totalPages = response.totalPages
+          this.totalPages = totalPages
           this.dataCode = content
         })
         .catch(err => {
-          this.errorObject = err
-          this.snackbar = true
+          this.setError(err)
         })
+    },
+    getCodeByKeyword ( value ) {
+      this.currentPage = 1
+      this.isSearch = true
+      const payload = {
+        referralCode : value,
+        accountId : '',
+        page : 0,
+        size : 10
+      }
+      return this.handleSearchApi(payload)
+    },
+    setError (err) {
+      this.errorObject = err
+      this.snackbar = true
+    },
+    onSelectUser (value) {
+      this.referralCode = ""
+      if(value) {
+        this.accountId = value.accountId
+        this.isSearch = true
+        const payload = {
+          accountId : value.accountId,
+          referralCode : '',
+          page : this.currentPage - 1,
+          size : 10
+        }
+        return this.handleSearchApi(payload)
+      }else {
+        this.isSearch = false
+      }
+      
     },
     getCodeByUsername( value) {
       this.isSearch = true
@@ -106,7 +179,6 @@ export default {
       return this.searchReferralCode(payload)
         .then(response => {
           const content = response.content
-          console.log(content)
           this.dataCode = content
         })
     },
