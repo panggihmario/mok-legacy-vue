@@ -13,14 +13,11 @@
                 <div class="charcoal--text" v-else>Disable</div>
               </td>
               <td>
-                <custom-button @click="openDetail(item)" class="mr-2" size="small">Detail</custom-button>
-                <custom-button :loading="isLoading" @click="setStatus('INACTIVE', item)" v-if="item.status === 'ACTIVE'"
-                  size="small">
-                  <div class="warning--text"> Disable </div>
-                </custom-button>
-                <custom-button :loading="isLoading" @click="setStatus('ACTIVE', item)" v-else size="small">
-                  <div class="success--text">Enable</div>
-                </custom-button>
+                <ActionsCode
+                  :item="item"
+                  @refreshData="refreshData"
+                  @setError="setError"
+                />
               </td>
             </tr>
           </tbody>
@@ -37,9 +34,15 @@
   </div>
 </template>
 
+
+
 <script>
 import { mapActions } from 'vuex';
+import ActionsCode from "./actions.vue"
 export default {
+  components : {
+    ActionsCode
+  },
   props: {
     items: {
       type: [Array, Object]
@@ -76,7 +79,13 @@ export default {
         }
       })
     },
-    setStatus(status, item) {
+    setError (err) {
+      this.$emit("setError", err)
+    },
+    refreshData() {
+      this.$emit("refreshData")
+    },
+    setStatus({status, item}) {
       this.isLoading = true
       const payload = {
         status,
@@ -84,7 +93,6 @@ export default {
       }
       return this.updateStatusReferralCode(payload)
         .then(response => {
-          console.log(response)
           this.isLoading = false
           this.$emit("refreshData")
         })
@@ -133,4 +141,4 @@ export default {
 }
 </script>
 
-<style lang="scss" src="./style.scss"></style>
+<style lang="scss" src="../style.scss"></style>
