@@ -24,6 +24,7 @@
           v-model="selectedUser" 
           clearable
           @click:clear="onClear"
+          @change="onChange"
         >
         </v-autocomplete>
         <div class="mt-4 d-flex justify-end">
@@ -69,10 +70,16 @@ export default {
       getListAdmin: "account/getListRespone",
       fetchListAccounts: 'post/fetchListAccounts',
       searchAccounts: 'post/searchAccounts',
-      postReferralCode : 'manageSocmed/postReferralCode'
+      postReferralCode : 'manageSocmed/postReferralCode',
+      fetchUser : 'account/fetchUser',
+      searchUser : 'account/searchDataUser'
     }),
+    onChange(e) {
+      this.payloadCode.accountId = e.accountId
+    },
     onClear() {
-      this.$emit('onClearUsername')
+      this.selectedUser = {}
+      this.payloadCode.accountId = ''
       return this.fetchAdminData()
     },
     fetchAdminData() {
@@ -80,9 +87,18 @@ export default {
       const payload = {
         page: 1
       };
-      return this.fetchListAccounts(payload)
+      return this.fetchUser(payload)
         .then((response) => {
-          this.usernames = response;
+          // this.usernames = response;
+          console.log(response)
+          const content = response.content
+          const reformatData = content.map((r) => {
+              return {
+                username : r.username,
+                accountId : r.id
+              }
+            })
+            this.usernames = reformatData;
         });
     },
     closeDialog () {
@@ -119,17 +135,11 @@ export default {
         this.$emit('closeDialog', false)
       }
     },
-    isForm () {
-      const dataForm = {
-        ...this.payloadCode,
-        accountId : this.selectedUser.accountId
-      }
-      return dataForm
-    }
   },
   watch: {
-    isForm (value) {
-      let schema = yup.object().shape({
+    payloadCode : {
+      handler (value) {
+        let schema = yup.object().shape({
         referralCode : yup.string().required(),
         accountId : yup.string().required()
       })
@@ -141,18 +151,20 @@ export default {
             this.isDisabled = true
           }
         })
+      },
+      deep : true
     },
     search(value) {
       if (value) {
-        console.log(value)
         this.isLoading = true
       setTimeout(() => {
         const payload = {
           value
         }
-        return this.searchAccounts(payload)
+        return this.searchUser(payload)
           .then((response) => {
-            const reformatData = response.map((r) => {
+            const content = response.content
+            const reformatData = content.map((r) => {
               return {
                 username : r.username,
                 accountId : r.id
