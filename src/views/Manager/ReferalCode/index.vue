@@ -48,10 +48,19 @@ import HeaderContent from "@/containers/HeaderContent";
 import FilterComponent from "./filter.vue"
 import DialogComponent from "./dialogCreate.vue"
 import DialogSuccess from "./dialogSuccess.vue"
-import TableCode from "./tableReferral.vue"
+import TableCode from "./tableCode/tableReferral.vue"
 import AlertError from "./alertError.vue";
 import { mapActions } from "vuex";
 export default {
+  beforeRouteLeave(to, from, next) {
+  // $('body').css('overflow', 'auto');
+    if(to.name !== 'detailReferralCode') {
+      localStorage.removeItem('userValue')
+      localStorage.removeItem('filterBy')
+      localStorage.removeItem('keyword')
+    }
+  next()
+},
   components : {
     HeaderContent,
     FilterComponent,
@@ -64,7 +73,7 @@ export default {
     return {
       dialog : false,
       accountId :  "",
-      selectedUser : {},
+      selectedUser : null,
       totalElements : 0,
       currentPage : 1,
       totalPages : 0,
@@ -86,6 +95,34 @@ export default {
         },
       ],
     }
+  },
+  computed : {
+    sortBy () {
+      const sort = window.localStorage.getItem('filterBy')
+      return sort
+    }
+  },
+  mounted() {
+    const keyword = window.localStorage.getItem('keyword')
+    const userValue = window.localStorage.getItem('userValue')
+    if(keyword || userValue) {
+      const user = JSON.parse(userValue)
+      let payload = {
+        referralCode : keyword ? keyword : '',
+        accountId : user ? user.id : '',
+        page : this.currentPage - 1,
+        size : 10
+      }
+      this.isSearch = true
+      setTimeout(() => {
+        this.referralCode = keyword
+        this.selectedUser = user
+      },500)
+      return this.handleSearchApi(payload)
+    }else{
+      this.isSearch = false
+    }
+    
   },
   methods : {
     ...mapActions({
@@ -139,15 +176,22 @@ export default {
         })
     },
     getCodeByKeyword ( value ) {
-      this.currentPage = 1
-      this.isSearch = true
-      const payload = {
-        referralCode : value,
-        accountId : '',
-        page : 0,
-        size : 10
+      if(value) {
+        this.currentPage = 1
+        window.localStorage.setItem('keyword', value)
+        this.isSearch = true
+        const payload = {
+          referralCode : value,
+          accountId : '',
+          page : 0,
+          size : 10
+        }
+        return this.handleSearchApi(payload)
+      }else{
+        window.localStorage.removeItem('keyword')
+        this.isSearch = false
+        return
       }
-      return this.handleSearchApi(payload)
     },
     setError (err) {
       this.errorObject = err
@@ -155,25 +199,27 @@ export default {
     },
     onSelectUser (value) {
       this.referralCode = ""
+      this.selectedUser = value
       if(value) {
-        this.accountId = value.accountId
+        window.localStorage.setItem("userValue", JSON.stringify(value))
+        this.accountId = value.id
         this.isSearch = true
         const payload = {
-          accountId : value.accountId,
+          accountId : value.id,
           referralCode : '',
           page : this.currentPage - 1,
           size : 10
         }
         return this.handleSearchApi(payload)
       }else {
+        window.localStorage.removeItem('userValue')
         this.isSearch = false
       }
-      
     },
     getCodeByUsername( value) {
       this.isSearch = true
       const payload = {
-        accountId : value.accountId,
+        accountId : value.id,
         referralCode : ''
       }
       return this.searchReferralCode(payload)
