@@ -23,7 +23,7 @@
     </div>
   
     <div v-else style="width : 250px">
-      <v-text-field v-model="keyword" rounded outlined dense append-icon="fas fa-search" hide-details
+      <v-text-field clearable v-model="keyword" rounded outlined dense append-icon="fas fa-search" hide-details
         class="code__header-label" placeholder="Cari ..." v-on:keyup.enter="onChageKeywordCode" />
     </div>
     <v-snackbar v-model="snackbar" :timeout="timeout" top color="warning">
