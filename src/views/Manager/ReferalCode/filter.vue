@@ -15,16 +15,17 @@
       />
     </div>
     <div v-if="selectedFilter.value === 'username'" style="width : 200px">
-      <v-autocomplete dense hide-details placeholder="Cari..." :items="usernames" item-text="username"
+      <v-autocomplete dense hide-details placeholder="Cari..." :items="usernames" item-value="id" item-text="username"
         :search-input.sync="search" return-object outlined rounded class="code__header-label" v-model="user" clearable
-        @click:clear="onClear">
+        @click:clear="onClear"
+      >
       </v-autocomplete>
     </div>
+  
     <div v-else style="width : 250px">
       <v-text-field v-model="keyword" rounded outlined dense append-icon="fas fa-search" hide-details
         class="code__header-label" placeholder="Cari ..." v-on:keyup.enter="onChageKeywordCode" />
     </div>
-
     <v-snackbar v-model="snackbar" :timeout="timeout" top color="warning">
       <div v-if="errorObject">
         <div v-if="errorObject.response">
@@ -101,12 +102,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      getListAdmin: "account/getListRespone",
       fetchListAccounts: 'post/fetchListAccounts',
-      searchAccounts: 'post/searchAccounts'
+      searchAccounts: 'post/searchAccounts',
+      fetchUser : 'account/fetchUser',
+      searchUser : 'account/searchDataUser'
     }),
     onChangeFilter (item) {
       this.$emit('changeFilter', item)
+      window.localStorage.setItem('filterBy', item.value)
     },
     onChageKeywordCode(e) {
       this.$emit('getCodeByKeyword', this.keyword)
@@ -123,9 +126,20 @@ export default {
       const payload = {
         page: 1
       };
-      return this.fetchListAccounts(payload)
+      return this.fetchUser(payload)
         .then((response) => {
-          this.usernames = response;
+          
+          const content = response.content
+          const reformat = content.map(c => {
+            return {
+              username : c.username,
+              id : c.id
+            }
+          })
+          if(this.user) {
+            reformat.push(this.user)
+          }
+          this.usernames = reformat
         })
         .catch(err => {
           this.$emit("setError", err)
@@ -133,6 +147,13 @@ export default {
     },
   },
   mounted() {
+    const sortBy = window.localStorage.getItem('filterBy')
+    if(sortBy === 'referralCode') {
+      this.selectedFilter = {
+        title: 'Referral Code',
+        value: 'referralCode'
+      }
+    }
     this.fetchAdminData()
   },
   watch: {
@@ -143,15 +164,16 @@ export default {
           const payload = {
             value
           }
-          return this.searchAccounts(payload)
+          return this.searchUser(payload)
             .then((response) => {
-              const reformatData = response.map((r) => {
+              const content = response.content
+              const reformat = content.map(c => {
                 return {
-                  username: r.username,
-                  accountId: r.id
+                  username : c.username,
+                  id : c.id
                 }
               })
-              this.usernames = reformatData;
+              this.usernames = reformat
               this.isLoading = false
             })
             .catch((err) => {

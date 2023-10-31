@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialog" width="400">
+  <v-dialog v-model="isDialog" width="400" @click:outside="closeDialog">
     <v-card class="code__dialog">
       <div class="code__dialog-label mb-4">Buat Referral</div>
       <form @submit.prevent="onSubmit">
@@ -86,7 +86,7 @@ export default {
         });
     },
     closeDialog () {
-      this.referralCode = ''
+      this.payloadCode.referralCode = ''
       this.selectedUser = {}
       this.$emit('closeDialog', false)
     },
