@@ -14,7 +14,7 @@
           <div>{{ formatDate(item.createAt) }}</div>
         </template>
         <template v-slot:no-data>
-          <div>no data</div>
+          <div>Belum ada yang menggunakan kode refferal ini</div>
         </template>
       </v-data-table>
       <AlertError
