@@ -23,8 +23,22 @@
     </div>
   
     <div v-else style="width : 250px">
-      <v-text-field clearable v-model="keyword" rounded outlined dense append-icon="fas fa-search" hide-details
-        class="code__header-label" placeholder="Cari ..." v-on:keyup.enter="onChageKeywordCode" />
+      <v-text-field 
+        v-model="keyword" 
+        rounded 
+        outlined 
+        dense 
+
+        hide-details
+        class="code__header-label" 
+        placeholder="Cari ..." 
+        v-on:keyup.enter="onChageKeywordCode" 
+      >
+        <template v-slot:append>
+          <v-icon size="20px" v-if="keyword.length === 0">fas fa-search</v-icon>
+          <v-icon @click="clearKeyword" class="cursor-pointer" size="20px" v-else >fas fa-times</v-icon>
+        </template>
+      </v-text-field>
     </div>
     <v-snackbar v-model="snackbar" :timeout="timeout" top color="warning">
       <div v-if="errorObject">
@@ -110,6 +124,9 @@ export default {
     onChangeFilter (item) {
       this.$emit('changeFilter', item)
       window.localStorage.setItem('filterBy', item.value)
+    },
+    clearKeyword () {
+      this.keyword = ''
     },
     onChageKeywordCode(e) {
       this.$emit('getCodeByKeyword', this.keyword)
