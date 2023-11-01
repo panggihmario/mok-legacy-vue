@@ -10,6 +10,7 @@
           outlined 
           hide-details 
           v-model="payloadCode.referralCode" 
+          placeholder="Masukkan referral code"
         />
         <div class="code__dialog-input-label mt-2">Username</div>
         <v-autocomplete 
