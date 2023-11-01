@@ -35,8 +35,11 @@
         v-on:keyup.enter="onChageKeywordCode" 
       >
         <template v-slot:append>
-          <v-icon size="20px" v-if="keyword.length === 0">fas fa-search</v-icon>
-          <v-icon @click="clearKeyword" class="cursor-pointer" size="20px" v-else >fas fa-times</v-icon>
+          <div class="row justify-center align-center" style="margin : auto">
+            <v-icon  v-if="keyword.length === 0">search</v-icon>
+             <v-icon @click="clearKeyword" class="cursor-pointer"  v-else >close</v-icon>
+          </div>
+          
         </template>
       </v-text-field>
     </div>
