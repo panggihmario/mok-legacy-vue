@@ -127,6 +127,11 @@ export default {
     onChangeFilter (item) {
       this.$emit('changeFilter', item)
       window.localStorage.setItem('filterBy', item.value)
+      if(item.value === 'referralCode') {
+        window.localStorage.removeItem('userValue')
+      }else{
+        window.localStorage.removeItem('keyword')
+      }
     },
     clearKeyword () {
       this.keyword = ''
