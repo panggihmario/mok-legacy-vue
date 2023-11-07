@@ -34,8 +34,34 @@ const getUsersbyRole = function ({state, dispatch}, payload) {
     .catch(err => { throw err })
 }
 
+const searchDataUser = function ({state, dispatch}, payload) {
+  const data = {
+    url : `${state.pathAccount}/users/search`,
+    params : {
+      ...payload
+    }
+  }
+  return dispatch('getWithToken', data , {root : true})
+    .then(response => dispatch('printSuccess', response))
+    .catch(err => { throw err })
+}
+
+const fetchUser = function ({state, dispatch}, payload) {
+  const data = {
+    url : `${state.pathAccount}/users`,
+    params : {
+      ...payload
+    }
+  }
+  return dispatch('getWithToken', data , {root : true})
+    .then(response => dispatch('printSuccess', response))
+    .catch(err => { throw err })
+}
+
 export {
   fetchFeedByUserId,
   deleteFeed,
-  getUsersbyRole
+  getUsersbyRole,
+  searchDataUser,
+  fetchUser
 }
