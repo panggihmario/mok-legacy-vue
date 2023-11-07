@@ -133,9 +133,11 @@ export default {
       this.accountId = ""
     },
     refreshData () {
+      const account = JSON.parse(window.localStorage.getItem('userValue'))
+      const code = window.localStorage.getItem('keyword')
       const payload = {
-        referralCode : this.referralCode ? this.referralCode : '',
-        accountId : this.accountId ? this.accountId : '',
+        referralCode : code ?code : '',
+        accountId : account ? account.id : '',
         page : this.currentPage - 1,
         size : 10
       }
