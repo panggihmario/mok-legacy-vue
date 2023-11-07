@@ -131,6 +131,7 @@ export default {
     changeFilter () {
       this.referralCode = ''
       this.accountId = ""
+      this.selectedUser = null
     },
     refreshData () {
       const account = JSON.parse(window.localStorage.getItem('userValue'))
@@ -144,10 +145,12 @@ export default {
       return this.handleSearchApi(payload)
     },
     setCurrentPage(value) {
+      const account = JSON.parse(window.localStorage.getItem('userValue'))
+      const code = window.localStorage.getItem('keyword')
       this.currentPage = value
       const payload = {
-        referralCode : this.referralCode,
-        accountId : this.accountId,
+        referralCode :code ? code : '',
+        accountId : account ? account.id : '',
         page : value - 1,
         size : 10
       }
