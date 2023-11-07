@@ -109,5 +109,10 @@ export default new Vuex.Store({
     deleteWithToken(ctx, params) {
       return this._vm.$httpWithToken().delete(params.url);
     },
+    patchWithToken(ctx, data) {
+      return this._vm.$httpWithToken().patch(data.url, {
+        params : {...data.params}
+      })
+    }
   },
 });

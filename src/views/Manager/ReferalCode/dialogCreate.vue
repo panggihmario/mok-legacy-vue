@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialog" width="400">
+  <v-dialog v-model="isDialog" width="400" @click:outside="closeDialog">
     <v-card class="code__dialog">
       <div class="code__dialog-label mb-4">Buat Referral</div>
       <form @submit.prevent="onSubmit">
@@ -10,17 +10,22 @@
           outlined 
           hide-details 
           v-model="payloadCode.referralCode" 
+          placeholder="Masukkan referral code"
         />
         <div class="code__dialog-input-label mt-2">Username</div>
         <v-autocomplete 
           dense hide-details 
           placeholder="Pilih Username" 
-          :items="usernames" item-text="username"
+          :items="usernames" 
+          item-text="username"
           :search-input.sync="search" 
-          return-object outlined 
+          return-object 
+          outlined 
           class="code__header-label" 
           v-model="selectedUser" 
           clearable
+          @click:clear="onClear"
+          @change="onChange"
         >
         </v-autocomplete>
         <div class="mt-4 d-flex justify-end">
@@ -66,19 +71,38 @@ export default {
       getListAdmin: "account/getListRespone",
       fetchListAccounts: 'post/fetchListAccounts',
       searchAccounts: 'post/searchAccounts',
-      postReferralCode : 'manageSocmed/postReferralCode'
+      postReferralCode : 'manageSocmed/postReferralCode',
+      fetchUser : 'account/fetchUser',
+      searchUser : 'account/searchDataUser'
     }),
+    onChange(e) {
+      this.payloadCode.accountId = e.accountId
+    },
+    onClear() {
+      this.selectedUser = {}
+      this.payloadCode.accountId = ''
+      return this.fetchAdminData()
+    },
     fetchAdminData() {
       this.loading = true
       const payload = {
         page: 1
       };
-      return this.fetchListAccounts(payload)
+      return this.fetchUser(payload)
         .then((response) => {
-          this.usernames = response;
+          const content = response.content
+          const reformatData = content.map((r) => {
+              return {
+                username : r.username,
+                accountId : r.id
+              }
+            })
+            this.usernames = reformatData;
         });
     },
     closeDialog () {
+      this.payloadCode.referralCode = ''
+      this.selectedUser = {}
       this.$emit('closeDialog', false)
     },
     onSubmit () {
@@ -90,7 +114,9 @@ export default {
         .then(response => {
           this.closeDialog()
           this.$emit('openDialogSuccess')
-          console.log(response)
+        })
+        .catch(err => {
+          this.$emit('setError', err)
         })
     }
   },
@@ -108,17 +134,11 @@ export default {
         this.$emit('closeDialog', false)
       }
     },
-    isForm () {
-      const dataForm = {
-        ...this.payloadCode,
-        accountId : this.selectedUser.accountId
-      }
-      return dataForm
-    }
   },
   watch: {
-    isForm (value) {
-      let schema = yup.object().shape({
+    payloadCode : {
+      handler (value) {
+        let schema = yup.object().shape({
         referralCode : yup.string().required(),
         accountId : yup.string().required()
       })
@@ -130,17 +150,20 @@ export default {
             this.isDisabled = true
           }
         })
+      },
+      deep : true
     },
     search(value) {
-      if (this.isLoading) return
-      this.isLoading = true
+      if (value) {
+        this.isLoading = true
       setTimeout(() => {
         const payload = {
           value
         }
-        return this.searchAccounts(payload)
+        return this.searchUser(payload)
           .then((response) => {
-            const reformatData = response.map((r) => {
+            const content = response.content
+            const reformatData = content.map((r) => {
               return {
                 username : r.username,
                 accountId : r.id
@@ -149,8 +172,13 @@ export default {
             this.usernames = reformatData;
             this.isLoading = false
           })
-          .catch(() => this.isLoading = false)
-      }, 1000)
+          .catch((err) => {
+            this.$emit('setError', err)
+            this.isLoading = false
+          })
+      }, 500)
+      }
+     
     }
   },
 }
