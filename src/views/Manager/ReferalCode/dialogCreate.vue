@@ -90,8 +90,6 @@ export default {
       };
       return this.fetchUser(payload)
         .then((response) => {
-          // this.usernames = response;
-          console.log(response)
           const content = response.content
           const reformatData = content.map((r) => {
               return {
