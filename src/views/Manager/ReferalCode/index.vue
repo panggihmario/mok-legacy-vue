@@ -134,8 +134,8 @@ export default {
     },
     refreshData () {
       const payload = {
-        referralCode : this.referralCode,
-        accountId : this.accountId,
+        referralCode : this.referralCode ? this.referralCode : '',
+        accountId : this.accountId ? this.accountId : '',
         page : this.currentPage - 1,
         size : 10
       }
