@@ -45,6 +45,7 @@ export default {
         status,
         referralCode: item.referralCode
       }
+      console.log(payload)
       return this.updateStatusReferralCode(payload)
         .then(response => {
           this.isLoading = false
