@@ -5,7 +5,7 @@
         class="kipas__label"
         :style="label === '-' && { color: 'transparent' }"
       >
-        {{ label }}
+        {{ label }} <span v-if="labelRequired" style="color : red" >*</span>
       </label>
       <div
         :class="[
@@ -22,7 +22,7 @@
           :maxlength="counter"
           v-on="inputListener"
         />
-        <v-icon color="charcoal" v-if="icon" size="15px">fas fa-link</v-icon>
+        <v-icon color="charcoal" v-if="icon" size="15px">{{ icon }}</v-icon>
       </div>
       <div v-if="errors.length > 0 || isError" class="kipas__error-message">
         {{ errorMessage ? errorMessage : errors[0] }}
@@ -96,6 +96,13 @@ export default {
     errorMessage: {
       type: String,
     },
+    labelRequired : {
+      type : Boolean,
+      default : false
+    },
+    icon : {
+      type : String
+    }
   },
   data() {
     return {

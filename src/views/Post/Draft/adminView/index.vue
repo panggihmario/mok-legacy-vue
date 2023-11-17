@@ -23,39 +23,14 @@
       :items="feeds" 
       show-select
       v-model="selected"
-    >
-      <template v-slot:body="{ items }">
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td>
-              <input style="width: 20px" type="checkbox" :value="item" v-model="selected" />
-            </td>
-            <td @mouseover="onHover(item)" @mouseleave="onLeave" @mousemove="getPosition" @mouseout="stopTracking">
-              <LinkDialog :item="item" @refreshDataFeed="refreshDataFeed" :isAdmin="true" :feeds="feeds" />
-              <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
-                :style="{ top: `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))))}px` }">
-                <img :src="thumbnailImage" :class="feed['tb__image']" />
-              </div>
-            </td>
-            <td>
-              <div :class="feed['tb__caption']">{{ item.description }}</div>
-            </td>
-            <td>
-              <div :class="feed['tb__caption']">{{ item.channel && item.channel.name }}</div>
-            </td>
-            <td>
-              <div :class="feed['tb__caption']">
-                {{ formatingDate(item.submittedAt) }}
-              </div>
-            </td>
-            <td>
-              <div :class="feed['tb__caption']">{{ item.createBy }}</div>
-            </td>
-            <td>
-              <ActionsPicker :item="item" @refreshDataFeed="refreshDataFeed" />
-            </td>
-          </tr>
-        </tbody>
+    > 
+      <template v-slot:item="{item}">
+        <ItemComponent
+          :item="item"
+          :selected="selected"
+          @setSelectedItem="setSelectedItem"
+          @refreshDataFeed="refreshDataFeed"
+        />
       </template>
     </v-data-table>
   </div>
@@ -68,14 +43,20 @@ import Actions from "./actions.vue";
 import LinkDialog from "../../containers/dialog/index.vue";
 import moment from "moment";
 import ActionsPicker from "./actionsPicker.vue";
-import DialogReject from "./dialogReject.vue"
+import DialogReject from "./dialogReject.vue";
+import actions from "./actions.vue";
+import LevelPicker from "./levelPicker.vue";
+import Item from "./item.vue"
 export default {
   components: {
     Picker,
     Actions,
     LinkDialog,
     ActionsPicker,
-    DialogReject
+    DialogReject,
+    Actions : actions,
+    LevelPicker,
+    ItemComponent : Item
   },
   watch : {
     '$route.params.page': {
@@ -97,6 +78,15 @@ export default {
       multipleReject : 'post/multipleReject',
       fetchFeeds: "post/fetchFeeds",
     }),
+    setLevelPriority(value) {
+      this.levelPriority = value
+    },
+    setSelectedItem (value) {
+      this.selected = value
+    },
+    setEpochDate(time) {
+      this.epochDate = time
+    },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
       return cek;
@@ -179,11 +169,13 @@ export default {
   data() {
     return {
       selectedItem: null,
+      epochDate : null,
       thumbnailImage: "",
       dialogReject: false,
       alertSuccess: false,
       isLoadingMultiple : false,
       statusMessage: 'success',
+      levelPriority : null,
       message: '',
       selected: [],
       headers: [
@@ -206,18 +198,21 @@ export default {
           sortable: false,
           filterable: false,
           value: "channel",
+          width: "100",
         },
         {
           text: "Submitted",
           sortable: false,
           filterable: false,
           value: "date",
+          width: "100",
         },
         {
           text: "User",
           sortable: false,
           filterable: false,
           value: "user",
+          width: "100",
         },
         {
           text: "Schedule",
@@ -225,6 +220,31 @@ export default {
           filterable: false,
           value: "schedule",
           align: "left",
+          width: "70",
+        },
+        {
+          text: "Konten Level",
+          sortable: false,
+          filterable: false,
+          value: "level",
+          align: "left",
+          width: "110",
+        },
+        {
+          text: "Expired Tayang",
+          sortable: false,
+          filterable: false,
+          value: "schedule",
+          align: "left",
+          width: "110",
+        },
+        {
+          text: "Action",
+          sortable: false,
+          filterable: false,
+          value: "actions",
+          align: "center",
+          width: "200",
         },
       ],
     };

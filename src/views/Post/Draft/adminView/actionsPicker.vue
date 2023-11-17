@@ -2,14 +2,13 @@
   <div class="d-flex">
     <Picker 
       :item="item" 
-      class="mr-4"
       @setEpochDate="setEpochDate"
     />
-    <Actions 
+    <!-- <Actions 
       :item="item" 
       @refreshDataFeed="refreshDataFeed" 
       :epochDate="epochDate"
-    />
+    /> -->
   </div>
 </template>
 
@@ -29,7 +28,8 @@ export default {
   },
   methods : {
     setEpochDate(time) {
-      this.epochDate = time
+      // this.epochDate = time
+      this.$emit('setEpochDate', time)
     },
     refreshDataFeed() {
       this.$emit('refreshDataFeed')

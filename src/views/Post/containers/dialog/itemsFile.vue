@@ -1,7 +1,7 @@
 <template>
   <div ref="itemsfile" height="552px" width="850px">
     <v-row no-gutters>
-      <v-col cols="6">
+      <v-col cols="5">
         <div :class="d.left">
           <CarouselMedia
             :feed="detailFeed"
@@ -12,27 +12,43 @@
             :description="description"
             @setIsPublish="setIsPublish"
             :dialog="dialog"
+            :expiredEpochDate="expiredEpochDate"
+            :levelPriority="levelPriority"
+            :isChanging="isChanging"
+            :isPublish="isPublish"
+            :isReject="isReject"
           />
         </div>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <Description
           :item="item"
           v-model="description"
           :description="description"
           :floatingLink="floatingLink"
           :floatingLinkLabel="floatingLinkLabel"
+          :levelPriority="levelPriority"
+          :expiredEpochDate="expiredEpochDate"
           @closeDialog="closeDialog"
           :isAdmin="isAdmin"
           @setFloatingLabel="setFloatingLabel"
           @setFloatingLink="setFloatingLink"
           @saveCaption="saveCaption"
+          @saveChanging="saveChanging"
+          @setDescription="setDescription"
           @setChange="setChange"
+          @setExpiredDatePayload="setExpiredDatePayload"
+          @setLevelPriority="setLevelPriority"
           :isChanging="isChanging"
           :isPublish="isPublish"
+          :initExpiredDate="initExpiredDate"
+          @setInitData="setInitData"
         />
       </v-col>
     </v-row>
+    <div>
+
+    </div>
     <v-snackbar
       v-model="snackbar"
       :timeout="timeout"
@@ -56,7 +72,7 @@
 
 <script>
 import CarouselMedia from "./carouselMedia.vue";
-import Description from "./description.vue";
+import Description from "./description/index.vue";
 import { mapActions } from "vuex";
 export default {
   components : {
@@ -98,6 +114,7 @@ export default {
   data () {
     return {
       isPublish : false,
+      isReject : false,
       errorObject : null,
       snackbar : false,
       timeout : 3000,
@@ -111,6 +128,10 @@ export default {
       detailFeed: {
         medias: [],
       },
+      expiredEpochDate : '',
+      levelPriority : null,
+      initExpiredDate : null,
+      idFeed : ''
     }
   },
   mounted() {
@@ -121,8 +142,23 @@ export default {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
-      fetchVodUrl : 'post/fetchVodUrl'
+      fetchVodUrl : 'post/fetchVodUrl',
+      updateFeedTrending : 'post/updateFeedTrending'
     }),
+    setInitData () {
+      const id = this.item.id
+      return this.getFeedById(id)
+    },
+    setLevelPriority (value) {
+      this.levelPriority = value
+    },
+    setExpiredDatePayload (value) {
+      this.expiredEpochDate = value
+    },
+    setDescription(value) {
+      this.description = value
+     
+    },
     resetData () {
       this.detailFeed = {
         medias : []
@@ -159,6 +195,10 @@ export default {
           this.description = response.description;
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
+          this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+          this.expiredEpochDate = response.expiredAt
+          this.initExpiredDate = response.expiredAt
+          console.log(response)
         })
         .catch (err => {
           this.snackbar = true
@@ -180,6 +220,7 @@ export default {
     },
     closeDialog() {
       this.$emit("closeDialog");
+      this.isPublish  = false
     },
     saveCaption(channelValue) {
       const id = this.detailFeed.id;
@@ -192,10 +233,30 @@ export default {
           medias: this.detailFeed.medias,
           channel : channelValue,
           floatingLink :this.floatingLink,
-          floatingLinkLabel: this.floatingLinkLabel
+          floatingLinkLabel: this.floatingLinkLabel,
+          levelPriority : this.levelPriority,
+          expiredAt : this.expiredEpochDate
         },
       }
       return this.updatePostFeed(payload)
+        .then(() => {
+          return this.getFeedById(id);
+        })
+        .catch ((err) => {
+          this.snackbar = true
+          this.errorObject = err
+        })
+    },
+    saveChanging(payload) {
+      const id = this.detailFeed.id;
+      const data = {
+        id: id,
+        params: {
+          ...payload,
+        },
+      }
+      console.log(data)
+      return this.updateFeedTrending(data)
         .then(() => {
           return this.getFeedById(id);
         })

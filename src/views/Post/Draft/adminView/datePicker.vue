@@ -136,5 +136,6 @@ export default {
   content: "\f0dd";
   position: absolute;
   right: 6px;
+  top: -1px;
 }
 </style>

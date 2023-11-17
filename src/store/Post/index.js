@@ -431,6 +431,21 @@ export default {
       return dispatch("putWithToken", data, {root : true})
         .then(response => {return response})
         .catch(err => { throw err })
+    },
+    updateFeedTrending({dispatch, state}, payload) {
+      const data = {
+        url : `${state.pathTrendingFeeds}/candidates/${payload.id}`,
+        data: {
+          ...payload.params,
+        },
+      }
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
     }
   },
 };
