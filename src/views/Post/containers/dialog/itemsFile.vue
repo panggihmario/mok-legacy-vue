@@ -255,7 +255,6 @@ export default {
           ...payload,
         },
       }
-      console.log(data)
       return this.updateFeedTrending(data)
         .then(() => {
           return this.getFeedById(id);
