@@ -40,16 +40,22 @@
               
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.channel && item.channel.name }}</div>
+              <div :class="ad['tb__caption']">{{ item.channel && item.channel.name }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.createBy }}</div>
+              <div :class="ad['tb__caption']">{{ item.createBy }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">{{ item.publishBy }}</div>
+              <div :class="ad['tb__caption']">{{ item.publishBy }}</div>
+            </td>
+            <td >
+              <div :class="ad['tb__caption']">{{ item.levelPriority }}</div>
+            </td>
+            <td >
+              <div :class="ad['tb__caption']">{{ formatingDate(item.expiredAt) }}</div>
             </td>
             <td>
-              <div :class="ad['dg__desc']">
+              <div :class="ad['tb__caption']">
                 {{ formatingDate(item.scheduledTime) }}
               </div>
             </td>
@@ -148,6 +154,20 @@ export default {
           sortable: false,
           filterable: false,
           value : 'publisher',
+        },
+        {
+          text : 'Level Konten',
+          class : 'whitesnow',
+          sortable: false,
+          filterable: false,
+          value : 'levelPriority',
+        },
+        {
+          text : 'Expired Tanggal',
+          class : 'whitesnow',
+          sortable: false,
+          filterable: false,
+          value : 'expiredAt',
         },
         {
           text : 'Dijadwalkan Pada',

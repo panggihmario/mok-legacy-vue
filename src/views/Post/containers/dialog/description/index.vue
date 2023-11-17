@@ -331,6 +331,8 @@ export default {
       setTimeout(() => {
         this.$emit("saveChanging", payload);
         this.btnText = 'Terapkan';
+        this.cols = '6'
+        this.colsLevel = '6'
         this.isChangingAfterPublish = false
       }, 1500);
     },

@@ -89,6 +89,18 @@
                 </div>
               </div>
             </td>
+            <td >
+              <div :class="ad['tb__caption']">{{ item.levelPriority }}</div>
+            </td>
+            <td >
+              <div :class="ad['tb__caption']">{{ formatingDate(item.expiredAt) }}</div>
+            </td>
+         
+            <!-- <td>
+              <div :class="ad['tb__caption']">
+                {{ formatingDate(item.scheduledTime) }}
+              </div>
+            </td> -->
             <td class="d-flex justify-center align-center">
               <Action 
                 :item="item" 
@@ -283,6 +295,18 @@ export default {
           filterable : false , 
           value : 'proceedAt',
           align : 'center'
+        },
+        {
+          text : 'Level Konten',
+          sortable: false,
+          filterable: false,
+          value : 'levelPriority',
+        },
+        {
+          text : 'Expired Tanggal',
+          sortable: false,
+          filterable: false,
+          value : 'expiredAt',
         },
         {
           text: "Action",
