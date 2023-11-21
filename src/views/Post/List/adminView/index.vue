@@ -47,7 +47,7 @@
               @mousemove="getPosition"
               @mouseout="stopTracking"
             >
-              <LinkDialog :item="item" :feeds="feeds" />
+              <LinkDialog :item="item" :feeds="feeds" :isAdmin="true" />
                <div
                 v-if="item.id === selectedItem"
                 id="displayArea"

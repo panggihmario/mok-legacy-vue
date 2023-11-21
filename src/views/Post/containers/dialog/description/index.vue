@@ -21,7 +21,9 @@
           :counter="1000" 
           rules="required" 
           rows="5" 
+          :disabled="isEditableAfterPublish"
         />
+        
         <div v-if="isChanging" class="mt-2">
           <v-row>
             <v-col cols="6">
@@ -56,7 +58,8 @@
           </div>
         </div>
         <div >
-          <div v-if="isPublish" >
+         
+          <div v-if="isEditableAfterPublish">
             <div :class="d['dg__label']">Channel</div>
             <div :class="d['dg__content-channel']">{{ item.channel.name }}</div>
             <v-row style="margin-top:20px">
@@ -81,8 +84,12 @@
                 <button @click="saveChanging" :class="d['dg__btn-edit']">{{ btnText }}</button>
               </v-col>
             </v-row>
+            <div>
+              <div :class="d['dg__label']" class="mt-2">Floating Link</div>
+              <div :class="d['dg__content-channel']"  class="mt-2"> {{ modelFloatingLinkLabel }}</div>
+              <div :class="d['dg__link']" class="mt-2" >{{ modelFloatingLink }}</div>
+            </div>
           </div>
-          
           <div v-else>
             <custom-autocomplete
               :items="channels"
@@ -218,16 +225,34 @@ export default {
       type : Number
     },
     expiredEpochDate : {
-      type : Number
+      type : [Number, String]
     },
     initExpiredDate : {
       type : Number
+    },
+    isSchedule : {
+      type : Boolean,
+      default : false
     }
   },
   mounted() {
     this.getResponseChannel();
   },
   computed: {
+    isEditableAfterPublish () {
+      if(this.isPublish) {
+        return true
+      }else if (this.isSchedule) {
+        return true
+      }else if(this.$route.name === 'schedule'){
+        return true
+      }else if(this.$route.name === 'list'){
+        return true
+      }
+      else {
+        return false
+      }
+    },
     level : {
       get() {
         return this.levelPriority
@@ -276,7 +301,7 @@ export default {
   methods: {
     ...mapActions({
       getAllChannel: "channel/getAllChannel",
-      updateFeedTrending : 'post/updateFeedTrending'
+      updateDetailListKonten : 'post/updateDetailListKonten'
     }),
     setDate () {
       const d = this.sampleDate
@@ -300,7 +325,7 @@ export default {
       this.timeSchedule = value
     },
     setLevelPriority (value) {
-      if(this.isPublish) {
+      if(this.isEditableAfterPublish) {
         this.isChangingAfterPublish = true
         this.cols = '5'
         this.colsLevel = '4'
@@ -326,10 +351,14 @@ export default {
       this.btnText = 'Loading..'
       const payload = {
         levelPriority : this.levelPriority,
-        expiredAt : this.expiredEpochDate
+        expiredAt : this.expiredEpochDate, 
       }
       setTimeout(() => {
-        this.$emit("saveChanging", payload);
+        if(this.isSchedule || this.$route.name ===  'schedule' ) {
+          this.$emit('saveCaption', this.channelValue)
+        }else{
+          this.$emit("saveChanging", payload);
+        }
         this.btnText = 'Terapkan';
         this.cols = '6'
         this.colsLevel = '6'

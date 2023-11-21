@@ -20,7 +20,8 @@
 
         <div :class="d['car__ispublish']" v-if="isAdmin && isPublish">PUBLISHED!</div>
         <div :class="d['car__ispublish']" v-if="isAdmin && isReject">REJECTED!</div>
-        <v-menu v-if="isAdmin && !isPublish && !isReject" ref="menu" v-model="menu" :close-on-content-click="false"
+        <div :class="d['car__ispublish']" v-if="(isAdmin && isSchedule) || $route.name === 'schedule' ">Schedule {{ humanDate }} </div>
+        <v-menu v-if="isAdmin && !isPublish && !isReject && !isSchedule && $route.name === 'draft'"  ref="menu" v-model="menu" :close-on-content-click="false"
           :return-value.sync="date" transition="scale-transition" offset-y min-width="auto">
           <template v-slot:activator="{ on, attrs }">
             <div style="position: relative">
@@ -37,7 +38,7 @@
           </v-card>
         </v-menu>
       </div>
-      <div class="d-flex align-center" v-if="isAdmin && !isPublish && !isReject">
+      <div class="d-flex align-center" v-if="isAdmin && !isPublish && !isReject && !isSchedule && $route.name === 'draft'">
         <custom-button :loading="loadingReject"   @click="rejectFeed" class="ml-2" size="x-small"
           color='primary'>
           Reject
@@ -89,8 +90,9 @@ export default {
       menu: false,
       date: "",
       tempFeed: null,
-      loadingReject : false
-    };
+      loadingReject : false,
+      isSchedule : false
+    }
   },
   props: {
     feed: {
@@ -164,14 +166,20 @@ export default {
         .then((response) => {
           setTimeout(() => {
             this.loading = false;
-            this.isPublish = true
+            if(payload.type === 'publish') {
+              this.$emit('setIsPublish', true)
+            }else{
+              this.isSchedule = true
+              this.$emit('setIsSchedule', true)
+            }
             this.$emit('triggerNextAction')
-            this.$emit('setIsPublish', true)
+            
           }, 1500);
         })
         .catch((err) => {
           this.loading = false;
           this.$emit('setIsPublish', false)
+          this.isSchedule = false
           this.snackbar = true
           this.errorObject = err
         });

@@ -13,6 +13,7 @@
         :value="value"
         v-on="inputListener"
         :maxlength="counter"
+        v-bind="$attrs"
       />
       <div
         v-if="counter"

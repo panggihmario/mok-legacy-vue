@@ -11,12 +11,15 @@
             @triggerNextAction="triggerNextAction"
             :description="description"
             @setIsPublish="setIsPublish"
+            @setIsReject="setIsReject"
             :dialog="dialog"
             :expiredEpochDate="expiredEpochDate"
             :levelPriority="levelPriority"
             :isChanging="isChanging"
             :isPublish="isPublish"
             :isReject="isReject"
+            @setIsSchedule="setIsSchedule"
+            :isSchedule="isSchedule"
           />
         </div>
       </v-col>
@@ -41,6 +44,7 @@
           @setLevelPriority="setLevelPriority"
           :isChanging="isChanging"
           :isPublish="isPublish"
+          :isSchedule="isSchedule"
           :initExpiredDate="initExpiredDate"
           @setInitData="setInitData"
         />
@@ -115,6 +119,7 @@ export default {
     return {
       isPublish : false,
       isReject : false,
+      isSchedule : false,
       errorObject : null,
       snackbar : false,
       timeout : 3000,
@@ -143,8 +148,11 @@ export default {
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
       fetchVodUrl : 'post/fetchVodUrl',
-      updateFeedTrending : 'post/updateFeedTrending'
+      updateDetailListKonten : 'post/updateDetailListKonten'
     }),
+    setIsSchedule (value) {
+      this.isSchedule = value
+    },
     setInitData () {
       const id = this.item.id
       return this.getFeedById(id)
@@ -212,6 +220,10 @@ export default {
       this.isPublish  = true
       this.isChanging = false
     },
+    setIsReject () {
+      this.isReject = true
+      this.isChanging = false
+    },
     setChange(value) {
       this.isChanging = value
     },
@@ -255,8 +267,9 @@ export default {
           ...payload,
         },
       }
-      return this.updateFeedTrending(data)
-        .then(() => {
+      return this.updateDetailListKonten(data)
+        .then((response) => {
+          console.log(response)
           return this.getFeedById(id);
         })
         .catch ((err) => {
