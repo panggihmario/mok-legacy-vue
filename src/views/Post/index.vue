@@ -106,7 +106,8 @@ export default {
       paramsChannel: (state) => state.post.paramsChannel,
       paramsDate: (state) => state.post.paramsDate,
       paramsProcess: (state) => state.post.paramsProcess,
-      isStatusProcess: (state) => state.post.isStatusProcess
+      isStatusProcess: (state) => state.post.isStatusProcess,
+      sortBy : (state) => state.post.sortBy
     }),
     currentPage: {
       get() {
@@ -188,6 +189,7 @@ export default {
       this.setStatusLabel('Status Proses')
       this.setIsStatusProcess('all')
       this.setDisplayProcessDate('')
+      this.setSortBy(null)
       this.currentPage = 1
       this.expand = false
       if (this.keyword) {
@@ -315,6 +317,7 @@ export default {
       this.setDisplayProcessDate('')
       this.setIsStatusProcess('all')
       this.setStatusLabel('Status Proses')
+      this.setSortBy(null)
       return this.onInitiateFetchFeeds()
         .then(() => {
           this.$router.push({
@@ -396,7 +399,8 @@ export default {
       setProcessDate: 'post/setProcessDate',
       setDisplayProcessDate: 'post/setDisplayProcessDate',
       setIsStatusProcess: 'post/setIsStatusProcess',
-      setStatusLabel: 'post/setStatusLabel'
+      setStatusLabel: 'post/setStatusLabel',
+      setSortBy : 'post/setSortBy'
     }),
     moveToCreatePost() {
       this.$router.push({
@@ -425,13 +429,18 @@ export default {
       return this.fetchFeeds(params);
     },
     typeOfSort(tab) {
-      if (tab === "draft") {
-        return "createAt,DESC";
-      } else if (tab === 'schedule') {
-        return "scheduledTime,ASC";
-      } else {
-        return null;
+      if(this.sortBy) {
+        return `${this.sortBy.value}`
+      }else {
+        if (tab === "draft") {
+          return "createAt,DESC";
+        } else if (tab === 'schedule') {
+          return "scheduledTime,ASC";
+        } else {
+          return null;
+        }
       }
+      
     },
   },
   data() {

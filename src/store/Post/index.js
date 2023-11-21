@@ -24,8 +24,12 @@ export default {
     displayDateTrending: "",
     isStatusProcess: "all",
     statusLabel: "Status Proses",
+    sortBy : null
   },
   mutations: {
+    setSortBy (state, payload) {
+      state.sortBy = payload
+    },
     setStatusLabel(state, payload) {
       state.statusLabel = payload;
     },
@@ -431,6 +435,32 @@ export default {
       return dispatch("putWithToken", data, {root : true})
         .then(response => {return response})
         .catch(err => { throw err })
+    },
+    updateFeedTrending({dispatch, state}, payload) {
+      const data = {
+        url : `${state.pathTrendingFeeds}/candidates/${payload.id}`,
+        data: {
+          ...payload.params,
+        },
+      }
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    updateDetailListKonten ({dispatch, state}, payload) {
+      const data = {
+        url : `${state.pathFeedSocial}/${payload.id}/published`,
+        data : {
+          ...payload.params
+        }
+      }
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => { return response })
+        .catch((err) => { throw err });
     }
   },
 };

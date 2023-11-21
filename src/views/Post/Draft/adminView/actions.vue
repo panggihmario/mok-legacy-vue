@@ -7,6 +7,7 @@
         color="secondary"
         :loading="loadingPublish"
         @click="publishFeed(item)"
+        :disabled="!levelPriority"
         v-if="!isAlert"
       >
         Publish
@@ -66,7 +67,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  props: ["item", "epochDate"],
+  props: ["item", "epochDate", "levelPriority", "expiredDate"],
   data() {
     return {
       loadingPublish: false,
@@ -112,10 +113,8 @@ export default {
       this.dialogReject = true
     },
     rejectFeed() {
-      
       const item = this.item;
       this.loadingReject = true;
-
       return this.getFeedById(item.id)
         .then((medias) => {
           const payload = {
@@ -156,6 +155,8 @@ export default {
             isScheduled: true,
             scheduledTime: this.epochDate,
             medias: [...medias],
+            levelPriority : this.levelPriority,
+            expiredDate : this.expiredDate
           },
         };
       } else {
@@ -165,6 +166,8 @@ export default {
           params: {
             ...item,
             medias: [...medias],
+            levelPriority : this.levelPriority,
+            expiredDate : this.expiredDate
           },
         };
       }
@@ -178,7 +181,7 @@ export default {
           setTimeout(() => {
             this.$emit("refreshDataFeed");
             this.alertSuccess = false;
-            this.isAlert = true;
+            this.isAlert = false;
             this.loadingPublish = false;
           }, 1000);
         })
