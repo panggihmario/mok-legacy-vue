@@ -28,8 +28,7 @@
   font-size:11px;
   font-weight: 500;
   color: #4A4A4A;
-  margin-bottom: 20px;
-  margin-top: 6px;
+  margin: 6px 0;
 }
 .user {
   font-size: 12px;
@@ -131,6 +130,24 @@ video::-webkit-media-controls-panel {
   line-height: 15px;
   padding-left: 5px;
 }
+.field-details {
+  color: var(--Grey, #777);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.1px; 
+  margin-top: 2px;
+}
+
+.car {
+  &__ispublish {
+    color: $black;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px; 
+  }
+}
 
 .dg {
   &__btn-left {
@@ -138,6 +155,27 @@ video::-webkit-media-controls-panel {
     z-index: 1;
     top: 50%;
     right: -10em;
+  }
+  &__link {
+    color: var(--Secondary, #1890FF);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.11px; 
+  }
+  &__label {
+    color: #000;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.1px; 
+  }
+  &__content-channel {
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px; 
   }
   &__btn-right {
     position: absolute;
@@ -157,6 +195,17 @@ video::-webkit-media-controls-panel {
     color: #000000;
     width: 100%;
     height: 240px;
+  }
+  &__btn-edit {
+    border-radius: 2px;
+    background: var(--Secondary, #1890FF);
+    box-shadow: 0px 2px 4px 0px rgba(102, 127, 255, 0.24);
+    width: 100%;
+    color: #FFF;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500; 
+    height: 60%;
   }
 }
 

@@ -110,7 +110,12 @@ export default [
         title : 'Referral Code',
         path : '/referral-code',
         role : ['ROLE_ADMIN']
-      }
+      },
+      {
+        title: "Category",
+        path: "/master/category",
+        role: ["ROLE_ADMIN"],
+      },
     ],
   },
   {
@@ -261,11 +266,7 @@ export default [
         path: "/badge",
         role: ["ROLE_ADMIN"],
       },
-      {
-        title: "Category",
-        path: "/master/category",
-        role: ["ROLE_ADMIN"],
-      },
+  
     ],
   },
   // {

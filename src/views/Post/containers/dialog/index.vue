@@ -55,15 +55,12 @@
 </template>
 
 <script>
-import Description from "./description.vue";
 import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import CarouselMedia from "./carouselMedia.vue";
 import items from "./itemsFile.vue";
-import videojs from "video.js";
 export default {
   components: {
-    Description,
     DeletedBy,
     CarouselMedia,
     Items : items
