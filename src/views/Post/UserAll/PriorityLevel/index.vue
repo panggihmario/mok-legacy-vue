@@ -134,7 +134,6 @@ export default {
         { text: "Dipublish Pada", class: "whitesnow" },
         { text: "Level Konten", class: "whitesnow" },
         { text: "Expired Tayang", class: "whitesnow" },
-        { text: "Action", class: "whitesnow", align: "center" },
       ],
       tableItemsDialog: {
         medias: [],
