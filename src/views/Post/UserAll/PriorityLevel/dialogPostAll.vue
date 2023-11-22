@@ -169,13 +169,21 @@
               </div>
 
               <div>
-                <custom-button
+                <span
+                  style="
+                    font-size: 14px;
+                    font-weight: 500;
+                    letter-spacing: 0.14px;
+                  "
+                  >PUBLISHED!</span
+                >
+                <!-- <custom-button
                   size="x-small"
                   color="secondary"
                   @click="openDialogPushNotif(tableItemsDialog.id)"
                 >
                   Push Notif
-                </custom-button>
+                </custom-button> -->
               </div>
               <!-- <div
                 v-if="tableItemsDialog.isVodAvailable"
