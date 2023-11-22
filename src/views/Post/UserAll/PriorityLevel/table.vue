@@ -49,25 +49,6 @@
           <td class="font-12 grey--text font-weight-medium">
             {{ formatingDate(item.expiredAt) }}
           </td>
-          <td
-            class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium"
-          >
-            <custom-button
-              class="mr-2"
-              size="x-small"
-              color="secondary"
-              @click="openDialogPushNotif(item.id)"
-            >
-              Push Notif
-            </custom-button>
-            <v-icon
-              size="15px"
-              color="warning"
-              @click="openDialogDelete(item.id)"
-            >
-              fa-solid fa-trash
-            </v-icon>
-          </td>
         </tr>
       </tbody>
     </template>
