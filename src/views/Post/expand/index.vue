@@ -1,8 +1,22 @@
 <template>
   <div class="ex__card">
     <div class="d-flex justify-space-between">
-      <div class="ex__filters">
-        <div class="ex__label mr-2">Filter </div>
+
+      <div class="ex__filters" :class="$route.name === 'draft' && 'ex__filters-draft' " >
+        <div v-if="$route.name !== 'draft' " class="ex__label">Sorted By</div>
+        <v-select
+          v-if="$route.name !== 'draft'"
+          dense
+          hide-details
+          solo
+          flat
+          :items="$route.name === 'schedule' ? itemsSchedule : items "
+          item-text="label"
+          v-model="sort"
+          class="expand__field"
+          return-object
+        />
+        <div class="ex__label">Filter </div>
           <SelectUser/>
           <SelectChannel :items="channels"/>
           <SelectDate/>
@@ -23,7 +37,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex"
+import { mapActions, mapState, mapMutations } from "vuex"
 import SelectUser from './selectUsers.vue';
 import SelectChannel from './selectChannel.vue';
 import SelectDate from "./selectDate.vue";
@@ -42,14 +56,54 @@ export default {
   data() {
     return {
       selectedUser : [],
-      channels : []
+      channels : [],
+      itemsSchedule : [
+        {
+          label : 'Waktu Publish',
+          value : 'scheduledTime,ASC'
+        },
+        {
+          label : 'Waktu Level Dipilih',
+          value : 'levellingAt,DESC'
+        }
+      ],
+      items : [
+        {
+          label : 'Waktu Publish',
+          value : 'publishAt,DESC'
+        },
+        {
+          label : 'Waktu Level Dipilih',
+          value : 'levellingAt,DESC'
+        }
+      ]
     };
+  },
+  computed : {
+    ...mapState ({
+      sortBy : (state) => state.post.sortBy
+    }),
+    sort : {
+      get () {
+        return this.sortBy
+      },
+      set (value) {
+        this.setSortBy(value)
+      }
+    }
   },
   methods: {
     ...mapActions({
       getListChannel: "channel/getAllChannel",
       filterFeed : "post/filterFeed"
     }),
+    ...mapMutations({
+      setSortBy : 'post/setSortBy'
+    }),
+    onChange (value) {
+      console.log(value)
+      
+    },
     fetchDataChannel () {
       return this.getListChannel()
         .then(response => {
@@ -89,6 +143,11 @@ export default {
     align-self: center;
   }
   &__filters {
+    display: grid;
+    grid-template-columns:55px 170px 50px 120px 120px 190px 310px;
+    gap: 8px;
+  }
+  &__filters-draft {
     display: grid;
     grid-template-columns: 50px 120px 120px 190px 310px;
     gap: 8px;

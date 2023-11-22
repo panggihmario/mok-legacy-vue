@@ -1,101 +1,67 @@
 <template>
   <div>
-    <v-carousel
-      v-model="slidePosition"
-      hide-delimiters
-      :show-arrows="false"
-      class="mb-4"
-      height="100%"
-    >
-      <v-carousel-item
-        v-for="(item, i) in feed.medias"
-
-        :key="i"
-        reverse-transition="fade-transition"
-        transition="fade-transition"
-      > 
+    <v-carousel v-model="slidePosition" hide-delimiters :show-arrows="false" class="mb-4" height="100%">
+      <v-carousel-item v-for="(item, i) in feed.medias" :key="i" reverse-transition="fade-transition"
+        transition="fade-transition">
         <Media :dialog="dialog" :item="item" :i="i" />
       </v-carousel-item>
     </v-carousel>
     <!-- <Media v-if="feed.medias.length > 0" :item="feed.medias[0]" :i="0" /> -->
-    <div class="d-flex align-start  black--text">
-      <div class="d-flex" v-if="feed.medias.length > 1">
-        <div :class="d['box-icon']" @click="slideLeft">
-          <v-icon color="charcoal" x-small>fas fa-chevron-left</v-icon>
-        </div>
-        <div :class="d['box-icon']" @click="slideRight">
-          <v-icon color="charcoal" x-small >fas fa-chevron-right</v-icon>
-        </div>
-      </div>
-     
-      <v-menu
-        v-if="isAdmin && !isPublish "
-        ref="menu"
-        v-model="menu"
-        :close-on-content-click="false"
-        :return-value.sync="date"
-        transition="scale-transition"
-        offset-y
-        min-width="auto"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <div style="position: relative">
-            <input
-              :class="d.schedule"
-              placeholder="DD/MM/YYYY  HH:MM"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              v-model="humanDate"
-            />
+    <div class="d-flex align-start justify-space-between  black--text" style="width : 636px; margin-top: 30px;">
+      <div class="d-flex align-start">
+        <div class="d-flex" v-if="feed.medias.length > 1">
+          <div :class="d['box-icon']" @click="slideLeft">
+            <v-icon color="charcoal" x-small>fas fa-chevron-left</v-icon>
           </div>
-        </template>
-        <v-card class="pa-2">
-          <v-date-picker v-model="date" class="mr-2"> </v-date-picker>
-          <v-time-picker v-model="timeSchedule" />
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-          <v-btn text color="primary" @click="setDate"> OK </v-btn>
-        </v-card>
-      </v-menu>
-      <custom-button
-        v-if="isAdmin && !isPublish"
-        :loading="loading"
-        @click="publishFeed"
-        class="ml-2"
-        size="x-small"
-        color='secondary'
-      >
-       Post Content Sekarang
-      </custom-button>
-      <custom-button
-        v-if="isAdmin && isPublish"
-        class="ml-4"
-        size="small"
-        color="success"
-      >
-        Success
-      </custom-button>
+          <div :class="d['box-icon']" @click="slideRight">
+            <v-icon color="charcoal" x-small>fas fa-chevron-right</v-icon>
+          </div>
+        </div>
+
+        <div :class="d['car__ispublish']" v-if="isAdmin && isPublish">PUBLISHED!</div>
+        <div :class="d['car__ispublish']" v-if="isAdmin && isReject">REJECTED!</div>
+        <div :class="d['car__ispublish']" v-if="(isAdmin && isSchedule) || $route.name === 'schedule' ">Schedule {{ humanDate }} </div>
+        <v-menu v-if="isAdmin && !isPublish && !isReject && !isSchedule && $route.name === 'draft'"  ref="menu" v-model="menu" :close-on-content-click="false"
+          :return-value.sync="date" transition="scale-transition" offset-y min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <div style="position: relative">
+              <input :class="d.schedule" placeholder="DD/MM/YYYY  HH:MM" readonly v-bind="attrs" v-on="on"
+                v-model="humanDate" />
+            </div>
+          </template>
+          <v-card class="pa-2">
+            <v-date-picker v-model="date" class="mr-2"> </v-date-picker>
+            <v-time-picker v-model="timeSchedule" />
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+            <v-btn text color="primary" @click="setDate"> OK </v-btn>
+          </v-card>
+        </v-menu>
+      </div>
+      <div class="d-flex align-center" v-if="isAdmin && !isPublish && !isReject && !isSchedule && $route.name === 'draft'">
+        <custom-button :loading="loadingReject"   @click="rejectFeed" class="ml-2" size="x-small"
+          color='primary'>
+          Reject
+        </custom-button>
+        <custom-button :disabled="!levelPriority || isChanging"  :loading="loading" @click="publishFeed" class="ml-2" size="x-small"
+          color='secondary'>
+          Publish 
+        </custom-button>
+      </div>
       <div v-if="$route.name === 'reject'">
         <DeletedBy :item="feed" />
       </div>
     </div>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="timeout"
-      outlined
-      top
-      color="warning"
-    >
+    <v-snackbar v-model="snackbar" :timeout="timeout" outlined top color="warning">
       <div v-if="errorObject">
         <div v-if="errorObject.response.status === 401">
-        <div>{{ errorObject.response.data.error }}</div>
-        <div>{{ errorObject.response.data.error_description}}</div>
-      </div>
-      <div v-else>
-        <div>{{ errorObject.response.data.message }}</div>
-        <div>{{ errorObject.response.data.data }}</div>
-      </div>
+          <div>{{ errorObject.response.data.error }}</div>
+          <div>{{ errorObject.response.data.error_description }}</div>
+        </div>
+        <div v-else>
+          <div>{{ errorObject.response.data.message }}</div>
+          <div>{{ errorObject.response.data.data }}</div>
+        </div>
       </div>
     </v-snackbar>
   </div>
@@ -114,9 +80,9 @@ export default {
   },
   data() {
     return {
-      errorObject : null,
-      snackbar : false,
-      timeout : 3000,
+      errorObject: null,
+      snackbar: false,
+      timeout: 3000,
       slidePosition: 0,
       loading: false,
       humanDate: "",
@@ -124,9 +90,9 @@ export default {
       menu: false,
       date: "",
       tempFeed: null,
-      isPublish : false,
-      
-    };
+      loadingReject : false,
+      isSchedule : false
+    }
   },
   props: {
     feed: {
@@ -136,18 +102,33 @@ export default {
       type: Boolean,
       default: false,
     },
-    description : {
-      type : String
+    description: {
+      type: String
     },
-    item : {
-      type : Object,
+    item: {
+      type: Object,
     },
-    dialog : {
+    dialog: {
+      type: Boolean
+    },
+    expiredEpochDate : {
+      type : [String, Number]
+    },
+    levelPriority : {
+      type : Number
+    },
+    isChanging : {
+      type : Boolean
+    },
+    isPublish : {
+      type : Boolean
+    },
+    isReject : {
       type : Boolean
     }
   },
-  computed : {
-    isContain () {
+  computed: {
+    isContain() {
       console.log(this.item)
     }
   },
@@ -155,6 +136,29 @@ export default {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
     }),
+    rejectFeed () {
+      this.loadingReject = true
+      const item = this.feed;
+      const id = item.id
+      const payload = this.getPayload(this.humanDate);
+      const tempPayload = {
+        ...payload,
+        type : 'reject'
+      }
+      return this.updatePostFeed(tempPayload)
+        .then(() => {
+          this.$emit('setReject', true)
+          this.loadingReject = false
+          this.$emit('triggerNextAction')
+        })
+        .catch((err) => {
+          this.$emit('setReject', false)
+          this.snackbar = true
+          this.errorObject = err
+          this.loadingReject = false
+          
+        });
+    },
     publishFeed() {
       this.loading = true;
       const payload = this.getPayload(this.humanDate);
@@ -162,14 +166,20 @@ export default {
         .then((response) => {
           setTimeout(() => {
             this.loading = false;
-            this.isPublish = true
+            if(payload.type === 'publish') {
+              this.$emit('setIsPublish', true)
+            }else{
+              this.isSchedule = true
+              this.$emit('setIsSchedule', true)
+            }
             this.$emit('triggerNextAction')
-            this.$emit('setIsPublish', true)
+            
           }, 1500);
         })
         .catch((err) => {
           this.loading = false;
-          this.isPublish = false
+          this.$emit('setIsPublish', false)
+          this.isSchedule = false
           this.snackbar = true
           this.errorObject = err
         });
@@ -182,12 +192,14 @@ export default {
       if (humanDate) {
         payload = {
           id: item.id,
-          type: "schedule",                       
+          type: "schedule",
           params: {
             ...itemWithSchedule,
             medias: [...medias],
-            description : this.description,
-            channel : this.item.channel
+            description: this.description,
+            channel: this.item.channel,
+            expiredDate : this.expiredEpochDate,
+            levelPriority : this.levelPriority
           },
         };
       } else {
@@ -197,8 +209,10 @@ export default {
           params: {
             ...item,
             medias: [...medias],
-            description : this.description,
-            channel : this.item.channel
+            description: this.description,
+            channel: this.item.channel,
+            expiredDate : this.expiredEpochDate,
+            levelPriority : this.levelPriority
           },
         };
       }
@@ -225,8 +239,6 @@ export default {
       } else {
         this.slidePosition--;
       }
-      
-      // this.playVideo();
     },
     setDate() {
       const d = this.date;
@@ -240,14 +252,11 @@ export default {
     },
     slideRight() {
       this.stopVideo();
-      // this.slidePosition++;
       if (this.slidePosition === this.feed.medias.length - 1) {
         this.slidePosition = 0;
       } else {
         this.slidePosition++;
       }
-     
-      // this.playVideo();
     },
     stopVideo() {
       const slide = this.slidePosition;
@@ -258,7 +267,7 @@ export default {
           if (idx === slide) {
             // idVideo = document.getElementById(`videodialog-${slide}-${m.id}`);
             idVideo = videojs(`videodialog`)
-          }else{
+          } else {
             idVideo = ''
           }
         }
@@ -287,5 +296,4 @@ export default {
 };
 </script>
 
-<style src="./style.scss" lang="scss" module="d">
-</style>
+<style src="./style.scss" lang="scss" module="d"></style>
