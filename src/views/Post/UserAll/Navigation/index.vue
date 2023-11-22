@@ -16,7 +16,7 @@
 
       <div class="d-flex align-center">
         <custom-button
-          v-if="!showFilter && tab != 2"
+          v-if="!showFilter && tab == 0"
           size="x-medium"
           @click="showFilter = true"
           class="mr-4"
@@ -34,21 +34,37 @@
     </div>
 
     <div v-if="showFilter" class="row no-gutters whitesmoke py-2 px-4">
-      <div class="col-7 d-flex align-center">
+      <div class="col-9 d-flex align-center" style="gap: 8px">
+        <span class="font-12">Sorted By</span>
+        <div style="width: 200px">
+          <v-select
+            placeholder="Sort"
+            :items="itemsSortBy"
+            dense
+            outlined
+            v-model="sortBy"
+            hide-details
+            class="white font-12"
+          ></v-select>
+          <!-- <Autocomplete-Username
+            :itemsFilter="itemsSortBy"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'Sort')"
+          ></Autocomplete-Username> -->
+        </div>
         <span class="font-12">Filter</span>
-        <div class="ml-2" style="width: 200px">
+        <div style="width: 200px">
           <Autocomplete-Username
             :itemsFilter="itemsUser"
             @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
           ></Autocomplete-Username>
         </div>
-        <div class="ml-2" style="width: 200px">
+        <div style="width: 200px">
           <Autocomplete-Channel
             :itemsFilter="itemsChannel"
             @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
           ></Autocomplete-Channel>
         </div>
-        <div class="ml-2" style="width: 200px">
+        <div style="width: 200px">
           <Select-Date></Select-Date>
         </div>
       </div>
@@ -82,7 +98,9 @@ export default {
   data() {
     return {
       tab: 0,
-      items: ["Semua Postingan", "Trending", "List Push Notif"],
+      items: ["Semua Postingan", "List Push Notif", "Priority Level"],
+      itemsSortBy: ["Waktu Publish", "Priority Level"],
+      sortBy: "",
       search: "",
       searchChannel: "",
       showFilter: false,
@@ -100,8 +118,12 @@ export default {
       this.$emit("changeTab", this.tab);
       this.isResetFilter = true;
     },
+    sortBy() {
+      this.$emit("onSearchSort", this.sortBy);
+    },
     isResetFilter() {
       if (this.isResetFilter) {
+        this.sortBy = "";
         this.keywordTrending = "";
         this.usernameFilter = [];
         this.channelFilter = [];
@@ -186,6 +208,8 @@ export default {
       } else if (this.$route.params.tab == "trending") {
         this.tab = 1;
       } else if (this.$route.params.tab == "notification") {
+        this.tab = 1;
+      } else if (this.$route.params.tab == "priority-level") {
         this.tab = 2;
       }
     },
@@ -203,6 +227,9 @@ export default {
     },
     actionFilter() {
       let filterPayload = {
+        direction: "DESC",
+        sort:
+          this.sortBy == "Waktu Publish" ? "createAt,desc" : "levellingAt,desc",
         keyword: this.keywordSearchTrending,
         search: this.keywordSearchTrending,
         usernames: this.paramsUsersTrending.join(","),
