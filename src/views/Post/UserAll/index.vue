@@ -68,6 +68,7 @@
           :totalPages="totalPagesPriorityLevel"
           :totalElements="totalElementsPriorityLevel"
           @onChangePage="changePage"
+          @updatePriority="handleGetListPriorityLevel"
         ></Priority-Level>
       </div>
     </div>
@@ -330,6 +331,8 @@ export default {
     handleGetListPriorityLevel() {
       let payload = {
         page: this.pagePriorityLevel - 1,
+        size: 10,
+        channelCode: "tiktok",
       };
       this.loadingListPriorityLevel = true;
       // this.isFilter = true;
@@ -337,7 +340,6 @@ export default {
       return this.getListPriority(payload)
         .then((response) => {
           let res = response.data.data;
-          console.log({ res });
           this.loadingListPriorityLevel = false;
           this.isOverlay = false;
           this.tableItemsPriorityLevel = res.content;

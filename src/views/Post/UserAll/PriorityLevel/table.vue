@@ -18,17 +18,17 @@
           </td>
           <td class="font-12 grey--text font-weight-medium">
             <div class="text-truncate" style="width: 200px">
-              {{ item.description }}
+              {{ item.post.description }}
             </div>
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.channel.name }}
+            {{ item.post.channel.name }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.createBy }}
+            {{ item.account.username }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            <div class="d-flex align-center" style="gap: 2px;">
+            <div class="d-flex align-center" style="gap: 2px">
               <v-icon
                 size="8px"
                 :color="item.isVodAvailable ? 'green' : 'red'"
@@ -44,10 +44,10 @@
             {{ formatingDate(item.createAt) }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.levelPriority }}
+            {{ item.post.levelPriority ? item.post.levelPriority : "-" }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ formatingDate(item.expiredAt) }}
+            {{ item.post.expiredAt ? formatingDate(item.post.expiredAt) : "-" }}
           </td>
         </tr>
       </tbody>
