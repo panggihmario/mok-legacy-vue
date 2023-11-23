@@ -16,6 +16,7 @@
         :itemsUser="itemsUser"
         :itemsChannel="itemsChannel"
         @changeTab="changeTab"
+        @onSearchSort="(v) => (sortBy = v)"
         @onSearchUser="handleSearchAccount"
         @onSearchChannel="handleSearchChannel"
         @onSearchKeyword="(data) => actionGetListDataByTab(data, 'filter')"
@@ -36,9 +37,10 @@
           @successPostTrending="handleSuccessPostTrending"
           @errorPostTrending="handleErrorPostTrending"
           @resetData="resetData"
+          @updatePriority="handleGetListUserPost"
         ></Post-All>
       </div>
-      <div v-else-if="tab == 1">
+      <!-- <div v-else-if="tab == 1">
         <Post-All-Trending
           :tableItems="tableItemsActive"
           :loadingList="loadingListActive"
@@ -48,8 +50,8 @@
           @actionPushNotif="actionPushNotif"
           @refreshPriority="refreshPriority"
         ></Post-All-Trending>
-      </div>
-      <div v-else-if="tab == 2">
+      </div> -->
+      <div v-else-if="tab == 1">
         <Post-Notification
           :tableItems="tableItemsNotification"
           :loadingList="loadingListNotification"
@@ -58,6 +60,16 @@
           @onChangePage="changePage"
           @actionPushNotif="actionPushNotif"
         ></Post-Notification>
+      </div>
+      <div v-else-if="tab == 2">
+        <Priority-Level
+          :tableItems="tableItemsPriorityLevel"
+          :loadingList="loadingListPriorityLevel"
+          :totalPages="totalPagesPriorityLevel"
+          :totalElements="totalElementsPriorityLevel"
+          @onChangePage="changePage"
+          @updatePriority="handleGetListPriorityLevel"
+        ></Priority-Level>
       </div>
     </div>
 
@@ -116,6 +128,7 @@ import NavigationTab from "./Navigation/index.vue";
 import PostAll from "./PostAll/index.vue";
 import PostAllTrending from "./PostTrending/index.vue";
 import PostNotification from "./Notification/index.vue";
+import PriorityLevel from "./PriorityLevel/index.vue";
 import { mapActions } from "vuex";
 
 export default {
@@ -125,6 +138,7 @@ export default {
     PostAll,
     PostAllTrending,
     PostNotification,
+    PriorityLevel,
   },
   data() {
     return {
@@ -139,19 +153,25 @@ export default {
       pageCandidate: 1,
       pageActive: 1,
       pageNotification: 1,
+      pagePriorityLevel: 1,
       totalPagesCandidate: 0,
       totalPagesActive: 0,
       totalPagesNotification: 0,
+      totalPagesPriorityLevel: 0,
       tableItemsCandidate: [],
       tableItemsActive: [],
       tableItemsNotification: [],
+      tableItemsPriorityLevel: [],
       loadingListCandidate: false,
       loadingListActive: false,
       loadingListNotification: false,
+      loadingListPriorityLevel: false,
       totalElementsCandidate: 0,
       totalElementsActive: 0,
       totalElementsNotification: 0,
+      totalElementsPriorityLevel: 0,
       isFilter: false,
+      sortBy: "",
       dataFilter: {
         usernames: "",
         channelCodes: "",
@@ -179,14 +199,15 @@ export default {
       };
       this.actionGetListDataByTab();
     },
+    sortBy() {},
     "dataFilter.keyword"() {
       if (this.dataFilter.keyword == "" || this.dataFilter.keyword == null) {
         if (this.tab == 0) {
           this.getListPostByFilter("candidates");
         } else if (this.tab == 1) {
-          this.getListPostByFilter("trending");
-        } else if (this.tab == 2) {
           this.getListPostByFilter("notification");
+        } else if (this.tab == 2) {
+          this.getListPostByFilter("priority-level");
         }
       }
     },
@@ -204,6 +225,7 @@ export default {
       postPushNotifTrendingById: "post/postPushNotifTrendingById",
       searchAccount: "post/searchAccounts",
       searchChannel: "channel/searchChannel",
+      getListPriority: "post/getListPriority",
     }),
     getRoute() {
       if (this.$route.params.tab == "candidates") {
@@ -233,12 +255,23 @@ export default {
           this.isFilter = true;
         }
         this.pageNotification = this.$route.params.page;
-        this.tab = 2;
+        this.tab = 1;
         if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
           this.handleSearchAccount("a");
           this.handleSearchChannel("a");
         }
         this.getListPostByFilter("notification");
+      } else if (this.$route.params.tab == "priority-level") {
+        if (this.$route.query.filter) {
+          this.isFilter = true;
+        }
+        this.pageNotification = this.$route.params.page;
+        this.tab = 2;
+        if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
+          this.handleSearchAccount("a");
+          this.handleSearchChannel("a");
+        }
+        this.getListPostByFilter("priority-level");
       }
     },
     resetData() {
@@ -269,6 +302,7 @@ export default {
     },
     handleGetListUserPostFilter() {
       let payload = {
+        sort: "levellingAt,desc",
         page: this.pageCandidate - 1,
         ...this.dataFilter,
       };
@@ -289,6 +323,34 @@ export default {
         })
         .catch((err) => {
           this.loadingListCandidate = false;
+          this.isOverlay = false;
+          this.snackbar = true;
+          this.errorObject = err;
+        });
+    },
+    handleGetListPriorityLevel() {
+      let payload = {
+        page: this.pagePriorityLevel - 1,
+        size: 10,
+        channelCode: "tiktok",
+      };
+      this.loadingListPriorityLevel = true;
+      // this.isFilter = true;
+      // this.isOverlay = true;
+      return this.getListPriority(payload)
+        .then((response) => {
+          let res = response.data.data;
+          this.loadingListPriorityLevel = false;
+          this.isOverlay = false;
+          this.tableItemsPriorityLevel = res.content;
+          this.totalPagesPriorityLevel = res.totalPages;
+          this.totalElementsPriorityLevel = res.totalElements;
+          if (res.totalElements == 0) {
+            this.alertNoData = true;
+          }
+        })
+        .catch((err) => {
+          this.loadingListPriorityLevel = false;
           this.isOverlay = false;
           this.snackbar = true;
           this.errorObject = err;
@@ -416,18 +478,20 @@ export default {
         } else {
           this.routerPushGetRoute("candidates", 1, {}, false);
         }
-      } else if (this.tab == 1) {
-        if (type == "filter") {
-          this.isFilter = true;
-          if (this.tab == 0 && this.pageCandidate == 1) {
-            this.routerPushGetRoute("trending", 1, { filter: true }, true);
-          } else {
-            this.routerPushGetRoute("trending", 1, { filter: true }, true);
-          }
-        } else {
-          this.routerPushGetRoute("trending", 1, {}, false);
-        }
-      } else if (this.tab == 2) {
+      }
+      // else if (this.tab == 1) {
+      //   if (type == "filter") {
+      //     this.isFilter = true;
+      //     if (this.tab == 0 && this.pageCandidate == 1) {
+      //       this.routerPushGetRoute("trending", 1, { filter: true }, true);
+      //     } else {
+      //       this.routerPushGetRoute("trending", 1, { filter: true }, true);
+      //     }
+      //   } else {
+      //     this.routerPushGetRoute("trending", 1, {}, false);
+      //   }
+      // }
+      else if (this.tab == 1) {
         if (type == "filter") {
           this.isFilter = true;
           if (this.tab == 0 && this.pageCandidate == 1) {
@@ -437,6 +501,27 @@ export default {
           }
         } else {
           this.routerPushGetRoute("notification", 1, {}, false);
+        }
+      } else if (this.tab == 2) {
+        if (type == "filter") {
+          this.isFilter = true;
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute(
+              "priority-level",
+              1,
+              { filter: true },
+              true
+            );
+          } else {
+            this.routerPushGetRoute(
+              "priority-level",
+              1,
+              { filter: true },
+              true
+            );
+          }
+        } else {
+          this.routerPushGetRoute("priority-level", 1, {}, false);
         }
       }
     },
@@ -469,7 +554,22 @@ export default {
         } else {
           this.handleGetListUserPostNotification();
         }
+      } else if (type == "priority-level") {
+        this.handleGetListPriorityLevel();
       }
+    },
+    handleSearchSort(v) {
+      let payload = {
+        value: v,
+      };
+      return this.searchAccount(payload)
+        .then((response) => {
+          this.itemsUser = response;
+        })
+        .catch((err) => {
+          this.alertSearchFailed = true;
+          this.searchFailedData = err.response;
+        });
     },
     handleSearchAccount(v) {
       let payload = {
@@ -534,20 +634,31 @@ export default {
           this.routerPushGetRoute("candidates", v);
         }
         this.pageCandidate = v;
-      } else if (this.tab == 1) {
-        if (this.isFilter) {
-          this.routerPushGetRoute("trending", v, { filter: this.isFilter });
-        } else {
-          this.routerPushGetRoute("trending", v);
-        }
-        this.pageActive = v;
-      } else if (this.tab == 2) {
+      }
+      // else if (this.tab == 1) {
+      //   if (this.isFilter) {
+      //     this.routerPushGetRoute("trending", v, { filter: this.isFilter });
+      //   } else {
+      //     this.routerPushGetRoute("trending", v);
+      //   }
+      //   this.pageActive = v;
+      // }
+      else if (this.tab == 1) {
         if (this.isFilter) {
           this.routerPushGetRoute("notification", v, { filter: this.isFilter });
         } else {
           this.routerPushGetRoute("notification", v);
         }
         this.pageNotification = v;
+      } else if (this.tab == 2) {
+        if (this.isFilter) {
+          this.routerPushGetRoute("priority-level", v, {
+            filter: this.isFilter,
+          });
+        } else {
+          this.routerPushGetRoute("priority-level", v);
+        }
+        this.pagePriorityLevel = v;
       }
     },
   },
