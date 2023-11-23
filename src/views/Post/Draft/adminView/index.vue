@@ -244,7 +244,7 @@ export default {
           filterable: false,
           value: "actions",
           align: "center",
-          width: "200",
+          // width: "200",
         },
       ],
     };

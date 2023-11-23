@@ -35,6 +35,8 @@
               :feedPosition="feedPosition"
               :feeds="feeds"
               :dialog="dialog"
+              :levelPriorityProps="levelPriority"
+              @setLevelPriority="setLevelPriority"
             />
           </v-carousel-item>
         </v-carousel>
@@ -74,6 +76,9 @@ export default {
     feeds: {
       type: Array,
     },
+    levelPriority : {
+      type : [Number , String]
+    }
   },
   data() {
     return {
@@ -88,6 +93,9 @@ export default {
     setChange(value) {
       this.isChanging = value
       this.isPublish[this.feedPosition] = true
+    },
+    setLevelPriority (value) {
+      this.$emit('setLevelPriority', value)
     },
     slideRight() {
       // const video = videojs(`videodialog`)

@@ -24,7 +24,7 @@ export default {
     displayDateTrending: "",
     isStatusProcess: "all",
     statusLabel: "Status Proses",
-    sortBy : null
+    sortBy : null,
   },
   mutations: {
     setSortBy (state, payload) {

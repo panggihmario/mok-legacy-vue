@@ -47,7 +47,7 @@
               @mousemove="getPosition"
               @mouseout="stopTracking"
             >
-              <LinkDialog :item="item" :feeds="feeds" :isAdmin="true" />
+              <LinkDialog @refreshDataFeed="refreshDataFeed" :item="item" :feeds="feeds" :isAdmin="true" />
                <div
                 v-if="item.id === selectedItem"
                 id="displayArea"
@@ -106,6 +106,7 @@
                 :item="item" 
                 @successDelete="successDelete" 
                 @handleFailed="onHandleFailed"
+                @refreshDataFeed="refreshDataFeed" 
               />
             </td>
             <!-- <td></td> -->
@@ -149,6 +150,9 @@ export default {
       multipleDelete : 'post/multipleDelete',
       fetchFeeds: "post/fetchFeeds",
     }),
+    refreshDataFeed() {
+      this.$emit('refreshDataFeed')
+    },
     clearSelected () {
       this.selected = []
     },  

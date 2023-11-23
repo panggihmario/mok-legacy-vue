@@ -97,6 +97,9 @@ video::-webkit-media-controls-panel {
 }
 .icon {
   text-align: right;
+  position: absolute;
+  right: 13px;
+  top: 11px;
 }
 .desc {
   font-size: 12px;
@@ -154,7 +157,8 @@ video::-webkit-media-controls-panel {
     position: absolute;
     z-index: 1;
     top: 50%;
-    right: -10em;
+    left: 10em;
+    width: max-content;
   }
   &__link {
     color: var(--Secondary, #1890FF);
@@ -182,7 +186,7 @@ video::-webkit-media-controls-panel {
     z-index: 1;
     top: 50%;
     text-align: right;
-    width: inherit;
+    width: max-content;
     right: 10em;
   }
   &__text-area {
@@ -205,7 +209,8 @@ video::-webkit-media-controls-panel {
     font-size: 11px;
     font-style: normal;
     font-weight: 500; 
-    height: 60%;
+    height: 30px;
+    margin-top: 10px;
   }
 }
 
