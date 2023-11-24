@@ -16,7 +16,6 @@
           <div :class="d['label-user']">@{{ item.createBy }}</div>
         </div>
         <k-textarea 
-          title="Caption" 
           v-model="modelDescription" 
           :counter="1000" 
           rules="required" 
@@ -59,10 +58,10 @@
         </div>
         <div >
          
-          <div v-if="isEditableAfterPublish">
+          <div class="mt-2" v-if="isEditableAfterPublish">
             <div :class="d['dg__label']">Channel</div>
             <div :class="d['dg__content-channel']">{{ item.channel.name }}</div>
-            <v-row style="margin-top:20px">
+            <v-row style="margin-top:5px">
               <v-col :cols="colsLevel">
                 <LevelPicker
                   :levelPriority="levelPriority"
@@ -84,7 +83,7 @@
                 <button @click="saveChanging" :class="d['dg__btn-edit']">{{ btnText }}</button>
               </v-col>
             </v-row>
-            <div>
+            <div v-if="floatingLink">
               <div :class="d['dg__label']" class="mt-2">Floating Link</div>
               <div :class="d['dg__content-channel']"  class="mt-2"> {{ modelFloatingLinkLabel }}</div>
               <div :class="d['dg__link']" class="mt-2" >{{ modelFloatingLink }}</div>
@@ -275,7 +274,7 @@ export default {
         return this.floatingLinkLabel
       },
       set(value) {
-        this.$emit("setChange", true);
+        // this.$emit("setChange", true);
         this.$emit('setFloatingLabel', value)
       }
     },
@@ -284,7 +283,7 @@ export default {
         return this.floatingLink
       },
       set(value) {
-        this.$emit("setChange", true);
+        // this.$emit("setChange", true);
         this.$emit('setFloatingLink', value)
       }
     },
@@ -293,7 +292,7 @@ export default {
         return this.item.channel;
       },
       set(value) {
-        this.$emit("setChange", true);
+        // this.$emit("setChange", true);
         this.item.channel = value;
       },
     },
@@ -316,7 +315,13 @@ export default {
         .unix();
       const miliEpoch = epochDate * 1000;
       this.$emit('setExpiredDatePayload', miliEpoch)
-      this.$emit("setChange", true);
+      if(this.isEditableAfterPublish) {
+        this.isChangingAfterPublish = true
+        this.cols = '5'
+        this.colsLevel = '4'
+      }else{
+        this.$emit("setChange", true);
+      }
     },
     setPickedDate (value) {
       this.sampleDate = value
@@ -331,13 +336,13 @@ export default {
         this.colsLevel = '4'
         this.$emit('setLevelPriority', value )
       }else{
-        this.$emit("setChange", true);
+        // this.$emit("setChange", true);
         this.$emit('setLevelPriority', value )
       }
     },
     onCancel () {
       this.$emit("setChange", false);
-      this.$emit('setInitData')
+      this.$emit('onCancelCaption')
     },
     saveCaption() {
       this.loading = true;

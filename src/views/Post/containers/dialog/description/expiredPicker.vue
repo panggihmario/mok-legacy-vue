@@ -25,7 +25,7 @@
       </template>
       <v-card class="pa-2">
         <div class="d-flex">
-          <v-date-picker v-model="pickedDate" class="mr-2"> </v-date-picker>
+          <v-date-picker :min="currentDate" v-model="pickedDate" class="mr-2"> </v-date-picker>
           <v-time-picker v-model="pickedTime" />
         </div>
         <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
@@ -48,7 +48,7 @@ export default {
       type : String
     },
     expiredEpochDate : {
-      type : Number
+      type : [Number, String]
     }
   },
   data () {
@@ -72,6 +72,10 @@ export default {
       set(value) {
         this.$emit('setPickedTime', value)
       }
+    },
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
     },
 
   },
