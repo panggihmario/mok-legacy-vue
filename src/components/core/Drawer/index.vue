@@ -12,8 +12,7 @@
   v-model="mainSidebarDrawer"
     @transitionend="collapseSubItems"
   >
-  <!-- :mini-variant.sync="miniDrawer"
-    @update:mini-variant="upDateDrawer" -->
+
  
   <v-list-item class="px-2">
         <v-list-item-avatar>
@@ -156,12 +155,7 @@ export default {
       this.$emit('closeDrawer')
       this.collapseSubItems()
     },
-    upDateDrawer (value) {
-      console.log(value)
-      // this.$emit('setDrawer', value)
-    },
     collapseSubItems() {
-      console.log('collapse')
       this.items.map((item)=>item.active=false)
     },
     handleLogout() {

@@ -156,7 +156,7 @@ export default {
             scheduledTime: this.epochDate,
             medias: [...medias],
             levelPriority : this.levelPriority,
-            expiredDate : this.expiredDate
+            expiredAt : this.expiredDate
           },
         };
       } else {
@@ -167,7 +167,7 @@ export default {
             ...item,
             medias: [...medias],
             levelPriority : this.levelPriority,
-            expiredDate : this.expiredDate
+            expiredAt : this.expiredDate
           },
         };
       }

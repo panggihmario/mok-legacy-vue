@@ -54,6 +54,22 @@ export default {
   data () {
     return {
       menu : false,
+      testDate : ''
+    }
+  },
+  watch : {
+    expiredEpochDate (value) {
+      if(value) {
+        const d = moment(value).subtract(7 , 'hour').format('YYYY-MM-DD HH:mm')
+        const [dateFromTable, timeFromTable] = d.split(' ')
+        this.$emit('setPickedDate' , dateFromTable)
+        this.$emit('setPickedTime', timeFromTable)
+        const reFormatDate = dateFromTable.split("-")
+        const [year, month, dates] = reFormatDate
+        const f = `${dates}/${month}/${year}`;
+        const formatHuman = `${f} ${timeFromTable}`
+        this.$emit('setHumanDate', formatHuman)
+      }
     }
   },
   computed : {

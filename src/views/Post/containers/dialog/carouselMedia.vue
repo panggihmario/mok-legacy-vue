@@ -211,7 +211,7 @@ export default {
             medias: [...medias],
             description: this.description,
             channel: this.item.channel,
-            expiredDate : this.expiredEpochDate,
+            expiredAt : this.expiredEpochDate,
             levelPriority : this.levelPriority
           },
         };
@@ -224,7 +224,7 @@ export default {
             medias: [...medias],
             description: this.description,
             channel: this.item.channel,
-            expiredDate : this.expiredEpochDate,
+            expiredAt : this.expiredEpochDate,
             levelPriority : this.levelPriority
           },
         };
