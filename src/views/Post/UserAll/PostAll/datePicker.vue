@@ -23,8 +23,8 @@
       no-title
       @input="handlePickDate"
       :min="currentDate"
-      :max="maxDate"
-    ></v-date-picker>
+      ></v-date-picker>
+      <!-- :max="maxDate" -->
   </v-menu>
 </template>
 
