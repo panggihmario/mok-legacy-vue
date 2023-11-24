@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-flex justify-center align-center">
     <transition name="fade" mode="out-in">
       <custom-button
         class="mr-2"

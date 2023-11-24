@@ -4,7 +4,15 @@
       <input style="width: 20px" type="checkbox" :value="item" v-model="choosenItem" />
     </td>
     <td @mouseover="onHover(item)" @mouseleave="onLeave" @mousemove="getPosition" @mouseout="stopTracking">
-      <LinkDialog :item="item" @refreshDataFeed="refreshDataFeed" :isAdmin="true" :feeds="feeds" />
+      <LinkDialog 
+        :item="item" 
+        @refreshDataFeed="refreshDataFeed" 
+        :isAdmin="true" 
+        :feeds="feeds" 
+        :levelPriority="levelPriority"
+        @setLevelPriority="setLevelPriority"
+        :indexItem="indexItem"
+      />
       <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
         :style="{ top: `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))))}px` }">
         <img :src="thumbnailImage" :class="feed['tb__image']" />
@@ -51,7 +59,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
 import Picker from "./datePicker.vue";
 import Actions from "./actions.vue";
 import LinkDialog from "../../containers/dialog/index.vue";
@@ -97,6 +105,9 @@ export default {
     },
     selected : {
       type : Array
+    },
+    indexItem : {
+      type : [Number , String]
     }
   },
   methods : {
@@ -109,7 +120,6 @@ export default {
       this.epochDate = value
     },
     setExpiredDate (value) {
-      console.log(value)
       this.expiredDate = value
     },
     setLevelPriority (value) {

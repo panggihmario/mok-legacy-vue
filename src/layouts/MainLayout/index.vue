@@ -1,8 +1,12 @@
 <template>
   <div>
-    <CoreDrawer />
-    <div class="my-6">
-      <div :class="styling">
+    <CoreDrawer
+      @closeDrawer="closeDrawer"
+      :mini="mini"
+      @setDrawer="setDrawer"
+    />
+    <div class="my-6" >
+      <div @click="closeDrawer" :class="styling">
         <CoreView />
       </div>
     </div>
@@ -48,6 +52,7 @@ export default {
     return {
       view: false,
       page: "",
+      mini : true,
     };
   },
   computed: {
@@ -78,6 +83,14 @@ export default {
       this.page = positionMeta;
     },
   },
+  methods : {
+    closeDrawer () {
+      this.mini = true
+    },
+    setDrawer (value) {
+      this.mini = value
+    }
+  }
 };
 </script>
 

@@ -3,6 +3,7 @@
     <AdminView 
       v-if="isAdmin" 
       @onPagination="onPagination"
+      @refreshDataFeed="refreshDataFeed"
     />
     <SelebView 
       v-if="isSeleb" 
@@ -42,6 +43,9 @@ export default {
     ...mapActions ({
       fetchFeeds : 'post/fetchFeeds'
     }),
+    refreshDataFeed() {
+      this.$emit('refreshDataFeed')
+    },
     fetchApi (page) {
       const payload = this.getPayload(page)
       return this.fetchFeeds(payload)
