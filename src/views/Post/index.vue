@@ -4,7 +4,7 @@
      
     </HeaderContent>
     <div class="d-flex">
-      <v-tabs v-model="tab" color="primary" left class="mb-4">
+      <v-tabs v-model="tab" color="primary" left class="mb-2">
         <v-tab v-for="(tab, idx) in tabs" :key="idx" exact @click="changeTab(tab.name)">
           <div style="letter-spacing : 0" class="text-capitalize">{{ tab.label }}</div>
         </v-tab>
@@ -31,7 +31,7 @@
     </div>
 
     <v-expand-transition>
-      <v-card  flat>
+      <v-card style="border-radius: 0;"  flat>
         <Expand @onCancel="onCancel" @onSubmitFilter="onSubmitFilter" />
       </v-card>
     </v-expand-transition>
@@ -180,6 +180,7 @@ export default {
         })
     },
     changeTab(tab) {
+      this.setIsFilterable(false)
       this.isFilter = false
       this.isParamsFilter = false
       this.setParamsUsers([])
@@ -206,6 +207,7 @@ export default {
     },
     onCancel(value) {
       this.expand = false
+      this.resetFilter()
     },
     formatingParamsUsers(users) {
       const tempArrayUsers = []
@@ -401,7 +403,8 @@ export default {
       setDisplayProcessDate: 'post/setDisplayProcessDate',
       setIsStatusProcess: 'post/setIsStatusProcess',
       setStatusLabel: 'post/setStatusLabel',
-      setSortBy : 'post/setSortBy'
+      setSortBy : 'post/setSortBy',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     moveToCreatePost() {
       this.$router.push({

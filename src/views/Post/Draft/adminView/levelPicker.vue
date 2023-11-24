@@ -52,7 +52,14 @@ export default {
 .wrapper {
   display: inline-block;
   position: relative;
-
+  &::after {
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      content: "\f0dd";
+      position: absolute;
+      right: 6px;
+      top: -2px;
+    }
   & input {
     height: 24px;
     color: #4a4a4a;
@@ -63,15 +70,6 @@ export default {
     border-radius: 4px;
     background: #ffffff;
     padding: 10px 10px 10px 14px;
-
-    &::after {
-      font-family: "Font Awesome 5 Free";
-      font-weight: 900;
-      content: "\f0dd";
-      position: absolute;
-      right: 6px;
-      top: -1px;
-    }
   }
 }
 </style>

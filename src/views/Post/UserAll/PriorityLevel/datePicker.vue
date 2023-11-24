@@ -23,8 +23,8 @@
       no-title
       @input="handlePickDate"
       :min="currentDate"
-      ></v-date-picker>
-      <!-- :max="maxDate" -->
+    ></v-date-picker>
+    <!-- :max="maxDate" -->
   </v-menu>
 </template>
 
@@ -76,6 +76,9 @@ export default {
     height: 40px;
     border-radius: 4px;
     padding: 0 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     // width: 100px;
     cursor: pointer;
     &:hover {

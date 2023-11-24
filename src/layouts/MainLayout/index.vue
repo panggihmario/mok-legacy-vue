@@ -111,13 +111,13 @@ export default {
 
 @media only screen and (min-width: 1024px) {
   .auto-space {
-    padding-left: 100px;
+    padding-left: 70px;
     padding-right: 16px;
   }
 }
 @media only screen and (min-width: 1440px) {
   .auto-space {
-    padding-left: 100px;
+    padding-left: 70px;
     padding-right: 16px;
   }
 }

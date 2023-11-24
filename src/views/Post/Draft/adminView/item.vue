@@ -12,6 +12,7 @@
         :levelPriority="levelPriority"
         @setLevelPriority="setLevelPriority"
         :indexItem="indexItem"
+        :expiredDate="expiredDate"
       />
       <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
         :style="{ top: `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))))}px` }">
@@ -37,13 +38,19 @@
       :item="item" 
       @refreshDataFeed="refreshDataFeed" 
       @setEpochDate="setEpochDate" 
+      :levelPriority="levelPriority"
     />
   </td>
   <td>
     <LevelPicker :levelPriority="levelPriority" @setLevelPriority="setLevelPriority" />
   </td>
   <td>
-    <DatePicker :item="item" @refreshDataFeed="refreshDataFeed" @setEpochDate="setExpiredDate" />
+    <DatePicker 
+      :item="item" 
+      @refreshDataFeed="refreshDataFeed" 
+      @setEpochDate="setExpiredDate" 
+      :levelPriority="levelPriority"
+    />
   </td>
   <td>
     <Actions 
@@ -116,13 +123,44 @@ export default {
       multipleReject : 'post/multipleReject',
       fetchFeeds: "post/fetchFeeds",
     }),
+    ...mapMutations({
+      setFeeds : 'post/setFeeds'
+    }),
     setEpochDate(value) {
       this.epochDate = value
     },
     setExpiredDate (value) {
       this.expiredDate = value
+      const feeds = this.feeds
+      const reFormat = feeds.map((feed, idx) => {
+        if(idx === this.indexItem) {
+          return {
+            ...feed,
+            expiredAt : value
+          }
+          }else{
+            return {
+              ...feed
+            }
+          }
+      })
+      this.setFeeds(reFormat)
     },
     setLevelPriority (value) {
+      const feeds = this.feeds
+      const reFormat = feeds.map((feed, idx) => {
+        if(idx === this.indexItem) {
+          return {
+            ...feed,
+            levelPriority : value
+          }
+          }else{
+            return {
+              ...feed
+            }
+          }
+      })
+      this.setFeeds(reFormat)
       this.levelPriority = value
     },
     formatingDate(rawDate) {

@@ -115,6 +115,7 @@
                   @setPickedDate="setPickedDate"
                   @setPickedTime="setPickedTime"
                   @setDate="setDate"
+                  @setHumanDate=setHumanDate
                 />
               </v-col>
             </v-row>
@@ -302,6 +303,9 @@ export default {
       getAllChannel: "channel/getAllChannel",
       updateDetailListKonten : 'post/updateDetailListKonten'
     }),
+    setHumanDate (value) {
+      this.humanDate = value
+    },
     setDate () {
       const d = this.sampleDate
       const t = this.timeSchedule
@@ -310,17 +314,12 @@ export default {
       const f = `${dates}/${month}/${year}`;
       const format = `${f} ${t}`;
       this.humanDate = format
-      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
-        .add(7, "hours")
-        .unix();
-      const miliEpoch = epochDate * 1000;
-      this.$emit('setExpiredDatePayload', miliEpoch)
+      const epochMiliDate = moment(schedule, "YYYY-MM-DD HH:mm").add(7, "hours").valueOf()
+      this.$emit('setExpiredDatePayload', epochMiliDate)
       if(this.isEditableAfterPublish) {
         this.isChangingAfterPublish = true
         this.cols = '5'
         this.colsLevel = '4'
-      }else{
-        this.$emit("setChange", true);
       }
     },
     setPickedDate (value) {

@@ -20,15 +20,7 @@
         <div>
           <div class="d-flex" style="padding: 12px">
             <div style="margin-right: 12px">
-              <div
-                class="black"
-                style="
-                  width: 307px;
-                  height: 665px;
-                  border-radius: 8px;
-                  overflow: hidden;
-                "
-              >
+              <div class="black" style="width: 300px; height: 600px">
                 <video-player
                   v-if="
                     dialogPost &&
@@ -61,7 +53,7 @@
 
               <div
                 class="whitesnow mt-4 pa-2"
-                style="height: 300px; overflow: auto; border-radius: 4px"
+                style="height: 250px; overflow: auto; border-radius: 4px"
               >
                 {{ tableItemsDialog.description }}
               </div>
@@ -88,11 +80,7 @@
                     ></v-select>
                   </div>
                   <div class="col-6 d-flex flex-column ml-2">
-                    <span class="font-10"
-                      >Expired Konten Tayang<span class="red--text"
-                        >*</span
-                      ></span
-                    >
+                    <span class="font-10">Expired Konten Tayang</span>
                     <DatePicker
                       :displayDateProps="tableItemsDialog.expiredAt"
                       @getEpoch="getEpoch"
@@ -291,6 +279,16 @@ export default {
         this.isUpdateLeveling = false;
       }, 100);
 
+      this.expiredAt = this.tableItemsDialog.expiredAt;
+      setTimeout(() => {
+        this.isUpdateLeveling = false;
+      }, 100);
+    },
+    "tableItemsDialog.id"() {
+      this.selectedLevel = this.tableItemsDialog.levelPriority;
+      setTimeout(() => {
+        this.isUpdateLeveling = false;
+      }, 100);
       this.expiredAt = this.tableItemsDialog.expiredAt;
       setTimeout(() => {
         this.isUpdateLeveling = false;
