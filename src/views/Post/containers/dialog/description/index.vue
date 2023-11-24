@@ -342,7 +342,7 @@ export default {
     },
     onCancel () {
       this.$emit("setChange", false);
-      this.$emit('setInitData')
+      this.$emit('onCancelCaption')
     },
     saveCaption() {
       this.loading = true;
