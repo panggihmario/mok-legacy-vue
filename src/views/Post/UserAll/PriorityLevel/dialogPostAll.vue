@@ -303,7 +303,6 @@ export default {
       }, 100);
     },
     "tableItemsDialog.levelPriority"() {
-      console.log("lol");
       this.selectedLevel = this.tableItemsDialog.levelPriority;
       setTimeout(() => {
         this.isUpdateLeveling = false;
