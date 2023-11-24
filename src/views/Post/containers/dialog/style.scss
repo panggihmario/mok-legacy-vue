@@ -150,6 +150,16 @@ video::-webkit-media-controls-panel {
     line-height: normal;
     letter-spacing: 0.14px; 
   }
+  &__footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-top: 10px;
+    padding:10px;
+    border-top: 1px solid var(--White-Smoke, #EEE);
+    background: var(--White-Snow, #F9F9F9);
+  }
 }
 
 .dg {

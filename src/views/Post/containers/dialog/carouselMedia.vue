@@ -6,8 +6,9 @@
         <Media :dialog="dialog" :item="item" :i="i" />
       </v-carousel-item>
     </v-carousel>
+    <div style="margin-bottom: 35px;"></div>
     <!-- <Media v-if="feed.medias.length > 0" :item="feed.medias[0]" :i="0" /> -->
-    <div class="d-flex align-center justify-space-between  black--text" style="width : 636px; margin-top: 30px;">
+    <div class="d-flex align-center justify-space-between  black--text" :class="d['car__footer']">
       <div class="d-flex align-start">
         <div class="d-flex" v-if="feed.medias.length > 1">
           <div :class="d['box-icon']" @click="slideLeft">
@@ -38,7 +39,7 @@
             </div>
           </template>
           <v-card class="pa-2">
-            <v-date-picker v-model="date" class="mr-2"> </v-date-picker>
+            <v-date-picker :min="currentDate" v-model="date" class="mr-2"> </v-date-picker>
             <v-time-picker v-model="timeSchedule" />
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
@@ -138,7 +139,11 @@ export default {
   computed: {
     isContain() {
       console.log(this.item)
-    }
+    },
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
+    },
   },
   methods: {
     ...mapActions({

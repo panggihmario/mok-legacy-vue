@@ -42,6 +42,7 @@
           @setChange="setChange"
           @setExpiredDatePayload="setExpiredDatePayload"
           @setLevelPriority="setLevelPriority"
+          @onCancelCaption="onCancelCaption"
           :isChanging="isChanging"
           :isPublish="isPublish"
           :isSchedule="isSchedule"
@@ -133,6 +134,7 @@ export default {
       description : '',
       floatingLink : '',
       floatingLinkLabel : '',
+      initDescription: '',
       detailFeed: {
         medias: [],
       },
@@ -170,6 +172,9 @@ export default {
       this.description = value
      
     },
+    onCancelCaption () {
+      this.description = this.initDescription
+    },
     resetData () {
       this.detailFeed = {
         medias : []
@@ -204,6 +209,7 @@ export default {
             medias
           }
           this.description = response.description;
+          this.initDescription = response.description
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
          
