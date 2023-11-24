@@ -39,6 +39,7 @@ export default {
         return this.paramsUsers
       },
       set(value) {
+        this.setIsFilterable(true)
         this.setParamsUsers(value)
       }
     }
@@ -80,7 +81,8 @@ export default {
       searchAccounts : 'post/searchAccounts'
     }),
     ...mapMutations({
-      setParamsUsers : 'post/setParamsUsers'
+      setParamsUsers : 'post/setParamsUsers',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     isFocus () {
       this.focus = true
@@ -103,8 +105,4 @@ export default {
 </script>
 
 <style lang="scss" scoped  src="./expand.scss" >
-// .field{
-//   border-radius: $border-radius-root;
-// 	font-size: $font-size-root;
-// }
 </style>

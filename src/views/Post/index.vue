@@ -180,6 +180,7 @@ export default {
         })
     },
     changeTab(tab) {
+      this.setIsFilterable(false)
       this.isFilter = false
       this.isParamsFilter = false
       this.setParamsUsers([])
@@ -206,6 +207,7 @@ export default {
     },
     onCancel(value) {
       this.expand = false
+      this.resetFilter()
     },
     formatingParamsUsers(users) {
       const tempArrayUsers = []
@@ -401,7 +403,8 @@ export default {
       setDisplayProcessDate: 'post/setDisplayProcessDate',
       setIsStatusProcess: 'post/setIsStatusProcess',
       setStatusLabel: 'post/setStatusLabel',
-      setSortBy : 'post/setSortBy'
+      setSortBy : 'post/setSortBy',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     moveToCreatePost() {
       this.$router.push({

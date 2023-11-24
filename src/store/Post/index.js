@@ -25,8 +25,12 @@ export default {
     isStatusProcess: "all",
     statusLabel: "Status Proses",
     sortBy : null,
+    isFilterable : false
   },
   mutations: {
+    setIsFilterable (state, payload) {
+      state.isFilterable = payload
+    },
     setSortBy(state, payload) {
       state.sortBy = payload;
     },
