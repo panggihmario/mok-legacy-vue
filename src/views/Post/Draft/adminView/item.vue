@@ -11,6 +11,7 @@
         :feeds="feeds" 
         :levelPriority="levelPriority"
         @setLevelPriority="setLevelPriority"
+        :indexItem="indexItem"
       />
       <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
         :style="{ top: `${((item.index + 1) * 100 - ((item.index * 50 + (item.index * 20))))}px` }">
@@ -105,6 +106,9 @@ export default {
     selected : {
       type : Array
     },
+    indexItem : {
+      type : [Number , String]
+    }
   },
   methods : {
     ...mapActions({

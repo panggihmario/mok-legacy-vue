@@ -24,10 +24,11 @@
       show-select
       v-model="selected"
     > 
-      <template v-slot:item="{item}">
+      <template v-slot:item="{item , index}">
         <ItemComponent
           :item="item"
           :selected="selected"
+          :indexItem="index"
           @setSelectedItem="setSelectedItem"
           @refreshDataFeed="refreshDataFeed"
         />

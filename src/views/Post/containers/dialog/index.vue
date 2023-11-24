@@ -35,7 +35,7 @@
               :feedPosition="feedPosition"
               :feeds="feeds"
               :dialog="dialog"
-              :levelPriorityProps="levelPriority"
+              :levelPriorityProps="indexItem === i ? levelPriority : null"
               @setLevelPriority="setLevelPriority"
             />
           </v-carousel-item>
@@ -78,6 +78,9 @@ export default {
     },
     levelPriority : {
       type : [Number , String]
+    },
+    indexItem : {
+      type : [Number, String]
     }
   },
   data() {
