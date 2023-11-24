@@ -24,10 +24,11 @@
       show-select
       v-model="selected"
     > 
-      <template v-slot:item="{item}">
+      <template v-slot:item="{item , index}">
         <ItemComponent
           :item="item"
           :selected="selected"
+          :indexItem="index"
           @setSelectedItem="setSelectedItem"
           @refreshDataFeed="refreshDataFeed"
         />
@@ -244,7 +245,7 @@ export default {
           filterable: false,
           value: "actions",
           align: "center",
-          width: "200",
+          // width: "200",
         },
       ],
     };

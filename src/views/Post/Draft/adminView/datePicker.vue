@@ -12,7 +12,7 @@
     <v-dialog v-model="menudate" width="700px">
       <v-card>
         <div :class="dt.container">
-          <v-date-picker v-model="scheduleDate"></v-date-picker>
+          <v-date-picker :min="currentDate" v-model="scheduleDate"></v-date-picker>
           <v-time-picker v-model="scheduledTime" class="ml-6" ampm-in-title>
           </v-time-picker>
           <div class="d-flex justify-space-between mt-4">
@@ -57,6 +57,10 @@ export default {
       } else {
         return null;
       }
+    },
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
     },
   },
   methods: {

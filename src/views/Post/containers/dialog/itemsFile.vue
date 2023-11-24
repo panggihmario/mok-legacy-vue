@@ -42,6 +42,7 @@
           @setChange="setChange"
           @setExpiredDatePayload="setExpiredDatePayload"
           @setLevelPriority="setLevelPriority"
+          @onCancelCaption="onCancelCaption"
           :isChanging="isChanging"
           :isPublish="isPublish"
           :isSchedule="isSchedule"
@@ -99,6 +100,9 @@ export default {
     },
     dialog : {
       type : Boolean
+    },
+    levelPriorityProps : {
+      type : [Number , String]
     }
     
   },
@@ -130,6 +134,7 @@ export default {
       description : '',
       floatingLink : '',
       floatingLinkLabel : '',
+      initDescription: '',
       detailFeed: {
         medias: [],
       },
@@ -167,6 +172,9 @@ export default {
       this.description = value
      
     },
+    onCancelCaption () {
+      this.description = this.initDescription
+    },
     resetData () {
       this.detailFeed = {
         medias : []
@@ -201,12 +209,17 @@ export default {
             medias
           }
           this.description = response.description;
+          this.initDescription = response.description
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
-          this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+         
           this.expiredEpochDate = response.expiredAt
           this.initExpiredDate = response.expiredAt
-          console.log(response)
+          if(this.levelPriorityProps) {
+            this.levelPriority = this.levelPriorityProps
+          }else {
+            this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+          }
         })
         .catch (err => {
           this.snackbar = true
@@ -229,6 +242,7 @@ export default {
     },
     triggerNextAction() {
       this.$emit('triggerNextAction')
+      this.levelPriority = null
     },
     closeDialog() {
       this.$emit("closeDialog");
@@ -269,7 +283,6 @@ export default {
       }
       return this.updateDetailListKonten(data)
         .then((response) => {
-          console.log(response)
           return this.getFeedById(id);
         })
         .catch ((err) => {
