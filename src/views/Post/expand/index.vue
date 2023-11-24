@@ -171,7 +171,7 @@ export default {
     padding: 8px 16px;
     background-color: #eeeeee;
     width: 100%;
-    margin-bottom: 12px;
+    border-radius: 0;
   }
   &__field {
     width: 180px;

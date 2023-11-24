@@ -115,6 +115,7 @@
                   @setPickedDate="setPickedDate"
                   @setPickedTime="setPickedTime"
                   @setDate="setDate"
+                  @setHumanDate=setHumanDate
                 />
               </v-col>
             </v-row>
@@ -302,6 +303,9 @@ export default {
       getAllChannel: "channel/getAllChannel",
       updateDetailListKonten : 'post/updateDetailListKonten'
     }),
+    setHumanDate (value) {
+      this.humanDate = value
+    },
     setDate () {
       const d = this.sampleDate
       const t = this.timeSchedule
@@ -316,8 +320,6 @@ export default {
         this.isChangingAfterPublish = true
         this.cols = '5'
         this.colsLevel = '4'
-      }else{
-        this.$emit("setChange", true);
       }
     },
     setPickedDate (value) {

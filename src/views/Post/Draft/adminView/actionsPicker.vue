@@ -3,12 +3,8 @@
     <Picker 
       :item="item" 
       @setEpochDate="setEpochDate"
+      :levelPriority="levelPriority"
     />
-    <!-- <Actions 
-      :item="item" 
-      @refreshDataFeed="refreshDataFeed" 
-      :epochDate="epochDate"
-    /> -->
   </div>
 </template>
 
@@ -16,7 +12,7 @@
 import Picker from "./datePicker.vue";
 import Actions from "./actions.vue";
 export default {
-  props: ["item"],
+  props: ["item" , "levelPriority"],
   components: {
     Picker,
     Actions,
