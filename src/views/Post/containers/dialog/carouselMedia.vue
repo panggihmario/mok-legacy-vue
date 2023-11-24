@@ -7,7 +7,7 @@
       </v-carousel-item>
     </v-carousel>
     <!-- <Media v-if="feed.medias.length > 0" :item="feed.medias[0]" :i="0" /> -->
-    <div class="d-flex align-start justify-space-between  black--text" style="width : 636px; margin-top: 30px;">
+    <div class="d-flex align-center justify-space-between  black--text" style="width : 636px; margin-top: 30px;">
       <div class="d-flex align-start">
         <div class="d-flex" v-if="feed.medias.length > 1">
           <div :class="d['box-icon']" @click="slideLeft">
@@ -18,15 +18,23 @@
           </div>
         </div>
 
-        <div :class="d['car__ispublish']" v-if="isAdmin && isPublish">PUBLISHED!</div>
+        <div :class="d['car__ispublish']" v-if="(isAdmin && isPublish) || $route.name === 'list'">PUBLISHED!</div>
         <div :class="d['car__ispublish']" v-if="isAdmin && isReject">REJECTED!</div>
         <div :class="d['car__ispublish']" v-if="(isAdmin && isSchedule) || $route.name === 'schedule' ">Schedule {{ humanDate }} </div>
         <v-menu v-if="isAdmin && !isPublish && !isReject && !isSchedule && $route.name === 'draft'"  ref="menu" v-model="menu" :close-on-content-click="false"
           :return-value.sync="date" transition="scale-transition" offset-y min-width="auto">
           <template v-slot:activator="{ on, attrs }">
             <div style="position: relative">
-              <input :class="d.schedule" placeholder="DD/MM/YYYY  HH:MM" readonly v-bind="attrs" v-on="on"
-                v-model="humanDate" />
+              <!-- <input :class="d.schedule" placeholder="DD/MM/YYYY  HH:MM" readonly v-bind="attrs" v-on="on"
+                v-model="humanDate" /> -->
+                <k-input 
+                  :value="humanDate"
+                  placeholder="DD/MM/YYYY  HH:MM"
+                  v-bind="attrs" 
+                  v-on="on"
+                  readonly
+                  icon="fas fa-stopwatch"
+              />
             </div>
           </template>
           <v-card class="pa-2">

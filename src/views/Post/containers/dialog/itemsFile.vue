@@ -99,6 +99,9 @@ export default {
     },
     dialog : {
       type : Boolean
+    },
+    levelPriorityProps : {
+      type : [Number , String]
     }
     
   },
@@ -203,10 +206,14 @@ export default {
           this.description = response.description;
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
-          this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+         
           this.expiredEpochDate = response.expiredAt
           this.initExpiredDate = response.expiredAt
-          console.log(response)
+          if(this.levelPriorityProps) {
+            this.levelPriority = this.levelPriorityProps
+          }else {
+            this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+          }
         })
         .catch (err => {
           this.snackbar = true
@@ -229,6 +236,7 @@ export default {
     },
     triggerNextAction() {
       this.$emit('triggerNextAction')
+      this.levelPriority = null
     },
     closeDialog() {
       this.$emit("closeDialog");
@@ -269,7 +277,6 @@ export default {
       }
       return this.updateDetailListKonten(data)
         .then((response) => {
-          console.log(response)
           return this.getFeedById(id);
         })
         .catch ((err) => {

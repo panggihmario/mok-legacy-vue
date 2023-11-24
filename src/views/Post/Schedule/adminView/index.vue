@@ -17,8 +17,9 @@
               @mouseleave="onLeave"
               @mousemove="getPosition"
               @mouseout="stopTracking"
+              
             >
-              <LinkDialog :isAdmin="true"  :item="item" :feeds="feeds" />
+              <LinkDialog @refreshDataFeed="refreshDataFeed" :isAdmin="true"  :item="item" :feeds="feeds" />
               <div
                 v-if="item.id === selectedItem"
                 :class="ad['tb__hover-image']"
@@ -59,7 +60,6 @@
                 {{ formatingDate(item.scheduledTime) }}
               </div>
             </td>
-            <td></td>
           </tr>
         </tbody>
       </template>
@@ -85,6 +85,10 @@ export default {
     ...mapActions({
       fetchFeedById: "post/fetchFeedById",
     }),
+    refreshDataFeed() {
+      console.log('refresh emit')
+      this.$emit('refreshDataFeed')
+    },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format('DD/MM/YYYY HH:mm')
       return cek;

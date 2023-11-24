@@ -1,9 +1,7 @@
 <template>
   <div>
     <HeaderContent :list="list" label="Post Feed" marginBottom="16">
-      <custom-button color="kellygreen" class="white--text" size="small" @click="moveToCreatePost">
-        Buat Post
-      </custom-button>
+     
     </HeaderContent>
     <div class="d-flex">
       <v-tabs v-model="tab" color="primary" left class="mb-4">
@@ -12,25 +10,28 @@
         </v-tab>
       </v-tabs>
       <div>
-        <div class="d-flex align-center">
+        <div class="d-flex align-end" style="gap : 8px">
           <custom-button color="primarylowtint" class="mr-4" v-if="isFilter" @click="resetFilter"
             style="margin-top : auto" size="x-medium">
             <div class="warning--text">Reset Filter</div>
           </custom-button>
 
-          <custom-button v-if="!expand" class="mr-4" style="margin-top : auto" size="x-medium" @click="expand = !expand">
+          <!-- <custom-button v-if="!expand" class="mr-4" style="margin-top : auto" size="x-medium" @click="expand = !expand">
             Filter Data
-          </custom-button>
+          </custom-button> -->
 
           <div style="width : 200px">
             <k-input :disabled="isOverlay" placeholder="Search" v-model="keyword" @keyup.enter="onSubmitFilter"></k-input>
           </div>
+          <custom-button color="kellygreen" class="white--text" size="x-medium" @click="moveToCreatePost">
+            Buat Post
+          </custom-button>
         </div>
       </div>
     </div>
 
     <v-expand-transition>
-      <v-card v-show="expand" flat>
+      <v-card  flat>
         <Expand @onCancel="onCancel" @onSubmitFilter="onSubmitFilter" />
       </v-card>
     </v-expand-transition>
