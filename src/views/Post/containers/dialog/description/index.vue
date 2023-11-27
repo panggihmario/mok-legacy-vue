@@ -24,7 +24,7 @@
         />
         
         <div v-if="isChanging" class="mt-2">
-          <v-row>
+          <v-row dense no-gutters>
             <v-col cols="6">
               <custom-button
                 size="small"
@@ -58,7 +58,7 @@
         </div>
         <div >
          
-          <div class="mt-2" v-if="isEditableAfterPublish">
+          <div class="mt-4" v-if="isEditableAfterPublish">
             <div :class="d['dg__label']">Channel</div>
             <div :class="d['dg__content-channel']">{{ item.channel.name }}</div>
             <v-row style="margin-top:5px">
@@ -98,6 +98,7 @@
               v-model="channelValue"
               outline
               light
+              background="white"
             />
             <v-row>
               <v-col cols="6">
