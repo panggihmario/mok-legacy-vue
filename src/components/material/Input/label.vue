@@ -1,10 +1,14 @@
 <template>
-	<label class="label-field charcoal--text"><slot/></label>
+	<label class="label-field"><slot/></label>
 </template>
 
-<style lang="sass" scoped>
-.label-field
-	font-size: $font-size-12
-	font-weight: 500
+<style lang="scss" scoped>
+.label-field {
+	color: #777;
+	font-size: 11px;
+	font-weight: 500;
+	letter-spacing: 0.11px; 
+}
+
 </style>
 
