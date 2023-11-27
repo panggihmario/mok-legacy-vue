@@ -80,6 +80,7 @@
                 />
               </v-col>
               <v-col class="d-flex align-center" cols="3" v-if="isChangingAfterPublish">
+                <div></div>
                 <button @click="saveChanging" :class="d['dg__btn-edit']">{{ btnText }}</button>
               </v-col>
             </v-row>

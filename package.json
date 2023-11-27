@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "2.5.4-rc10",
+  "version": "2.5.4-rc11",
 
   "private": true,
   "scripts": {

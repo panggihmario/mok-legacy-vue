@@ -81,14 +81,14 @@
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
-            <td>
+            <!-- <td>
               <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 <div v-if="item.proceedAt"> {{ formatingDate(item.proceedAt) }} </div>
                 <div v-else > 
                   <v-icon size="small" >far fa-clock</v-icon>
                 </div>
               </div>
-            </td>
+            </td> -->
             <td >
               <div :class="ad['tb__caption']">{{ item.levelPriority }}</div>
             </td>
@@ -293,13 +293,13 @@ export default {
           align: "center",
           width: "150",
         },
-        {
-          text : 'Tayang',
-          sortable : false,
-          filterable : false , 
-          value : 'proceedAt',
-          align : 'center'
-        },
+        // {
+        //   text : 'Tayang',
+        //   sortable : false,
+        //   filterable : false , 
+        //   value : 'proceedAt',
+        //   align : 'center'
+        // },
         {
           text : 'Level Konten',
           sortable: false,
