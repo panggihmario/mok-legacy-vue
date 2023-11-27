@@ -25,7 +25,7 @@
       </template>
       <v-card class="pa-2">
         <div class="d-flex">
-          <v-date-picker :min="currentDate" v-model="pickedDate" class="mr-2"> </v-date-picker>
+          <v-date-picker :max="maxDate" :min="currentDate" v-model="pickedDate" class="mr-2"> </v-date-picker>
           <v-time-picker v-model="pickedTime" />
         </div>
         <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
@@ -93,6 +93,10 @@ export default {
       const d = moment().format("YYYY-MM-DD");
       return d;
     },
+    maxDate () {
+      const d = moment().add(1 , 'year').format("YYYY-MM-DD")
+      return d
+    }
 
   },
   methods : {
