@@ -9,11 +9,11 @@
         :style="{ objectFit: isContain }" alt="media" loading="lazy" :id="`videodialog`" />
     </div>
     <div :class="d['container-nav']">
-      <v-icon size="15px" color="white">fas fa-home</v-icon>
-      <v-icon size="15px" color="white">fas fa-shopping-cart</v-icon>
-      <v-icon size="15px" color="white">fas fa-plus</v-icon>
-      <v-icon size="15px" color="white">fas fa-bell</v-icon>
-      <v-icon size="15px" color="white">far fa-user</v-icon>
+      <v-icon size="15px" color="grey">fas fa-home</v-icon>
+      <v-icon size="15px" color="grey">fas fa-shopping-cart</v-icon>
+      <v-icon size="15px" color="grey">fas fa-plus</v-icon>
+      <v-icon size="15px" color="grey">fas fa-bell</v-icon>
+      <v-icon size="15px" color="grey">far fa-user</v-icon>
     </div>
   </div>
   <!-- </div> -->
