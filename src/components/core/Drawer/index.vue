@@ -156,7 +156,17 @@ export default {
       this.collapseSubItems()
     },
     collapseSubItems() {
-      this.items.map((item)=>item.active=false)
+      // this.items.map((item)=>item.active=false)
+      const c = this.items
+      const d = c.map(a => {
+        return {
+          ...a,
+          active : false
+        }
+      })
+      this.items = d
+      // console.log(this.items)
+
     },
     handleLogout() {
       this.logout();
