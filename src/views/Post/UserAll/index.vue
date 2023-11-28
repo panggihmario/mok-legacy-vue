@@ -345,7 +345,7 @@ export default {
           this.isOverlay = false;
           this.tableItemsPriorityLevel = res.content;
           if (res.content.length >= 8 && this.totalPagesPriorityLevel <= page) {
-            this.totalPagesPriorityLevel = page + 1;
+            this.totalPagesPriorityLevel = parseInt(page) + 1;
           }
           this.totalElementsPriorityLevel = res.totalElements;
           if (res.totalElements == 0) {
