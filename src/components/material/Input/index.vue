@@ -12,7 +12,11 @@
       :error-messages="errors"
       :background-color="colorbg"
       :type="type"
-    ></v-text-field>
+    >
+    <template v-slot:append>
+      <v-icon v-if="icon" small>{{ icon }}</v-icon>        
+    </template>
+  </v-text-field>
   </ValidationProvider>
 </template>
 
@@ -39,6 +43,9 @@ export default {
     colorbg : {
       type : String,
       default : 'whitesnow'
+    },
+    icon : {
+      type : String
     }
   },
   computed: {

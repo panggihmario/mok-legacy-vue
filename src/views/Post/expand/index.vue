@@ -21,7 +21,7 @@
           <SelectUser/>
           <SelectChannel :items="channels"/>
           <SelectDate/>
-          <Tayang  v-if="$route.name === 'list'  " />
+          <!-- <Tayang  v-if="$route.name === 'list'  " /> -->
           <custom-button 
           v-if="isFilterable"
           color="kellygreen" 
@@ -32,9 +32,6 @@
         </custom-button>
         <custom-button v-if="isFilterable" @click="onCancel" > Batalkan </custom-button>
       </div>
-      <!-- <div  class="d-flex"> -->
-        
-      <!-- </div> -->
     </div>
   </div>
 </template>
