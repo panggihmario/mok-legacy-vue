@@ -28,7 +28,7 @@
             {{ item.createBy }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            <div class="d-flex align-center" style="gap: 2px;">
+            <div class="d-flex align-center" style="gap: 2px">
               <v-icon
                 size="8px"
                 :color="item.isVodAvailable ? 'green' : 'red'"
@@ -91,7 +91,7 @@ export default {
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
-      return cek;
+      return rawDate ? cek : "-";
     },
     openDialogPushNotif(v) {
       this.$emit("openDialogPushNotif", v);

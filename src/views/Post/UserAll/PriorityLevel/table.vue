@@ -47,7 +47,7 @@
             {{ item.post.levelPriority ? item.post.levelPriority : "-" }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.post.expiredAt ? formatingDate(item.post.expiredAt) : "-" }}
+            {{ formatingDate(item.post.expiredAt) }}
           </td>
         </tr>
       </tbody>
@@ -72,7 +72,7 @@ export default {
     },
     formatingDate(rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
-      return cek;
+      return rawDate ? cek : "-";
     },
     openDialogPushNotif(v) {
       this.$emit("openDialogPushNotif", v);
