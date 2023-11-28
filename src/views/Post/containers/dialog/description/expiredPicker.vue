@@ -25,7 +25,7 @@
       </template>
       <v-card class="pa-2">
         <div class="d-flex">
-          <v-date-picker :min="currentDate" v-model="pickedDate" class="mr-2"> </v-date-picker>
+          <v-date-picker :max="maxDate" :min="currentDate" v-model="pickedDate" class="mr-2"> </v-date-picker>
           <v-time-picker v-model="pickedTime" />
         </div>
         <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
@@ -54,6 +54,22 @@ export default {
   data () {
     return {
       menu : false,
+      testDate : ''
+    }
+  },
+  watch : {
+    expiredEpochDate (value) {
+      if(value) {
+        const d = moment(value).subtract(7 , 'hour').format('YYYY-MM-DD HH:mm')
+        const [dateFromTable, timeFromTable] = d.split(' ')
+        this.$emit('setPickedDate' , dateFromTable)
+        this.$emit('setPickedTime', timeFromTable)
+        const reFormatDate = dateFromTable.split("-")
+        const [year, month, dates] = reFormatDate
+        const f = `${dates}/${month}/${year}`;
+        const formatHuman = `${f} ${timeFromTable}`
+        this.$emit('setHumanDate', formatHuman)
+      }
     }
   },
   computed : {
@@ -77,6 +93,10 @@ export default {
       const d = moment().format("YYYY-MM-DD");
       return d;
     },
+    maxDate () {
+      const d = moment().add(1 , 'year').format("YYYY-MM-DD")
+      return d
+    }
 
   },
   methods : {

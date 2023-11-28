@@ -149,6 +149,7 @@ export default {
     ...mapMutations({
       setProcessDate: "post/setProcessDate",
       setDisplayProcessDate: "post/setDisplayProcessDate",
+      setIsFilterable : 'post/setIsFilterable'
     }),
     checkRangeDate(value) {
       const [first, second] = value;
@@ -177,6 +178,7 @@ export default {
         const d = this.choosenDate;
         const from = this.formatter(d[0]);
         this.setDisplayProcessDate(from);
+        this.setIsFilterable(true)
         if (this.choosenDate.length > 1) {
           const afterCheckRangeDate = this.checkRangeDate(this.choosenDate);
           const start = this.formatter(afterCheckRangeDate[0]);

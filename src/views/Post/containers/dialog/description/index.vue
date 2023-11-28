@@ -24,7 +24,7 @@
         />
         
         <div v-if="isChanging" class="mt-2">
-          <v-row>
+          <v-row dense no-gutters>
             <v-col cols="6">
               <custom-button
                 size="small"
@@ -58,7 +58,7 @@
         </div>
         <div >
          
-          <div class="mt-2" v-if="isEditableAfterPublish">
+          <div class="mt-4" v-if="isEditableAfterPublish">
             <div :class="d['dg__label']">Channel</div>
             <div :class="d['dg__content-channel']">{{ item.channel.name }}</div>
             <v-row style="margin-top:5px">
@@ -80,6 +80,7 @@
                 />
               </v-col>
               <v-col class="d-flex align-center" cols="3" v-if="isChangingAfterPublish">
+                <div></div>
                 <button @click="saveChanging" :class="d['dg__btn-edit']">{{ btnText }}</button>
               </v-col>
             </v-row>
@@ -98,6 +99,7 @@
               v-model="channelValue"
               outline
               light
+              background="white"
             />
             <v-row>
               <v-col cols="6">
@@ -115,6 +117,7 @@
                   @setPickedDate="setPickedDate"
                   @setPickedTime="setPickedTime"
                   @setDate="setDate"
+                  @setHumanDate=setHumanDate
                 />
               </v-col>
             </v-row>
@@ -302,6 +305,9 @@ export default {
       getAllChannel: "channel/getAllChannel",
       updateDetailListKonten : 'post/updateDetailListKonten'
     }),
+    setHumanDate (value) {
+      this.humanDate = value
+    },
     setDate () {
       const d = this.sampleDate
       const t = this.timeSchedule
@@ -310,17 +316,12 @@ export default {
       const f = `${dates}/${month}/${year}`;
       const format = `${f} ${t}`;
       this.humanDate = format
-      const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
-        .add(7, "hours")
-        .unix();
-      const miliEpoch = epochDate * 1000;
-      this.$emit('setExpiredDatePayload', miliEpoch)
+      const epochMiliDate = moment(schedule, "YYYY-MM-DD HH:mm").add(7, "hours").valueOf()
+      this.$emit('setExpiredDatePayload', epochMiliDate)
       if(this.isEditableAfterPublish) {
         this.isChangingAfterPublish = true
         this.cols = '5'
         this.colsLevel = '4'
-      }else{
-        this.$emit("setChange", true);
       }
     },
     setPickedDate (value) {

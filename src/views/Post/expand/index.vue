@@ -2,7 +2,7 @@
   <div class="ex__card">
     <div class="d-flex justify-space-between">
 
-      <div class="ex__filters" :class="$route.name === 'draft' && 'ex__filters-draft' " >
+      <div class="ex__filters" >
         <div v-if="$route.name !== 'draft' " class="ex__label">Sorted By</div>
         <v-select
           v-if="$route.name !== 'draft'"
@@ -15,22 +15,22 @@
           v-model="sort"
           class="expand__field"
           return-object
+          style="width : 160px"
         />
         <div class="ex__label">Filter </div>
           <SelectUser/>
           <SelectChannel :items="channels"/>
           <SelectDate/>
-          <Tayang  v-if="$route.name === 'list'  " />
-      </div>
-      <div class="d-flex">
-        <custom-button 
+          <!-- <Tayang  v-if="$route.name === 'list'  " /> -->
+          <custom-button 
+          v-if="isFilterable"
           color="kellygreen" 
           class="mr-2"
           @click="onSubmit"
         >
           <div class="white--text">Terapkan Filter</div>
         </custom-button>
-        <custom-button @click="onCancel" > Batalkan </custom-button>
+        <custom-button v-if="isFilterable" @click="onCancel" > Batalkan </custom-button>
       </div>
     </div>
   </div>
@@ -41,7 +41,7 @@ import { mapActions, mapState, mapMutations } from "vuex"
 import SelectUser from './selectUsers.vue';
 import SelectChannel from './selectChannel.vue';
 import SelectDate from "./selectDate.vue";
-import Tayang from "./tayang.vue"
+import Tayang from "./tayang.vue";
 export default {
   mounted () {
     this.fetchDataChannel()
@@ -81,16 +81,51 @@ export default {
   },
   computed : {
     ...mapState ({
-      sortBy : (state) => state.post.sortBy
+      sortBy : (state) => state.post.sortBy,
+      isFilterable : (state) => state.post.isFilterable,
+      channelCode: (state) => state.post.channelCode,
+      paramsUsers: (state) => state.post.paramsUsers,
+      paramsChannel: (state) => state.post.paramsChannel,
+      paramsDate: (state) => state.post.paramsDate,
+      paramsProcess: (state) => state.post.paramsProcess,
+      isStatusProcess: (state) => state.post.isStatusProcess,
     }),
     sort : {
       get () {
         return this.sortBy
       },
       set (value) {
+        this.setIsFilterable(true)
         this.setSortBy(value)
       }
-    }
+    },
+  },
+  watch : {
+    // sortBy (value) {
+    //   if(value) {
+    //     this.setIsFilterable(true)
+    //   }
+    // },
+    // paramsUsers (value) {
+    //   if(value) {
+    //     this.setIsFilterable(true)
+    //   }
+    // },
+    // paramsChannel (value) {
+    //   if(value) {
+    //     this.setIsFilterable(true)
+    //   }
+    // },
+    // paramsDate (value) {
+    //   if(value) {
+    //     this.setIsFilterable(true)
+    //   }
+    // },
+    // paramsProcess (value) {
+    //   if(value) {
+    //     this.setIsFilterable(true)
+    //   }
+    // }
   },
   methods: {
     ...mapActions({
@@ -98,7 +133,8 @@ export default {
       filterFeed : "post/filterFeed"
     }),
     ...mapMutations({
-      setSortBy : 'post/setSortBy'
+      setSortBy : 'post/setSortBy',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     onChange (value) {
       console.log(value)
@@ -118,6 +154,7 @@ export default {
       this.$emit('onSubmitFilter')
     },
     onCancel() {
+      this.setIsFilterable(false)
       this.$emit('onCancel', false)
     }
   },
@@ -131,7 +168,7 @@ export default {
     padding: 8px 16px;
     background-color: #eeeeee;
     width: 100%;
-    margin-bottom: 12px;
+    border-radius: 0;
   }
   &__field {
     width: 180px;
@@ -143,8 +180,8 @@ export default {
     align-self: center;
   }
   &__filters {
-    display: grid;
-    grid-template-columns:55px 170px 50px 120px 120px 190px 310px;
+    display: flex;
+    // grid-template-columns:55px 170px 50px 120px 120px 190px 310px;
     gap: 8px;
   }
   &__filters-draft {

@@ -35,7 +35,6 @@
               :feedPosition="feedPosition"
               :feeds="feeds"
               :dialog="dialog"
-              :levelPriorityProps="indexItem === i ? levelPriority : null"
               @setLevelPriority="setLevelPriority"
             />
           </v-carousel-item>
