@@ -61,7 +61,7 @@
               <div class="d-flex flex-column mt-4" style="gap: 16px">
                 <div class="d-flex flex-column">
                   <span class="font-10">Channel</span>
-                  <span class="font-14 black--text">Channel</span>
+                  <span class="font-14 black--text">Cleeps 🇮🇩</span>
                 </div>
                 <div class="row no-gutters">
                   <div
