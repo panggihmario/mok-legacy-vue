@@ -157,7 +157,7 @@ export default {
       totalPagesCandidate: 0,
       totalPagesActive: 0,
       totalPagesNotification: 0,
-      totalPagesPriorityLevel: 0,
+      totalPagesPriorityLevel: 1,
       tableItemsCandidate: [],
       tableItemsActive: [],
       tableItemsNotification: [],
@@ -329,8 +329,9 @@ export default {
         });
     },
     handleGetListPriorityLevel() {
+      let page = this.$route.params.page;
       let payload = {
-        page: this.pagePriorityLevel - 1,
+        page: page - 1,
         size: 10,
         channelCode: "tiktok",
       };
@@ -343,7 +344,9 @@ export default {
           this.loadingListPriorityLevel = false;
           this.isOverlay = false;
           this.tableItemsPriorityLevel = res.content;
-          this.totalPagesPriorityLevel = res.totalPages;
+          if (res.content.length >= 8 && this.totalPagesPriorityLevel <= page) {
+            this.totalPagesPriorityLevel = page + 1;
+          }
           this.totalElementsPriorityLevel = res.totalElements;
           if (res.totalElements == 0) {
             this.alertNoData = true;
