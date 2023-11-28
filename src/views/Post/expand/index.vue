@@ -33,7 +33,6 @@
           </custom-button>
           <custom-button v-if="isFilterable && !isReset" @click="onCancel" > Batalkan </custom-button>
           <custom-button v-if="isReset" @click="onReset" > Reset </custom-button>
-          
       </div>
     </div>
   </div>
@@ -105,11 +104,11 @@ export default {
     },
   },
   watch : {
-    // sortBy (value) {
-    //   if(value) {
-    //     this.setIsFilterable(true)
-    //   }
-    // },
+    isFilterable (value) {
+      if(value) {
+        this.isReset = false
+      }
+    },
     // paramsUsers (value) {
     //   if(value) {
     //     this.setIsFilterable(true)
@@ -157,6 +156,7 @@ export default {
     onSubmit () {
       this.$emit('onSubmitFilter')
       this.isReset = true
+      this.setIsFilterable(false)
     },
     onCancel() {
       this.setIsFilterable(false)
