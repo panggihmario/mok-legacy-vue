@@ -17,7 +17,11 @@
           placeholder="Dipublish Pada"
           v-model="displayDate"
           class="expand__field"
-        ></custom-input>
+          colorbg="white"
+          icon="fas fa-calendar"
+        >
+       
+        </custom-input>
       </template>
 
       <v-card class="dt__card" flat>
