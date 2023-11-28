@@ -23,8 +23,8 @@
       no-title
       @input="handlePickDate"
       :min="currentDate"
+      :max="maxDate"
     ></v-date-picker>
-    <!-- :max="maxDate" -->
   </v-menu>
 </template>
 
@@ -46,7 +46,7 @@ export default {
       return d;
     },
     maxDate() {
-      const d = moment().add(90, "day").format("YYYY-MM-DD");
+      const d = moment().add(365, "day").format("YYYY-MM-DD");
       return d;
     },
   },
