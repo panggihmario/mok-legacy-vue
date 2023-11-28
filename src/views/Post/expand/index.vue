@@ -3,9 +3,9 @@
     <div class="d-flex justify-space-between">
 
       <div class="ex__filters" >
-        <div v-if="$route.name !== 'draft' " class="ex__label">Sorted By</div>
+        <div v-if="$route.name !== 'draft' && $route.name !==  'schedule' " class="ex__label">Sorted By</div>
         <v-select
-          v-if="$route.name !== 'draft'"
+          v-if="$route.name !== 'draft' && $route.name !==  'schedule'  "
           dense
           hide-details
           solo
@@ -16,21 +16,24 @@
           class="expand__field"
           return-object
           style="width : 160px"
+          placeholder="Waktu publish"
         />
         <div class="ex__label">Filter </div>
           <SelectUser/>
           <SelectChannel :items="channels"/>
           <SelectDate/>
           <!-- <Tayang  v-if="$route.name === 'list'  " /> -->
-          <custom-button 
-          v-if="isFilterable"
-          color="kellygreen" 
-          class="mr-2"
-          @click="onSubmit"
-        >
-          <div class="white--text">Terapkan Filter</div>
-        </custom-button>
-        <custom-button v-if="isFilterable" @click="onCancel" > Batalkan </custom-button>
+            <custom-button 
+              v-if="isFilterable && !isReset"
+              color="kellygreen" 
+              class="mr-2"
+              @click="onSubmit"
+          >
+            <div class="white--text">Terapkan Filter</div>
+          </custom-button>
+          <custom-button v-if="isFilterable && !isReset" @click="onCancel" > Batalkan </custom-button>
+          <custom-button v-if="isReset" @click="onReset" > Reset </custom-button>
+          
       </div>
     </div>
   </div>
@@ -56,6 +59,7 @@ export default {
   data() {
     return {
       selectedUser : [],
+      isReset : false,
       channels : [],
       itemsSchedule : [
         {
@@ -70,7 +74,7 @@ export default {
       items : [
         {
           label : 'Waktu Publish',
-          value : 'publishAt,DESC'
+          value : 'publishedAt,DESC'
         },
         {
           label : 'Waktu Level Dipilih',
@@ -152,8 +156,14 @@ export default {
     },
     onSubmit () {
       this.$emit('onSubmitFilter')
+      this.isReset = true
     },
     onCancel() {
+      this.setIsFilterable(false)
+      this.$emit('onCancel', false)
+    },
+    onReset () {
+      this.isReset = false
       this.setIsFilterable(false)
       this.$emit('onCancel', false)
     }

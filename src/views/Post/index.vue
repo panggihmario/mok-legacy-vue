@@ -11,10 +11,10 @@
       </v-tabs>
       <div>
         <div class="d-flex align-end" style="gap : 8px">
-          <custom-button color="primarylowtint" class="mr-4" v-if="isFilter" @click="resetFilter"
+          <!-- <custom-button color="primarylowtint" class="mr-4" v-if="isFilter" @click="resetFilter"
             style="margin-top : auto" size="x-medium">
             <div class="warning--text">Reset Filter</div>
-          </custom-button>
+          </custom-button> -->
 
           <!-- <custom-button v-if="!expand" class="mr-4" style="margin-top : auto" size="x-medium" @click="expand = !expand">
             Filter Data
