@@ -14,7 +14,7 @@
           v-on="on"
           dense
           readonly
-          placeholder="Dipublish Pada"
+          :placeholder="$route.name === 'draft' ?  'Disubmit Pada' : 'Dipublish Pada' "
           v-model="displayDate"
           class="expand__field"
           colorbg="white"
