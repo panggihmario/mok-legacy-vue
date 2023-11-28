@@ -80,7 +80,7 @@
     <v-snackbar
       :timeout="3000"
       top
-      right
+      outlined
       v-model="alertFailedUpdateLeveling"
       color="warning"
     >
@@ -288,13 +288,14 @@ export default {
         .then((res) => {
           this.alertSuccessUpdateLeveling = true;
           this.dialogPost = false;
-          this.$emit("updatePriority")
+          this.$emit("updatePriority");
         })
         .catch((err) => {
+          const d = moment().format("DD-MM-YYYY HH:mm:ss");
           this.alertFailedUpdateLeveling = true;
           this.alertFailedUpdateLevelingMessage =
             err.response.data.code == "4000"
-              ? "Harap isi expired dengan tanggal besok atau lebih"
+              ? `Hanya bisa memilih tanggal dan waktu setelah ${d}`
               : err.response.data.message;
         });
     },

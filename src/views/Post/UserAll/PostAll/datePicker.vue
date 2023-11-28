@@ -41,9 +41,10 @@
           class="text-capitalize"
           depressed
           color="secondary"
+          style="letter-spacing: 1px;"
           @click="handlePickDate"
           :disabled="date == '' || time == ''"
-          >Set Date</v-btn
+          >Set Expired</v-btn
         >
       </section>
     </div>
@@ -65,7 +66,7 @@ export default {
   },
   computed: {
     currentDate() {
-      const d = moment().add(1, "day").format("YYYY-MM-DD");
+      const d = moment().format("YYYY-MM-DD");
       return d;
     },
     maxDate() {
@@ -74,7 +75,8 @@ export default {
     },
   },
   mounted() {
-    this.displayDate = moment(this.displayDateProps).format("DD/MM/YYYY HH:mm");
+    const d = moment(this.displayDateProps).format("DD/MM/YYYY HH:mm");
+    this.displayDate = this.displayDateProps ? d : "-";
   },
   methods: {
     handlePickDate() {
