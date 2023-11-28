@@ -48,7 +48,7 @@ const serviceWithToken = (token = getToken()) =>
 const serviceTiktokWithoutToken = () => {
   return axios.create({
     baseURL: BASE_TIKTOK_URL,
-    timeout: 10 * 1000,
+    timeout: 30 * 1000,
     headers: {
       "Content-Type": `application/json`,
     },
