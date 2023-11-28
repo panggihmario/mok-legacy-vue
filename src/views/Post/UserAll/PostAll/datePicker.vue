@@ -4,27 +4,49 @@
     :close-on-content-click="false"
     transition="scale-transition"
     offset-y
-    min-width="auto"
+    min-width="600"
   >
     <template v-slot:activator="{ on, attrs }">
-      <div class="date__wrapper">
-        <input
+      <div v-on="on" class="date__wrapper">
+        <div>
+          {{ displayDate }}
+        </div>
+        <!-- <input
           v-bind="attrs"
           v-on="on"
           readonly
           v-model="displayDate"
           placeholder="DD/MM/YYYY"
-        />
+        /> -->
         <v-icon size="small">fas fa-calendar</v-icon>
       </div>
     </template>
-    <v-date-picker
-      v-model="date"
-      no-title
-      @input="handlePickDate"
-      :min="currentDate"
-      :max="maxDate"
-    ></v-date-picker>
+    <div class="white">
+      <section class="d-flex">
+        <v-date-picker
+          v-model="date"
+          no-title
+          :min="currentDate"
+          :max="maxDate"
+        ></v-date-picker>
+        <v-time-picker
+          v-model="time"
+          ampm-in-title
+          full-width
+          header-color="secondary"
+        ></v-time-picker>
+      </section>
+      <section class="pa-4">
+        <v-btn
+          class="text-capitalize"
+          depressed
+          color="secondary"
+          @click="handlePickDate"
+          :disabled="date == '' || time == ''"
+          >Set Date</v-btn
+        >
+      </section>
+    </div>
   </v-menu>
 </template>
 
@@ -37,6 +59,7 @@ export default {
     return {
       menuDate: false,
       date: "",
+      time: "",
       displayDate: "",
     };
   },
@@ -51,17 +74,19 @@ export default {
     },
   },
   mounted() {
-    this.displayDate = moment(this.displayDateProps).format("DD/MM/YYYY");
+    this.displayDate = moment(this.displayDateProps).format("DD/MM/YYYY HH:mm");
   },
   methods: {
     handlePickDate() {
       this.menuDate = false;
-      const display = moment(this.date).format("DD/MM/YYYY");
+      const display = moment(`${this.date} ${this.time}`).format(
+        "DD/MM/YYYY HH:mm"
+      );
       this.displayDate = display;
-      const currentEnd = moment(this.date).format("YYYY-MM-DD");
-      const current = moment().format("HH:mm:ss");
-      const total = `${currentEnd} ${current}`;
-      const epochTotal = moment(total).valueOf();
+      const currentEnd = moment(`${this.date} ${this.time}`).format(
+        "YYYY-MM-DD HH:mm"
+      );
+      const epochTotal = moment(currentEnd).valueOf();
       this.$emit("getEpoch", epochTotal);
     },
   },
