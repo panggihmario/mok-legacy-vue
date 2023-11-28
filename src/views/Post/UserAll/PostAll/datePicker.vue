@@ -69,7 +69,7 @@ export default {
       return d;
     },
     maxDate() {
-      const d = moment().add(365, "day").format("YYYY-MM-DD");
+      const d = moment().add(1, "year").format("YYYY-MM-DD");
       return d;
     },
   },
