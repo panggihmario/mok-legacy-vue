@@ -7,7 +7,7 @@
       :search-input.sync="searchFilter"
       item-text="name"
       item-value="code"
-      label="Channel"
+      placeholder="Pilih Channel"
       solo
       dense
       hide-details
@@ -18,7 +18,7 @@
       @blur="isFocus = false"
     >
       <template v-slot:selection="{ index }">
-        <span v-if="index === 0 && !isFocus" class="grey--text text-caption">
+        <span v-if="index === 0 && !isFocus" class="black--text text-caption font-12">
           {{ dataFilter.length }} selected
         </span>
       </template>
@@ -63,3 +63,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.font-12 {
+  font-size: 12px !important;
+}
+</style>
