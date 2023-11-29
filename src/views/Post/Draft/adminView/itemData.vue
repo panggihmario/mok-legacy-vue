@@ -1,17 +1,15 @@
 <template>
   <tr>
-    <td>
+    <td :class="feed['tb__border']">
       <input style="width: 20px" type="checkbox" :value="item" v-model="choosenItem" />
     </td>
-    <td @mouseover="onHover(item)" @mouseleave="onLeave" @mousemove="getPosition" @mouseout="stopTracking">
+    <td :class="feed['tb__border']" @mouseover="onHover(item)" @mouseleave="onLeave" @mousemove="getPosition"
+      >
       <LinkDialog 
-        :item="item" 
         @refreshDataFeed="refreshDataFeed" 
-        :isAdmin="true" 
-        :feeds="feeds" 
+        :item="item" 
+        :isAdmin="true" :feeds="feeds" 
         :levelPriority="levelPriority"
-        @setLevelPriority="setLevelPriority"
-        :indexItem="indexItem"
         :expiredDate="expiredDate"
       />
       <div v-if="item.id === selectedItem" :class="feed['tb__hover-image']" id="displayAreaDraft"
@@ -19,90 +17,69 @@
         <img :src="thumbnailImage" :class="feed['tb__image']" />
       </div>
     </td>
-    <td>
+    <td :class="feed['tb__border']">
       <div :class="feed['tb__caption']">{{ item.description }}</div>
     </td>
-    <td>
+    <td :class="feed['tb__border']">
       <div :class="feed['tb__caption']">{{ item.channel && item.channel.name }}</div>
     </td>
-    <td>
+    <td :class="feed['tb__border']">
       <div :class="feed['tb__caption']">
         {{ formatingDate(item.submittedAt) }}
       </div>
     </td>
-  <td>
-    <div :class="feed['tb__caption']">{{ item.createBy }}</div>
-  </td>
-  <td>
-    <SchedulePicker 
-      :item="item" 
-      @refreshDataFeed="refreshDataFeed" 
-      @setEpochDate="setEpochDate" 
-      :levelPriority="levelPriority"
-    />
-  </td>
-  <td>
-    <LevelPicker :levelPriority="levelPriority" @setLevelPriority="setLevelPriority" />
-  </td>
-  <td>
-    <DatePicker 
-      :item="item" 
-      @refreshDataFeed="refreshDataFeed" 
-      @setEpochDate="setExpiredDate" 
-      :levelPriority="levelPriority"
-    />
-  </td>
-  <td>
-    <Actions 
-      :item="item" 
-      @refreshDataFeed="refreshDataFeed" 
-      :epochDate="epochDate" 
-      :expiredDate="expiredDate"
-      :levelPriority="levelPriority"
-    />
-  </td>
+    <td :class="feed['tb__border']">
+      <div :class="feed['tb__caption']">{{ item.createBy }}</div>
+    </td>
+    <td :class="feed['tb__border']">
+      <DatePicker 
+        :item="item" 
+        @refreshDataFeed="refreshDataFeed" 
+        @setEpochDate="setScheduleTime"
+        labelBtn="Jadwalkan Publikasi"
+      />
+    </td>
+    <td :class="feed['tb__border']">
+      <LevelPicker 
+        :levelPriority="levelPriority" 
+        :feeds="feeds" 
+        :item="item" 
+        @setLevelPriority="setLevelPriority"
+      />
+      <!-- <Actions  :item="item" @refreshDataFeed="refreshDataFeed" /></td> -->
+    </td>
+    <td :class="feed['tb__border']">
+      <DatePicker 
+        :item="item" 
+        @refreshDataFeed="refreshDataFeed" 
+        @setEpochDate="setExpired"
+        labelBtn="Jadwalkan Publikasi"
+      />
+    </td>
+    <td :class="feed['tb__border']">
+      <Actions
+        :item="item" 
+        :levelPriority="levelPriority"
+        :scheduledTime="scheduledTime"
+        :expiredDate="expiredDate"
+        @refreshDataFeed="refreshDataFeed" 
+      />
+    </td>
 </tr>
- 
 </template>
 
 <script>
 import { mapActions, mapState, mapMutations } from "vuex";
-import Picker from "./datePicker.vue";
 import Actions from "./actions.vue";
 import LinkDialog from "../../containers/dialog/index.vue";
 import moment from "moment";
-import SchedulePicker from "./actionsPicker.vue";
-import actions from "./actions.vue";
 import LevelPicker from "./levelPicker.vue";
 import DatePicker from "./datePicker.vue";
+
 export default {
-  data () {
-    return  {
-      levelPriority : null,
-      epochDate : null,
-      selectedItem : null,
-      thumbnailImage : '',
-      expiredDate : null,
-    }
-  },
-  computed : {
-    choosenItem : {
-      get () {
-        return this.selected
-      },
-      set(value) {
-        this.$emit('setSelectedItem' , value)
-      }
-    },
-    ...mapState({
-      feeds: (state) => state.post.feeds,
-    }),
-  },
   components : {
+    Actions,
     LinkDialog,
-    SchedulePicker,
-    Actions : actions,
-    Picker,
     LevelPicker,
     DatePicker
   },
@@ -113,57 +90,81 @@ export default {
     selected : {
       type : Array
     },
-    indexItem : {
-      type : [Number , String]
+  },
+  data () {
+    return {
+      selectedItem : null,
+      levelPriority : null,
+      selectedItem : null,
+      thumbnailImage : '',
+      expiredDate : null,
+      scheduledTime : null
     }
   },
+  computed :{
+    ...mapState({
+      feeds: (state) => state.post.feeds,
+    }),
+    choosenItem : {
+      get () {
+        return this.selected
+      },
+      set(value) {
+        this.$emit('setSelectedItem' , value)
+      }
+    },
+  },
   methods : {
+    ...mapMutations({
+      setFeeds : 'post/setFeeds'
+    }),
     ...mapActions({
       fetchFeedById: "post/fetchFeedById",
       multipleReject : 'post/multipleReject',
       fetchFeeds: "post/fetchFeeds",
     }),
-    ...mapMutations({
-      setFeeds : 'post/setFeeds'
-    }),
-    setEpochDate(value) {
-      this.epochDate = value
-    },
-    setExpiredDate (value) {
-      this.expiredDate = value
-      const feeds = this.feeds
-      const reFormat = feeds.map((feed, idx) => {
-        if(idx === this.indexItem) {
-          return {
-            ...feed,
-            expiredAt : value
-          }
-          }else{
-            return {
-              ...feed
-            }
-          }
-      })
-      this.setFeeds(reFormat)
-    },
-    setLevelPriority (value) {
-      const feeds = this.feeds
-      const reFormat = feeds.map((feed, idx) => {
-        if(idx === this.indexItem) {
+    setLevelPriority (value ) {
+      this.levelPriority = value
+      const feedsTemp = this.feeds
+      const format = feedsTemp.map(feed => {
+        if(feed.id === this.item.id) {
           return {
             ...feed,
             levelPriority : value
           }
-          }else{
-            return {
-              ...feed
-            }
+        }else{
+          return {
+            ...feed
           }
+        }
       })
-      this.setFeeds(reFormat)
-      this.levelPriority = value
+      this.setFeeds(format)
     },
-    formatingDate(rawDate) {
+    setScheduleTime (value) {
+      this.scheduledTime = value
+    },
+    setExpired (value) {
+      this.expiredDate = value
+      const feedsTemp = this.feeds
+      const format = feedsTemp.map(feed => {
+        if(feed.id === this.item.id) {
+          return {
+            ...feed,
+            expiredAt : value
+          }
+        }else{
+          return {
+            ...feed
+          }
+        }
+      })
+      this.setFeeds(format)
+    },
+    refreshDataFeed () {
+      this.$emit("refreshDataFeed");
+      this.levelPriority = null
+    },
+    formatingDate (rawDate) {
       const cek = moment(rawDate).format("DD/MM/YYYY HH:mm");
       return cek;
     },
@@ -176,28 +177,20 @@ export default {
         this.thumbnailImage = thumbnail
       });
     },
+    onLeave() {
+      this.selectedItem = null
+      this.thumbnailImage = ""
+    },
     getPosition(e) {
       const x = e.clientX;
       const y = e.clientY;
       document.getElementById("displayAreaDraft").style.left = (x - 246) + 'px';
     },
-    stopTracking() {
-
-    },
-    onLeave() {
-      this.selectedItem = null
-      this.thumbnailImage = ""
-    },
-    refreshDataFeed() {
-      this.$emit("refreshDataFeed");
-      this.levelPriority = null
-    },
   }
 }
 </script>
-
-
 <style lang="scss" module="feed">
+
 .my-table thead th {
   background-color: #fafafa;
   // &:first-child { border-radius: 10px 0 0 0; }
@@ -224,6 +217,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  &__border {
+    border-bottom: 1px solid var(--White-Smoke, #EEE);
   }
 
   &__image {
