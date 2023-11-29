@@ -6,26 +6,22 @@
     floating
     permanent
     width="230"
-  
     expand-on-hover
-  
-  v-model="mainSidebarDrawer"
+    v-model="mainSidebarDrawer"
     @transitionend="collapseSubItems"
   >
-
- 
   <v-list-item class="px-2">
-        <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-title>
-          <v-chip color="white" class="mt-2" to="/profile">
-            <span class="primary--text">{{ user }}</span>
-          </v-chip>
-          <div class="caption text-center">{{ appVersion }}</div>
-        </v-list-item-title>
-
+      <v-list-item-avatar>
+        <v-img v-if="dataProfile && dataProfile.photo" :src="dataProfile.photo"></v-img>
+        <v-avatar v-else color="grey">
+        </v-avatar>
+      </v-list-item-avatar>
+      <v-list-item-title>
+        <v-chip color="white" class="mt-2" to="/profile">
+          <span class="primary--text">{{ user }}</span>
+        </v-chip>
+        <div class="caption text-center">{{ appVersion }}</div>
+      </v-list-item-title>
         <v-btn
           icon
           @click="closeDrawer"
@@ -122,6 +118,7 @@ export default {
     ...mapState({
       user: (state) => state.authentication.user,
       accountId: (state) => state.authentication.accountId,
+      dataProfile : (state) => state.authentication.dataProfile
     }),
     appVersion() {
       return this.$store.getters.appVersion;
