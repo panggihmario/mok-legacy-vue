@@ -78,6 +78,7 @@ export default {
 			return this._vm.$httpWithToken().get(`profile/${id}`)
 				.then(response => {
 					const data = response.data.data
+					console.log(data)
 					commit("setDataProfile", data)
 				})
 				.catch(err => {
