@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between mb-4">
+    <div class="d-flex justify-space-between mb-2">
       <v-tabs v-model="tab">
         <v-tabs-slider></v-tabs-slider>
 
@@ -15,16 +15,17 @@
       </v-tabs>
 
       <div class="d-flex align-center">
-        <custom-button
+        <!-- <custom-button
           v-if="!showFilter && tab == 0"
           size="x-medium"
           @click="showFilter = true"
           class="mr-4"
         >
           <div>Filter Data</div>
-        </custom-button>
+        </custom-button> -->
         <input
-          style="width: 200px"
+          v-if="tab != 2"
+          style="width: 400px"
           placeholder="Search"
           :class="p['input-search']"
           v-model="keywordTrending"
@@ -33,15 +34,17 @@
       </div>
     </div>
 
-    <div v-if="showFilter" class="row no-gutters whitesmoke py-2 px-4">
-      <div class="col-9 d-flex align-center" style="gap: 8px">
+    <!-- v-if="showFilter" -->
+    <div v-if="tab == 0" class="row no-gutters whitesmoke py-2 px-4">
+      <div class="d-flex align-center" style="gap: 8px">
         <span class="font-12">Sorted By</span>
         <div style="width: 200px">
           <v-select
             placeholder="Sort"
             :items="itemsSortBy"
             dense
-            outlined
+            solo
+            flat
             v-model="sortBy"
             hide-details
             class="white font-12"
@@ -69,13 +72,28 @@
         </div>
       </div>
 
-      <div class="col d-flex justify-end align-center">
-        <custom-button color="success" @click="actionFilter">
-          Terapkan Filter
-        </custom-button>
-        <custom-button class="ml-2" @click="isResetFilter = true">
-          Batalkan
-        </custom-button>
+      <div
+        v-if="
+          sortBy != '' ||
+          paramsUsersTrending.length > 0 ||
+          paramsChannelTrending.length > 0 ||
+          paramsDateTrending.length > 1
+        "
+        class="d-flex align-center pl-2"
+      >
+        <div v-if="isFilter">
+          <custom-button class="ml-2" @click="isResetFilter = true">
+            Reset
+          </custom-button>
+        </div>
+        <div v-else>
+          <custom-button color="success" @click="actionFilter">
+            Terapkan Filter
+          </custom-button>
+          <custom-button class="ml-2" @click="isResetFilter = true">
+            Batalkan
+          </custom-button>
+        </div>
       </div>
     </div>
   </div>
@@ -104,6 +122,7 @@ export default {
       search: "",
       searchChannel: "",
       showFilter: false,
+      isFilter: false,
       isResetFilter: false,
       filterUser: null,
       filterChannel: null,
@@ -119,7 +138,17 @@ export default {
       this.isResetFilter = true;
     },
     sortBy() {
+      this.isFilter = false;
       this.$emit("onSearchSort", this.sortBy);
+    },
+    usernameFilter() {
+      this.isFilter = false;
+    },
+    channelFilter() {
+      this.isFilter = false;
+    },
+    paramsDateTrending() {
+      this.isFilter = false;
     },
     isResetFilter() {
       if (this.isResetFilter) {
@@ -129,6 +158,12 @@ export default {
         this.channelFilter = [];
         this.filterPayload.startAt = "";
         this.filterPayload.endAt = "";
+        this.isFilter = false;
+        this.$emit("onCancelFilter");
+        this.setParamsUsersTrending([]);
+        this.setParamsChannelTrending([]);
+        this.setParamsDateTrending([]);
+        this.setDisplayDateTrending("");
         setTimeout(() => {
           this.isResetFilter = false;
           this.showFilter = false;
@@ -200,6 +235,7 @@ export default {
       setParamsUsersTrending: "post/setParamsUsersTrending",
       setParamsChannelTrending: "post/setParamsChannelTrending",
       setParamsDateTrending: "post/setParamsDateTrending",
+      setDisplayDateTrending: "post/setDisplayDateTrending",
     }),
     getRoute() {
       this.isResetFilter = true;
@@ -228,8 +264,11 @@ export default {
     actionFilter() {
       let filterPayload = {
         direction: "DESC",
-        sort:
-          this.sortBy == "Waktu Publish" ? "createAt,desc" : "levellingAt,desc",
+        sort: this.sortBy
+          ? this.sortBy == "Waktu Publish"
+            ? "createAt,desc"
+            : "levellingAt,desc"
+          : "createAt,desc",
         keyword: this.keywordSearchTrending,
         search: this.keywordSearchTrending,
         usernames: this.paramsUsersTrending.join(","),
@@ -244,6 +283,7 @@ export default {
             : "",
       };
       this.$emit("onActionFilter", filterPayload);
+      this.isFilter = true;
     },
   },
 };
