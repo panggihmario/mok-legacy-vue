@@ -147,7 +147,7 @@ export default {
     channelFilter() {
       this.isFilter = false;
     },
-    displayDateTrending() {
+    paramsDateTrending() {
       this.isFilter = false;
     },
     isResetFilter() {
@@ -203,7 +203,6 @@ export default {
       paramsUsersTrending: (state) => state.post.paramsUsersTrending,
       paramsChannelTrending: (state) => state.post.paramsChannelTrending,
       paramsDateTrending: (state) => state.post.paramsDateTrending,
-      displayDateTrending: (state) => state.post.displayDateTrending,
     }),
     keywordTrending: {
       get() {
