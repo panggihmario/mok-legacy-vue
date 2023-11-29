@@ -35,26 +35,27 @@
     </div>
 
     <!-- v-if="showFilter" -->
-    <div v-if="tab == 0" class="row no-gutters whitesmoke py-2 px-4">
+    <div v-if="tab == 0" class="row no-gutters whitesmoke py-1 px-4">
       <div class="d-flex align-center" style="gap: 8px">
-        <span class="font-12">Sorted By</span>
-        <div style="width: 200px">
+        <span :class="p['font-12']">Sorted By</span>
+        <div style="width: 200px" class="mr-10">
           <v-select
-            placeholder="Sort"
+            placeholder="Waktu Publish"
             :items="itemsSortBy"
             dense
             solo
             flat
             v-model="sortBy"
             hide-details
-            class="white font-12"
+            class="white"
+            :class="p['font-12']"
           ></v-select>
           <!-- <Autocomplete-Username
             :itemsFilter="itemsSortBy"
             @onSearchFilter="(v) => actionSearchFilter(v, 'Sort')"
           ></Autocomplete-Username> -->
         </div>
-        <span class="font-12">Filter</span>
+        <span :class="p['font-12']">Filter</span>
         <div style="width: 200px">
           <Autocomplete-Username
             :itemsFilter="itemsUser"
@@ -290,6 +291,9 @@ export default {
 </script>
 
 <style lang="scss" module="p">
+.font-12 {
+  font-size: 12px;
+}
 .input-search {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.15);
