@@ -23,15 +23,16 @@
       :items="feeds" 
       show-select
       v-model="selected"
-    > 
-      <template v-slot:item="{item , index}">
-        <ItemComponent
-          :item="item"
-          :selected="selected"
-          :indexItem="index"
-          @setSelectedItem="setSelectedItem"
-          @refreshDataFeed="refreshDataFeed"
-        />
+    >
+      <template v-slot:body="{ items }">
+        <tbody v-for="item in items" :key="item.id" >
+          <ItemComponent
+            :item="item"
+            :selected="selected"
+            @refreshDataFeed="refreshDataFeed"
+            @setSelectedItem="setSelectedItem"
+          />
+        </tbody>
       </template>
     </v-data-table>
   </div>
@@ -39,24 +40,12 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import Picker from "./datePicker.vue";
-import Actions from "./actions.vue";
-import LinkDialog from "../../containers/dialog/index.vue";
 import moment from "moment";
-import ActionsPicker from "./actionsPicker.vue";
 import DialogReject from "./dialogReject.vue";
-import actions from "./actions.vue";
-import LevelPicker from "./levelPicker.vue";
-import Item from "./item.vue"
+import Item from "./itemData.vue"
 export default {
   components: {
-    Picker,
-    Actions,
-    LinkDialog,
-    ActionsPicker,
     DialogReject,
-    Actions : actions,
-    LevelPicker,
     ItemComponent : Item
   },
   watch : {
@@ -66,7 +55,7 @@ export default {
       },
       deep: true,
       immediate: true
-    }
+    },
   },
   computed: {
     ...mapState({

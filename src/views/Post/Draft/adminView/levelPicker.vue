@@ -4,7 +4,7 @@
       <div class="wrapper">
        <input 
         readonly 
-        v-model="level"
+        v-model="levelPriority"
         v-bind="attrs" 
         v-on="on"
         placeholder="Pilih"
@@ -13,12 +13,12 @@
     </template>
     <v-list  dense>
       <v-list-item-group
-        v-model="level"
         color="primary"
       >
         <v-list-item
           v-for="(item) in 10"
           :key="item"
+          @click="selectLevel(item)"
         >
           <v-list-item-title>{{ item  }}</v-list-item-title>
         </v-list-item>
@@ -40,9 +40,14 @@ export default {
         return this.levelPriority
       },
       set(value ) {
-        this.$emit('setLevelPriority', value + 1)
+        this.$emit('setLevelPriority', value )
       }
     },
+  },
+  methods : {
+    selectLevel (value) {
+      this.$emit('setLevelPriority', value  )
+    }
   }
 }
 

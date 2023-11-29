@@ -24,7 +24,7 @@
                 >Batalkan</custom-button
               >
               <custom-button @click="setSchedule" color="primary"
-                >Jadwalkan Publikasi</custom-button
+                >{{ labelBtn }}</custom-button
               >
             </div>
           </div>
@@ -38,7 +38,7 @@
 import moment from "moment";
 import { mapMutations } from "vuex";
 export default {
-  props: ["item", "levelPriority"],
+  props: ["item" , 'labelBtn'],
   data() {
     return {
       menudate: false,
@@ -67,15 +67,15 @@ export default {
       return d
     }
   },
-  watch : {
-    levelPriority (value) {
-      if(!value) {
-        this.scheduleDate = ""
-        this.scheduledTime = ""
-        this.humanDate = ""
-      }
-    }
-  },
+  // watch : {
+  //   levelPriority (value) {
+  //     if(!value) {
+  //       this.scheduleDate = ""
+  //       this.scheduledTime = ""
+  //       this.humanDate = ""
+  //     }
+  //   }
+  // },
   methods: {
     openDialog() {
       this.menudate = true;
