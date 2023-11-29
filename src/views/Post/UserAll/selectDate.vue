@@ -8,15 +8,19 @@
       @input="onClick"
     >
       <template v-slot:activator="{ on, attrs }">
-        <custom-input
+        <div v-on="on" class="date__wrapper font-12">
+          <div :style="displayDateTrending?'color: #000':'color: #858585'">
+            {{ displayDateTrending ? displayDateTrending : "Dipublish pada" }}
+          </div>
+          <!-- <input
           v-bind="attrs"
-          hide-details
           v-on="on"
-          dense
           readonly
-          placeholder="Tanggal"
-          v-model="displayDateTrending"
-        ></custom-input>
+          v-model="displayDate"
+          placeholder="DD/MM/YYYY"
+        /> -->
+          <v-icon size="small">fas fa-calendar</v-icon>
+        </div>
       </template>
 
       <v-card class="dt__card" flat>
@@ -218,5 +222,35 @@ export default {
   font-size: 12px;
   font-weight: 500;
   color: #777777;
+}
+.date {
+  &__wrapper {
+    display: flex;
+    background-color: white;
+    border: transparent;
+    height: 38px;
+    border-radius: 4px;
+    padding: 0 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // width: 100px;
+    cursor: pointer;
+    &:hover {
+      border-color: black !important;
+    }
+    & input {
+      font-size: 11px;
+      height: 100%;
+      width: inherit;
+      &:focus {
+        border: none;
+        outline: none;
+      }
+    }
+  }
+}
+.font-12 {
+  font-size: 12px;
 }
 </style>
