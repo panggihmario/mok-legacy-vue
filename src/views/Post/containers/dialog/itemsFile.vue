@@ -209,13 +209,19 @@ export default {
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
           // this.expiredEpochDate = response.expiredAt
-          this.expiredEpochDate = this.item.expiredAt ? this.item.expiredAt : response.expiredAt
           this.initExpiredDate = response.expiredAt
-          if(this.item.levelPriority) {
-            this.levelPriority = this.item.levelPriority
-          }else {
+          if(this.$route.name === 'draft'){
+            this.expiredEpochDate = this.item.expiredAt ? this.item.expiredAt : response.expiredAt
+            if(this.item.levelPriority) {
+              this.levelPriority = this.item.levelPriority
+            }else {
+              this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+            }
+          }else{
             this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+            this.expiredEpochDate = response.expiredAt
           }
+         
         })
         .catch (err => {
           this.snackbar = true
