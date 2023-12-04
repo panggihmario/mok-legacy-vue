@@ -47,7 +47,7 @@
               @mousemove="getPosition"
               @mouseout="stopTracking"
             >
-              <LinkDialog :item="item" :feeds="feeds" />
+              <LinkDialog @refreshDataFeed="refreshDataFeed" :item="item" :feeds="feeds" :isAdmin="true" />
                <div
                 v-if="item.id === selectedItem"
                 id="displayArea"
@@ -81,19 +81,32 @@
                 {{ formatingDate(item.publishedAt) }}
               </div>
             </td>
-            <td>
+            <!-- <td>
               <div :class="ad['tb__caption']" class="d-flex justify-center align-center" >
                 <div v-if="item.proceedAt"> {{ formatingDate(item.proceedAt) }} </div>
                 <div v-else > 
                   <v-icon size="small" >far fa-clock</v-icon>
                 </div>
               </div>
+            </td> -->
+            <td >
+              <div :class="ad['tb__caption']">{{ item.levelPriority }}</div>
             </td>
+            <td >
+              <div :class="ad['tb__caption']">{{ formatingDate(item.expiredAt) }}</div>
+            </td>
+         
+            <!-- <td>
+              <div :class="ad['tb__caption']">
+                {{ formatingDate(item.scheduledTime) }}
+              </div>
+            </td> -->
             <td class="d-flex justify-center align-center">
               <Action 
                 :item="item" 
                 @successDelete="successDelete" 
                 @handleFailed="onHandleFailed"
+                @refreshDataFeed="refreshDataFeed" 
               />
             </td>
             <!-- <td></td> -->
@@ -137,6 +150,9 @@ export default {
       multipleDelete : 'post/multipleDelete',
       fetchFeeds: "post/fetchFeeds",
     }),
+    refreshDataFeed() {
+      this.$emit('refreshDataFeed')
+    },
     clearSelected () {
       this.selected = []
     },  
@@ -277,12 +293,24 @@ export default {
           align: "center",
           width: "150",
         },
+        // {
+        //   text : 'Tayang',
+        //   sortable : false,
+        //   filterable : false , 
+        //   value : 'proceedAt',
+        //   align : 'center'
+        // },
         {
-          text : 'Tayang',
-          sortable : false,
-          filterable : false , 
-          value : 'proceedAt',
-          align : 'center'
+          text : 'Level Konten',
+          sortable: false,
+          filterable: false,
+          value : 'levelPriority',
+        },
+        {
+          text : 'Expired Tanggal',
+          sortable: false,
+          filterable: false,
+          value : 'expiredAt',
         },
         {
           text: "Action",

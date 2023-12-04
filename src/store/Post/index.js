@@ -24,8 +24,16 @@ export default {
     displayDateTrending: "",
     isStatusProcess: "all",
     statusLabel: "Status Proses",
+    sortBy : null,
+    isFilterable : false
   },
   mutations: {
+    setIsFilterable (state, payload) {
+      state.isFilterable = payload
+    },
+    setSortBy(state, payload) {
+      state.sortBy = payload;
+    },
     setStatusLabel(state, payload) {
       state.statusLabel = payload;
     },
@@ -88,10 +96,10 @@ export default {
     },
   },
   actions: {
-    fetchVodUrl ({state, dispatch}, payload) {
+    fetchVodUrl({ state, dispatch }, payload) {
       const data = {
-        url : `${state.pathFeedSocial}/vod/info/${payload}`,
-      }
+        url: `${state.pathFeedSocial}/vod/info/${payload}`,
+      };
       return dispatch("getWithToken", data, { root: true })
         .then((response) => {
           const responseData = response.data.data;
@@ -187,11 +195,11 @@ export default {
           throw err;
         });
     },
-    multipleDelete ({state, dispatch}, payload) {
+    multipleDelete({ state, dispatch }, payload) {
       const params = {
-        url : `${state.pathFeedSocial}/multiple-delete`,
-        data : payload
-      }
+        url: `${state.pathFeedSocial}/multiple-delete`,
+        data: payload,
+      };
       return dispatch("postWithToken", params, { root: true })
         .then((response) => {
           return response;
@@ -200,18 +208,18 @@ export default {
           throw err;
         });
     },
-    multipleReject ({state, dispatch}, payload) {
+    multipleReject({ state, dispatch }, payload) {
       const params = {
-        url : `${state.pathFeedSocial}/multiple-reject`,
-        data : payload
-      }
+        url: `${state.pathFeedSocial}/multiple-reject`,
+        data: payload,
+      };
       return dispatch("postWithToken", params, { root: true })
         .then((response) => {
           return response;
         })
         .catch((err) => {
           throw err;
-        })
+        });
     },
     searchFeed({ state, dispatch, commit }, payload) {
       const data = {
@@ -385,7 +393,10 @@ export default {
           throw err;
         });
     },
-    fetchPostAllUserNotificationDetailById({ state, dispatch, commit }, payload) {
+    fetchPostAllUserNotificationDetailById(
+      { state, dispatch, commit },
+      payload
+    ) {
       const data = {
         url: `${state.pathFeed}/${payload}`,
       };
@@ -401,7 +412,7 @@ export default {
       const data = {
         url: `${state.pathTrendingFeeds}/actives`,
         data: {
-          ...payload
+          ...payload,
         },
       };
       return dispatch("postWithToken", data, { root: true })
@@ -424,13 +435,75 @@ export default {
           throw err;
         });
     },
-    postPriority({dispatch}, payload) {
+    postPriority({ dispatch }, payload) {
       const data = {
-        url : `admin/trending-feeds/actives/priority/${payload}`
-      }
-      return dispatch("putWithToken", data, {root : true})
-        .then(response => {return response})
-        .catch(err => { throw err })
-    }
+        url: `admin/trending-feeds/actives/priority/${payload}`,
+      };
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    updateFeedTrending({ dispatch, state }, payload) {
+      const data = {
+        url: `${state.pathTrendingFeeds}/candidates/${payload.id}`,
+        data: {
+          ...payload.params,
+        },
+      };
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    updateDetailListKonten({ dispatch, state }, payload) {
+      const data = {
+        url: `${state.pathFeedSocial}/${payload.id}/published`,
+        data: {
+          ...payload.params,
+        },
+      };
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    getListPriority({ dispatch }, payload) {
+      const data = {
+        url: `admin/trending-feeds/priority-level`,
+        params: { ...payload },
+      };
+      return dispatch("getWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
+    updatePriorityCandidates({ dispatch }, payload) {
+      const data = {
+        url: `admin/trending-feeds/candidates/${payload.id}`,
+        data: {
+          ...payload.params,
+        },
+      };
+      return dispatch("putWithToken", data, { root: true })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    },
   },
 };

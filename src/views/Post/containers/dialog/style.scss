@@ -1,8 +1,8 @@
 .label {
-  font-size: 9px;
+  color: #777;
+  font-size: 11px;
   font-weight: 500;
-  line-height: 11px;
-  color: #777777;
+  letter-spacing: 0.11px; 
 }
 .warning-box {
   width: 10px;
@@ -28,8 +28,7 @@
   font-size:11px;
   font-weight: 500;
   color: #4A4A4A;
-  margin-bottom: 20px;
-  margin-top: 6px;
+  margin: 4px 0;
 }
 .user {
   font-size: 12px;
@@ -98,6 +97,9 @@ video::-webkit-media-controls-panel {
 }
 .icon {
   text-align: right;
+  position: absolute;
+  right: 13px;
+  top: 11px;
 }
 .desc {
   font-size: 12px;
@@ -131,20 +133,70 @@ video::-webkit-media-controls-panel {
   line-height: 15px;
   padding-left: 5px;
 }
+.field-details {
+  color: var(--Grey, #777);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.1px; 
+  margin-top: 4px;
+}
+
+.car {
+  &__ispublish {
+    color: $black;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px; 
+  }
+  &__footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-top: 10px;
+    padding:10px;
+    border-top: 1px solid var(--White-Smoke, #EEE);
+    background: var(--White-Snow, #F9F9F9);
+  }
+}
 
 .dg {
   &__btn-left {
     position: absolute;
     z-index: 1;
     top: 50%;
-    right: -10em;
+    left: 10em;
+    width: max-content;
+  }
+  &__link {
+    color: var(--Secondary, #1890FF);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.11px; 
+  }
+  &__label {
+    color: #000;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.1px; 
+  }
+  &__content-channel {
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.14px; 
   }
   &__btn-right {
     position: absolute;
     z-index: 1;
     top: 50%;
     text-align: right;
-    width: inherit;
+    width: max-content;
     right: 10em;
   }
   &__text-area {
@@ -157,6 +209,18 @@ video::-webkit-media-controls-panel {
     color: #000000;
     width: 100%;
     height: 240px;
+  }
+  &__btn-edit {
+    border-radius: 2px;
+    background: var(--Secondary, #1890FF);
+    box-shadow: 0px 2px 4px 0px rgba(102, 127, 255, 0.24);
+    width: 100%;
+    color: #FFF;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500; 
+    height: 32px;
+    margin-top: 4px;
   }
 }
 

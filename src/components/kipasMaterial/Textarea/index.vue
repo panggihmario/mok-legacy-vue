@@ -13,9 +13,11 @@
         :value="value"
         v-on="inputListener"
         :maxlength="counter"
+        v-bind="$attrs"
+        :disabled="disabled"
       />
       <div
-        v-if="counter"
+        v-if="counter && !disabled"
         class="d-flex justify-space-between font-10"
         :class="{ 'warning--text': value.length > counter }"
       >
@@ -65,6 +67,10 @@ export default {
     },
     rules : {
       type : String
+    },
+    disabled : {
+      type : Boolean,
+      default : false
     }
   },
   data() {
@@ -109,6 +115,9 @@ export default {
   padding: 9px;
   &:focus {
     outline: none;
+  }
+  &:disabled {
+    background-color: $whitesnow;
   }
   &__error {
     border: 1px solid $warning;

@@ -7,11 +7,13 @@ export default [
         title: "Dashboard",
         path: "/dashboard",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Dashboard Sosmed",
         path: "/dashboard-sosmed",
         role: ["ROLE_ADMIN" ,"ROLE_ADMIN_SOCIAL"],
+        active : false
       },
     ],
   },
@@ -23,30 +25,16 @@ export default [
         title: "List Management",
         path: "/admin",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "List User",
         path: "/user/1?search=",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
     ],
   },
-  // {
-  //   action: "fas fa-folder",
-  //   title: "Master",
-  //   items: [
-  //     // {
-  //     //   title: "Dashboard",
-  //     //   path: "/dashboard",
-  //     //   role: ["ROLE_ADMIN"],
-  //     // },
-  //     {
-  //       title: "Category",
-  //       path: "/master/category",
-  //       role: ["ROLE_ADMIN"],
-  //     },
-  //   ],
-  // },
   {
     action: "fas fa-user-cog",
     title: "Manager Socmed",
@@ -55,21 +43,25 @@ export default [
         title: "Trending Hashtag",
         path: "/hashtag",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Manage Hashtag",
         path: "/manage/hashtag",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
       {
         title: "List Channel",
         path: "/",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Default Channel - HOME",
         path: "/default-channel",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Reported",
@@ -78,21 +70,25 @@ export default [
             title: "Post",
             path: "/report/post",
             role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+            active : false
           },
           {
             title: "Comment",
             path: "/report/comment",
             role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+            active : false
           },
           {
             title: "Story",
             path: "/report/story",
             role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+            active : false
           },
           {
             title: "Akun",
             path: "/report/account",
             role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+            active : false
           },
         ],
       },
@@ -105,12 +101,20 @@ export default [
         title: "Feedback user",
         path: "/feedback/1",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
       {
         title : 'Referral Code',
         path : '/referral-code',
-        role : ['ROLE_ADMIN']
-      }
+        role : ['ROLE_ADMIN'],
+        active : false
+      },
+      {
+        title: "Category",
+        path: "/master/category",
+        role: ["ROLE_ADMIN"],
+        active : false
+      },
     ],
   },
   {
@@ -121,11 +125,13 @@ export default [
         title: "Post Feed",
         path: "/post/draft/1",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
       {
         title: "Semua Postingan User",
         path: "/post/user/candidates/1",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
       // {
       //   title: "Instagram Mirroring",
@@ -136,11 +142,13 @@ export default [
         title: "Tiktok Mirroring",
         path: "/post/tiktok",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
       {
         title: "Douyin Mirroring",
         path: "/post/douyin",
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
+        active : false
       },
     ],
   },
@@ -153,21 +161,25 @@ export default [
         title: "Penyunting",
         path: "/publisher/list/1",
         role: ["ROLE_EDITOR", "ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Penulis",
         path: "/editor",
         role: ["ROLE_AUTHOR", "ROLE_ADMIN", "ROLE_EDITOR"],
+        active : false
       },
       {
         title: "Category",
         path: "/categorynews",
         role: ["ROLE_ADMIN", "ROLE_EDITOR"],
+        active : false
       },
       {
         title: "Iklan",
         path: "/ads",
         role: ["ROLE_ADMIN", "ROLE_EDITOR"],
+        active : false
       },
     ],
   },
@@ -193,41 +205,49 @@ export default [
         title: "Order",
         path: "/order",
         role: ["ROLE_ADMIN", "ROLE_SPV_COMPLAINT"],
+        active : false
       },
       {
         title: "Product",
         path: "/product",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Banned Product",
         path: "/banned",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Category",
         path: "/category",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Seller",
         path: "/seller",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Report",
         path: "/reported-seller",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Komplain",
         path: "/complaint",
         role: ["ROLE_CS_COMPLAINT", "ROLE_SPV_COMPLAINT" , "ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Finance",
         path: "/finance",
         role: ["ROLE_ADMIN", "ROLE_ADMIN_FINANCE"],
+        active : false
       },
     ],
   },
@@ -239,11 +259,13 @@ export default [
         title: "List Penggalangan Dana",
         path: "/donations",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Kategori",
         path: "/donation-category",
         role: ["ROLE_ADMIN"],
+        active : false
       },
     ],
   },
@@ -255,17 +277,15 @@ export default [
         title: "Bank",
         path: "/bank",
         role: ["ROLE_ADMIN"],
+        active : false
       },
       {
         title: "Badge",
         path: "/badge",
         role: ["ROLE_ADMIN"],
+        active : false
       },
-      {
-        title: "Category",
-        path: "/master/category",
-        role: ["ROLE_ADMIN"],
-      },
+  
     ],
   },
   // {

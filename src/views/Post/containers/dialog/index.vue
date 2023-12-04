@@ -35,6 +35,7 @@
               :feedPosition="feedPosition"
               :feeds="feeds"
               :dialog="dialog"
+              @setLevelPriority="setLevelPriority"
             />
           </v-carousel-item>
         </v-carousel>
@@ -55,15 +56,12 @@
 </template>
 
 <script>
-import Description from "./description.vue";
 import DeletedBy from "./deletedBy.vue";
 import { mapActions } from "vuex";
 import CarouselMedia from "./carouselMedia.vue";
 import items from "./itemsFile.vue";
-import videojs from "video.js";
 export default {
   components: {
-    Description,
     DeletedBy,
     CarouselMedia,
     Items : items
@@ -77,6 +75,12 @@ export default {
     feeds: {
       type: Array,
     },
+    levelPriority : {
+      type : [Number , String]
+    },
+    indexItem : {
+      type : [Number, String]
+    }
   },
   data() {
     return {
@@ -91,6 +95,9 @@ export default {
     setChange(value) {
       this.isChanging = value
       this.isPublish[this.feedPosition] = true
+    },
+    setLevelPriority (value) {
+      this.$emit('setLevelPriority', value)
     },
     slideRight() {
       // const video = videojs(`videodialog`)

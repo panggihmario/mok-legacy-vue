@@ -1,36 +1,37 @@
 <template>
   <div>
     <HeaderContent :list="list" label="Post Feed" marginBottom="16">
-      <custom-button color="kellygreen" class="white--text" size="small" @click="moveToCreatePost">
-        Buat Post
-      </custom-button>
+     
     </HeaderContent>
     <div class="d-flex">
-      <v-tabs v-model="tab" color="primary" left class="mb-4">
+      <v-tabs v-model="tab" color="primary" left class="mb-2">
         <v-tab v-for="(tab, idx) in tabs" :key="idx" exact @click="changeTab(tab.name)">
           <div style="letter-spacing : 0" class="text-capitalize">{{ tab.label }}</div>
         </v-tab>
       </v-tabs>
       <div>
-        <div class="d-flex align-center">
-          <custom-button color="primarylowtint" class="mr-4" v-if="isFilter" @click="resetFilter"
+        <div class="d-flex align-end" style="gap : 8px">
+          <!-- <custom-button color="primarylowtint" class="mr-4" v-if="isFilter" @click="resetFilter"
             style="margin-top : auto" size="x-medium">
             <div class="warning--text">Reset Filter</div>
-          </custom-button>
+          </custom-button> -->
 
-          <custom-button v-if="!expand" class="mr-4" style="margin-top : auto" size="x-medium" @click="expand = !expand">
+          <!-- <custom-button v-if="!expand" class="mr-4" style="margin-top : auto" size="x-medium" @click="expand = !expand">
             Filter Data
-          </custom-button>
+          </custom-button> -->
 
           <div style="width : 200px">
             <k-input :disabled="isOverlay" placeholder="Search" v-model="keyword" @keyup.enter="onSubmitFilter"></k-input>
           </div>
+          <custom-button color="kellygreen" class="white--text" size="x-medium" @click="moveToCreatePost">
+            Buat Post
+          </custom-button>
         </div>
       </div>
     </div>
 
     <v-expand-transition>
-      <v-card v-show="expand" flat>
+      <v-card style="border-radius: 0;"  flat>
         <Expand @onCancel="onCancel" @onSubmitFilter="onSubmitFilter" />
       </v-card>
     </v-expand-transition>
@@ -106,7 +107,8 @@ export default {
       paramsChannel: (state) => state.post.paramsChannel,
       paramsDate: (state) => state.post.paramsDate,
       paramsProcess: (state) => state.post.paramsProcess,
-      isStatusProcess: (state) => state.post.isStatusProcess
+      isStatusProcess: (state) => state.post.isStatusProcess,
+      sortBy : (state) => state.post.sortBy
     }),
     currentPage: {
       get() {
@@ -178,6 +180,7 @@ export default {
         })
     },
     changeTab(tab) {
+      this.setIsFilterable(false)
       this.isFilter = false
       this.isParamsFilter = false
       this.setParamsUsers([])
@@ -188,6 +191,7 @@ export default {
       this.setStatusLabel('Status Proses')
       this.setIsStatusProcess('all')
       this.setDisplayProcessDate('')
+      this.setSortBy(null)
       this.currentPage = 1
       this.expand = false
       if (this.keyword) {
@@ -203,6 +207,7 @@ export default {
     },
     onCancel(value) {
       this.expand = false
+      this.resetFilter()
     },
     formatingParamsUsers(users) {
       const tempArrayUsers = []
@@ -315,6 +320,7 @@ export default {
       this.setDisplayProcessDate('')
       this.setIsStatusProcess('all')
       this.setStatusLabel('Status Proses')
+      this.setSortBy(null)
       return this.onInitiateFetchFeeds()
         .then(() => {
           this.$router.push({
@@ -396,7 +402,9 @@ export default {
       setProcessDate: 'post/setProcessDate',
       setDisplayProcessDate: 'post/setDisplayProcessDate',
       setIsStatusProcess: 'post/setIsStatusProcess',
-      setStatusLabel: 'post/setStatusLabel'
+      setStatusLabel: 'post/setStatusLabel',
+      setSortBy : 'post/setSortBy',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     moveToCreatePost() {
       this.$router.push({
@@ -425,13 +433,18 @@ export default {
       return this.fetchFeeds(params);
     },
     typeOfSort(tab) {
-      if (tab === "draft") {
-        return "createAt,DESC";
-      } else if (tab === 'schedule') {
-        return "scheduledTime,ASC";
-      } else {
-        return null;
+      if(this.sortBy) {
+        return `${this.sortBy.value}`
+      }else {
+        if (tab === "draft") {
+          return "createAt,DESC";
+        } else if (tab === 'schedule') {
+          return "scheduledTime,ASC";
+        } else {
+          return null;
+        }
       }
+      
     },
   },
   data() {

@@ -6,35 +6,43 @@
     floating
     permanent
     width="230"
+    expand-on-hover
+    v-model="mainSidebarDrawer"
+    @transitionend="collapseSubItems"
   >
-    <div class="drawer__header">
-      <div class="d-flex justify-center">
-        <v-avatar size="62" color="grey">
-          <span class="white--text"></span>
+  <v-list-item class="px-2">
+      <v-list-item-avatar>
+        <v-img v-if="dataProfile && dataProfile.photo" :src="dataProfile.photo"></v-img>
+        <v-avatar v-else color="grey">
         </v-avatar>
-      </div>
-      <div class="d-flex justify-center">
+      </v-list-item-avatar>
+      <v-list-item-title>
         <v-chip color="white" class="mt-2" to="/profile">
           <span class="primary--text">{{ user }}</span>
         </v-chip>
-      </div>
-      <br />
-      <div :style="{ width: '100%' }" class="d-flex justify-center">
-        {{ appVersion }}
-      </div>
-    </div>
-
-    <v-list nav dense>
+        <div class="caption text-center">{{ appVersion }}</div>
+      </v-list-item-title>
+        <v-btn
+          icon
+          @click="closeDrawer"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-list-item>
+      <v-divider></v-divider>
+      <v-list nav dense>
+      
       <v-list-group
         v-for="(item, i) in items"
         :key="i"
-        color="primary"
         :to="item.path"
+        v-model="item.active"
       >
         <template v-slot:activator>
           <v-list-item-content>
+            <!-- <v-list-item-title>{{ item.title }}</v-list-item-title> -->
             <div class="d-flex align-center">
-              <div style="width : 20px">
+              <div style="width : 20px ; margin-left: 3px;">
                 <v-icon small>{{ item.action }}</v-icon>
               </div>
 
@@ -56,7 +64,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-group v-else color="primary" class="ml-3" sub-group>
+          <v-list-group v-else class="ml-3" sub-group>
             <template v-slot:activator>
               <v-list-item-content>
                 <div class="d-flex align-center">
@@ -78,23 +86,20 @@
         </div>
       </v-list-group>
     </v-list>
-
     <template v-slot:append>
-      <div>
-        <v-btn
-          elevation="2"
-          tile
-          @click="handleLogout"
-          block
-          color="white"
-          height="50"
+      <v-list   dense>
+        <v-list-item
+        @click="handleLogout"
         >
-          <v-icon size="15" class="error--text" left>mdi-logout</v-icon>
-          <span class="error--text text-capitalize" style="letterspacing: 0">
-            {{ $t("auth.logout") }}
-          </span>
-        </v-btn>
-      </div>
+          <v-list-item-icon>
+            <v-icon size="15" class="error--text" left>mdi-logout</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <div class="error--text text-capitalize" style="letterspacing: 0">Logout</div>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </template>
   </v-navigation-drawer>
 </template>
@@ -104,20 +109,37 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import listNavigation from "./items";
 
 export default {
+  props : {
+    mini : {
+      type : Boolean
+    }
+  },
   computed: {
     ...mapState({
       user: (state) => state.authentication.user,
       accountId: (state) => state.authentication.accountId,
+      dataProfile : (state) => state.authentication.dataProfile
     }),
     appVersion() {
       return this.$store.getters.appVersion;
     },
+    miniDrawer : {
+      get () {
+        return this.mini
+      },
+      set (value) {
+        this.$emit('setDrawer', value)
+      }
+    }
   },
   data() {
     return {
       selected: 0,
       items: listNavigation,
       roleUser: "",
+      // mini :true,
+      group : null,
+      mainSidebarDrawer : true
     };
   },
   mounted() {
@@ -126,6 +148,23 @@ export default {
     this.roleUser = parseString.role;
   },
   methods: {
+    closeDrawer () {
+      this.$emit('closeDrawer')
+      this.collapseSubItems()
+    },
+    collapseSubItems() {
+      // this.items.map((item)=>item.active=false)
+      const c = this.items
+      const d = c.map(a => {
+        return {
+          ...a,
+          active : false
+        }
+      })
+      this.items = d
+      // console.log(this.items)
+
+    },
     handleLogout() {
       this.logout();
       this.$router.push("/auth");

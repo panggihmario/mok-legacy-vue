@@ -39,6 +39,7 @@ export default {
         return this.paramsChannel
       },
       set(value) {
+        this.setIsFilterable(true)
         this.setParamsChannel(value)
       }
     }
@@ -51,7 +52,8 @@ export default {
   },
   methods : {
     ...mapMutations({
-      setParamsChannel: 'post/setParamsChannel'
+      setParamsChannel: 'post/setParamsChannel',
+      setIsFilterable : 'post/setIsFilterable'
     }),
     isFocus () {
       this.focus = true

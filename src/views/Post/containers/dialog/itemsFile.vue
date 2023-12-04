@@ -1,7 +1,7 @@
 <template>
   <div ref="itemsfile" height="552px" width="850px">
     <v-row no-gutters>
-      <v-col cols="6">
+      <v-col cols="5">
         <div :class="d.left">
           <CarouselMedia
             :feed="detailFeed"
@@ -11,28 +11,49 @@
             @triggerNextAction="triggerNextAction"
             :description="description"
             @setIsPublish="setIsPublish"
+            @setIsReject="setIsReject"
             :dialog="dialog"
+            :expiredEpochDate="expiredEpochDate"
+            :levelPriority="levelPriority"
+            :isChanging="isChanging"
+            :isPublish="isPublish"
+            :isReject="isReject"
+            @setIsSchedule="setIsSchedule"
+            :isSchedule="isSchedule"
           />
         </div>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <Description
           :item="item"
           v-model="description"
           :description="description"
           :floatingLink="floatingLink"
           :floatingLinkLabel="floatingLinkLabel"
+          :levelPriority="levelPriority"
+          :expiredEpochDate="expiredEpochDate"
           @closeDialog="closeDialog"
           :isAdmin="isAdmin"
           @setFloatingLabel="setFloatingLabel"
           @setFloatingLink="setFloatingLink"
           @saveCaption="saveCaption"
+          @saveChanging="saveChanging"
+          @setDescription="setDescription"
           @setChange="setChange"
+          @setExpiredDatePayload="setExpiredDatePayload"
+          @setLevelPriority="setLevelPriority"
+          @onCancelCaption="onCancelCaption"
           :isChanging="isChanging"
           :isPublish="isPublish"
+          :isSchedule="isSchedule"
+          :initExpiredDate="initExpiredDate"
+          @setInitData="setInitData"
         />
       </v-col>
     </v-row>
+    <div>
+
+    </div>
     <v-snackbar
       v-model="snackbar"
       :timeout="timeout"
@@ -56,7 +77,7 @@
 
 <script>
 import CarouselMedia from "./carouselMedia.vue";
-import Description from "./description.vue";
+import Description from "./description/index.vue";
 import { mapActions } from "vuex";
 export default {
   components : {
@@ -79,8 +100,7 @@ export default {
     },
     dialog : {
       type : Boolean
-    }
-    
+    },
   },
   watch : {
     feedPosition (prev) {
@@ -98,6 +118,8 @@ export default {
   data () {
     return {
       isPublish : false,
+      isReject : false,
+      isSchedule : false,
       errorObject : null,
       snackbar : false,
       timeout : 3000,
@@ -108,9 +130,14 @@ export default {
       description : '',
       floatingLink : '',
       floatingLinkLabel : '',
+      initDescription: '',
       detailFeed: {
         medias: [],
       },
+      expiredEpochDate : '',
+      levelPriority : null,
+      initExpiredDate : null,
+      idFeed : ''
     }
   },
   mounted() {
@@ -121,8 +148,29 @@ export default {
     ...mapActions({
       updatePostFeed: "post/updatePostFeed",
       fetchFeedById: "post/fetchFeedById",
-      fetchVodUrl : 'post/fetchVodUrl'
+      fetchVodUrl : 'post/fetchVodUrl',
+      updateDetailListKonten : 'post/updateDetailListKonten'
     }),
+    setIsSchedule (value) {
+      this.isSchedule = value
+    },
+    setInitData () {
+      const id = this.item.id
+      return this.getFeedById(id)
+    },
+    setLevelPriority (value) {
+      this.levelPriority = value
+    },
+    setExpiredDatePayload (value) {
+      this.expiredEpochDate = value
+    },
+    setDescription(value) {
+      this.description = value
+     
+    },
+    onCancelCaption () {
+      this.description = this.initDescription
+    },
     resetData () {
       this.detailFeed = {
         medias : []
@@ -157,8 +205,23 @@ export default {
             medias
           }
           this.description = response.description;
+          this.initDescription = response.description
           this.floatingLink = response.floatingLink
           this.floatingLinkLabel = response.floatingLinkLabel
+          // this.expiredEpochDate = response.expiredAt
+          this.initExpiredDate = response.expiredAt
+          if(this.$route.name === 'draft'){
+            this.expiredEpochDate = this.item.expiredAt ? this.item.expiredAt : response.expiredAt
+            if(this.item.levelPriority) {
+              this.levelPriority = this.item.levelPriority
+            }else {
+              this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+            }
+          }else{
+            this.levelPriority = response.levelPriority > 0 ? response.levelPriority : null
+            this.expiredEpochDate = response.expiredAt
+          }
+         
         })
         .catch (err => {
           this.snackbar = true
@@ -172,14 +235,20 @@ export default {
       this.isPublish  = true
       this.isChanging = false
     },
+    setIsReject () {
+      this.isReject = true
+      this.isChanging = false
+    },
     setChange(value) {
       this.isChanging = value
     },
     triggerNextAction() {
       this.$emit('triggerNextAction')
+      this.levelPriority = null
     },
     closeDialog() {
       this.$emit("closeDialog");
+      this.isPublish  = false
     },
     saveCaption(channelValue) {
       const id = this.detailFeed.id;
@@ -192,11 +261,30 @@ export default {
           medias: this.detailFeed.medias,
           channel : channelValue,
           floatingLink :this.floatingLink,
-          floatingLinkLabel: this.floatingLinkLabel
+          floatingLinkLabel: this.floatingLinkLabel,
+          levelPriority : this.levelPriority,
+          expiredAt : this.expiredEpochDate
         },
       }
       return this.updatePostFeed(payload)
         .then(() => {
+          return this.getFeedById(id);
+        })
+        .catch ((err) => {
+          this.snackbar = true
+          this.errorObject = err
+        })
+    },
+    saveChanging(payload) {
+      const id = this.detailFeed.id;
+      const data = {
+        id: id,
+        params: {
+          ...payload,
+        },
+      }
+      return this.updateDetailListKonten(data)
+        .then((response) => {
           return this.getFeedById(id);
         })
         .catch ((err) => {

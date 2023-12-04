@@ -1,15 +1,16 @@
 <template>
-  <div>
+  <div class="d-flex justify-center align-center">
     <transition name="fade" mode="out-in">
       <custom-button
         class="mr-2"
         size="x-small"
         color="secondary"
         :loading="loadingPublish"
-        @click="publishFeed(item)"
+        :disabled="!levelPriority"
+        @click="publishFeed()"
         v-if="!isAlert"
       >
-        Publish
+        Publish 
       </custom-button>
       <v-chip
         class="mr-2"
@@ -66,7 +67,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  props: ["item", "epochDate"],
+  props: ["item", "scheduledTime", "levelPriority", "expiredDate"],
   data() {
     return {
       loadingPublish: false,
@@ -99,7 +100,7 @@ export default {
       fetchFeedById: "post/fetchFeedById",
     }),
     checkIsSchedule() {
-      if (this.epochDate) {
+      if (this.scheduledTime) {
         return true;
       } else {
         return false;
@@ -112,10 +113,8 @@ export default {
       this.dialogReject = true
     },
     rejectFeed() {
-      
       const item = this.item;
       this.loadingReject = true;
-
       return this.getFeedById(item.id)
         .then((medias) => {
           const payload = {
@@ -154,8 +153,10 @@ export default {
           params: {
             ...item,
             isScheduled: true,
-            scheduledTime: this.epochDate,
+            scheduledTime: this.scheduledTime,
             medias: [...medias],
+            levelPriority : this.levelPriority,
+            expiredAt : this.expiredDate
           },
         };
       } else {
@@ -165,6 +166,8 @@ export default {
           params: {
             ...item,
             medias: [...medias],
+            levelPriority :this.levelPriority,
+            expiredAt : this.expiredDate
           },
         };
       }
@@ -178,7 +181,7 @@ export default {
           setTimeout(() => {
             this.$emit("refreshDataFeed");
             this.alertSuccess = false;
-            this.isAlert = true;
+            this.isAlert = false;
             this.loadingPublish = false;
           }, 1000);
         })

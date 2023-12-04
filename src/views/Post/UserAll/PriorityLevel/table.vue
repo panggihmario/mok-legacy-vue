@@ -18,14 +18,14 @@
           </td>
           <td class="font-12 grey--text font-weight-medium">
             <div class="text-truncate" style="width: 200px">
-              {{ item.description }}
+              {{ item.post.description }}
             </div>
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.channel.name }}
+            {{ item.post.channel.name }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.createBy }}
+            {{ item.account.username }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
             <div class="d-flex align-center" style="gap: 2px">
@@ -44,29 +44,10 @@
             {{ formatingDate(item.createAt) }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ item.levelPriority }}
+            {{ item.post.levelPriority ? item.post.levelPriority : "-" }}
           </td>
           <td class="font-12 grey--text font-weight-medium">
-            {{ formatingDate(item.expiredAt) }}
-          </td>
-          <td
-            class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium"
-          >
-            <custom-button
-              class="mr-2"
-              size="x-small"
-              color="secondary"
-              @click="openDialogPushNotif(item.id)"
-            >
-              Push Notif
-            </custom-button>
-            <v-icon
-              size="15px"
-              color="warning"
-              @click="openDialogDelete(item.id)"
-            >
-              fa-solid fa-trash
-            </v-icon>
+            {{ formatingDate(item.post.expiredAt) }}
           </td>
         </tr>
       </tbody>

@@ -61,7 +61,7 @@
               <div class="d-flex flex-column mt-4" style="gap: 16px">
                 <div class="d-flex flex-column">
                   <span class="font-10">Channel</span>
-                  <span class="font-14 black--text">Channel</span>
+                  <span class="font-14 black--text">Cleeps 🇮🇩</span>
                 </div>
                 <div class="row no-gutters">
                   <div
@@ -157,13 +157,21 @@
               </div>
 
               <div>
-                <custom-button
+                <span
+                  style="
+                    font-size: 14px;
+                    font-weight: 500;
+                    letter-spacing: 0.14px;
+                  "
+                  >PUBLISHED!</span
+                >
+                <!-- <custom-button
                   size="x-small"
                   color="secondary"
                   @click="openDialogPushNotif(tableItemsDialog.id)"
                 >
                   Push Notif
-                </custom-button>
+                </custom-button> -->
               </div>
               <!-- <div
                 v-if="tableItemsDialog.isVodAvailable"

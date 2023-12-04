@@ -12,7 +12,7 @@
     <v-dialog v-model="menudate" width="700px">
       <v-card>
         <div :class="dt.container">
-          <v-date-picker v-model="scheduleDate"></v-date-picker>
+          <v-date-picker :max="maxDate" :min="currentDate" v-model="scheduleDate"></v-date-picker>
           <v-time-picker v-model="scheduledTime" class="ml-6" ampm-in-title>
           </v-time-picker>
           <div class="d-flex justify-space-between mt-4">
@@ -24,7 +24,7 @@
                 >Batalkan</custom-button
               >
               <custom-button @click="setSchedule" color="primary"
-                >Jadwalkan Publikasi</custom-button
+                >{{ labelBtn }}</custom-button
               >
             </div>
           </div>
@@ -38,7 +38,7 @@
 import moment from "moment";
 import { mapMutations } from "vuex";
 export default {
-  props: ["item"],
+  props: ["item" , 'labelBtn'],
   data() {
     return {
       menudate: false,
@@ -58,7 +58,24 @@ export default {
         return null;
       }
     },
+    currentDate() {
+      const d = moment().format("YYYY-MM-DD");
+      return d;
+    },
+    maxDate () {
+      const d = moment().add(1 , 'year').format("YYYY-MM-DD")
+      return d
+    }
   },
+  // watch : {
+  //   levelPriority (value) {
+  //     if(!value) {
+  //       this.scheduleDate = ""
+  //       this.scheduledTime = ""
+  //       this.humanDate = ""
+  //     }
+  //   }
+  // },
   methods: {
     openDialog() {
       this.menudate = true;
@@ -78,13 +95,13 @@ export default {
       let schedule = `${scheduleDate} ${scheduleTime}`;
       const epochDate = moment(schedule, "YYYY-MM-DD HH:mm")
         .add(7, "hours")
-        .unix();
+        .valueOf();
       const miliEpoch = epochDate * 1000;
       const payload = {
         index: this.item.index,
         time: miliEpoch,
       };
-      this.$emit('setEpochDate', miliEpoch)
+      this.$emit('setEpochDate', epochDate)
       // this.setEpochFeed(payload);
     },
   },
@@ -133,8 +150,10 @@ export default {
 .input-wrapper:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  content: "\f0dd";
+  content: "\f133";
   position: absolute;
   right: 6px;
+  bottom: 5px;
+  font-size: 10px;
 }
 </style>

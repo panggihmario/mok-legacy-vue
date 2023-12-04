@@ -2,10 +2,11 @@
   <ValidationProvider v-slot="{ errors }" :name="name" :rules="rules">
     <div class="kipas__field-container">
       <label
+        v-if="label"
         class="kipas__label"
         :style="label === '-' && { color: 'transparent' }"
       >
-        {{ label }}
+        {{ label }} <span v-if="labelRequired" style="color : red" >*</span>
       </label>
       <div
         :class="[
@@ -22,7 +23,7 @@
           :maxlength="counter"
           v-on="inputListener"
         />
-        <v-icon color="charcoal" v-if="icon" size="15px">fas fa-link</v-icon>
+        <v-icon color="charcoal" v-if="icon" size="15px">{{ icon }}</v-icon>
       </div>
       <div v-if="errors.length > 0 || isError" class="kipas__error-message">
         {{ errorMessage ? errorMessage : errors[0] }}
@@ -96,6 +97,13 @@ export default {
     errorMessage: {
       type: String,
     },
+    labelRequired : {
+      type : Boolean,
+      default : false
+    },
+    icon : {
+      type : String
+    }
   },
   data() {
     return {
@@ -129,69 +137,3 @@ export default {
 
 <style lang="scss" src="../material.scss"></style>
 
-<style lang="scss" scoped>
-// .utils {
-//   font-size: 12px;
-//   font-weight: 400;
-//   color: $black;
-// }
-
-// .input {
-//   outline: none;
-//   @extend .utils;
-//   background: #ffffff;
-//   border: 1px solid #bbbbbb;
-//   border-radius: 4px;
-//   &__error-label {
-//     color: $warning !important;
-//     @extend .utils;
-//     transition: 0.5s ease-in-out;
-//   }
-//   &__label {
-//     @extend .utils;
-//     color: $black;
-//     font-weight: 500;
-//   }
-//   &__error {
-//     border: 1px solid $warning !important;
-//   }
-// }
-// .kipas {
-//   &__outline {
-//     background: #ffffff;
-//     border: 1px solid #bbbbbb;
-//   }
-//   &__flat {
-//     background: #ffffff;
-//     border: none;
-//   }
-//   &__input {
-//     outline: none;
-//     font-size: 12px;
-//     font-weight: 400;
-//     border-radius: 4px;
-//   }
-//   &__input-label {
-//     font-size: 12px;
-//     font-weight: 600;
-//     color: #4a4a4a;
-//     letter-spacing: 0.01em;
-//   }
-//   &__input-container {
-//     display: grid;
-//     gap: 8px;
-//   }
-//   &__input-lg {
-//     height: 40px;
-//     padding: 13px 16px;
-//   }
-//   &__input-md {
-//     height: 32px;
-//     padding: 9px;
-//   }
-//   &__input-sm {
-//     height: 24px;
-//     padding: 6px;
-//   }
-// }
-</style>

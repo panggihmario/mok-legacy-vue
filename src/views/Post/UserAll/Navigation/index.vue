@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-space-between mb-4">
+    <div class="d-flex justify-space-between mb-2">
       <v-tabs v-model="tab">
         <v-tabs-slider></v-tabs-slider>
 
@@ -15,16 +15,17 @@
       </v-tabs>
 
       <div class="d-flex align-center">
-        <custom-button
-          v-if="!showFilter && tab != 2"
+        <!-- <custom-button
+          v-if="!showFilter && tab == 0"
           size="x-medium"
           @click="showFilter = true"
           class="mr-4"
         >
           <div>Filter Data</div>
-        </custom-button>
+        </custom-button> -->
         <input
-          style="width: 200px"
+          v-if="tab != 2"
+          style="width: 400px"
           placeholder="Search"
           :class="p['input-search']"
           v-model="keywordTrending"
@@ -33,33 +34,67 @@
       </div>
     </div>
 
-    <div v-if="showFilter" class="row no-gutters whitesmoke py-2 px-4">
-      <div class="col-7 d-flex align-center">
-        <span class="font-12">Filter</span>
-        <div class="ml-2" style="width: 200px">
+    <!-- v-if="showFilter" -->
+    <div v-if="tab == 0" class="row no-gutters whitesmoke py-1 px-4">
+      <div class="d-flex align-center" style="gap: 8px">
+        <span :class="p['font-12']">Sorted By</span>
+        <div style="width: 200px" class="mr-10">
+          <v-select
+            placeholder="Waktu Publish"
+            :items="itemsSortBy"
+            dense
+            solo
+            flat
+            v-model="sortBy"
+            hide-details
+            class="white"
+            :class="p['font-12']"
+          ></v-select>
+          <!-- <Autocomplete-Username
+            :itemsFilter="itemsSortBy"
+            @onSearchFilter="(v) => actionSearchFilter(v, 'Sort')"
+          ></Autocomplete-Username> -->
+        </div>
+        <span :class="p['font-12']">Filter</span>
+        <div style="width: 200px">
           <Autocomplete-Username
             :itemsFilter="itemsUser"
             @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
           ></Autocomplete-Username>
         </div>
-        <div class="ml-2" style="width: 200px">
+        <div style="width: 200px">
           <Autocomplete-Channel
             :itemsFilter="itemsChannel"
             @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
           ></Autocomplete-Channel>
         </div>
-        <div class="ml-2" style="width: 200px">
+        <div style="width: 200px">
           <Select-Date></Select-Date>
         </div>
       </div>
 
-      <div class="col d-flex justify-end align-center">
-        <custom-button color="success" @click="actionFilter">
-          Terapkan Filter
-        </custom-button>
-        <custom-button class="ml-2" @click="isResetFilter = true">
-          Batalkan
-        </custom-button>
+      <div
+        v-if="
+          sortBy != '' ||
+          paramsUsersTrending.length > 0 ||
+          paramsChannelTrending.length > 0 ||
+          paramsDateTrending.length > 1
+        "
+        class="d-flex align-center pl-2"
+      >
+        <div v-if="isFilter">
+          <custom-button class="ml-2" @click="isResetFilter = true">
+            Reset
+          </custom-button>
+        </div>
+        <div v-else>
+          <custom-button color="success" @click="actionFilter">
+            Terapkan Filter
+          </custom-button>
+          <custom-button class="ml-2" @click="isResetFilter = true">
+            Batalkan
+          </custom-button>
+        </div>
       </div>
     </div>
   </div>
@@ -82,10 +117,13 @@ export default {
   data() {
     return {
       tab: 0,
-      items: ["Semua Postingan", "Trending", "List Push Notif"],
+      items: ["Semua Postingan", "List Push Notif", "Priority Level"],
+      itemsSortBy: ["Waktu Publish", "Priority Level"],
+      sortBy: "",
       search: "",
       searchChannel: "",
       showFilter: false,
+      isFilter: false,
       isResetFilter: false,
       filterUser: null,
       filterChannel: null,
@@ -100,13 +138,33 @@ export default {
       this.$emit("changeTab", this.tab);
       this.isResetFilter = true;
     },
+    sortBy() {
+      this.isFilter = false;
+      this.$emit("onSearchSort", this.sortBy);
+    },
+    usernameFilter() {
+      this.isFilter = false;
+    },
+    channelFilter() {
+      this.isFilter = false;
+    },
+    paramsDateTrending() {
+      this.isFilter = false;
+    },
     isResetFilter() {
       if (this.isResetFilter) {
+        this.sortBy = "";
         this.keywordTrending = "";
         this.usernameFilter = [];
         this.channelFilter = [];
         this.filterPayload.startAt = "";
         this.filterPayload.endAt = "";
+        this.isFilter = false;
+        this.$emit("onCancelFilter");
+        this.setParamsUsersTrending([]);
+        this.setParamsChannelTrending([]);
+        this.setParamsDateTrending([]);
+        this.setDisplayDateTrending("");
         setTimeout(() => {
           this.isResetFilter = false;
           this.showFilter = false;
@@ -178,6 +236,7 @@ export default {
       setParamsUsersTrending: "post/setParamsUsersTrending",
       setParamsChannelTrending: "post/setParamsChannelTrending",
       setParamsDateTrending: "post/setParamsDateTrending",
+      setDisplayDateTrending: "post/setDisplayDateTrending",
     }),
     getRoute() {
       this.isResetFilter = true;
@@ -186,6 +245,8 @@ export default {
       } else if (this.$route.params.tab == "trending") {
         this.tab = 1;
       } else if (this.$route.params.tab == "notification") {
+        this.tab = 1;
+      } else if (this.$route.params.tab == "priority-level") {
         this.tab = 2;
       }
     },
@@ -203,6 +264,12 @@ export default {
     },
     actionFilter() {
       let filterPayload = {
+        direction: "DESC",
+        sort: this.sortBy
+          ? this.sortBy == "Waktu Publish"
+            ? "createAt,desc"
+            : "levellingAt,desc"
+          : "createAt,desc",
         keyword: this.keywordSearchTrending,
         search: this.keywordSearchTrending,
         usernames: this.paramsUsersTrending.join(","),
@@ -217,12 +284,16 @@ export default {
             : "",
       };
       this.$emit("onActionFilter", filterPayload);
+      this.isFilter = true;
     },
   },
 };
 </script>
 
 <style lang="scss" module="p">
+.font-12 {
+  font-size: 12px;
+}
 .input-search {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.15);
