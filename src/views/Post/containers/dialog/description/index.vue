@@ -353,7 +353,14 @@ export default {
     saveCaption() {
       this.loading = true;
       setTimeout(() => {
-        this.$emit("saveCaption", this.channelValue);
+        const ut = moment(this.expiredEpochDate).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
+      const expired = this.isExpiredChanging ? this.expiredEpochDate : after
+        const params = {
+          channelValue : this.channelValue,
+          expired
+        }
+        this.$emit("saveCaption", params);
         this.loading = false;
         this.$emit("setChange", false);
       }, 1500);
@@ -362,14 +369,19 @@ export default {
       this.btnText = 'Loading..'
       const ut = moment(this.expiredEpochDate).format("YYYY-MM-DD HH:mm")
       const after = moment(ut).add(7 , 'hours').valueOf()
+      const expired = this.isExpiredChanging ? this.expiredEpochDate : after
       const payload = {
         levelPriority : this.levelPriority,
-        expiredAt : this.isExpiredChanging ? this.expiredEpochDate : after
+        expiredAt : expired
       }
       setTimeout(() => {
         
         if(this.isSchedule || this.$route.name ===  'schedule' ) {
-          this.$emit('saveCaption', this.channelValue)
+          const params = {
+            channelValue : this.channelValue,
+            expired
+          }
+          this.$emit('saveCaption', params)
         }else{
           this.$emit("saveChanging", payload);
         }
