@@ -77,6 +77,7 @@
                   @setPickedDate="setPickedDate"
                   @setPickedTime="setPickedTime"
                   @setDate="setDate"
+                  @setIsExpiredChanging="setIsExpiredChanging"
                 />
               </v-col>
               <v-col class="d-flex align-center" cols="3" v-if="isChangingAfterPublish">
@@ -178,7 +179,8 @@ export default {
       cols : '6',
       colsLevel : '6',
       isChangingAfterPublish : false,
-      btnText : 'Terapkan'
+      btnText : 'Terapkan',
+      isExpiredChanging : false
     };
   },
   watch : {
@@ -308,6 +310,9 @@ export default {
     setHumanDate (value) {
       this.humanDate = value
     },
+    setIsExpiredChanging (value) {
+      this.isExpiredChanging = value
+    },
     setDate () {
       const d = this.sampleDate
       const t = this.timeSchedule
@@ -355,12 +360,15 @@ export default {
     },
     saveChanging () {
       this.btnText = 'Loading..'
+      const ut = moment(this.expiredEpochDate).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
       const payload = {
         levelPriority : this.levelPriority,
-        expiredAt : this.expiredEpochDate, 
+        expiredAt : this.isExpiredChanging ? this.expiredEpochDate : after
       }
       setTimeout(() => {
-        if(this.isSchedule || this.$route.name ===  'schedule' ) {
+        // || this.$route.name ===  'schedule'
+        if(this.isSchedule) {
           this.$emit('saveCaption', this.channelValue)
         }else{
           this.$emit("saveChanging", payload);
@@ -369,6 +377,7 @@ export default {
         this.cols = '6'
         this.colsLevel = '6'
         this.isChangingAfterPublish = false
+        this.isExpiredChanging = false
       }, 1500);
     },
     closeDialog() {
