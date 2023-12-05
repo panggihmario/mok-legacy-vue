@@ -79,6 +79,7 @@
 import CarouselMedia from "./carouselMedia.vue";
 import Description from "./description/index.vue";
 import { mapActions } from "vuex";
+import moment from "moment"
 export default {
   components : {
     CarouselMedia,
@@ -252,6 +253,9 @@ export default {
     },
     saveCaption(channelValue) {
       const id = this.detailFeed.id;
+      const scheduledTime = this.detailFeed.scheduledTime
+      const ut = moment(scheduledTime).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
       const payload = {
         id: id,
         type: "edit",
@@ -263,7 +267,8 @@ export default {
           floatingLink :this.floatingLink,
           floatingLinkLabel: this.floatingLinkLabel,
           levelPriority : this.levelPriority,
-          expiredAt : this.expiredEpochDate
+          expiredAt : this.expiredEpochDate,
+          scheduledTime : after
         },
       }
       console.log(payload)
