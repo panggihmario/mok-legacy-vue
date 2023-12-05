@@ -423,7 +423,7 @@ export default {
     },
     getEpoch(value) {
       // console.log(moment(value).format("YYYY-MM-DD"));
-      this.expiredAt = moment(value).add(7, "hours").unix();
+      this.expiredAt = value;
       // this.tableItemsDialog.expiredAt = value;
       // this.$emit("getEpoch", value);
       // this.epochExpiredTrending = value;
@@ -432,14 +432,15 @@ export default {
       this.$emit("openDialogPushNotif", id);
     },
     actionUpdatePriority() {
+      const formattedUTC = moment(this.expiredAt).add(7, "hours").unix();
       const payload = {
         id: this.tableItemsDialog.id,
         params: {
           levelPriority: this.selectedLevel,
           expiredAt:
-            this.expiredAt && this.expiredAt.toString().length < 13
-              ? Number(`${this.expiredAt}000`)
-              : this.expiredAt,
+            formattedUTC && formattedUTC.toString().length < 13
+              ? Number(`${formattedUTC}000`)
+              : formattedUTC,
         },
       };
       this.$emit("updatePriority", payload);
