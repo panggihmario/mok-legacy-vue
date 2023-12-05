@@ -251,7 +251,8 @@ export default {
       this.$emit("closeDialog");
       this.isPublish  = false
     },
-    saveCaption(channelValue) {
+    saveCaption(params) {
+      console.log('params', params)
       const id = this.detailFeed.id;
       const scheduledTime = this.detailFeed.scheduledTime
       const ut = moment(scheduledTime).format("YYYY-MM-DD HH:mm")
@@ -263,11 +264,11 @@ export default {
           ...this.detailFeed,
           description: this.description,
           medias: this.detailFeed.medias,
-          channel : channelValue,
+          channel : params.channelValue,
           floatingLink :this.floatingLink,
           floatingLinkLabel: this.floatingLinkLabel,
           levelPriority : this.levelPriority,
-          expiredAt : this.expiredEpochDate,
+          expiredAt : params.expired,
           scheduledTime : after
         },
       }
