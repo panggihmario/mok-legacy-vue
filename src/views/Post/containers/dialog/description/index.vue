@@ -367,8 +367,8 @@ export default {
         expiredAt : this.isExpiredChanging ? this.expiredEpochDate : after
       }
       setTimeout(() => {
-        // || this.$route.name ===  'schedule'
-        if(this.isSchedule) {
+        
+        if(this.isSchedule || this.$route.name ===  'schedule' ) {
           this.$emit('saveCaption', this.channelValue)
         }else{
           this.$emit("saveChanging", payload);

@@ -266,6 +266,7 @@ export default {
           expiredAt : this.expiredEpochDate
         },
       }
+      console.log(payload)
       return this.updatePostFeed(payload)
         .then(() => {
           return this.getFeedById(id);
