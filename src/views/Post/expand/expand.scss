@@ -7,6 +7,23 @@
     font-size: 11px;
     font-weight: 400;
   }
+  &__card {
+    padding: 8px 16px;
+    background-color: #eeeeee;
+    width: 100%;
+    border-radius: 0;
+  }
+  &__filters {
+    display: flex;
+    // grid-template-columns:55px 170px 50px 120px 120px 190px 310px;
+    gap: 8px;
+  }
+  &__label {
+    color: #9b9b9b;
+    font-size: 12px;
+    line-height: 14px;
+    align-self: center;
+  }
 }
 
 .dt {

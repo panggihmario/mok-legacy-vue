@@ -1,9 +1,8 @@
 <template>
-  <div class="ex__card">
+  <div class="expand__card">
     <div class="d-flex justify-space-between">
-
-      <div class="ex__filters" >
-        <div v-if="$route.name !== 'draft' && $route.name !==  'schedule' " class="ex__label">Sorted By</div>
+      <div class="expand__filters" >
+        <div v-if="$route.name !== 'draft' && $route.name !==  'schedule' " class="expand__label">Sorted By</div>
         <v-select
           v-if="$route.name !== 'draft' && $route.name !==  'schedule'  "
           dense
@@ -13,12 +12,24 @@
           :items="$route.name === 'schedule' ? itemsSchedule : items "
           item-text="label"
           v-model="sort"
-          class="expand__field"
+          class="expand__field mr-2"
           return-object
           style="width : 160px"
           placeholder="Waktu publish"
         />
-        <div class="ex__label">Filter </div>
+        <div class="expand__label">Filter </div>
+          <v-select
+            v-if="$route.name === 'schedule' || $route.name === 'list' "
+            dense
+            hide-details
+            placeholder="Pilih Konten Level"
+            solo
+            flat
+            class="expand__field"
+            style="width : 150px"
+            :items="levels"
+            v-model="level"
+          />
           <SelectUser/>
           <SelectChannel :items="channels"/>
           <SelectDate/>
@@ -60,6 +71,9 @@ export default {
       selectedUser : [],
       isReset : false,
       channels : [],
+      levels : [
+        1, 2,3,4,5,6,7,8,9,10
+      ],
       itemsSchedule : [
         {
           label : 'Waktu Publish',
@@ -92,6 +106,7 @@ export default {
       paramsDate: (state) => state.post.paramsDate,
       paramsProcess: (state) => state.post.paramsProcess,
       isStatusProcess: (state) => state.post.isStatusProcess,
+      levelPriorityFilter : (state) => state.post.levelPriorityFilter
     }),
     sort : {
       get () {
@@ -102,6 +117,15 @@ export default {
         this.setSortBy(value)
       }
     },
+    level : {
+      get () {
+        return this.levelPriorityFilter
+      },
+      set(value) {
+        this.setIsFilterable(true)
+        this.setLevelPriorityFilter(value)
+      }
+    }
   },
   watch : {
     isFilterable (value) {
@@ -109,26 +133,6 @@ export default {
         this.isReset = false
       }
     },
-    // paramsUsers (value) {
-    //   if(value) {
-    //     this.setIsFilterable(true)
-    //   }
-    // },
-    // paramsChannel (value) {
-    //   if(value) {
-    //     this.setIsFilterable(true)
-    //   }
-    // },
-    // paramsDate (value) {
-    //   if(value) {
-    //     this.setIsFilterable(true)
-    //   }
-    // },
-    // paramsProcess (value) {
-    //   if(value) {
-    //     this.setIsFilterable(true)
-    //   }
-    // }
   },
   methods: {
     ...mapActions({
@@ -137,7 +141,8 @@ export default {
     }),
     ...mapMutations({
       setSortBy : 'post/setSortBy',
-      setIsFilterable : 'post/setIsFilterable'
+      setIsFilterable : 'post/setIsFilterable',
+      setLevelPriorityFilter : 'post/setLevelPriorityFilter'
     }),
     onChange (value) {
       console.log(value)
@@ -172,32 +177,5 @@ export default {
 </script>
 
 
-<style lang="scss" scoped>
-.ex {
-  &__card {
-    padding: 8px 16px;
-    background-color: #eeeeee;
-    width: 100%;
-    border-radius: 0;
-  }
-  &__field {
-    width: 180px;
-  }
-  &__label {
-    color: #9b9b9b;
-    font-size: 12px;
-    line-height: 14px;
-    align-self: center;
-  }
-  &__filters {
-    display: flex;
-    // grid-template-columns:55px 170px 50px 120px 120px 190px 310px;
-    gap: 8px;
-  }
-  &__filters-draft {
-    display: grid;
-    grid-template-columns: 50px 120px 120px 190px 310px;
-    gap: 8px;
-  }
-}
+<style lang="scss"  src="./expand.scss" >
 </style>

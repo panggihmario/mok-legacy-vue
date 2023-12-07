@@ -108,7 +108,8 @@ export default {
       paramsDate: (state) => state.post.paramsDate,
       paramsProcess: (state) => state.post.paramsProcess,
       isStatusProcess: (state) => state.post.isStatusProcess,
-      sortBy : (state) => state.post.sortBy
+      sortBy : (state) => state.post.sortBy,
+      levelPriorityFilter : (state) => state.post.levelPriorityFilter
     }),
     currentPage: {
       get() {
@@ -183,6 +184,7 @@ export default {
       this.setIsFilterable(false)
       this.isFilter = false
       this.isParamsFilter = false
+      this.setLevelPriorityFilter(null)
       this.setParamsUsers([])
       this.setParamsChannel([])
       this.setParamsDate([])
@@ -264,6 +266,7 @@ export default {
         const processDate = this.formatingParamsDate(this.paramsProcess)
         const sort = this.typeOfSort(routerName);
         const isStatusProcess = this.isStatusProcess
+        const levelPriority = this.levelPriorityFilter
         const payload = {
           usernames: users,
           tab: routerName,
@@ -273,7 +276,9 @@ export default {
           keyword: this.keyword,
           startProceedAt: processDate.startAt,
           endProceedAt: processDate.endAt,
-          statusProcess: isStatusProcess
+          statusProcess: isStatusProcess,
+          levelPriority : levelPriority
+          // ...(levelPriority && {levelPriority : levelPriority})
         }
         return this.filterFeed(payload)
           .then(() => {
@@ -313,6 +318,7 @@ export default {
       this.isParamsFilter = false
       this.keyword = ""
       this.setParamsUsers([])
+      this.setLevelPriorityFilter(null)
       this.setParamsChannel([])
       this.setParamsDate([])
       this.setProcessDate([])
@@ -348,7 +354,8 @@ export default {
         keyword,
         startProceedAt: processDate.startAt,
         endProceedAt: processDate.endAt,
-        statusProcess: isStatusProcess
+        statusProcess: isStatusProcess,
+        levelPriority : this.levelPriorityFilter
       }
       return this.filterFeed(payload)
     },
@@ -404,7 +411,8 @@ export default {
       setIsStatusProcess: 'post/setIsStatusProcess',
       setStatusLabel: 'post/setStatusLabel',
       setSortBy : 'post/setSortBy',
-      setIsFilterable : 'post/setIsFilterable'
+      setIsFilterable : 'post/setIsFilterable',
+      setLevelPriorityFilter : 'post/setLevelPriorityFilter'
     }),
     moveToCreatePost() {
       this.$router.push({

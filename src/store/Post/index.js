@@ -25,9 +25,13 @@ export default {
     isStatusProcess: "all",
     statusLabel: "Status Proses",
     sortBy : null,
-    isFilterable : false
+    isFilterable : false,
+    levelPriorityFilter : null,
   },
   mutations: {
+    setLevelPriorityFilter (state, value) {
+      state.levelPriorityFilter = value
+    },
     setIsFilterable (state, payload) {
       state.isFilterable = payload
     },
