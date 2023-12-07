@@ -19,13 +19,17 @@ export default {
     AdminView,
     SelebView
   },
+  created () {
+    this.setSortBy(null)
+  },
   methods : {
     ...mapActions ({
       fetchFeeds : 'post/fetchFeeds',
       searchFeed : 'post/searchFeed'
     }),
     ...mapMutations({
-      setFeeds : 'post/setFeeds'
+      setFeeds : 'post/setFeeds',
+      setSortBy : 'post/setSortBy'
     }),
     handleFetchingData () {
       const page = this.$route.params.page
