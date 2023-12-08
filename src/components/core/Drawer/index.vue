@@ -10,6 +10,7 @@
     v-model="mainSidebarDrawer"
     @transitionend="collapseSubItems"
   >
+ 
   <v-list-item class="px-2">
       <v-list-item-avatar>
         <v-img v-if="dataProfile && dataProfile.photo" :src="dataProfile.photo"></v-img>
@@ -18,9 +19,10 @@
       </v-list-item-avatar>
       <v-list-item-title  class="flex justify-center">
         <!-- <div class="drawer__header"> -->
-          <v-chip small  class="mt-2"  to="/profile">
+          <!-- <v-chip small  class="mt-2"  to="/profile">
             <span class="primary--text">{{ user }}</span>
-          </v-chip>
+          </v-chip> -->
+          <div class="caption text-center primary--text">{{ user }}</div>
           <div class="caption text-center">{{ appVersion }}</div>
         <!-- </div> -->
        
