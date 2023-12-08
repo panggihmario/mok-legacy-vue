@@ -77,6 +77,7 @@
                   @setPickedDate="setPickedDate"
                   @setPickedTime="setPickedTime"
                   @setDate="setDate"
+                  @setIsExpiredChanging="setIsExpiredChanging"
                 />
               </v-col>
               <v-col class="d-flex align-center" cols="3" v-if="isChangingAfterPublish">
@@ -178,7 +179,8 @@ export default {
       cols : '6',
       colsLevel : '6',
       isChangingAfterPublish : false,
-      btnText : 'Terapkan'
+      btnText : 'Terapkan',
+      isExpiredChanging : false
     };
   },
   watch : {
@@ -308,6 +310,9 @@ export default {
     setHumanDate (value) {
       this.humanDate = value
     },
+    setIsExpiredChanging (value) {
+      this.isExpiredChanging = value
+    },
     setDate () {
       const d = this.sampleDate
       const t = this.timeSchedule
@@ -348,20 +353,35 @@ export default {
     saveCaption() {
       this.loading = true;
       setTimeout(() => {
-        this.$emit("saveCaption", this.channelValue);
+        const ut = moment(this.expiredEpochDate).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
+      const expired = this.isExpiredChanging ? this.expiredEpochDate : after
+        const params = {
+          channelValue : this.channelValue,
+          expired
+        }
+        this.$emit("saveCaption", params);
         this.loading = false;
         this.$emit("setChange", false);
       }, 1500);
     },
     saveChanging () {
       this.btnText = 'Loading..'
+      const ut = moment(this.expiredEpochDate).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
+      const expired = this.isExpiredChanging ? this.expiredEpochDate : after
       const payload = {
         levelPriority : this.levelPriority,
-        expiredAt : this.expiredEpochDate, 
+        expiredAt : expired
       }
       setTimeout(() => {
+        
         if(this.isSchedule || this.$route.name ===  'schedule' ) {
-          this.$emit('saveCaption', this.channelValue)
+          const params = {
+            channelValue : this.channelValue,
+            expired
+          }
+          this.$emit('saveCaption', params)
         }else{
           this.$emit("saveChanging", payload);
         }
@@ -369,6 +389,7 @@ export default {
         this.cols = '6'
         this.colsLevel = '6'
         this.isChangingAfterPublish = false
+        this.isExpiredChanging = false
       }, 1500);
     },
     closeDialog() {

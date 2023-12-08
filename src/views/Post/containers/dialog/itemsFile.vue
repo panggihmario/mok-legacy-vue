@@ -79,6 +79,7 @@
 import CarouselMedia from "./carouselMedia.vue";
 import Description from "./description/index.vue";
 import { mapActions } from "vuex";
+import moment from "moment"
 export default {
   components : {
     CarouselMedia,
@@ -250,8 +251,12 @@ export default {
       this.$emit("closeDialog");
       this.isPublish  = false
     },
-    saveCaption(channelValue) {
+    saveCaption(params) {
+      console.log('params', params)
       const id = this.detailFeed.id;
+      const scheduledTime = this.detailFeed.scheduledTime
+      const ut = moment(scheduledTime).format("YYYY-MM-DD HH:mm")
+      const after = moment(ut).add(7 , 'hours').valueOf()
       const payload = {
         id: id,
         type: "edit",
@@ -259,13 +264,15 @@ export default {
           ...this.detailFeed,
           description: this.description,
           medias: this.detailFeed.medias,
-          channel : channelValue,
+          channel : params.channelValue,
           floatingLink :this.floatingLink,
           floatingLinkLabel: this.floatingLinkLabel,
           levelPriority : this.levelPriority,
-          expiredAt : this.expiredEpochDate
+          expiredAt : params.expired,
+          scheduledTime : after
         },
       }
+      console.log(payload)
       return this.updatePostFeed(payload)
         .then(() => {
           return this.getFeedById(id);

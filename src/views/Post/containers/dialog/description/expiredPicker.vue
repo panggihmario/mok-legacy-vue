@@ -60,6 +60,7 @@ export default {
   watch : {
     expiredEpochDate (value) {
       if(value) {
+        //sync expired date on tab list post feed with pop up detail post on tab list post feed
         const d = moment(value).subtract(7 , 'hour').format('YYYY-MM-DD HH:mm')
         const [dateFromTable, timeFromTable] = d.split(' ')
         this.$emit('setPickedDate' , dateFromTable)
@@ -103,6 +104,7 @@ export default {
     setDate () {
       this.menu = false
       this.$emit('setDate')
+      this.$emit('setIsExpiredChanging', true)
     }
   }
 }

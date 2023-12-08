@@ -10,17 +10,22 @@
     v-model="mainSidebarDrawer"
     @transitionend="collapseSubItems"
   >
+ 
   <v-list-item class="px-2">
       <v-list-item-avatar>
         <v-img v-if="dataProfile && dataProfile.photo" :src="dataProfile.photo"></v-img>
         <v-avatar v-else color="grey">
         </v-avatar>
       </v-list-item-avatar>
-      <v-list-item-title>
-        <v-chip color="white" class="mt-2" to="/profile">
-          <span class="primary--text">{{ user }}</span>
-        </v-chip>
-        <div class="caption text-center">{{ appVersion }}</div>
+      <v-list-item-title  class="flex justify-center">
+        <!-- <div class="drawer__header"> -->
+          <!-- <v-chip small  class="mt-2"  to="/profile">
+            <span class="primary--text">{{ user }}</span>
+          </v-chip> -->
+          <div class="caption text-center primary--text">{{ user }}</div>
+          <div class="caption text-center">{{ appVersion }}</div>
+        <!-- </div> -->
+       
       </v-list-item-title>
         <v-btn
           icon
@@ -209,6 +214,11 @@ export default {
 .drawer {
   &__container {
     box-shadow: 2px 0px 6px rgba(0, 0, 0, 0.04);
+  }
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>
