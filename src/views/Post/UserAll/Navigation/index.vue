@@ -56,6 +56,17 @@
           ></Autocomplete-Username> -->
         </div>
         <span :class="p['font-12']">Filter</span>
+        <v-select
+          placeholder="Pilih Konten Level"
+          :items="itemsLevelPriority"
+          dense
+          solo
+          flat
+          v-model="levelPriority"
+          hide-details
+          class="white"
+          :class="p['font-12']"
+        ></v-select>
         <div style="width: 200px">
           <Autocomplete-Username
             :itemsFilter="itemsUser"
@@ -76,6 +87,7 @@
       <div
         v-if="
           sortBy != '' ||
+          levelPriority != '' ||
           paramsUsersTrending.length > 0 ||
           paramsChannelTrending.length > 0 ||
           paramsDateTrending.length > 1
@@ -119,12 +131,14 @@ export default {
       tab: 0,
       items: ["Semua Postingan", "List Push Notif", "Priority Level"],
       itemsSortBy: ["Waktu Publish", "Priority Level"],
+      itemsLevelPriority: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       sortBy: "",
       search: "",
       searchChannel: "",
       showFilter: false,
       isFilter: false,
       isResetFilter: false,
+      levelPriority: "",
       filterUser: null,
       filterChannel: null,
       filterPayload: {
@@ -142,6 +156,9 @@ export default {
       this.isFilter = false;
       this.$emit("onSearchSort", this.sortBy);
     },
+    levelPriority() {
+      this.isFilter = false;
+    },
     usernameFilter() {
       this.isFilter = false;
     },
@@ -157,6 +174,7 @@ export default {
         this.keywordTrending = "";
         this.usernameFilter = [];
         this.channelFilter = [];
+        this.levelPriority = "";
         this.filterPayload.startAt = "";
         this.filterPayload.endAt = "";
         this.isFilter = false;
@@ -272,6 +290,7 @@ export default {
           : "createAt,desc",
         keyword: this.keywordSearchTrending,
         search: this.keywordSearchTrending,
+        levelPriority: this.levelPriority,
         usernames: this.paramsUsersTrending.join(","),
         channelCodes: this.paramsChannelTrending.join(","),
         startAt:
