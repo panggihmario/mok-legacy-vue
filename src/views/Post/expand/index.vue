@@ -2,9 +2,9 @@
   <div class="expand__card">
     <div class="d-flex justify-space-between">
       <div class="expand__filters" >
-        <div v-if="$route.name !== 'draft' && $route.name !==  'schedule' " class="expand__label">Sorted By</div>
+        <div v-if="$route.name !== 'draft'  " class="expand__label">Sorted By</div>
         <v-select
-          v-if="$route.name !== 'draft' && $route.name !==  'schedule'  "
+          v-if="$route.name !== 'draft' "
           dense
           hide-details
           solo
