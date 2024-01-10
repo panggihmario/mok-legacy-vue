@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- @click:row="openDetail" -->
     <v-data-table
       :headers="headers"
       hide-default-footer
@@ -8,7 +9,7 @@
       :items-per-page="12"
       class="grey--text"
       :items="items"
-      @click:row="openDetail"
+     
       :loading="isLoading"
     >
       <template v-slot:item.title="{item}">
@@ -34,6 +35,16 @@
           {{ item.status }} 
         </div>
       </template>
+      <template v-slot:item.trending="{item}">
+        <custom-button 
+          size="x-small" 
+          color="primary"
+          style="margin-top : auto"
+          @click="openDialog"
+        >
+          Trending
+        </custom-button>
+      </template>
       <template v-slot:item.actions="{item}">
         <Menu @refreshData="refreshData" :item="item" />
       </template>
@@ -55,15 +66,21 @@
         </div>
       </template>
     </v-data-table>
+    <DialogTrending
+      :dialogTrending="dialogTrending"
+      @closeDialog="closeDialog"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import Menu from "./menu.vue"
+import DialogTrending from "./dialogTrending.vue"
 export default {
   components : {
-    Menu
+    Menu,
+    DialogTrending
   },
   props : {
     items : {
@@ -77,6 +94,12 @@ export default {
     }
   },
   methods : {
+    openDialog () {
+      this.dialogTrending = true
+    },
+    closeDialog () {
+      this.dialogTrending = false
+    },
     refreshData() {
       this.$emit('refreshData')
     },
@@ -101,6 +124,7 @@ export default {
   data () {
     return {
       page : 1,
+      dialogTrending : false,
       totalPages : 0,
       headers :[
         {
@@ -145,6 +169,13 @@ export default {
           class: "whitesnow",
           width: "100",
           align : 'center'
+        },
+        {
+          text : 'Trending',
+          value : 'trending',
+          width : '100', 
+          align : 'center',
+          class: "whitesnow",
         },
         {
           text : 'Manage',
