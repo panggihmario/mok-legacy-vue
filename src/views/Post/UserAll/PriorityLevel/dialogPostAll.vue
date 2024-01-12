@@ -98,7 +98,9 @@
                 </div>
                 <div class="d-flex flex-column">
                   <span class="font-10">Floating Link</span>
-                  <span class="font-14 black--text">Cek Youtube Disini</span>
+                  <span class="font-14 black--text">{{
+                    tableItemsDialog.floatingLinkLabel
+                  }}</span>
                   <a
                     v-if="tableItemsDialog.floatingLink"
                     :href="tableItemsDialog.floatingLink"
