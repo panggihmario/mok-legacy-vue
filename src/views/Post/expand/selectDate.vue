@@ -33,6 +33,7 @@
               no-title
               range
               :max="maxDate"
+              :min="minDate"
             >
             </v-date-picker>
 
@@ -127,6 +128,14 @@ export default {
         return null;
       } else {
         return this.currentDate;
+      }
+    },
+    minDate() {
+      if (this.$route.name === "schedule") {
+        return null;
+      } else {
+        const d = moment().subtract(6 , 'months').format("YYYY-MM-DD")
+        return d
       }
     },
     choosenDate: {

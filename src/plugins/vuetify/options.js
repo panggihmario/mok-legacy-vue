@@ -28,6 +28,7 @@ export default {
 				kellygreen : '#52C41A',
 				primarylowtint : '#FFEBEF',
 				secondarylowtint : '#E7F3FF',
+				warningAlert : '#E76F00'
 			},
 		},
 	},

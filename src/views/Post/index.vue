@@ -39,9 +39,17 @@
     <router-view @refreshDataFeed="refreshDataFeed"></router-view>
 
     <div class="d-flex justify-space-between align-center mt-4">
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <div :class="p.label">Total Post : </div>
         <div :class="p.sublabel"> {{ totalElements }} </div>
+        <div
+          :class="p['alert-box']"
+          v-if="$route.name === 'list'"
+        >
+            <v-icon class="mr-2" small color="white">fas fa-exclamation-triangle</v-icon>
+          <div :class="p['alert-label']"> List Konten hanya menampilkan data yang ada di 6 bulan terakhir</div>
+          
+        </div>
       </div>
       <v-pagination v-if="totalPages > 1" :length="totalPages" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"
         total-visible="5" color="primary" v-model="currentPage" />
@@ -510,7 +518,21 @@ export default {
   color: #BBBBBB;
   @extend .font-content;
 }
-
+.alert-label {
+  color: var(--White, #FFF);
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 700;
+}
+.alert-box {
+  border-radius: 4px;
+  background: #E76F00; 
+  display: flex;
+  padding: 8px 12px; 
+  gap: 9px;
+  display: flex;
+  margin-left: 32px;
+}
 .sublabel {
   color: black;
   @extend .font-content;
