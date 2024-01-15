@@ -24,6 +24,9 @@
       <template v-slot:item.expiredAt="{item}">
         <div :class="table.list">{{  convertToHumanDate(item.expiredAt) }} </div>
       </template>
+      <template v-slot:item.trendingAt="{item}">
+        <div :class="table.list">{{  convertToHumanDate(item.trendingAt) }}</div>
+      </template>
       <template v-slot:item.targetAmount="{item}">
         <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
       </template>
@@ -40,7 +43,8 @@
           size="x-small" 
           color="primary"
           style="margin-top : auto"
-          @click="openDialog"
+          @click="openDialog(item)"
+          :disabled="!item.trendingAllow && item.status === 'Inactive'"
         >
           Trending
         </custom-button>
@@ -68,7 +72,9 @@
     </v-data-table>
     <DialogTrending
       :dialogTrending="dialogTrending"
+      :idData="idData"
       @closeDialog="closeDialog"
+      @onUpdateAfterTrending="onUpdateAfterTrending"
     />
   </div>
 </template>
@@ -94,11 +100,17 @@ export default {
     }
   },
   methods : {
-    openDialog () {
+    openDialog (item) {
       this.dialogTrending = true
+      this.idData = item.id
     },
     closeDialog () {
       this.dialogTrending = false
+      this.idData = ''
+    },
+    onUpdateAfterTrending () {
+      this.closeDialog()
+      this.refreshData()
     },
     refreshData() {
       this.$emit('refreshData')
@@ -126,6 +138,7 @@ export default {
       page : 1,
       dialogTrending : false,
       totalPages : 0,
+      idData : '',
       headers :[
         {
           text : 'Judul Penggalangan Dana',
@@ -150,6 +163,12 @@ export default {
           value : 'expiredAt',
           class: "whitesnow",
           width: "100",
+        },
+        {
+          text : 'Tgl Trending',
+          value : 'trendingAt',
+          class : 'whitesnow',
+          width : '100'
         },
         {
           text : 'Target Dana Terkumpul',

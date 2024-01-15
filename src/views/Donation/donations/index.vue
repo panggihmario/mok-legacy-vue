@@ -36,6 +36,7 @@
       v-model="page"
       :length="totalPages"
       @input="onInput"
+      :total-visible="7"
     ></v-pagination>
   </div>
   </div>
@@ -163,6 +164,7 @@ export default {
       this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
+          console.log(response)
           this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
