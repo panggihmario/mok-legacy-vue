@@ -106,7 +106,6 @@ export default {
         search : this.keyword
       }
       this.isLoading = true
-      console.log(payload)
       return this.handleData(payload)
     },
     openExpand() {
@@ -164,7 +163,6 @@ export default {
       this.isLoading = true
       return this.fetchDonations(payload)
         .then(response => {
-          console.log(response)
           this.isLoading = false
           const content = response.content
           const totalPages = response.totalPages
