@@ -25,6 +25,7 @@ export default {
             Action: "GetUgcUploadSign"
           }))
         .then(function (response) {
+          console.log(response)
           return response.data.data.signature;
         })
         .catch(err => {
