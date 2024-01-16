@@ -1,5 +1,15 @@
 <template>
   <div>
+    <!-- @click:row="openDetail" -->
+    <div :class="table.info">
+      <div class="d-flex align-center">
+        <v-icon small color="secondary">info</v-icon>
+        <div style="margin-left: 4px;">
+          Penggalangan dana pada list ini hanya bisa di trendingkan dalam waktu 48 jam setelah dibuat
+        </div>
+      </div>
+     
+     </div>
     <v-data-table
       :headers="headers"
       hide-default-footer
@@ -8,7 +18,7 @@
       :items-per-page="12"
       class="grey--text"
       :items="items"
-      @click:row="openDetail"
+     
       :loading="isLoading"
     >
       <template v-slot:item.title="{item}">
@@ -23,6 +33,9 @@
       <template v-slot:item.expiredAt="{item}">
         <div :class="table.list">{{  convertToHumanDate(item.expiredAt) }} </div>
       </template>
+      <template v-slot:item.trendingAt="{item}">
+        <div :class="table.list">{{  convertToHumanDate(item.trendingAt) }}</div>
+      </template>
       <template v-slot:item.targetAmount="{item}">
         <div :class="table.list"> {{ item.targetAmount ? `Rp ${item.targetAmount.toLocaleString('id')}` : '-' }}</div>   
       </template>
@@ -33,6 +46,17 @@
         <div :class="table.list" class="d-flex justify-center">
           {{ item.status }} 
         </div>
+      </template>
+      <template v-slot:item.trending="{item}">
+        <custom-button 
+          size="x-small" 
+          color="primary"
+          style="margin-top : auto"
+          @click="openDialog(item)"
+          :disabled="!item.trendingAllow && item.status === 'Inactive'"
+        >
+          Trending
+        </custom-button>
       </template>
       <template v-slot:item.actions="{item}">
         <Menu @refreshData="refreshData" :item="item" />
@@ -55,15 +79,23 @@
         </div>
       </template>
     </v-data-table>
+    <DialogTrending
+      :dialogTrending="dialogTrending"
+      :idData="idData"
+      @closeDialog="closeDialog"
+      @onUpdateAfterTrending="onUpdateAfterTrending"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import Menu from "./menu.vue"
+import DialogTrending from "./dialogTrending.vue"
 export default {
   components : {
-    Menu
+    Menu,
+    DialogTrending
   },
   props : {
     items : {
@@ -77,6 +109,18 @@ export default {
     }
   },
   methods : {
+    openDialog (item) {
+      this.dialogTrending = true
+      this.idData = item.id
+    },
+    closeDialog () {
+      this.dialogTrending = false
+      this.idData = ''
+    },
+    onUpdateAfterTrending () {
+      this.closeDialog()
+      this.refreshData()
+    },
     refreshData() {
       this.$emit('refreshData')
     },
@@ -101,7 +145,9 @@ export default {
   data () {
     return {
       page : 1,
+      dialogTrending : false,
       totalPages : 0,
+      idData : '',
       headers :[
         {
           text : 'Judul Penggalangan Dana',
@@ -128,6 +174,12 @@ export default {
           width: "100",
         },
         {
+          text : 'Tgl Trending',
+          value : 'trendingAt',
+          class : 'whitesnow',
+          width : '100'
+        },
+        {
           text : 'Target Dana Terkumpul',
           value : 'targetAmount',
           class: "whitesnow",
@@ -145,6 +197,13 @@ export default {
           class: "whitesnow",
           width: "100",
           align : 'center'
+        },
+        {
+          text : 'Trending',
+          value : 'trending',
+          width : '100', 
+          align : 'center',
+          class: "whitesnow",
         },
         {
           text : 'Manage',
