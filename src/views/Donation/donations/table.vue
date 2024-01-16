@@ -1,6 +1,15 @@
 <template>
   <div>
     <!-- @click:row="openDetail" -->
+    <div :class="table.info">
+      <div class="d-flex align-center">
+        <v-icon small color="secondary">info</v-icon>
+        <div style="margin-left: 4px;">
+          Penggalangan dana pada list ini hanya bisa di trendingkan dalam waktu 48 jam setelah dibuat
+        </div>
+      </div>
+     
+     </div>
     <v-data-table
       :headers="headers"
       hide-default-footer
