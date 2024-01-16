@@ -26,7 +26,7 @@
                 <custom-button @click="closeDialog" size="small" class="mr-2">
                   Batalkan
                 </custom-button>
-                <custom-button @click="handleTrending" size="small" color="secondary">
+                <custom-button :loading="loading" @click="handleTrending" size="small" color="secondary">
                   Ya, Trendingkan sekarang
                 </custom-button>
               </div>
@@ -41,6 +41,11 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
+  data () {
+    return {
+      loading : false
+    }
+  },
   props: {
     dialogTrending: {
       type: Boolean
@@ -57,12 +62,16 @@ export default {
       this.$emit('closeDialog')
     },
     handleTrending () {
+      this.loading = true
       return this.trendingDonation(this.idData)
         .then(response => {
-          this.$emit('onUpdateAfterTrending')
+          setTimeout(() => {
+            this.loading = false
+            this.$emit('onUpdateAfterTrending')
+          },1000)
         })
         .catch(err => {
-          console.log(err)
+          this.loading = false
         })
     }
   }

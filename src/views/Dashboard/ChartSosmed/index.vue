@@ -7,7 +7,7 @@
       <LineChart 
         :chartData="chartData"/>
     </Filters>
-    <DataTable/>
+    <!-- <DataTable/> -->
   </div>
 </template>
 
