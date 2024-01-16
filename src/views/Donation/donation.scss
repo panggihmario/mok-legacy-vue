@@ -190,6 +190,16 @@
   font-weight: 800;
   margin-bottom: 8px;
 }
+.dialog-success {
+  color: var(--Content, #4A4A4A);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+  margin-top: 12px;
+}
 
 .dialog-content {
   color: $charcoal;

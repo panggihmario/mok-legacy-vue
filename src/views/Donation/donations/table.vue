@@ -48,12 +48,13 @@
         </div>
       </template>
       <template v-slot:item.trending="{item}">
+        <!-- :disabled="!item.trendingAllow && item.status === 'Inactive'" -->
         <custom-button 
           size="x-small" 
           color="primary"
           style="margin-top : auto"
           @click="openDialog(item)"
-          :disabled="!item.trendingAllow && item.status === 'Inactive'"
+          :disabled="checkValid(item)"
         >
           Trending
         </custom-button>
@@ -85,6 +86,12 @@
       @closeDialog="closeDialog"
       @onUpdateAfterTrending="onUpdateAfterTrending"
     />
+    <v-dialog width="200" v-model="dialogSuccess">
+      <v-card class="text-center pa-2">
+        <v-icon  color="success">check_circle</v-icon>
+        <div :class="table['dialog-success']">Donasi berhasil di trendingkan</div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -109,9 +116,20 @@ export default {
     }
   },
   methods : {
-    openDialog (item) {
+    checkValid(item) {
+      const createAt = moment(item.createAt)
+      const currentAt = moment()
+      const different = currentAt.diff(createAt, 'hour')
+      if(item.status === 'Inactive' || !item.trendingAllow || different < 48 ){
+        return true
+      }else{
+        return false
+      }
+    },
+    openDialog (item) {  
       this.dialogTrending = true
       this.idData = item.id
+     
     },
     closeDialog () {
       this.dialogTrending = false
@@ -119,7 +137,12 @@ export default {
     },
     onUpdateAfterTrending () {
       this.closeDialog()
-      this.refreshData()
+      this.dialogSuccess = true
+      setTimeout(() => {
+        this.dialogSuccess = false
+        this.refreshData()
+      },1000)
+      
     },
     refreshData() {
       this.$emit('refreshData')
@@ -145,6 +168,7 @@ export default {
   data () {
     return {
       page : 1,
+      dialogSuccess : false,
       dialogTrending : false,
       totalPages : 0,
       idData : '',
