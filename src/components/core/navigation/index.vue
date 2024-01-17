@@ -1,11 +1,11 @@
 <template>
-  <aside>
+  <aside id="aside" @mouseover="onHover" @mouseleave="onLeave">
     <div class="navigation__relative">
     <div class="navigation__profile">
       <div class="navigation__photo"></div>
       <div class="navigation__box-name">
         <div class="navigation__username text-center"> {{ profile.username }} </div>
-      <div class="navigation__role text-center"> {{ profile.role }} </div>
+        <div class="navigation__role text-center"> {{ profile.role }} </div>
       </div>
       
     </div>
@@ -14,10 +14,11 @@
         <li v-for="(menu, idx) in menus" :key="idx">
           <div @click="openItems(menu.label)"  class="navigation__list pointer">
             <i :class="menu.icon"></i>
-            <div> {{menu.label}} </div>
-            <i className="fa-solid fa-chevron-down"></i>
+            <div class="flex justify-between">
+              <div> {{menu.label}} </div>
+              <i className="fa-solid fa-chevron-down"></i>
+            </div>
           </div>
-
           <ul :class="menu.isOpen ? 'navigation__items-open' : 'navigation__items' ">
             <li v-for="(item, i) in menu.items" :key="i">
               <router-link :to="{name : item.name}" activeClass="navigation__item-active"  class="navigation__item" >
@@ -30,9 +31,8 @@
       </ul>
     </nav>
     <div class="navigation__logout">
-      <k-button color="whitesnow" @click="logout">
+      <k-button size="sm" color="whitesnow" @click="logout">
         <i class="fa-solid fa-right-from-bracket"></i>
-        Logout
       </k-button>
     </div>
   </div>
@@ -60,6 +60,15 @@ export default {
       })
     }
 
+    const onHover = function () {
+      const el = document.getElementById('aside')
+      el?.classList.add('aside-active')
+    }
+
+    const onLeave = function () {
+      const el = document.getElementById('aside')
+      el?.classList.remove('aside-active')
+    }
 
     const logout = function () {
       store.removeAuthData()
@@ -70,8 +79,9 @@ export default {
       openItems,
       logout,
       store,
-      profile : JSON.parse(localStorage.getItem('profile')!)
-
+      profile : JSON.parse(localStorage.getItem('profile')!),
+      onHover,
+      onLeave
     }
   }
 }

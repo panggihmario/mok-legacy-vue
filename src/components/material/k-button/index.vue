@@ -44,13 +44,18 @@ defineProps({
   border-radius: 8px;
   cursor: pointer;
   position: relative;
-  min-width: 70px;
+  // min-width: 70px;
 
   &__md {
     font-size: 11px;
     font-weight: 500;
     padding: 0 22px;
     height: 32px;
+  }
+  &__sm {
+    font-size: 9px;
+    font-weight: 500;
+    padding: 11px;
   }
 
   &__loading {

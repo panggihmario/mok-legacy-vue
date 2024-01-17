@@ -27,7 +27,7 @@ export default defineComponent({
 
 <style lang="scss">
 .main-container {
-  padding: 40px 100px 40px calc(toRem(40) + var(--width-aside));
+  padding: 40px 100px 40px 70px;
 }
 
 .fade-enter-active,
