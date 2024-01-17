@@ -5,7 +5,7 @@ export default {
       params : {
         ...payload,
         size : 12,
-        sort : 'createAt,desc'
+        sort : 'orderingAt,desc'
       }
     }
     return dispatch('getWithToken', data , {root : true})
@@ -110,5 +110,13 @@ export default {
     return dispatch('deleteWithToken', params, {root : true})
       .then(response => { return response })
       .catch(err => { throw err })
+  },
+  trendingDonation({state, dispatch}, payload) {
+    const params = {
+      url : `admin/donations/${payload}/trending`
+    }
+    return dispatch('patchWithToken', params, {root : true})
+      .then(response => { return response})
+      .catch(err => { throw err})
   }
 }

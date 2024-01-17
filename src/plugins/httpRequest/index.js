@@ -25,7 +25,7 @@ const getToken = () => {
   const token = store.state.authentication.token;
   return token;
 };
-
+const versionApp = store.getters.appVersion
 export const serviceWithoutToken = () =>
   axios.create({
     baseURL: BASE_URL,

@@ -190,6 +190,16 @@
   font-weight: 800;
   margin-bottom: 8px;
 }
+.dialog-success {
+  color: var(--Content, #4A4A4A);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+  margin-top: 12px;
+}
 
 .dialog-content {
   color: $charcoal;
@@ -209,6 +219,23 @@
   position: absolute;
   top : 28px;
   left: 10px;
+}
+
+.info {
+  color: var(--Secondary, #1890FF);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.083px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--Secondary---Low-Tint, #E7F3FF);
+  display: inline-block;
+  margin-bottom: 12px;
+  gap: 4px;
+  align-items: center;
 }
 
 .detail {
