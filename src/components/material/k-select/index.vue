@@ -1,5 +1,6 @@
 <template>
   <div class="select__wrapper" ref="root">
+    <div class="input__label" :class="!!errorMessage && 'has-error'">{{ label }}</div>
     <div 
       class="flex pointer" 
       :class="[`select__${modeValue}-${size}`]"
@@ -62,7 +63,13 @@ export default defineComponent({
       validator (value : string) {
         return ['filled', 'outline'].includes(value)
       }
-    }
+    },
+    errorMessage: {
+      type: String
+    },
+    label: {
+      type: String
+    },
 
   },
   setup(props, {emit}) {

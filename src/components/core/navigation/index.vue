@@ -3,8 +3,11 @@
     <div class="navigation__relative">
     <div class="navigation__profile">
       <div class="navigation__photo"></div>
-      <div class="navigation__username text-center"> {{ profile.username }} </div>
+      <div class="navigation__box-name">
+        <div class="navigation__username text-center"> {{ profile.username }} </div>
       <div class="navigation__role text-center"> {{ profile.role }} </div>
+      </div>
+      
     </div>
     <nav>
       <ul>

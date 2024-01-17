@@ -8,7 +8,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from , next) => {
-  const token : any = localStorage.getItem('adminKoanba')
+  const token : string | null = localStorage.getItem('adminKoanba')!
   const parse = JSON.parse(token)
   if(to.name !== 'login' && !parse) {
     next({name : 'login'})

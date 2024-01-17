@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios, { AxiosInstance, AxiosResponse } from "axios"
 import { useAuthStore } from "./authentication"
-type Params = {[key : string | number] : string | Number }
+type Params = {[key : string | number] : string | number | undefined }
 const { VITE_APP_BASE_URL } = import.meta.env;
 export const useApiStore = defineStore('api', {
   state: () => ({
@@ -38,7 +38,8 @@ export const useApiStore = defineStore('api', {
         },
         (err) => {
           if(err.response.status === 401) {
-            useAuthStore().removeAuthData()
+            const authStore = useAuthStore()
+            authStore.removeAuthData()
             return Promise.reject(err)
           }else{
             return Promise.reject(err)

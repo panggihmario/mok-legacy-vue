@@ -14,6 +14,7 @@
           v-model="value" 
           :name="name" 
           @blur="$emit('validate')" 
+          @input="$emit('validate')"
           v-bind="$attrs"
         />
         <div @click="showPassword" v-if="icon" class="input__icon">

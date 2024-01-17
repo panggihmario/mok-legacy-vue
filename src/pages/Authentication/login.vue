@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="auth__card">
-      <form @submit.prevent="handleSubmit">
+      <!-- <form @submit.prevent="handleSubmit">
         <div class="auth__label">
           <div>
             LOGIN
@@ -40,9 +40,9 @@
             </k-button>
           </div>
         </div>
-      </form>
+      </form> -->
+      <FormLogin/>
     </div>
-
   </div>
 </template>
 
@@ -52,7 +52,11 @@ import { reactive, ref } from 'vue';
 import { useApiStore } from "../../stores/api";
 import { useAuthStore } from "../../stores/authentication";
 import { useRouter  } from "vue-router";
+import FormLogin from "./form.vue"
 export default {
+  components : {
+    FormLogin
+  },
   setup() {
     interface valueType {
       username: string,
@@ -61,6 +65,7 @@ export default {
     const router = useRouter()
     const store = useApiStore()
     const storeAuth = useAuthStore()
+    const username = ref('')
     const loginValues = reactive<valueType>({
       username: '',
       password: ''
@@ -141,7 +146,8 @@ export default {
       handleSubmit,
       validation,
       errorMessages,
-      loading
+      loading,
+      username
     }
   }
 }

@@ -7,13 +7,17 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [vue()],
   css: {
+    // loaderOptions : {
+    //   scss: {
+    //     data: `
+    //       @import "./src/styles/index.scss";
+    //       `
+    //   }
+    // },
     preprocessorOptions: {
       scss: {
         additionalData: `
-          @import "./src/styles/_variables.scss";
-          @import "./src/styles/_typography.scss";
-          @import "./src/styles/_functions.scss";
-          @import "./src/styles/components/index.scss";
+          @import "./src/styles/index.scss";
           `
       }
     }
@@ -26,3 +30,7 @@ export default defineConfig({
     }
   }
 })
+// @import "./src/styles/_variables.scss";
+// @import "./src/styles/_typography.scss";
+// @import "./src/styles/_functions.scss";
+// @import "./src/styles/components/index.scss";

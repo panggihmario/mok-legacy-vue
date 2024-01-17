@@ -15,3 +15,33 @@ $silver : hsl(0, 0%, 73%);
 
 $primarylowtint : hsl(349, 100%, 96%);
 $secondarylowtint : hsl(210, 100%, 95%);
+
+.text-primary { color: var(--primary-color) }
+.text-secondary { color: var(--secondary-color) }
+.text-kellygreen { color: var(--kellygreen-bg) }
+.text-black { color: var(--black-color) }
+.text-grey { color: var(--grey-color) }
+.text-whitesnow { color: var(--whitesnow-color) }
+.text-white { color: var(--white-color) }
+.text-charcoal { color: var(--charcoal-color) }
+.text-whitesmoke { color: var(--whitesmoke-color) }
+.text-grey90 { color: var(--grey90-color) }
+.text-gainsboro { color: var(--gainsboro-color) }
+.text-darkPrimary { color: var(--darkPrimary-color) }
+.text-danger { color: var(--danger-color) }
+.text-silver { color: var(--silver-color) }
+
+.bg-primary { background-color: var(--primary-color) }
+.bg-secondary { background-color: var(--secondary-color) }
+.bg-kellygreen { background-color: var(--kellygreen-bg) }
+.bg-black { background-color: var(--black-color) }
+.bg-grey { background-color: var(--grey-color) }
+.bg-whitesnow { background-color: var(--whitesnow-color) }
+.bg-white { background-color: var(--white-color) }
+.bg-charcoal { background-color: var(--charcoal-color) }
+.bg-whitesmoke { background-color: var(--whitesmoke-color) }
+.bg-grey90 { background-color: var(--grey90-color) }
+.bg-gainsboro { background-color: var(--gainsboro-color) }
+.bg-darkPrimary { background-color: var(--darkPrimary-color) }
+.bg-danger { background-color: var(--danger-color) }
+.bg-silver { background-color: var(--silver-color) }

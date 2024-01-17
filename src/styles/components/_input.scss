@@ -40,6 +40,7 @@ input {
     letter-spacing: 0.01;
     &.has-error {
       color: var(--danger-color);
+      transition: color ease-in 1s;
     }
   }
 

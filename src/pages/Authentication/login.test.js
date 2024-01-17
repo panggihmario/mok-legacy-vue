@@ -2,49 +2,65 @@
  * @vitest-environment happy-dom
  */
 
-import { describe, it , expect, vi } from "vitest";
+import { describe, it , expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils"
-import Login from "./login.vue"
-import { reactive } from "vue";
 import ComponentInput from "../../components/material/k-input/index.vue"
 import ComponentButton from "../../components/material/k-button/index.vue"
+import FormComponent from "./form.vue"
+import { loginSchema } from "./schema.js"
+import { setActivePinia, createPinia } from 'pinia'
+import { createTestingPinia } from '@pinia/testing'
+const item = [
+  {
+    username : 'admin',
+    password : 'mabes132'
+  },
+  {
+    username : '',
+    password : ''
+  }
+]
 
-describe('form login authentication', () => {
-  const wrapper = mount(Login, {
+describe('from login auth', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const wrapper = mount(FormComponent, {
     global : {
       components : {
         'k-input' : ComponentInput,
         'k-button' : ComponentButton
-      }
-    },
-    setup () {
-      const loginValues = reactive({
-        username : '',
-        password : ''
-      })
-
-      const errorMessages = reactive({
-        username : '',
-        password : ''
-      })
-
-      return {
-        loginValues,
-        errorMessages
-      }
+      },
+      plugins: [
+        createTestingPinia({
+          createSpy: vi.fn,
+        })
+      ]
     }
   })
-  it('should set value input', async () => {
-    const username = wrapper.findComponent('[data-test="username"]').get('input')
-    const password = wrapper.findComponent('[data-test="password"]').get('input')
-    const spyOnForm = vi.spyOn(wrapper, 'trigger')
-    await username.setValue('jhon')
-    await password.setValue('doe')
-    await wrapper.trigger('click')
-    await wrapper.find('form').trigger('submit')
-    expect(wrapper).toBeTruthy()
-    expect(username.element.value).toBe('jhon')
-    expect(password.element.value).toBe('doe')
-    expect(spyOnForm).toHaveBeenCalledOnce()
+
+  const username = wrapper.find('[data-test="username"]')
+  const password = wrapper.find('[data-test="password"]')
+  it('should pass validation', async () => {
+    await username.setValue(item[0].username)
+    await password.setValue(item[0].password)
+    await wrapper.find('form').trigger('submit.prevent')
+    const checkValue = await loginSchema.isValid({
+      username : username.element.value,
+      password : password.element.value
+    })
+    expect(checkValue).toEqual(true)
+  })
+  it('should not pass validation' , async () => {
+    await username.setValue(item[1].username)
+    await password.setValue(item[1].password)
+    await wrapper.find('form').trigger('submit.prevent')
+    const checkValue = await loginSchema.isValid({
+      username : username.element.value,
+      password : password.element.value
+    })
+    expect(checkValue).toEqual(false)
   })
 })
+

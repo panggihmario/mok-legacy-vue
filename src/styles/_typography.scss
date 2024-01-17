@@ -1,3 +1,4 @@
+@import "./functions";
 // ||  FONT SIZE
 $text-xs : 0.5rem; //8px
 $text-sm : 0.625rem;  //10px
@@ -18,3 +19,50 @@ $font-bolder : 900;
 $sm-height : 28px;
 $md-height : 32px;
 $lg-height : 40px;
+
+.text-xs {
+  font-size: toRem(8);
+}
+.text-sm {
+  font-size: toRem(10);
+}
+.text-md {
+  font-size: toRem(12);
+}
+.text-lg {
+  font-size: toRem(14);
+}
+.text-xl {
+  font-size: toRem(16);
+}
+.text-2xl {
+  font-size: toRem(18);
+}
+
+.font-thin {
+  font-weight: 100;
+}
+.font-extralight {
+  font-weight: 200;
+}
+.font-light {
+  font-weight: 300;
+}
+.font-normal {
+  font-weight: 400;
+}
+.font-normal {
+  font-weight: 500;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-extrabold {
+  font-weight: 800;
+}
+.font-black {
+  font-weight: 900;
+}
