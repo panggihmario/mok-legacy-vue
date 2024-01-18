@@ -36,6 +36,7 @@
       v-model="page"
       :length="totalPages"
       @input="onInput"
+      :total-visible="7"
     ></v-pagination>
   </div>
   </div>
@@ -105,7 +106,6 @@ export default {
         search : this.keyword
       }
       this.isLoading = true
-      console.log(payload)
       return this.handleData(payload)
     },
     openExpand() {

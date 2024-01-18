@@ -7,6 +7,7 @@
       <LineChart 
         :chartData="chartData"/>
     </Filters>
+    <!-- <DataTable/> -->
   </div>
 </template>
 
@@ -16,12 +17,14 @@ import HeaderContent from "@/containers/HeaderContent";
 import Filters from "./Header/index.vue"
 import Chart from "../containers/chart.vue"
 import LineChart from "./lineChart.vue"
+import DataTable from "./dataTable.vue"
 export default {
   components : {
     HeaderContent,
     Filters,
     Chart,
-    LineChart
+    LineChart,
+    DataTable
   },
   data () {
     return {
