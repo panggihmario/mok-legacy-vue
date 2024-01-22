@@ -42,6 +42,9 @@
       <template v-slot:item.amountCollected="{item}">
         <div :class="table.list"> {{ item.amountCollected ? `Rp ${item.amountCollected.toLocaleString('id')}` : '-' }}</div>   
       </template>
+      <template v-slot:item.amountWithdraw="{item}">
+        <div :class="table.list">{{ item.amountWithdraw ? `Rp ${item.amountWithdraw.toLocaleString('id')}` : '-' }}</div>
+      </template>
       <template v-slot:item.status="{ item }">
         <div :class="table.list" class="d-flex justify-center">
           {{ item.status }} 
@@ -212,6 +215,12 @@ export default {
         {
           text : 'Dana Terkumpul',
           value : 'amountCollected',
+          class: "whitesnow",
+          width: "150",
+        },
+        {
+          text : 'Dana Ditarik',
+          value : 'amountWithdraw',
           class: "whitesnow",
           width: "150",
         },
