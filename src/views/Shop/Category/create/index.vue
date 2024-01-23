@@ -31,7 +31,7 @@
           <upload-oss
             id="create"
             color="secondary"
-            typeAllowed="png"
+            :typeAllowed="['png']"
             :maxSize="1000000"
             isSquareRatio
             @response="getResponseUpload"
@@ -158,9 +158,10 @@ export default {
       editCategory: "productCategory/editCategory",
     }),
     getResponseUpload(data) {
+    console.log(data)
       if (data.status == "success") {
         this.isErrorUpload = false;
-        this.dataPayload.params.icon = data.response.url;
+        this.dataPayload.params.icon = data.url;
       } else if (data.status == "failed") {
         this.isErrorUpload = true;
       }

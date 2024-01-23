@@ -42,6 +42,9 @@
       <template v-slot:item.amountCollected="{item}">
         <div :class="table.list"> {{ item.amountCollected ? `Rp ${item.amountCollected.toLocaleString('id')}` : '-' }}</div>   
       </template>
+      <template v-slot:item.amountWithdraw="{item}">
+        <div :class="table.list">{{ item.amountWithdraw ? `Rp ${item.amountWithdraw.toLocaleString('id')}` : '-' }}</div>
+      </template>
       <template v-slot:item.status="{ item }">
         <div :class="table.list" class="d-flex justify-center">
           {{ item.status }} 
@@ -177,13 +180,13 @@ export default {
           text : 'Judul Penggalangan Dana',
           value : 'title',
           class: "whitesnow",
-          width: "150",
+          width: "50",
         },
         {
           text : 'Initiator',
           value : 'username',
           class: "whitesnow",
-          width: "100",
+          width: "60",
         },
         {
           text : 'Tgl Mulai',
@@ -207,25 +210,31 @@ export default {
           text : 'Target Dana Terkumpul',
           value : 'targetAmount',
           class: "whitesnow",
-          width: "150",
+          width: "160",
         },
         {
           text : 'Dana Terkumpul',
           value : 'amountCollected',
           class: "whitesnow",
-          width: "150",
+          width: "120",
+        },
+        {
+          text : 'Dana Ditarik',
+          value : 'amountWithdraw',
+          class: "whitesnow",
+          width: "120",
         },
         {
           text : 'Status',
           value : 'status',
           class: "whitesnow",
-          width: "100",
+          width: "50",
           align : 'center'
         },
         {
           text : 'Trending',
           value : 'trending',
-          width : '100', 
+          width : '50', 
           align : 'center',
           class: "whitesnow",
         },

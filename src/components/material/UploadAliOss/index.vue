@@ -252,7 +252,7 @@ export default {
           return this.$storeOss.putACL(filePath, "public-read");
         })
         .catch((err) => {
-          console.log(err);
+          throw err
         });
     },
     printError(file) {
