@@ -42,7 +42,7 @@
             </div>
             <div class="d-flex justify-space-between" :class="d['detail-duration']">
               <div>Target Pengumpulan Dana</div>
-              <div>Rp {{ item.targetAmount.toLocaleString('id') }}</div>
+              <!-- <div>Rp {{ item.targetAmount.toLocaleString('id') }}</div> -->
               <div>{{ item.targetAmount > 0 ? `Rp ${item.targetAmount.toLocaleString('id')}` : 'Tidak dibatasi' }}</div>
             </div>
           </div>
