@@ -32,6 +32,9 @@ export default {
   props : {
     levelPriority : {
       type : [Number]
+    },
+    item : {
+      type : Object
     }
   },
   computed : {
@@ -43,6 +46,11 @@ export default {
         this.$emit('setLevelPriority', value )
       }
     },
+  },
+  watch : {
+    item (value) {
+      console.log(value)
+    }
   },
   methods : {
     selectLevel (value) {
