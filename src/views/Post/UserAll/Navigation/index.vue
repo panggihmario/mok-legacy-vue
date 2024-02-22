@@ -129,7 +129,7 @@ export default {
   data() {
     return {
       tab: 0,
-      items: ["Semua Postingan", "List Push Notif", "Priority Level"],
+      items: ["Semua Postingan", "Trending", "List Push Notif", "Priority Level"],
       itemsSortBy: ["Waktu Publish", "Priority Level"],
       itemsLevelPriority: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       sortBy: "",

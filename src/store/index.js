@@ -16,15 +16,14 @@ import finance from "./finance";
 import order from "./order";
 import dashboard from "./dashboard";
 import trending from "./trending";
-import tiktok from "./tiktok";
 import masterCategory from "./master/category";
 import manageHashtag from "./manage/hashtag";
 import master from "./master";
 import productCategory from "./product/category";
 import helper from "./helper";
 import area from "./area";
-import instagram from "./instagram";
-import manageSocmed from "./manageSocmed"
+import manageSocmed from "./manageSocmed";
+import socialMedia from "./socialMedia";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -46,15 +45,15 @@ export default new Vuex.Store({
     order,
     dashboard,
     trending,
-    tiktok,
+    tiktok: socialMedia,
     masterCategory,
     manageHashtag,
     master,
     productCategory,
     helper,
     area,
-    instagram,
-    manageSocmed
+    instagram: socialMedia,
+    manageSocmed,
   },
   state: {
     packageVersion: process.env.VUE_APP_VERSION || 0,
@@ -111,8 +110,8 @@ export default new Vuex.Store({
     },
     patchWithToken(ctx, data) {
       return this._vm.$httpWithToken().patch(data.url, {
-        params : {...data.params}
-      })
-    }
+        params: { ...data.params },
+      });
+    },
   },
 });
