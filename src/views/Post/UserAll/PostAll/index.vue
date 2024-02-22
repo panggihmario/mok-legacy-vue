@@ -8,6 +8,7 @@
         @openDialogPost="openDialogPost"
         @openDialogPushNotif="openDialogPushNotif"
         @openDialogDelete="openDialogDelete"
+        @actionPostFeedAsTrendingById="openDialogTrending"
       ></Table-List>
     </div>
 
@@ -55,6 +56,13 @@
       :dialogPushNotif="dialogPushNotif"
       @closeDialogPushNotif="closeDialogPushNotif"
       @actionPushNotif="actionPushNotif"
+    />
+
+    <DialogTrending
+      :dialog="dialogTrending"
+      @getEpoch="(v) => (dialogTrendingExpired = v)"
+      @closeDialog="dialogTrending = false"
+      @actionSubmit="actionPostFeedAsTrendingById"
     />
 
     <v-snackbar
@@ -113,6 +121,7 @@ import DialogPost from "./dialogPostAll.vue";
 import DialogDelete from "./dialogDelete.vue";
 import DatePicker from "./datePicker.vue";
 import dialogPushNotifVue from "./dialogPushNotif.vue";
+import DialogTrending from "./dialogTrending.vue";
 
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
@@ -122,6 +131,7 @@ export default {
     DialogDelete,
     DatePicker,
     DialogPushNotif: dialogPushNotifVue,
+    DialogTrending,
   },
   data() {
     return {
@@ -147,6 +157,9 @@ export default {
       page: 1,
       dialogPushNotif: false,
       dialogPushNotifId: "",
+      dialogTrending: false,
+      dialogTrendingId: "",
+      dialogTrendingExpired: null,
       alertSuccess: false,
       alertError: false,
       dialogDelete: false,
@@ -164,6 +177,12 @@ export default {
     },
     dialogPost() {
       // this.stopVideo();
+    },
+    dialogTrending() {
+      if (!this.dialogTrending) {
+        this.dialogTrendingId = "";
+        this.dialogTrendingExpired = null;
+      }
     },
     dialogPostDataIdx() {
       // this.stopVideo();
@@ -211,6 +230,10 @@ export default {
       this.dialogDelete = value;
       this.epochExpiredTrending = "";
     },
+    openDialogTrending(id) {
+      this.dialogTrendingId = id;
+      this.dialogTrending = true;
+    },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
     },
@@ -231,19 +254,26 @@ export default {
           this.loadingDetail = false;
         });
     },
-    actionPostFeedAsTrendingById(id) {
+    actionPostFeedAsTrendingById() {
+      const formattedUTC = moment(this.dialogTrendingExpired)
+        .add(7, "hours")
+        .unix();
       const payload = {
-        id: id,
+        id: this.dialogTrendingId,
         isPriority: this.priority,
-        // trendingExpiredAt: this.epochExpiredTrending,
+        typePost: "social",
+        trendingExpiredAt:
+          formattedUTC && formattedUTC.toString().length < 13
+            ? Number(`${formattedUTC}000`)
+            : formattedUTC,
       };
-      // this.stopVideo();
       this.loadingMakeTrending = true;
       return this.postFeedAsTrendingById(payload)
         .then((response) => {
           this.$emit("successPostTrending");
           this.loadingMakeTrending = false;
           this.dialogPost = false;
+          this.dialogTrending = false;
           this.alertSuccess = true;
         })
         .catch((err) => {
