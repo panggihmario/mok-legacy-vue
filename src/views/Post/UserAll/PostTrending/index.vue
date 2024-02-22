@@ -76,10 +76,11 @@ export default {
         { text: "Caption", class: "whitesnow" },
         { text: "Channel", class: "whitesnow" },
         { text: "User", class: "whitesnow" },
+        { text: "Level Konten", class: "whitesnow" },
         { text: "Di Trendingkan Oleh", class: "whitesnow" },
         { text: "Trending Berakhir", class: "whitesnow" },
-        { text: "", class: "whitesnow" },
-        { text: "Action", class: "whitesnow", align: "center" },
+        // { text: "", class: "whitesnow" },
+        // { text: "Action", class: "whitesnow", align: "center" },
       ],
       // tableItems: [],
       tableItemsDialog: {

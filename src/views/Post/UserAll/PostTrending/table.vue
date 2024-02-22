@@ -23,10 +23,13 @@
           </td>
           <td class="font-12">{{ item.channel.name }}</td>
           <td class="font-12">{{ item.createBy }}</td>
+          <td class="font-12 grey--text font-weight-medium">
+            {{ item.levelPriority ? item.levelPriority : "-" }}
+          </td>
           <td class="font-12">{{ item.trendingBy }}</td>
           <td class="font-12">{{ formatingDate(item.trendingExpired) }}</td>
-          <td class="font-12 grey--text font-weight-medium">
-            <div class="d-flex align-center" style="gap: 2px;">
+          <!-- <td class="font-12 grey--text font-weight-medium">
+            <div class="d-flex align-center" style="gap: 2px">
               <v-icon
                 size="8px"
                 :color="item.isVodAvailable ? 'green' : 'red'"
@@ -37,8 +40,8 @@
                 >HLS</span
               >
             </div>
-          </td>
-          <td class="font-12 text-center flex-actions" style="gap: 10px">
+          </td> -->
+          <!-- <td class="font-12 text-center flex-actions" style="gap: 10px">
             <custom-button
               color="secondary"
               size="x-small"
@@ -60,7 +63,7 @@
               <v-icon size="small">far fa-square</v-icon>
               <div>Priority</div>
             </div>
-          </td>
+          </td> -->
         </tr>
       </tbody>
     </template>
