@@ -1,16 +1,20 @@
 <template>
-  <v-dialog v-model="dialog" width="356" @click:outside="closeDialog">
+  <v-dialog v-model="dialog" width="400" @click:outside="closeDialog">
     <v-card class="notif">
-      <v-icon @click="closeDialog" class="notif__close" size="small"
-        >fas fa-times</v-icon
-      >
-      <v-icon color="secondary">fas fa-exclamation-circle</v-icon>
-      <div>
-        <div class="notif__label">Trendingkan Konten</div>
-        <div style="font-size: 12px" class="mt-2">
-          Postingan ini akan ditrendingkan hingga:
+      <div style="padding: 12px">
+        <div class="notif__label">Pilih waktu trending konten</div>
+        <div style="font-size: 11px; color: #777" class="mt-3">
+          Waktu trending konten tidak bisa diubah jika sudah disimpan, kamu
+          hanya bisa menjadwalkan ulang ketika konten yang dijadwalkan untuk
+          trending sudah habis waktu trendingnya.
         </div>
-        <div class="mt-3 mb-5">
+        <div
+          style="font-size: 11px; color: #777; font-weight: 500"
+          class="mt-3"
+        >
+          Trendingkan konten pada
+        </div>
+        <div class="mt-1">
           <v-menu
             v-model="menuDate"
             :close-on-content-click="false"
@@ -21,7 +25,10 @@
             <template v-slot:activator="{ on, attrs }">
               <div v-on="on" class="date__wrapper">
                 <div>
-                  {{ displayDate }}
+                  <span v-if="displayDate">
+                    {{ displayDate }}
+                  </span>
+                  <span v-else style="color: #bbb; font-size: 12px;">dd/mnth/yyyy hr:mnt</span>
                 </div>
                 <v-icon size="small">fas fa-calendar</v-icon>
               </div>
@@ -55,19 +62,27 @@
             </div>
           </v-menu>
         </div>
-        <div class="d-flex" style="gap: 8px">
-          <custom-button @click="closeDialog" size="small"
-            >Batalkan</custom-button
-          >
-          <custom-button
-            size="small"
-            color="secondary"
-            @click="actionSubmit"
-            :disabled="date == null"
-          >
-            Trendingkan Sekarang
-          </custom-button>
-        </div>
+      </div>
+      <div
+        class="d-flex justify-end"
+        style="
+          padding: 12px;
+          gap: 8px;
+          background-color: #f9f9f9;
+          border-top: #eee solid 1px;
+        "
+      >
+        <custom-button @click="closeDialog" size="small"
+          >Batalkan</custom-button
+        >
+        <custom-button
+          size="small"
+          color="secondary"
+          @click="actionSubmit"
+          :disabled="date == null"
+        >
+          Simpan Trending Schedule
+        </custom-button>
       </div>
     </v-card>
   </v-dialog>
@@ -130,9 +145,40 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped src="../style.scss"></style>
-
 <style lang="scss" scoped>
+.notif {
+  // padding: 16px;
+  // display: flex;
+  // align-items: flex-start;
+  // gap: 8px;
+  // position: relative;
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: var(--black-color);
+  }
+  &__label {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: normal;
+    color: black;
+  }
+  &__content {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    color: $charcoal;
+    margin: 8px 0 23px 0;
+  }
+  &__close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    cursor: pointer;
+  }
+}
 .date {
   &__wrapper {
     display: flex;
