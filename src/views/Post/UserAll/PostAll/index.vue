@@ -33,7 +33,10 @@
       <DialogPost
         :dialogPost="dialogPost"
         :loadingDetail="loadingDetail"
-        :tableItemsDialog="tableItemsDialog"
+        :tableItemsDialog="{
+          ...tableItemsDialog,
+          channel: tableItems[dialogPostDataIdx].channel,
+        }"
         :dialogPostMediasIdx="dialogPostMediasIdx"
         @closeDialog="(v) => (dialogPost = v)"
         @priority="(v) => (priority = v)"
@@ -41,6 +44,7 @@
         @changeDialogPostData="changeDialogPostData"
         @changeDialogPostImg="changeDialogPostImg"
         @actionPostFeedAsTrendingById="actionPostFeedAsTrendingById"
+        @openDialogTrending="openDialogTrending"
         @openDialogPushNotif="openDialogPushNotif"
         @updatePriority="updatePriority"
       ></DialogPost>
