@@ -35,10 +35,13 @@
     </div>
 
     <!-- v-if="showFilter" -->
-    <div v-if="tab == 0" class="row no-gutters whitesmoke py-1 px-4">
+    <div
+      v-if="tab == 0 || tab == 1"
+      class="row no-gutters whitesmoke py-1 px-4"
+    >
       <div class="d-flex align-center" style="gap: 8px">
         <span :class="p['font-12']">Sorted By</span>
-        <div style="width: 200px" class="mr-10">
+        <div style="width: 160px" class="mr-10">
           <v-select
             placeholder="Waktu Publish"
             :items="itemsSortBy"
@@ -56,30 +59,32 @@
           ></Autocomplete-Username> -->
         </div>
         <span :class="p['font-12']">Filter</span>
-        <v-select
-          placeholder="Pilih Konten Level"
-          :items="itemsLevelPriority"
-          dense
-          solo
-          flat
-          v-model="levelPriority"
-          hide-details
-          class="white"
-          :class="p['font-12']"
-        ></v-select>
-        <div style="width: 200px">
+        <div style="width: 160px">
+          <v-select
+            placeholder="Pilih Konten Level"
+            :items="itemsLevelPriority"
+            dense
+            solo
+            flat
+            v-model="levelPriority"
+            hide-details
+            class="white"
+            :class="p['font-12']"
+          ></v-select>
+        </div>
+        <div style="width: 160px">
           <Autocomplete-Username
             :itemsFilter="itemsUser"
             @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
           ></Autocomplete-Username>
         </div>
-        <div style="width: 200px">
+        <div style="width: 160px">
           <Autocomplete-Channel
             :itemsFilter="itemsChannel"
             @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
           ></Autocomplete-Channel>
         </div>
-        <div style="width: 200px">
+        <div style="width: 160px">
           <Select-Date></Select-Date>
         </div>
       </div>
@@ -95,15 +100,27 @@
         class="d-flex align-center pl-2"
       >
         <div v-if="isFilter">
-          <custom-button class="ml-2" @click="isResetFilter = true">
+          <custom-button
+            class="ml-2"
+            style="width: 92px"
+            @click="isResetFilter = true"
+          >
             Reset
           </custom-button>
         </div>
         <div v-else>
-          <custom-button color="success" @click="actionFilter">
+          <custom-button
+            color="success"
+            style="width: 122px"
+            @click="actionFilter"
+          >
             Terapkan Filter
           </custom-button>
-          <custom-button class="ml-2" @click="isResetFilter = true">
+          <custom-button
+            class="ml-2"
+            style="width: 92px"
+            @click="isResetFilter = true"
+          >
             Batalkan
           </custom-button>
         </div>
@@ -129,7 +146,12 @@ export default {
   data() {
     return {
       tab: 0,
-      items: ["Semua Postingan", "Trending", "List Push Notif", "Priority Level"],
+      items: [
+        "Semua Postingan",
+        "Trending",
+        "List Push Notif",
+        "Priority Level",
+      ],
       itemsSortBy: ["Waktu Publish", "Priority Level"],
       itemsLevelPriority: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       sortBy: "",

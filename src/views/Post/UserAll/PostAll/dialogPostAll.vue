@@ -61,7 +61,9 @@
               <div class="d-flex flex-column mt-4" style="gap: 16px">
                 <div class="d-flex flex-column">
                   <span class="font-10">Channel</span>
-                  <span class="font-14 black--text">Channel</span>
+                  <span class="font-14 black--text">{{
+                    tableItemsDialog.channel.name
+                  }}</span>
                 </div>
                 <div class="row no-gutters">
                   <div
@@ -158,10 +160,22 @@
                 </v-btn>
               </div>
 
-              <div>
+              <div class="d-flex" style="gap: 8px">
+                <div class="post-actions">
+                  <custom-button
+                    size="small"
+                    color="secondary"
+                    style="width: 110px"
+                    @click="openDialogTrending(tableItemsDialog.id)"
+                    :disabled="tableItemsDialog.channel.name != 'General'"
+                  >
+                    Trendingkan
+                  </custom-button>
+                </div>
                 <custom-button
-                  size="x-small"
+                  size="small"
                   color="secondary"
+                  style="width: 110px"
                   @click="openDialogPushNotif(tableItemsDialog.id)"
                 >
                   Push Notif
@@ -424,6 +438,9 @@ export default {
     },
     openDialogPushNotif(id) {
       this.$emit("openDialogPushNotif", id);
+    },
+    openDialogTrending(id) {
+      this.$emit("openDialogTrending", id);
     },
     actionUpdatePriority() {
       const formattedUTC = moment(this.expiredAt).add(7, "hours").unix();
