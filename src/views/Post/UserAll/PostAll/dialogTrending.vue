@@ -2,11 +2,12 @@
   <v-dialog v-model="dialog" width="400" @click:outside="closeDialog">
     <v-card class="notif">
       <div style="padding: 12px">
-        <div class="notif__label">Pilih waktu trending konten</div>
+        <div class="notif__label">Trendingkan konten ini?</div>
         <div style="font-size: 11px; color: #777" class="mt-3">
           Waktu trending konten tidak bisa diubah jika sudah disimpan, kamu
           hanya bisa menjadwalkan ulang ketika konten yang dijadwalkan untuk
-          trending sudah habis waktu trendingnya.
+          trending sudah habis waktu trendingnya. Jika waktu trending konten
+          tidak ditentukan maka akan default selama 72 jam.
         </div>
         <div
           style="font-size: 11px; color: #777; font-weight: 500"
@@ -28,7 +29,9 @@
                   <span v-if="displayDate">
                     {{ displayDate }}
                   </span>
-                  <span v-else style="color: #bbb; font-size: 12px;">dd/mnth/yyyy hr:mnt</span>
+                  <span v-else style="color: #bbb; font-size: 12px"
+                    >dd/mnth/yyyy hr:mnt</span
+                  >
                 </div>
                 <v-icon size="small">fas fa-calendar</v-icon>
               </div>
@@ -79,7 +82,7 @@
           size="small"
           color="secondary"
           @click="actionSubmit"
-          :disabled="date == null"
+          :loading="loading"
         >
           Simpan Trending Schedule
         </custom-button>
@@ -109,6 +112,9 @@ export default {
   },
   props: {
     dialog: {
+      type: Boolean,
+    },
+    loading: {
       type: Boolean,
     },
   },

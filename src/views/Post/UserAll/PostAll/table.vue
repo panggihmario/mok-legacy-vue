@@ -56,7 +56,7 @@
             <custom-button
               size="x-small"
               color="secondary"
-              @click="actionPostFeedAsTrendingById(item.id)"
+              @click="actionPostFeedAsTrendingById(item.id, idx)"
               :disabled="item.channel.name != 'General'"
             >
               Trendingkan
@@ -107,8 +107,8 @@ export default {
     openDialogDelete(v) {
       this.$emit("openDialogDelete", v);
     },
-    actionPostFeedAsTrendingById(id) {
-      this.$emit("actionPostFeedAsTrendingById", id);
+    actionPostFeedAsTrendingById(id, idx) {
+      this.$emit("actionPostFeedAsTrendingById", { id, idx });
     },
   },
 };
