@@ -35,7 +35,9 @@
         :loadingDetail="loadingDetail"
         :tableItemsDialog="{
           ...tableItemsDialog,
-          channel: tableItems[dialogPostDataIdx].channel,
+          channel: tableItems[dialogPostDataIdx]
+            ? tableItems[dialogPostDataIdx].channel
+            : null,
         }"
         :dialogPostMediasIdx="dialogPostMediasIdx"
         @closeDialog="(v) => (dialogPost = v)"
@@ -64,6 +66,7 @@
 
     <DialogTrending
       :dialog="dialogTrending"
+      :loading="loadingMakeTrending"
       @getEpoch="(v) => (dialogTrendingExpired = v)"
       @closeDialog="dialogTrending = false"
       @actionSubmit="actionPostFeedAsTrendingById"
@@ -163,6 +166,7 @@ export default {
       dialogPushNotifId: "",
       dialogTrending: false,
       dialogTrendingId: "",
+      dialogTrendingIdx: null,
       dialogTrendingExpired: null,
       alertSuccess: false,
       alertError: false,
@@ -185,6 +189,7 @@ export default {
     dialogTrending() {
       if (!this.dialogTrending) {
         this.dialogTrendingId = "";
+        this.dialogTrendingIdx = null;
         this.dialogTrendingExpired = null;
       }
     },
@@ -234,8 +239,9 @@ export default {
       this.dialogDelete = value;
       this.epochExpiredTrending = "";
     },
-    openDialogTrending(id) {
-      this.dialogTrendingId = id;
+    openDialogTrending(v) {
+      this.dialogTrendingId = v.id;
+      this.dialogTrendingIdx = v.idx;
       this.dialogTrending = true;
     },
     getRoute() {
@@ -259,17 +265,17 @@ export default {
         });
     },
     actionPostFeedAsTrendingById() {
-      const formattedUTC = moment(this.dialogTrendingExpired)
-        .add(7, "hours")
-        .unix();
+      const dateExpUnix = moment().add(72, "hours").unix();
+      const formattedUTC = moment(this.dialogTrendingExpired).unix();
       const payload = {
         id: this.dialogTrendingId,
         isPriority: this.priority,
         typePost: "social",
-        trendingExpiredAt:
-          formattedUTC && formattedUTC.toString().length < 13
-            ? Number(`${formattedUTC}000`)
-            : formattedUTC,
+        trendingExpiredAt: !this.dialogTrendingExpired
+          ? Number(`${dateExpUnix}000`)
+          : formattedUTC && formattedUTC.toString().length < 13
+          ? Number(`${formattedUTC}000`)
+          : formattedUTC,
       };
       this.loadingMakeTrending = true;
       return this.postFeedAsTrendingById(payload)
@@ -329,7 +335,8 @@ export default {
           this.alertFailedUpdateLeveling = true;
           this.alertFailedUpdateLevelingMessage =
             err.response.data.code == "4000"
-              ? `Hanya bisa memilih tanggal dan waktu setelah ${d}`
+              ? // ? `Hanya bisa memilih tanggal dan waktu setelah ${d}`
+                `Harap isi level konten antara 1 hingga 10`
               : err.response.data.message;
         });
     },

@@ -161,7 +161,7 @@
               </div>
 
               <div class="d-flex" style="gap: 8px">
-                <div class="post-actions">
+                <!-- <div class="post-actions">
                   <custom-button
                     size="small"
                     color="secondary"
@@ -171,7 +171,7 @@
                   >
                     Trendingkan
                   </custom-button>
-                </div>
+                </div> -->
                 <custom-button
                   size="small"
                   color="secondary"
