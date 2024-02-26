@@ -84,7 +84,7 @@
             @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
           ></Autocomplete-Channel>
         </div>
-        <div style="width: 160px">
+        <div style="width: 180px">
           <Select-Date></Select-Date>
         </div>
       </div>
@@ -101,7 +101,6 @@
       >
         <div v-if="isFilter">
           <custom-button
-            class="ml-2"
             style="width: 92px"
             @click="isResetFilter = true"
           >
