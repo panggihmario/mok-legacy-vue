@@ -9,59 +9,104 @@
       <div style="width: 584px">
         <div class="d-flex mb-4">
           <div v-for="(d, idx) in medias" :key="idx" class="mr-4">
-            <Upload 
-              :id="`post-${idx}`" 
-              @saveImageOnPayload="saveImageOnPayload" 
-              @displayWarning="displayWarning"
-            />
+            <Upload :id="`post-${idx}`" @saveImageOnPayload="saveImageOnPayload" @displayWarning="displayWarning" />
           </div>
         </div>
         <div v-if="isWarning" class="warning-box">
           <v-icon size="15px" color="warning">fas fa-exclamation-triangle</v-icon>
           <div>
-            Video ini memiliki resolusi rendah, klik tombol “Gukanan Video” untuk tetap menggunakan video ini, atau klik “Ubah Video” jika ingin mengganti dengan video lain
+            Video ini memiliki resolusi rendah, klik tombol “Gukanan Video” untuk tetap menggunakan video ini, atau klik
+            “Ubah Video” jika ingin mengganti dengan video lain
           </div>
         </div>
 
         <div v-if="!isMediasExist" class="error-message warning--text">Medias are required!</div>
-    
-        <k-textarea 
-          title="Caption" 
-          v-model="description" 
-          :counter="1000" 
-          rules="required" 
-          rows="8" 
-          errorMessage="Caption is required"
-        />
+
+        <k-textarea title="Caption" v-model="description" :counter="1000" rules="required" rows="8"
+          errorMessage="Caption is required" />
         <v-row>
           <v-col cols="6">
-            <k-autocomplete 
-            :items="channels" 
-            v-model="channel" 
-            itemText="name"
-            label="Channel"
-           />
+            <k-autocomplete :items="channels" v-model="channel" itemText="name" label="Channel" />
+          </v-col>
+        </v-row>
+        {{ selected }}
+        <v-row>
+          <v-col>
+            <v-menu>
+              <template v-slot:activator="{ attrs, on }">
+                <div class="select-label" v-bind="attrs" v-on="on">
+                  <div v-if="selected.length > 0" v-for="s in selected">
+                    <v-chip
+                      close
+                    >
+                      {{ s.label }}
+                    </v-chip>
+                  </div>
+                </div>
+              </template>
+              <v-list>
+                <!-- <v-list-item
+                  v-for="item in labels"
+                  :key="item"
+                  link
+                >
+                  <v-list-item-title v-text="item.label"></v-list-item-title>
+                </v-list-item> -->
+                <v-list-item v-for="item in labels">
+                  <v-list-item-content>
+                    <div>{{ item.label }}</div>
+                    <div v-for="d in item.child">
+                      <v-checkbox
+                        v-model="selected"
+                        :label="d.label"
+                        :value="d"
+                        dense
+                        hide-details
+                      >
+                    </v-checkbox>
+                    </div>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <!-- <v-select
+              :items="labels"
+              multiple
+              outlined
+              dense
+              v-model="selected"
+              item-value="id"
+              item-text="label"
+            >
+              <template v-slot:item="{item}">
+                <v-list-item>
+                  <v-list-item-content>
+                    <div>{{ item.label }}</div>
+                    <div v-for="d in item.child">
+                      <v-checkbox
+                        v-model="selected"
+                        :label="d.label"
+                        :value="d"
+                        dense
+                        hide-details
+                      >
+                    </v-checkbox>
+                    </div>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-select>  -->
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="6">
-            <k-input 
-            label="Link dari postingan ini" 
-            v-model="floatingLinkLabel" 
-            placeholder="Title"
-            rules="min:4|max:30"
-            errorMessage='Min 4 and Max 30'
-          />
+            <k-input label="Link dari postingan ini" v-model="floatingLinkLabel" placeholder="Title" rules="min:4|max:30"
+              errorMessage='Min 4 and Max 30' />
           </v-col>
-          <v-col cols="6" >
-            <k-input 
-              v-model="floatingLink" 
-              label="-"
-              icon="fas fa-link"
-              placeholder="https:/...."
-              :rules="{regex: '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'}"
-              errorMessage='Gunakan format link yang sesuai contohnya https://youtube.com'
-          />
+          <v-col cols="6">
+            <k-input v-model="floatingLink" label="-" icon="fas fa-link" placeholder="https:/...."
+              :rules="{ regex: '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})' }"
+              errorMessage='Gunakan format link yang sesuai contohnya https://youtube.com' />
           </v-col>
         </v-row>
         <div class="error-link" v-if="isLink">Kedua Field Link Harus Diisi</div>
@@ -88,9 +133,10 @@ export default {
   data() {
     return {
       description: "",
-      isLink : false,
-      isWarning : false,
-      isMediasExist : true,
+      selected : [],
+      isLink: false,
+      isWarning: false,
+      isMediasExist: true,
       title: '',
       testUrl: "",
       file: "",
@@ -109,8 +155,71 @@ export default {
       alertSucces: false,
       alertFailed: false,
       dataChannel: null,
-      floatingLinkLabel : '',
-      floatingLink : ''
+      floatingLinkLabel: '',
+      floatingLink: '',
+      labels: [
+        {
+          id: 1,
+          parentId: null,
+          label: "Sport",
+          root: null,
+          totalChild: 3,
+          child: [
+            {
+              id: 11,
+              parentId: 1,
+              label: "Bola",
+              root: "011, 111",
+              totalChild: 0
+            },
+            {
+              id: 12,
+              parentId: 1,
+              label: "Basket",
+              root: "011, 111",
+              totalChild: 0
+            },
+            {
+              id: 13,
+              parentId: 1,
+              label: "Voli",
+              root: "011, 111",
+              totalChild: 0
+            }
+          ]
+        },
+        {
+          id: 2,
+          parentId: null,
+          label: "Entertainment",
+          root: null,
+          level: 0,
+          totalChild: 3,
+          child: [
+            {
+              id: 21,
+              parentId: 2,
+              label: "Musik",
+              root: "011, 111",
+              totalChild: 0
+            },
+            {
+              id: 22,
+              parentId: 2,
+              label: "Film",
+              root: "011, 111",
+              totalChild: 0
+            },
+            {
+              id: 23,
+              parentId: 2,
+              label: "Show",
+              root: "011, 111",
+              totalChild: 0
+            }
+          ]
+        }
+      ]
     };
   },
   computed: {
@@ -133,7 +242,7 @@ export default {
     emitedFilter(value) {
       this.channels = value
     },
-    checkMediasAreExist () {
+    checkMediasAreExist() {
       const payloadMedias = this.medias.filter((m) => {
         if (m.url) {
           return m;
@@ -141,26 +250,26 @@ export default {
       });
       return payloadMedias
     },
-    setPayloadForPostFeed (payloadMedias) {
+    setPayloadForPostFeed(payloadMedias) {
       const payload = {
         type: "social",
         medias: [...payloadMedias],
         product: null,
         channel: this.channel,
         description: this.description,
-        floatingLink :this.floatingLink,
-        floatingLinkLabel : this.floatingLinkLabel
+        floatingLink: this.floatingLink,
+        floatingLinkLabel: this.floatingLinkLabel
       };
       return payload
     },
-    checkFloatingUrl () {
-      if(this.floatingLink && this.floatingLinkLabel  || !this.floatingLink && !this.floatingLinkLabel  ) {
+    checkFloatingUrl() {
+      if (this.floatingLink && this.floatingLinkLabel || !this.floatingLink && !this.floatingLinkLabel) {
         return true
-      }else{
+      } else {
         return false
       }
     },
-    handlePostApi (payload) {
+    handlePostApi(payload) {
       return this.postFeed(payload)
         .then(() => {
           this.alertSucces = true;
@@ -186,27 +295,27 @@ export default {
     submitForm() {
       this.loading = true;
       const medias = this.checkMediasAreExist()
-      if(medias.length > 0) {
+      if (medias.length > 0) {
         this.isMediasExist = true
         const payload = this.setPayloadForPostFeed(medias)
         console.log(payload)
         const isFloatinUrl = this.checkFloatingUrl()
-        if(isFloatinUrl) {
+        if (isFloatinUrl) {
           this.isLink = false
           return this.handlePostApi(payload)
-        }else{
+        } else {
           this.isLink = true
           this.loading = false
           setTimeout(() => {
             this.isLink = false
           }, 1800)
         }
-      }else{
+      } else {
         this.isMediasExist = false
         this.loading = false
         setTimeout(() => {
           this.isMediasExist = true
-        },1500)
+        }, 1500)
       }
     },
     async getResponseChannel() {
@@ -247,6 +356,19 @@ export default {
   font-weight: 500;
   cursor: pointer;
 }
+
+.select-label {
+  border-radius: 6px;
+  border: 1px solid #bbbbbb;
+  background: var(--White, #FFF);
+  padding: 4px;
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .error-link {
   color: $warning;
   transition: 0.3s ease-in-out;
@@ -254,6 +376,7 @@ export default {
   font-weight: 400;
   margin-top: 5px;
 }
+
 .warning-box {
   display: flex;
   align-items: flex-start;
