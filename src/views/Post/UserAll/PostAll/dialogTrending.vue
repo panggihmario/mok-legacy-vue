@@ -84,7 +84,7 @@
           @click="actionSubmit"
           :loading="loading"
         >
-          Simpan Trending Schedule
+          Simpan Pengaturan
         </custom-button>
       </div>
     </v-card>
