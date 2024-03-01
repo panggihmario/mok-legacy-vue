@@ -2,12 +2,10 @@
   <v-dialog v-model="dialog" width="400" @click:outside="closeDialog">
     <v-card class="notif">
       <div style="padding: 12px">
-        <div class="notif__label">Trendingkan konten ini?</div>
+        <div style="font-size: 14px; font-weight: 500;">Tentukan expired konten trending</div>
         <div style="font-size: 11px; color: #777" class="mt-3">
-          Waktu trending konten tidak bisa diubah jika sudah disimpan, kamu
-          hanya bisa menjadwalkan ulang ketika konten yang dijadwalkan untuk
-          trending sudah habis waktu trendingnya. Jika waktu trending konten
-          tidak ditentukan maka akan default selama 72 jam.
+          Konten yang ditrendingkan tanpa mengatur waktu expired dibawah akan
+          secara otomatis expired dalam waktu 3 hari.
         </div>
         <div
           style="font-size: 11px; color: #777; font-weight: 500"
