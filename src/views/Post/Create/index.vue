@@ -29,73 +29,37 @@
             <k-autocomplete :items="channels" v-model="channel" itemText="name" label="Channel" />
           </v-col>
         </v-row>
-        {{ selected }}
         <v-row>
           <v-col>
-            <v-menu>
-              <template v-slot:activator="{ attrs, on }">
-                <div class="select-label" v-bind="attrs" v-on="on">
-                  <div v-if="selected.length > 0" v-for="s in selected">
-                    <v-chip
-                      close
-                    >
-                      {{ s.label }}
-                    </v-chip>
-                  </div>
-                </div>
-              </template>
-              <v-list>
-                <!-- <v-list-item
-                  v-for="item in labels"
-                  :key="item"
-                  link
-                >
-                  <v-list-item-title v-text="item.label"></v-list-item-title>
-                </v-list-item> -->
-                <v-list-item v-for="item in labels">
-                  <v-list-item-content>
-                    <div>{{ item.label }}</div>
-                    <div v-for="d in item.child">
-                      <v-checkbox
-                        v-model="selected"
-                        :label="d.label"
-                        :value="d"
-                        dense
-                        hide-details
-                      >
-                    </v-checkbox>
-                    </div>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <!-- <v-select
-              :items="labels"
-              multiple
-              outlined
-              dense
+            <!-- // <v-list-item-content  color="secondary" dense >
+                    //   <v-list-item-title  v-html="data.item.label"></v-list-item-title>
+                    // </v-list-item-content> -->
+            <div>Feed Label</div>
+            <v-autocomplete
               v-model="selected"
-              item-value="id"
+              :items="testLabels"
+              outlined
+              chips
+              color="secondary"
+              dense
               item-text="label"
+              item-value="label"
+              multiple
+              hide-details
             >
-              <template v-slot:item="{item}">
-                <v-list-item>
-                  <v-list-item-content>
-                    <div>{{ item.label }}</div>
-                    <div v-for="d in item.child">
-                      <v-checkbox
-                        v-model="selected"
-                        :label="d.label"
-                        :value="d"
-                        dense
-                        hide-details
-                      >
-                    </v-checkbox>
+            <template v-slot:item="data">
+                <template v-if="typeof data.item !== 'object'" >
+                  <v-list-item-content> {{ data.item }} </v-list-item-content>
+                </template>
+                <template v-else>
+               
+                    <div>
+                      {{ data.item.label }}
                     </div>
-                  </v-list-item-content>
-                </v-list-item>
+                 
+                </template>
               </template>
-            </v-select>  -->
+          </v-autocomplete>
           </v-col>
         </v-row>
         <v-row>
@@ -157,6 +121,8 @@ export default {
       dataChannel: null,
       floatingLinkLabel: '',
       floatingLink: '',
+      testLabels : [],
+      friends : [],
       labels: [
         {
           id: 1,
@@ -222,6 +188,7 @@ export default {
       ]
     };
   },
+
   computed: {
     ...mapState({
       role: (state) => state.authentication.role,
@@ -336,11 +303,29 @@ export default {
   },
   mounted() {
     this.getResponseChannel();
+    // console.log(this.labels)
+    const labelsData = this.labels
+    let arrLabel = []
+    labelsData.forEach(data => {
+      let group = {
+        header : data.label
+      }
+      arrLabel.push(group)
+      data.child.forEach(c => {
+        arrLabel.push(c)
+      })
+    })
+    this.testLabels = arrLabel
+    // console.log(arrLabel)
   },
 };
 </script>
 
 <style lang="scss" scoped>
+  .v-list .v-list-item--active { 
+  background-color: green!important; 
+}
+
 .image-box {
   width: 104px;
   height: 104px;
