@@ -129,8 +129,8 @@ export default {
       timeout :3000,
       isChanging : false,
       description : '',
-      floatingLink : '',
-      floatingLinkLabel : '',
+      floatingLink : null,
+      floatingLinkLabel : null,
       initDescription: '',
       detailFeed: {
         medias: [],
