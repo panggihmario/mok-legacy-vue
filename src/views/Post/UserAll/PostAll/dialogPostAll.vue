@@ -65,9 +65,11 @@
                     tableItemsDialog.channel.name
                   }}</span>
                 </div>
+                
                 <div class="row no-gutters">
                   <div
-                    class="d-flex flex-column"
+                    v-if="tableItemsDialog.channel.name != 'General'"
+                    class="d-flex flex-column pr-2"
                     :class="isUpdateLeveling ? 'col-3' : 'col'"
                   >
                     <span class="font-10"
@@ -81,14 +83,16 @@
                       hide-details
                     ></v-select>
                   </div>
-                  <div class="col-6 d-flex flex-column ml-2">
+                  <div
+                    class="col-6 d-flex flex-column"
+                  >
                     <span class="font-10">Expired Konten Tayang</span>
                     <DatePicker
                       :displayDateProps="tableItemsDialog.expiredAt"
                       @getEpoch="getEpoch"
                     />
                   </div>
-                  <div v-if="isUpdateLeveling" class="col d-flex justify-end">
+                  <div v-if="isUpdateLeveling" class="col d-flex pl-2">
                     <v-btn
                       color="secondary"
                       class="font-12 text-capitalize mt-4"
@@ -447,7 +451,12 @@ export default {
       const payload = {
         id: this.tableItemsDialog.id,
         params: {
-          levelPriority: this.selectedLevel,
+          levelPriority:
+            this.tableItemsDialog.channel.name == "General"
+              ? this.selectedLevel == null || this.selectedLevel == 0
+                ? 1
+                : this.selectedLevel
+              : this.selectedLevel,
           expiredAt:
             formattedUTC && formattedUTC.toString().length < 13
               ? Number(`${formattedUTC}000`)
