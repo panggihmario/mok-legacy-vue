@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form class="form__container" @submit.prevent="handleSubmit">
     <div class="auth__label">
       <div>
         LOGIN
@@ -7,7 +7,7 @@
       <div class="auth__line"></div>
     </div>
     <!-- <input v-model="loginValues.username" data-test="username"/> -->
-    <div class="grid">
+    <div class="grid gap-lg">
       <k-input 
         placeholder="Username" 
         data-test="username" 
@@ -135,3 +135,12 @@ const validation = function (field: string) {
 }
 
 </script>
+
+<style lang="scss">
+.form {
+  &__container {
+    display: grid;
+    gap: 10px;
+  }
+}
+</style>

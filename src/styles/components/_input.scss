@@ -13,12 +13,13 @@ input {
 
 .input {
   &__gap {
-    gap: 9px;
+    gap: 4px;
   }
   &__container {
     display: grid;
-    margin-bottom: calc(1em * 1.5);
+    // margin-bottom: calc(1em * 1.5);
     position: relative;
+    color: var(--charcoal-color);
   }
 
   &__icon {

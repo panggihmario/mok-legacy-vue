@@ -23,8 +23,9 @@
             :key="index" 
             @click="selectItem(item)"
             class="select__option pointer"
+            :class="{'select__active'  :  item.id === itemValue.id }"
           >  
-            {{ item[labelText as keyof LooseObject]   }} 
+            {{ item[labelText as keyof LooseObject] }} 
           </li>
         </ul>
       </div>
@@ -35,7 +36,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType, computed, toRefs } from 'vue';
-import useDetectOutsideClick from "../../../composable/useDetectOutsideClick"
+import useDetectOutsideClick from "../../../composable/useDetectOutsideClick";
+import type { Ref } from 'vue'
 interface LooseObject {
   [key: string ]: unknown,
 }
@@ -76,6 +78,7 @@ export default defineComponent({
     const root = ref(null)
     const isOpen = ref(false)
     const { labelText , modelValue, mode } = toRefs(props)
+    const itemValue : Ref<LooseObject> = ref({})
     
     const openOptions = function () {
       isOpen.value = !isOpen.value
@@ -105,11 +108,13 @@ export default defineComponent({
     const selectItem = function (item :LooseObject ) {
       emit('update:modelValue', item)
       isOpen.value = false
+      itemValue.value = item
     }
 
     return {
       openOptions,
       selectItem,
+      itemValue,
       isOpen,
       root,
       value,
@@ -121,10 +126,16 @@ export default defineComponent({
 
 <style lang="scss" >
 .select {
+  &__active {
+    background-color: var(--primary-low-color);
+    border-radius: 4px;
+  }
   &__wrapper {
     position: relative;
     max-width: toRem(300);
     color: var(--charcoal-color);
+    display: grid;
+    gap: 4px
   }
   &__filled-md {
     @extend .input__base;
@@ -154,7 +165,7 @@ export default defineComponent({
     box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
     border-radius: 4px;
     padding: 10px;
-    z-index: 10;
+    z-index: 5;
     left: 0;
     width: 100%;
     & ul {
@@ -164,11 +175,11 @@ export default defineComponent({
   }
   &__options-lg {
     @extend .select__options;
-    top: calc($lg-height + 8px);
+    top: calc($lg-height + 18px);
   }
   &__options-md {
     @extend .select__options;
-    top: calc($md-height + 8px);
+    top: calc($md-height + 18px);
   }
   &__option {
     font-size: $text-lg;

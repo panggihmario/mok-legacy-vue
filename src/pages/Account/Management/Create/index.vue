@@ -19,40 +19,100 @@
           />
         </div>
       </div>
-      <k-input 
-        placeholder="Nama User" 
-        data-test="username"
-        label="Nama User" size="md" 
+      <k-select 
+        placeholder="Pilih jenis Akun" 
+        mode="outline"
+        data-test="role"
+        label="Role" 
+        size="md" 
+        :items="items"
+        labelText="label"
+        v-model="item"
       />
       <k-select 
-        placeholder="Nama User" 
+        placeholder="Pilih salah satu" 
         mode="outline"
         data-test="username"
-        label="Nama User" size="md" 
+        label="Jenis Kelamin" 
+        size="md" 
+        :items="genders"
+        labelText="name"
+        v-model=gender
+      />
+      <k-input
+        placeholder="Nama user"
+        label="Nama User"
+        size="md"
+        :counter="100"
       />
     </div>
-   
-    
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { ResponseUpload } from "@/models"
-
+import { useAccountStore } from "../../../../stores/account"
 const props = defineProps({
   type : String
 })
-
+const store = useAccountStore()
 const breadcrumbs = ref([
-  { name: "Manage Account" },
-  { name: "List Management" },
-  { name: "Create Management User" },
+  { 
+    name: "Manage Account",
+    id : 0
+  },
+  { 
+    name: "List Management",
+    id : 1
+  },
+  { 
+    name: "Create Management User" ,
+    id : 2
+  },
 ]);
 
+const genders = ref([
+  {
+    name : 'Laki-laki',
+    value : 'MALE',
+    id : 0
+  },
+  {
+    name : 'Wanita',
+    value : 'FEMALE',
+    id : 1
+  }
+])
+
+
+
+const item = ref({})
+const items = ref([])
+const gender = ref({})
 const handleResponse = function (data : ResponseUpload) {
   console.log(data)
 }
+
+const getRoles = function () {
+  return store.fetchRoles('MANAGEMENT')
+    .then(response => {
+      const newResponse = response.map((r : string, idx : number) => {
+        return {
+          id : idx,
+          label : r,
+        }
+      })
+      console.log(newResponse)
+      items.value = newResponse
+    })
+    .catch(err => {
+      console.log(err)
+    })
+
+}
+
+onMounted(getRoles)
 
 </script>
 

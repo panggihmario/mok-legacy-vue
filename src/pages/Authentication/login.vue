@@ -1,46 +1,6 @@
 <template>
   <div class="container">
     <div class="auth__card">
-      <!-- <form @submit.prevent="handleSubmit">
-        <div class="auth__label">
-          <div>
-            LOGIN
-          </div>
-          <div class="auth__line"></div>
-        </div>
-        <div class="grid">
-          <k-input 
-            placeholder="Username" 
-            data-test="username"
-            label="Username" size="lg" 
-            v-model="loginValues.username"
-            :errorMessage="errorMessages.username" 
-            @validate="validation('username')" 
-          />
-          <k-input 
-            placeholder="Password" 
-            label="Password" 
-            size="lg" 
-            :type="typeInput" 
-            v-model="loginValues.password"
-            @validate="validation('password')" 
-            @onClickEvent="showPassword" 
-            icon
-            data-test="password"
-            :errorMessage="errorMessages.password" 
-          />
-          <div>
-            <k-button  
-              color="primary" 
-              :loading="loading"
-              type="submit"
-              data-test="submit"
-            >
-              Login
-            </k-button>
-          </div>
-        </div>
-      </form> -->
       <FormLogin/>
     </div>
   </div>

@@ -26,6 +26,7 @@
         <div v-if="errorMessage" class="input__message"> {{ errorMessage }} </div>
       </Transition>
     </div>
+    <!-- <div>0/100</div> -->
   </div>
 
 </template>
