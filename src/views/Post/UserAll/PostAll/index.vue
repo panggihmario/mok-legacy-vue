@@ -13,12 +13,12 @@
     </div>
 
     <div class="d-flex justify-end align-center mt-4 font-12">
-      <!-- <div class="pl-4">
+      <div class="col d-flex align-center pl-4">
         <span class="silver--text"
           >Total Post :
           <span class="black--text">{{ totalElements }}</span>
         </span>
-      </div> -->
+      </div>
       <v-pagination
         v-model="page"
         :length="totalPages"

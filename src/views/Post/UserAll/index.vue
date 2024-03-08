@@ -415,7 +415,7 @@ export default {
     handleGetListUserPostNotificationFilter() {
       let payload = {
         page: this.pageNotification - 1,
-        size: 25,
+        size: 10,
         sort: "createAt,desc",
         ...this.dataFilter,
       };
@@ -444,7 +444,7 @@ export default {
     handleGetListUserPostNotification() {
       let payload = {
         page: this.pageNotification - 1,
-        size: 25,
+        size: 10,
         sort: "createAt,desc",
       };
       this.loadingListNotification = true;
@@ -497,13 +497,13 @@ export default {
       else if (this.tab == 2) {
         if (type == "filter") {
           this.isFilter = true;
-          if (this.tab == 0 && this.pageCandidate == 2) {
-            this.routerPushGetRoute("notification", 2, { filter: true }, true);
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute("notification", 1, { filter: true }, true);
           } else {
-            this.routerPushGetRoute("notification", 2, { filter: true }, true);
+            this.routerPushGetRoute("notification", 1, { filter: true }, true);
           }
         } else {
-          this.routerPushGetRoute("notification", 2, {}, false);
+          this.routerPushGetRoute("notification", 1, {}, false);
         }
       } else if (this.tab == 3) {
         if (type == "filter") {
