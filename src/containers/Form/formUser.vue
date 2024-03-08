@@ -48,7 +48,6 @@
               :items="genderType"
               v-model="data.gender"
               :value="data.gender"
-              rules="required"
               dense
             />
             <custom-select
@@ -100,7 +99,6 @@
             name="Email"
             :value="data.email"
             v-model="data.email"
-            rules="required|email"
           />
           <custom-input
             :label="$t('input.phone')"
