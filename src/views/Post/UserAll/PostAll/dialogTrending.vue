@@ -2,7 +2,9 @@
   <v-dialog v-model="dialog" width="400" @click:outside="closeDialog">
     <v-card class="notif">
       <div style="padding: 12px">
-        <div style="font-size: 14px; font-weight: 500;">Tentukan expired konten trending</div>
+        <div style="font-size: 14px; font-weight: 500">
+          Tentukan expired konten trending
+        </div>
         <div style="font-size: 11px; color: #777" class="mt-3">
           Konten yang ditrendingkan tanpa mengatur waktu expired dibawah akan
           secara otomatis expired dalam waktu 3 hari.
@@ -11,7 +13,7 @@
           style="font-size: 11px; color: #777; font-weight: 500"
           class="mt-3"
         >
-          Trendingkan konten pada
+          Set waktu expired trending
         </div>
         <div class="mt-1">
           <v-menu
@@ -118,7 +120,7 @@ export default {
   },
   computed: {
     currentDate() {
-      const d = moment().add(3, "days").format("YYYY-MM-DD");
+      const d = moment().add(0, "days").format("YYYY-MM-DD");
       return d;
     },
     maxDate() {
