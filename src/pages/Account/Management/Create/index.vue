@@ -70,13 +70,14 @@
         placeholder="Email" 
         label="Email" 
         size="md" 
-        :type="typeInput"
       />
       <k-input 
-        placeholder="Nomor Telepon" 
-        label="Email" 
+        placeholder="+62 8123 xxxx xxxx" 
+        label="Nomor Telepon" 
         size="md" 
-        :type="typeInput"
+      />
+      <k-textarea
+        label="Note"
       />
     </div>
   </div>
