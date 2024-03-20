@@ -44,6 +44,39 @@
         label="Nama User"
         size="md"
         :counter="100"
+        v-model="name"
+      />
+      <k-input 
+        placeholder="Password" 
+        label="Password" 
+        size="md" 
+        :type="typeInput"
+        @validate="validation('password')" 
+        @onClickEvent="showPassword" 
+        icon
+        data-test="password" 
+      />
+      <k-input 
+        placeholder="Konfirmasi Password" 
+        label="Konfirmasi Password" 
+        size="md" 
+        :type="typeInput"
+        @validate="validation('password')" 
+        @onClickEvent="showPassword" 
+        icon
+        data-test="password" 
+      />
+      <k-input 
+        placeholder="Email" 
+        label="Email" 
+        size="md" 
+        :type="typeInput"
+      />
+      <k-input 
+        placeholder="Nomor Telepon" 
+        label="Email" 
+        size="md" 
+        :type="typeInput"
       />
     </div>
   </div>
@@ -90,6 +123,8 @@ const genders = ref([
 const item = ref({})
 const items = ref([])
 const gender = ref({})
+const name = ref('')
+const typeInput = ref('password')
 const handleResponse = function (data : ResponseUpload) {
   console.log(data)
 }
@@ -109,7 +144,24 @@ const getRoles = function () {
     .catch(err => {
       console.log(err)
     })
+}
 
+const showPassword = function (value : boolean) {
+  if (value) {
+    typeInput.value = 'password'
+  } else {
+    typeInput.value = 'text'
+  }
+}
+
+const validation = function (field: string) {
+  // loginSchema.validateAt(field, loginValues)
+  //   .then(() => {
+  //     errorMessages[field as keyof valueType] = "";
+  //   })
+  //   .catch(err => {
+  //     errorMessages[field as keyof valueType] = err.message;
+  //   });
 }
 
 onMounted(getRoles)

@@ -68,6 +68,9 @@ export default {
     const onLeave = function () {
       const el = document.getElementById('aside')
       el?.classList.remove('aside-active')
+      menus.forEach(menu => {
+          menu.isOpen = false
+      })
     }
 
     const logout = function () {

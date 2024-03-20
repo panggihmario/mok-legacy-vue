@@ -16,6 +16,7 @@
           @blur="$emit('validate')" 
           @input="$emit('validate')"
           v-bind="$attrs"
+          :maxlength="counter ? counter  : ''"
         />
         <div @click="showPassword" v-if="icon" class="input__icon">
           <i v-if="isOpen" class="fa-regular fa-eye has-error"></i>
@@ -26,7 +27,7 @@
         <div v-if="errorMessage" class="input__message"> {{ errorMessage }} </div>
       </Transition>
     </div>
-    <!-- <div>0/100</div> -->
+    <div v-if="counter" class="input__counter">{{value?.length}}/100</div>
   </div>
 
 </template>
@@ -62,6 +63,9 @@ export default defineComponent({
     },
     errorMessage: {
       type: String
+    },
+    counter : {
+      type : Number
     }
 
   },
