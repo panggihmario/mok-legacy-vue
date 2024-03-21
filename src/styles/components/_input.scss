@@ -9,8 +9,21 @@ input, textarea {
   display: block;
   background-color: inherit;
   color: inherit;
+  resize: none;
 }
-
+textarea {
+  font-size: $text-lg;
+  font-weight: $font-normal;
+  font-style: normal;
+  font-family: 'Roboto', sans-serif;
+}
+.textarea {
+  &__border {
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 9px;
+  }
+}
 .input {
   &__gap {
     gap: 4px;

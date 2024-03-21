@@ -40,7 +40,7 @@ defineProps({
 
 .button {
   border: none;
-  box-shadow: 0px 2px 4px rgba(56, 231, 255, 0.24);
+  // box-shadow: 0px 2px 4px rgba(9, 9, 9, 0.24);
   border-radius: 8px;
   cursor: pointer;
   position: relative;
@@ -89,7 +89,7 @@ $colorList : (
   'primary' var(--primary-color) var(--white-color),
   'secondary' var(--secondary-color) var(--white-color),
   'kellygreen' var(--kellygreen-color) var(--white-color),
-  'whitesnow' var(--whitensnow-color) var(--charcoal-color)
+  'whitesnow' var(--whitesnow-color) var(--charcoal-color)
 );
 
 @each $name in $colorList {

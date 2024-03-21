@@ -4,7 +4,7 @@
     :class="label &&  'input__gap' "
   >
     <div class="input__label">{{ label }}</div>
-    <div class="input__box input__outline" id="input">
+    <div class="input__box input__outline textarea__border" id="input">
       <textarea
         v-bind="$attrs"
       />

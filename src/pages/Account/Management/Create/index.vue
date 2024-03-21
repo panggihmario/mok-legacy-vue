@@ -78,7 +78,13 @@
       />
       <k-textarea
         label="Note"
+        rows="4"
+        placeholder="Note"
       />
+      <div>
+        <k-button color="whitesnow">Batalkan</k-button>
+        <k-button color="kellygreen">Tambah Akun</k-button>
+      </div>
     </div>
   </div>
 </template>
