@@ -79,6 +79,7 @@ export default {
     }),
     handleGetListRole() {
       const payload = 'MANAGEMENT'
+       
       return this.getListRole(payload).then((response) => {
         const listRole = response.data.data;
         for (let i = 0; i < listRole.length; i++) {
