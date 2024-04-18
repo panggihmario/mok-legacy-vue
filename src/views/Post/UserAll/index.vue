@@ -40,7 +40,7 @@
           @updatePriority="handleGetListUserPost"
         ></Post-All>
       </div>
-      <!-- <div v-else-if="tab == 1">
+      <div v-else-if="tab == 1">
         <Post-All-Trending
           :tableItems="tableItemsActive"
           :loadingList="loadingListActive"
@@ -50,8 +50,8 @@
           @actionPushNotif="actionPushNotif"
           @refreshPriority="refreshPriority"
         ></Post-All-Trending>
-      </div> -->
-      <div v-else-if="tab == 1">
+      </div>
+      <div v-else-if="tab == 2">
         <Post-Notification
           :tableItems="tableItemsNotification"
           :loadingList="loadingListNotification"
@@ -61,7 +61,7 @@
           @actionPushNotif="actionPushNotif"
         ></Post-Notification>
       </div>
-      <div v-else-if="tab == 2">
+      <div v-else-if="tab == 3">
         <Priority-Level
           :tableItems="tableItemsPriorityLevel"
           :loadingList="loadingListPriorityLevel"
@@ -255,7 +255,7 @@ export default {
           this.isFilter = true;
         }
         this.pageNotification = this.$route.params.page;
-        this.tab = 1;
+        this.tab = 2;
         if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
           this.handleSearchAccount("a");
           this.handleSearchChannel("a");
@@ -266,7 +266,7 @@ export default {
           this.isFilter = true;
         }
         this.pageNotification = this.$route.params.page;
-        this.tab = 2;
+        this.tab = 3;
         if (this.itemsUser.length == 0 && this.itemsChannel.length == 0) {
           this.handleSearchAccount("a");
           this.handleSearchChannel("a");
@@ -415,7 +415,7 @@ export default {
     handleGetListUserPostNotificationFilter() {
       let payload = {
         page: this.pageNotification - 1,
-        size: 25,
+        size: 10,
         sort: "createAt,desc",
         ...this.dataFilter,
       };
@@ -444,7 +444,7 @@ export default {
     handleGetListUserPostNotification() {
       let payload = {
         page: this.pageNotification - 1,
-        size: 25,
+        size: 10,
         sort: "createAt,desc",
       };
       this.loadingListNotification = true;
@@ -482,19 +482,19 @@ export default {
           this.routerPushGetRoute("candidates", 1, {}, false);
         }
       }
-      // else if (this.tab == 1) {
-      //   if (type == "filter") {
-      //     this.isFilter = true;
-      //     if (this.tab == 0 && this.pageCandidate == 1) {
-      //       this.routerPushGetRoute("trending", 1, { filter: true }, true);
-      //     } else {
-      //       this.routerPushGetRoute("trending", 1, { filter: true }, true);
-      //     }
-      //   } else {
-      //     this.routerPushGetRoute("trending", 1, {}, false);
-      //   }
-      // }
       else if (this.tab == 1) {
+        if (type == "filter") {
+          this.isFilter = true;
+          if (this.tab == 0 && this.pageCandidate == 1) {
+            this.routerPushGetRoute("trending", 1, { filter: true }, true);
+          } else {
+            this.routerPushGetRoute("trending", 1, { filter: true }, true);
+          }
+        } else {
+          this.routerPushGetRoute("trending", 1, {}, false);
+        }
+      }
+      else if (this.tab == 2) {
         if (type == "filter") {
           this.isFilter = true;
           if (this.tab == 0 && this.pageCandidate == 1) {
@@ -505,7 +505,7 @@ export default {
         } else {
           this.routerPushGetRoute("notification", 1, {}, false);
         }
-      } else if (this.tab == 2) {
+      } else if (this.tab == 3) {
         if (type == "filter") {
           this.isFilter = true;
           if (this.tab == 0 && this.pageCandidate == 1) {
@@ -638,22 +638,22 @@ export default {
         }
         this.pageCandidate = v;
       }
-      // else if (this.tab == 1) {
-      //   if (this.isFilter) {
-      //     this.routerPushGetRoute("trending", v, { filter: this.isFilter });
-      //   } else {
-      //     this.routerPushGetRoute("trending", v);
-      //   }
-      //   this.pageActive = v;
-      // }
       else if (this.tab == 1) {
+        if (this.isFilter) {
+          this.routerPushGetRoute("trending", v, { filter: this.isFilter });
+        } else {
+          this.routerPushGetRoute("trending", v);
+        }
+        this.pageActive = v;
+      }
+      else if (this.tab == 2) {
         if (this.isFilter) {
           this.routerPushGetRoute("notification", v, { filter: this.isFilter });
         } else {
           this.routerPushGetRoute("notification", v);
         }
         this.pageNotification = v;
-      } else if (this.tab == 2) {
+      } else if (this.tab == 3) {
         if (this.isFilter) {
           this.routerPushGetRoute("priority-level", v, {
             filter: this.isFilter,

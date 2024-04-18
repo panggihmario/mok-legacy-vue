@@ -51,9 +51,17 @@
           </td>
           <td
             class="font-12 d-flex justify-space-around align-center grey--text font-weight-medium"
+            style="gap: 10px"
           >
             <custom-button
-              class="mr-2"
+              size="x-small"
+              color="secondary"
+              @click="actionPostFeedAsTrendingById(item.id, idx)"
+              :disabled="item.channel.name != 'General'"
+            >
+              Trendingkan
+            </custom-button>
+            <custom-button
               size="x-small"
               color="secondary"
               @click="openDialogPushNotif(item.id)"
@@ -98,6 +106,9 @@ export default {
     },
     openDialogDelete(v) {
       this.$emit("openDialogDelete", v);
+    },
+    actionPostFeedAsTrendingById(id, idx) {
+      this.$emit("actionPostFeedAsTrendingById", { id, idx });
     },
   },
 };

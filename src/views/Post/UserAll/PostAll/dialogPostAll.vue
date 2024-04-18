@@ -61,11 +61,15 @@
               <div class="d-flex flex-column mt-4" style="gap: 16px">
                 <div class="d-flex flex-column">
                   <span class="font-10">Channel</span>
-                  <span class="font-14 black--text">Channel</span>
+                  <span class="font-14 black--text">{{
+                    tableItemsDialog.channel.name
+                  }}</span>
                 </div>
+                
                 <div class="row no-gutters">
                   <div
-                    class="d-flex flex-column"
+                    v-if="tableItemsDialog.channel.name != 'General'"
+                    class="d-flex flex-column pr-2"
                     :class="isUpdateLeveling ? 'col-3' : 'col'"
                   >
                     <span class="font-10"
@@ -79,14 +83,16 @@
                       hide-details
                     ></v-select>
                   </div>
-                  <div class="col-6 d-flex flex-column ml-2">
+                  <div
+                    class="col-6 d-flex flex-column"
+                  >
                     <span class="font-10">Expired Konten Tayang</span>
                     <DatePicker
                       :displayDateProps="tableItemsDialog.expiredAt"
                       @getEpoch="getEpoch"
                     />
                   </div>
-                  <div v-if="isUpdateLeveling" class="col d-flex justify-end">
+                  <div v-if="isUpdateLeveling" class="col d-flex pl-2">
                     <v-btn
                       color="secondary"
                       class="font-12 text-capitalize mt-4"
@@ -158,10 +164,22 @@
                 </v-btn>
               </div>
 
-              <div>
+              <div class="d-flex" style="gap: 8px">
+                <!-- <div class="post-actions">
+                  <custom-button
+                    size="small"
+                    color="secondary"
+                    style="width: 110px"
+                    @click="openDialogTrending(tableItemsDialog.id)"
+                    :disabled="tableItemsDialog.channel.name != 'General'"
+                  >
+                    Trendingkan
+                  </custom-button>
+                </div> -->
                 <custom-button
-                  size="x-small"
+                  size="small"
                   color="secondary"
+                  style="width: 110px"
                   @click="openDialogPushNotif(tableItemsDialog.id)"
                 >
                   Push Notif
@@ -425,12 +443,20 @@ export default {
     openDialogPushNotif(id) {
       this.$emit("openDialogPushNotif", id);
     },
+    openDialogTrending(id) {
+      this.$emit("openDialogTrending", id);
+    },
     actionUpdatePriority() {
       const formattedUTC = moment(this.expiredAt).add(7, "hours").unix();
       const payload = {
         id: this.tableItemsDialog.id,
         params: {
-          levelPriority: this.selectedLevel,
+          levelPriority:
+            this.tableItemsDialog.channel.name == "General"
+              ? this.selectedLevel == null || this.selectedLevel == 0
+                ? 1
+                : this.selectedLevel
+              : this.selectedLevel,
           expiredAt:
             formattedUTC && formattedUTC.toString().length < 13
               ? Number(`${formattedUTC}000`)

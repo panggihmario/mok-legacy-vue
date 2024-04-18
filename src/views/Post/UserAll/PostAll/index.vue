@@ -8,16 +8,17 @@
         @openDialogPost="openDialogPost"
         @openDialogPushNotif="openDialogPushNotif"
         @openDialogDelete="openDialogDelete"
+        @actionPostFeedAsTrendingById="openDialogTrending"
       ></Table-List>
     </div>
 
     <div class="d-flex justify-end align-center mt-4 font-12">
-      <!-- <div class="pl-4">
+      <div class="col d-flex align-center pl-4">
         <span class="silver--text"
           >Total Post :
           <span class="black--text">{{ totalElements }}</span>
         </span>
-      </div> -->
+      </div>
       <v-pagination
         v-model="page"
         :length="totalPages"
@@ -32,7 +33,12 @@
       <DialogPost
         :dialogPost="dialogPost"
         :loadingDetail="loadingDetail"
-        :tableItemsDialog="tableItemsDialog"
+        :tableItemsDialog="{
+          ...tableItemsDialog,
+          channel: tableItems[dialogPostDataIdx]
+            ? tableItems[dialogPostDataIdx].channel
+            : null,
+        }"
         :dialogPostMediasIdx="dialogPostMediasIdx"
         @closeDialog="(v) => (dialogPost = v)"
         @priority="(v) => (priority = v)"
@@ -40,6 +46,7 @@
         @changeDialogPostData="changeDialogPostData"
         @changeDialogPostImg="changeDialogPostImg"
         @actionPostFeedAsTrendingById="actionPostFeedAsTrendingById"
+        @openDialogTrending="openDialogTrending"
         @openDialogPushNotif="openDialogPushNotif"
         @updatePriority="updatePriority"
       ></DialogPost>
@@ -55,6 +62,14 @@
       :dialogPushNotif="dialogPushNotif"
       @closeDialogPushNotif="closeDialogPushNotif"
       @actionPushNotif="actionPushNotif"
+    />
+
+    <DialogTrending
+      :dialog="dialogTrending"
+      :loading="loadingMakeTrending"
+      @getEpoch="(v) => (dialogTrendingExpired = v)"
+      @closeDialog="dialogTrending = false"
+      @actionSubmit="actionPostFeedAsTrendingById"
     />
 
     <v-snackbar
@@ -113,6 +128,7 @@ import DialogPost from "./dialogPostAll.vue";
 import DialogDelete from "./dialogDelete.vue";
 import DatePicker from "./datePicker.vue";
 import dialogPushNotifVue from "./dialogPushNotif.vue";
+import DialogTrending from "./dialogTrending.vue";
 
 export default {
   props: ["tableItems", "loadingList", "totalPages", "totalElements"],
@@ -122,6 +138,7 @@ export default {
     DialogDelete,
     DatePicker,
     DialogPushNotif: dialogPushNotifVue,
+    DialogTrending,
   },
   data() {
     return {
@@ -147,6 +164,10 @@ export default {
       page: 1,
       dialogPushNotif: false,
       dialogPushNotifId: "",
+      dialogTrending: false,
+      dialogTrendingId: "",
+      dialogTrendingIdx: null,
+      dialogTrendingExpired: null,
       alertSuccess: false,
       alertError: false,
       dialogDelete: false,
@@ -164,6 +185,13 @@ export default {
     },
     dialogPost() {
       // this.stopVideo();
+    },
+    dialogTrending() {
+      if (!this.dialogTrending) {
+        this.dialogTrendingId = "";
+        this.dialogTrendingIdx = null;
+        this.dialogTrendingExpired = null;
+      }
     },
     dialogPostDataIdx() {
       // this.stopVideo();
@@ -211,6 +239,11 @@ export default {
       this.dialogDelete = value;
       this.epochExpiredTrending = "";
     },
+    openDialogTrending(v) {
+      this.dialogTrendingId = v.id;
+      this.dialogTrendingIdx = v.idx;
+      this.dialogTrending = true;
+    },
     getRoute() {
       this.page = parseInt(this.$route.params.page);
     },
@@ -231,19 +264,26 @@ export default {
           this.loadingDetail = false;
         });
     },
-    actionPostFeedAsTrendingById(id) {
+    actionPostFeedAsTrendingById() {
+      const dateExpUnix = moment().add(72, "hours").unix();
+      const formattedUTC = moment(this.dialogTrendingExpired).unix();
       const payload = {
-        id: id,
+        id: this.dialogTrendingId,
         isPriority: this.priority,
-        // trendingExpiredAt: this.epochExpiredTrending,
+        typePost: "social",
+        trendingExpiredAt: !this.dialogTrendingExpired
+          ? Number(`${dateExpUnix}000`)
+          : formattedUTC && formattedUTC.toString().length < 13
+          ? Number(`${formattedUTC}000`)
+          : formattedUTC,
       };
-      // this.stopVideo();
       this.loadingMakeTrending = true;
       return this.postFeedAsTrendingById(payload)
         .then((response) => {
           this.$emit("successPostTrending");
           this.loadingMakeTrending = false;
           this.dialogPost = false;
+          this.dialogTrending = false;
           this.alertSuccess = true;
         })
         .catch((err) => {
@@ -295,7 +335,8 @@ export default {
           this.alertFailedUpdateLeveling = true;
           this.alertFailedUpdateLevelingMessage =
             err.response.data.code == "4000"
-              ? `Hanya bisa memilih tanggal dan waktu setelah ${d}`
+              ? // ? `Hanya bisa memilih tanggal dan waktu setelah ${d}`
+                `Harap isi level konten antara 1 hingga 10`
               : err.response.data.message;
         });
     },

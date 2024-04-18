@@ -119,6 +119,7 @@ export default {
       alertSucces: false,
       alertFailed: false,
       dataChannel: null,
+<<<<<<< HEAD
       floatingLinkLabel: '',
       floatingLink: '',
       testLabels : [],
@@ -186,6 +187,10 @@ export default {
           ]
         }
       ]
+=======
+      floatingLinkLabel : null,
+      floatingLink : null
+>>>>>>> beforeDev
     };
   },
 
