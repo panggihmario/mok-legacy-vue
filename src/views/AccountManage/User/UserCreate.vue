@@ -94,7 +94,13 @@ export default {
     },
     async onSubmit(payload) {
       this.loading = true;
-      const response = await this.createUser(payload);
+      const username = payload.username.toLowerCase()
+      const temp = {
+        ...payload,
+        username
+      }
+      console.log(temp)
+      const response = await this.createUser(temp);
       if (response.status === 201) {
         this.loading = false;
         this.alertSuccess = true;

@@ -111,10 +111,14 @@ export default {
       });
     },
     async onSubmit(params) {
+      const username = params.username.toLowerCase()
       const id = this.$route.params.id;
       const payload = {
         id,
-        data: params,
+        data: {
+          ...params,
+          username
+        },
       };
       this.loading = true;
       const response = await this.updateAccount(payload);
