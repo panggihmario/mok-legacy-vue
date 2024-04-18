@@ -150,6 +150,12 @@ export default [
         role: ["ROLE_SELEB", "ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
         active : false
       },
+      {
+        title : 'Manage Label',
+        path : '/post/label',
+        role : ['ROLE_ADMIN'],
+        active : false
+      }
     ],
   },
   {
