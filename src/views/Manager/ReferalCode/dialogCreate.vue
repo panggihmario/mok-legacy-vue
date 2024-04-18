@@ -58,7 +58,7 @@ export default {
       payloadCode : {
         accountId : '',
         referralCode: '',
-        totalTarget : 1000,
+        totalTarget : 20000000,
         type : 'SOCIAL'
       }
     }
