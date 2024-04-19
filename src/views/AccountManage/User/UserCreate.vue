@@ -5,6 +5,8 @@
       :data="data"
       :loading="loading"
       @onSubmit="onSubmit"
+      @setUsername="setUsername"
+      @setEmail="setEmail"
       :listAccountType="listAccountType"
       :listBadge="listBadge"
       type="create"
@@ -76,6 +78,12 @@ export default {
       createUser: "account/createUser",
       getListRole: "account/getListRole",
     }),
+    setUsername (value) {
+      this.data.username = value
+    },
+    setEmail(value) {
+      this.data.email = value
+    },
     handleGetListRole() {
       const payload = "EXTERNAL";
       return this.getListRole(payload).then((response) => {
@@ -95,12 +103,7 @@ export default {
     async onSubmit(payload) {
       this.loading = true;
       const username = payload.username.toLowerCase()
-      const temp = {
-        ...payload,
-        username
-      }
-      console.log(temp)
-      const response = await this.createUser(temp);
+      const response = await this.createUser(payload);
       if (response.status === 201) {
         this.loading = false;
         this.alertSuccess = true;

@@ -34,7 +34,7 @@
             <!-- // <v-list-item-content  color="secondary" dense >
                     //   <v-list-item-title  v-html="data.item.label"></v-list-item-title>
                     // </v-list-item-content> -->
-            <div>Feed Label</div>
+            <!-- <div>Feed Label</div>
             <v-autocomplete
               v-model="selected"
               :items="testLabels"
@@ -59,7 +59,7 @@
                  
                 </template>
               </template>
-          </v-autocomplete>
+          </v-autocomplete> -->
           </v-col>
         </v-row>
         <v-row>
@@ -119,7 +119,6 @@ export default {
       alertSucces: false,
       alertFailed: false,
       dataChannel: null,
-<<<<<<< HEAD
       floatingLinkLabel: '',
       floatingLink: '',
       testLabels : [],
@@ -187,10 +186,6 @@ export default {
           ]
         }
       ]
-=======
-      floatingLinkLabel : null,
-      floatingLink : null
->>>>>>> beforeDev
     };
   },
 
