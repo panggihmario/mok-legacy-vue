@@ -6,19 +6,32 @@
       hide-default-footer
       disable-sort
       disable-filtering
+      style="color: #767676; font-size: 12px !important; font-weight: 500"
       :items-per-page="10"
-      class="grey--text"
       :items="items"
       :loading="isLoading"
     >
+      <template v-slot:item.donationOriginalTitle="{ item }">
+        <div :class="[table.list]">
+          {{ item.donationOriginalTitle }}
+        </div>
+      </template>
+      <template v-slot:item.initiatorName="{ item }">
+        <div :class="[table.list]">
+          {{ item.initiatorName }}
+        </div>
+      </template>
       <template v-slot:item.title="{ item }">
         <div :class="[table.list, table.ellipsis]">{{ item.title }}</div>
       </template>
       <template v-slot:item.description="{ item }">
         <div :class="[table.list, table.ellipsis]">{{ item.description }}</div>
       </template>
+      <template v-slot:item.createdBy="{ item }">
+        <div :class="[table.list]">{{ item.createdBy }}</div>
+      </template>
       <template v-slot:item.createAt="{ item }">
-        <span>{{ convertToHumanDate(item.createAt) }}</span>
+        <div :class="[table.list]">{{ convertToHumanDate(item.createAt) }}</div>
       </template>
     </v-data-table>
 
