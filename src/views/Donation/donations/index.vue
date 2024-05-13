@@ -3,176 +3,235 @@
     <HeaderContent
       label="List Penggalangan Dana"
       :list="crumbs"
-    >
+    ></HeaderContent>
+
+    <section class="d-flex justify-space-between align-center">
+      <div>
+        <v-tabs v-model="tab">
+          <v-tab
+            v-for="item in listTab"
+            :key="item"
+            class="text-capitalize"
+            style="letter-spacing: 0"
+            >{{ item }}</v-tab
+          >
+        </v-tabs>
+      </div>
       <div :class="d.header">
-        <custom-button style="margin-top : auto" size="x-medium" v-if="!isExpand" @click="openExpand" >
+        <custom-button
+          size="x-medium"
+          v-if="!isExpand && tab != 1"
+          @click="openExpand"
+        >
           Filter Data
         </custom-button>
-        <k-input @keyup.enter="onEnter" v-model="keyword"/>
-        <custom-button 
-          size="x-medium" 
+        <k-input
+          @keyup.enter="onEnter"
+          placeholder="Cari donasi.."
+          v-model="keyword"
+        />
+        <custom-button
+          size="x-medium"
           color="primary"
           @click="openFormDonation"
-          style="margin-top : auto"
         >
           Buat Penggalangan Dana Baru
         </custom-button>
       </div>
-    </HeaderContent>
-    <Expand 
-      v-if="isExpand"
-      @onCancel="onCloseExpand"
-      @onFilter="onFilter"
-    />
-    <Tabledonation
-      :items="donations"
-      @refreshData="refreshData"
-      :statusFind="statusFind"
-      :isLoading="isLoading"
-    />
-    <div class="d-flex justify-end mt-2">
-    <v-pagination
-      v-if="totalPages > 1"
-      v-model="page"
-      :length="totalPages"
-      @input="onInput"
-      :total-visible="7"
-    ></v-pagination>
-  </div>
+    </section>
+
+    <section>
+      <Expand
+        v-if="isExpand"
+        @onCancel="onCloseExpand"
+        @onFilter="onFilter"
+        style="margin-top: 8px"
+      />
+      <div :class="d.info" style="margin: 8px 0">
+        <div class="d-flex align-center">
+          <v-icon small color="secondary">info</v-icon>
+          <div style="margin-left: 4px">
+            Penggalangan dana pada list ini hanya bisa di trendingkan dalam
+            waktu 48 jam setelah dibuat
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <v-tabs-items v-model="tab">
+      <v-tab-item>
+        <Tabledonation
+          :items="donations"
+          @refreshData="refreshData"
+          :statusFind="statusFind"
+          :isLoading="isLoading"
+        />
+        <div class="d-flex justify-end mt-2">
+          <v-pagination
+            v-if="totalPages > 1"
+            v-model="page"
+            :length="totalPages"
+            @input="onInput"
+            :total-visible="7"
+          ></v-pagination>
+        </div>
+      </v-tab-item>
+      <v-tab-item>
+        <Notification :tab="tab"></Notification>
+      </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
 <script>
 import HeaderContent from "@/containers/HeaderContent";
-import Tabledonation from "./table.vue"
-import Expand from "./expand.vue"
+import Tabledonation from "./table.vue";
+import Expand from "./expand.vue";
+import Notification from "./notification/index.vue";
 import { mapActions } from "vuex";
+
 export default {
-  components : {
+  components: {
     HeaderContent,
     Tabledonation,
-    Expand
+    Expand,
+    Notification,
   },
-  data () {
+  data() {
     return {
-      page : 1,
-      totalPages : 0,
-      statusFind : '',
-      params : {},
-      keyword : '',
-      isLoading : false,
-      isExpand : false,
+      tab: 0,
+      listTab: ["Penggalangan Dana", "List Notif"],
+      page: 1,
+      totalPages: 0,
+      statusFind: "",
+      params: {},
+      keyword: "",
+      isLoading: false,
+      isExpand: false,
       crumbs: [
         {
           text: "Penggalangan Dana",
           disabled: true,
         },
       ],
-      donations : []
-    }
+      donations: [],
+    };
   },
-  mounted () {
-    this.handleDonations()
+  watch: {
+    tab() {
+      this.isExpand = false;
+      if (this.tab == 0 && this.keyword == "") {
+        this.handleDonations();
+      }
+    },
   },
-  methods : {
+  mounted() {
+    this.handleDonations();
+  },
+  methods: {
     ...mapActions({
       getListDonation: "donation/getListDonation",
       deleteDonation: "donation/deleteDonation",
-      fetchDonations : 'donation/fetchDonations'
+      fetchDonations: "donation/fetchDonations",
     }),
     refreshData() {
-      this.handleDonations()
+      this.handleDonations();
     },
-    handleData (payload) {
+    handleData(payload) {
       return this.fetchDonations(payload)
-        .then(response => {
-          this.page = 1
-          this.isLoading = false
-          const content = response.content
-          const totalPages = response.totalPages
-          this.totalPages = totalPages
-          this.donations = content
+        .then((response) => {
+          this.page = 1;
+          this.isLoading = false;
+          const content = response.content;
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.donations = content;
         })
-        .catch (err => {
-          this.isLoading = false
-        })
+        .catch((err) => {
+          this.isLoading = false;
+        });
     },
     onFilter(params) {
-      this.statusFind = 'filter'
-      this.params =  {...params}
+      this.statusFind = "filter";
+      this.params = { ...params };
       const payload = {
         ...params,
-        page : 0,
-        search : this.keyword
-      }
-      this.isLoading = true
-      return this.handleData(payload)
+        page: 0,
+        search: this.keyword,
+      };
+      this.isLoading = true;
+      return this.handleData(payload);
     },
     openExpand() {
-      this.isExpand = true
-    },  
+      this.isExpand = true;
+    },
     onCloseExpand(item) {
-      this.isExpand = false
-      this.statusFind = ''
+      this.isExpand = false;
+      this.statusFind = "";
       const payload = {
         ...item,
-        search : this.keyword,
-        page : 0
-      }
-      this.isLoading = true
-      this.params = item
-      return this.handleData(payload)
+        search: this.keyword,
+        page: 0,
+      };
+      this.isLoading = true;
+      this.params = item;
+      return this.handleData(payload);
     },
     onEnter() {
-      this.statusFind = this.keyword.length > 0 ? 'search' : ''
+      this.tab = 0;
+      this.statusFind = this.keyword.length > 0 ? "search" : "";
       const payload = {
         ...this.params,
-        search : this.keyword,
-        page : 0
-      }
-      this.isLoading = true
-      return this.handleData(payload)
+        search: this.keyword,
+        page: 0,
+      };
+      this.isLoading = true;
+      return this.handleData(payload);
     },
     onInput(e) {
-      this.page = e
+      this.page = e;
       const payload = {
         ...this.params,
-        page : e - 1,
-        search : this.keyword,
-      }
-      this.isLoading = true
+        page: e - 1,
+        search: this.keyword,
+      };
+      this.isLoading = true;
       return this.fetchDonations(payload)
-        .then(response => {
-          this.isLoading = false
-          const content = response.content
-          const totalPages = response.totalPages
-          this.totalPages = totalPages
-          this.donations = content
+        .then((response) => {
+          this.isLoading = false;
+          const content = response.content;
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.donations = content;
         })
-        .catch(() => { this.isLoading = false })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
     openFormDonation() {
       this.$router.push({
-        name : 'createDonation'
-      })
+        name: "createDonation",
+      });
     },
-    handleDonations () {
+    handleDonations() {
       const payload = {
-        page : this.page - 1
-      }
-      this.isLoading = true
+        page: this.page - 1,
+      };
+      this.isLoading = true;
       return this.fetchDonations(payload)
-        .then(response => {
-          this.isLoading = false
-          const content = response.content
-          const totalPages = response.totalPages
-          this.totalPages = totalPages
-          this.donations = content
+        .then((response) => {
+          this.isLoading = false;
+          const content = response.content;
+          const totalPages = response.totalPages;
+          this.totalPages = totalPages;
+          this.donations = content;
         })
-        .catch(() => { this.isLoading = false })
-    }
-  }
-}
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+  },
+};
 </script>
 
-<style lang="scss" src="../donation.scss" module="d" ></style>
+<style lang="scss" src="../donation.scss" module="d"></style>
