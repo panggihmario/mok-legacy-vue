@@ -6,35 +6,52 @@
       offset-x
       :position-x="200"
       left
+      rounded="lg"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn v-bind="attrs" v-on="on" icon>
           <v-icon size="15px">fas fa-bars</v-icon>
         </v-btn>
       </template>
-      <div :class="m['menu-container']">
-        <div :class="m['menu-box']" @click="onUpdate" class="black--text">
-          <v-icon color="black" size="10px">fas fa-file-signature</v-icon>
+
+      <section
+        class="d-flex flex-column font-s12"
+        style="background-color: white; gap: 8px; padding: 12px 0"
+      >
+        <div
+          @click="onUpdate"
+          class="d-flex black--text pointer"
+          style="padding: 0 10px"
+        >
+          <div style="width: 20px; padding-left: 5px">
+            <v-icon color="black" size="10px">fas fa-file-signature</v-icon>
+          </div>
           <div>Update Kabar Terkini</div>
         </div>
         <div
-          :class="m['menu-box']"
           @click="openDialogPushNotif"
-          class="black--text"
+          class="d-flex black--text"
+          :class="item.canPushNotif ? 'pointer' : 'btn-push-disabled'"
+          style="padding: 0 10px"
         >
-          <v-icon color="black" size="10px">fas fa-bell</v-icon>
+          <div style="width: 20px; padding-left: 5px">
+            <v-icon color="black" size="10px">fas fa-bell</v-icon>
+          </div>
           <div>Push notif penggalangan dana</div>
         </div>
+        <v-divider></v-divider>
         <div
           v-if="item.status === 'Active'"
-          :class="m['menu-box']"
-          class="primary--text"
+          class="d-flex primary--text pointer"
+          style="padding: 0 10px"
           @click="onActive"
         >
-          <v-icon color="primary" size="10px">fas fa-power-off</v-icon>
+          <div style="width: 20px; padding-left: 5px">
+            <v-icon color="primary" size="10px">fas fa-power-off</v-icon>
+          </div>
           <div>Nonaktifkan Penggalangan Dana</div>
         </div>
-      </div>
+      </section>
     </v-menu>
 
     <v-dialog width="395" v-model="dialog">
@@ -71,8 +88,43 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialogPushNotif" width="450">
-      <v-card class="d-flex flex-column" style="padding: 16px; gap: 20px">
+    <v-dialog
+      v-model="dialogPushNotif"
+      :width="
+        isSuccessPushNotif === true || isSuccessPushNotif === false
+          ? '173'
+          : '450'
+      "
+    >
+      <v-card
+        v-if="isSuccessPushNotif === true"
+        class="d-flex flex-column text-center"
+        style="padding: 12px 16px; gap: 12px"
+      >
+        <div>
+          <v-icon size="30px" color="success">fas fa-check-circle</v-icon>
+        </div>
+        <span style="font-size: 12px; font-weight: 500"
+          >Push notif berhasil dikirim</span
+        >
+      </v-card>
+      <v-card
+        v-else-if="isSuccessPushNotif === false"
+        class="d-flex flex-column text-center"
+        style="padding: 12px 16px; gap: 12px"
+      >
+        <div>
+          <v-icon size="30px" color="primary">fas fa-times-circle</v-icon>
+        </div>
+        <span style="font-size: 12px; font-weight: 500"
+          >Push notif gagal dikirim</span
+        >
+      </v-card>
+      <v-card
+        v-else
+        class="d-flex flex-column"
+        style="padding: 16px; gap: 20px"
+      >
         <section>
           <span class="font-s14 font-w800"
             >Apakah kamu yakin ingin push notif penggalangan dana ini?</span
@@ -83,7 +135,7 @@
           <section class="d-flex flex-column" style="gap: 6px">
             <span class="font-s11 font-w600">Headline Notifikasi</span>
             <v-text-field
-              v-model="payloadPushNotif.headline"
+              v-model="payloadPushNotif.title"
               placeholder="Masukan headline"
               dense
               outlined
@@ -107,7 +159,7 @@
             ></v-textarea>
           </section>
 
-          <section class="d-flex" style="gap: 8px">
+          <section class="d-flex align-center" style="gap: 8px">
             <button
               class="btn"
               style="letter-spacing: 0"
@@ -115,21 +167,30 @@
             >
               Batalkan
             </button>
+
+            <v-progress-circular
+              v-if="loadingPushNotif"
+              indeterminate
+              color="primary"
+              size="24"
+              width="3"
+            ></v-progress-circular>
             <button
+              v-else
               class="btn"
               :class="
-                payloadPushNotif.headline.length < 5 ||
+                payloadPushNotif.title.length < 5 ||
                 payloadPushNotif.description.length < 5 ||
-                payloadPushNotif.headline.length > 50 ||
+                payloadPushNotif.title.length > 50 ||
                 payloadPushNotif.description.length > 100
                   ? 'btn-disabled'
                   : 'btn-primary'
               "
               style="letter-spacing: 0"
               :disabled="
-                payloadPushNotif.headline.length < 5 ||
+                payloadPushNotif.title.length < 5 ||
                 payloadPushNotif.description.length < 5 ||
-                payloadPushNotif.headline.length > 50 ||
+                payloadPushNotif.title.length > 50 ||
                 payloadPushNotif.description.length > 100
               "
               @click="actionPushNotif"
@@ -140,6 +201,13 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <!-- <v-snackbar top v-model="alertSuccess" timeout="3000" color="success">
+      Success Push Notif
+    </v-snackbar>
+    <v-snackbar top v-model="alertError" timeout="3000" color="error">
+      {{ errorMessage }}
+    </v-snackbar> -->
   </div>
 </template>
 
@@ -159,16 +227,21 @@ export default {
       loading: false,
       dialogPushNotif: false,
       loadingPushNotif: false,
+      isSuccessPushNotif: null,
       dialogPushNotifId: "",
       payloadPushNotif: {
-        headline: "",
+        title: "",
         description: "",
       },
+      alertSuccess: false,
+      alertError: false,
+      errorMessage: "",
     };
   },
   methods: {
     ...mapActions({
       putStatusDonation: "donation/putStatusDonation",
+      postDonationPushNotif: "donation/postDonationPushNotif",
     }),
     onUpdate() {
       this.menu = false;
@@ -184,12 +257,17 @@ export default {
       this.dialog = true;
     },
     openDialogPushNotif() {
-      this.dialogPushNotifId = this.item.id;
-      this.dialogPushNotif = true;
+      if (this.item.canPushNotif) {
+        this.dialogPushNotifId = this.item.id;
+        this.dialogPushNotif = true;
+      }
     },
     closeDialogPushNotif() {
       this.dialogPushNotifId = "";
       this.dialogPushNotif = false;
+      setTimeout(() => {
+        this.isSuccessPushNotif = null;
+      }, 500);
     },
     closeDialog() {
       this.dialog = false;
@@ -213,7 +291,28 @@ export default {
         });
     },
     actionPushNotif() {
-      console.log(this.dialogPushNotifId);
+      const payload = {
+        postDonationId: this.dialogPushNotifId,
+        ...this.payloadPushNotif,
+      };
+      this.loadingPushNotif = true;
+      return this.postDonationPushNotif(payload)
+        .then((res) => {
+          this.isSuccessPushNotif = true;
+          this.loadingPushNotif = false;
+          setTimeout(() => {
+            this.closeDialogPushNotif();
+            this.$emit("refreshData");
+          }, 2000);
+        })
+        .catch((err) => {
+          this.isSuccessPushNotif = false;
+          this.loadingPushNotif = false;
+          setTimeout(() => {
+            this.closeDialogPushNotif();
+            this.$emit("refreshData");
+          }, 2000);
+        });
     },
   },
 };
@@ -253,6 +352,10 @@ export default {
   &-disabled {
     background-color: #eeeeee;
     color: #bbbbbb;
+  }
+  &-push-disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
   }
 }
 </style>
