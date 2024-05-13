@@ -6,6 +6,8 @@
       :loading="loading"
       @onSubmit="onSubmit"
       @deleteUser="handleDelete"
+      @setUsername="setUsername"
+      @setEmail="setEmail"
       :listAccountType="listAccountType"
       :listBadge="listBadge"
       type="edit"
@@ -75,6 +77,12 @@ export default {
       getListRole: "account/getListRole",
       getListBadge: "donation/getListBadge",
     }),
+    setEmail(value) {
+      this.data.email = value
+    },
+    setUsername (value) {
+      this.data.username = value
+    },
     handleGetListBadge() {
       return this.getListBadge().then((res) => {
         this.listBadge = res.data;
@@ -114,7 +122,9 @@ export default {
       const id = this.$route.params.id;
       const payload = {
         id,
-        data: params,
+        data: {
+          ...params,
+        },
       };
       this.loading = true;
       const response = await this.updateAccount(payload);

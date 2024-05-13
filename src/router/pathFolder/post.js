@@ -109,6 +109,11 @@ const pathPost = [
       },
     ],
   },
+  {
+    path : '/post/label',
+    name : 'labelPost',
+    component : () => import('@/views/Post/Label/index.vue')
+  }
 ];
 
 export default pathPost;

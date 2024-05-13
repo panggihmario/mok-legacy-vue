@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate';
-import {required , alpha_dash, max}   from 'vee-validate/dist/rules';
+import {required , alpha_dash, max, regex}   from 'vee-validate/dist/rules';
 import * as rules from 'vee-validate/dist/rules';
 
 Object.keys(rules).forEach(rule => {
@@ -13,6 +13,7 @@ extend('required', {
 		return `The ${realFieldName} field is required`
 	}
 })
+
 
 extend('alpha_dash', {
 	...alpha_dash , 

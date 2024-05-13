@@ -60,12 +60,10 @@
               dense
             />
           </div>
-
           <custom-input
             :label="$t('input.username')"
             name="Username"
-            :value="data.username"
-            v-model="data.username"
+            v-model="username"
             :rules="{
               required: true,
               regex:
@@ -97,8 +95,7 @@
           <custom-input
             :label="$t('input.email')"
             name="Email"
-            :value="data.email"
-            v-model="data.email"
+            v-model="email"
           />
           <custom-input
             :label="$t('input.phone')"
@@ -216,6 +213,26 @@ export default {
     listBadge: {
       type: Array,
     },
+  },
+  computed : {
+    username : {
+      get() {
+        return this.data.username
+      },
+      set(value) {
+        const lowercase = value.toLowerCase()
+        this.$emit('setUsername', lowercase)
+      }
+    },
+    email : {
+      get() {
+        return this.data.email
+      },
+      set(value) {
+        const lowercase = value.toLowerCase()
+        this.$emit('setEmail', lowercase)
+      }
+    }
   },
   data() {
     return {
