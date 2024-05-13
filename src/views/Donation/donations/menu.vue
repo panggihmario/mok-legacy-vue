@@ -341,7 +341,6 @@ export default {
   padding: 8px 16px;
   gap: 10px;
   border-radius: 4px;
-  opacity: 0px;
   background-color: #f9f9f9;
   font-size: 11px;
   font-weight: 500;
