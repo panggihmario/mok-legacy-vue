@@ -26,6 +26,7 @@
           Filter Data
         </custom-button>
         <k-input
+          v-if="tab != 1"
           @keyup.enter="onEnter"
           placeholder="Cari donasi.."
           v-model="keyword"
@@ -178,7 +179,6 @@ export default {
       return this.handleData(payload);
     },
     onEnter() {
-      this.tab = 0;
       this.statusFind = this.keyword.length > 0 ? "search" : "";
       const payload = {
         ...this.params,
