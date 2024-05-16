@@ -37,6 +37,9 @@ export default {
     };
   },
   watch: {
+    itemsFilter() {
+      this.searchFilter = "";
+    },
     searchFilter() {
       if (this.searchFilter != null && this.searchFilter.length > 0) {
         this.$emit("onSearchFilter", this.searchFilter);
