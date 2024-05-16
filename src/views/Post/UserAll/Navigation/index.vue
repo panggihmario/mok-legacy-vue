@@ -39,9 +39,9 @@
       v-if="tab == 0 || tab == 1"
       class="row no-gutters whitesmoke py-1 px-4"
     >
-      <div class="d-flex align-center" style="gap: 8px">
+      <div class="d-flex align-center pr-2" style="gap: 8px">
         <span :class="p['font-12']">Sorted By</span>
-        <div style="width: 160px" class="mr-10">
+        <div style="width: 150px" class="mr-10">
           <v-select
             placeholder="Waktu Publish"
             :items="itemsSortBy"
@@ -59,7 +59,7 @@
           ></Autocomplete-Username> -->
         </div>
         <span :class="p['font-12']">Filter</span>
-        <div style="width: 160px">
+        <div style="width: 150px">
           <v-select
             placeholder="Pilih Konten Level"
             :items="itemsLevelPriority"
@@ -72,13 +72,26 @@
             :class="p['font-12']"
           ></v-select>
         </div>
-        <div style="width: 160px">
+        <div style="width: 150px">
+          <v-select
+            placeholder="Tipe user"
+            :items="itemsUserType"
+            dense
+            solo
+            flat
+            v-model="userType"
+            hide-details
+            class="white"
+            :class="p['font-12']"
+          ></v-select>
+        </div>
+        <div style="width: 150px">
           <Autocomplete-Username
-            :itemsFilter="itemsUser"
+            :itemsFilter="userType == 'Media' ? itemsMedia : itemsUser"
             @onSearchFilter="(v) => actionSearchFilter(v, 'User')"
           ></Autocomplete-Username>
         </div>
-        <div style="width: 160px">
+        <div style="width: 150px">
           <Autocomplete-Channel
             :itemsFilter="itemsChannel"
             @onSearchFilter="(v) => actionSearchFilter(v, 'Channel')"
@@ -97,23 +110,16 @@
           paramsChannelTrending.length > 0 ||
           paramsDateTrending.length > 1
         "
-        class="d-flex align-center pl-2"
+        class="d-flex align-center"
       >
         <div v-if="isFilter">
-          <custom-button
-            style="width: 92px"
-            @click="isResetFilter = true"
-          >
+          <custom-button style="width: 92px" @click="isResetFilter = true">
             Reset
           </custom-button>
         </div>
         <div v-else>
-          <custom-button
-            color="success"
-            style="width: 122px"
-            @click="actionFilter"
-          >
-            Terapkan Filter
+          <custom-button color="success" @click="actionFilter">
+            Terapkan
           </custom-button>
           <custom-button
             class="ml-2"
@@ -135,6 +141,8 @@ import { mapMutations, mapState } from "vuex";
 import AutocompleteUsername from "./autocompleteUsername.vue";
 import AutocompleteChannel from "./autocompleteChannel.vue";
 
+const listMedia = process.env.VUE_APP_LIST_MEDIA;
+
 export default {
   components: {
     SelectDate,
@@ -153,6 +161,8 @@ export default {
       ],
       itemsSortBy: ["Waktu Publish", "Priority Level"],
       itemsLevelPriority: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      itemsUserType: ["General", "Media"],
+      itemsMedia: listMedia.split(","),
       sortBy: "",
       search: "",
       searchChannel: "",
@@ -160,6 +170,7 @@ export default {
       isFilter: false,
       isResetFilter: false,
       levelPriority: "",
+      userType: "",
       filterUser: null,
       filterChannel: null,
       filterPayload: {
@@ -169,9 +180,13 @@ export default {
     };
   },
   watch: {
+    userType() {
+      this.isResetFilter = true;
+    },
     tab() {
       this.$emit("changeTab", this.tab);
       this.isResetFilter = true;
+      this.userType = "General";
     },
     sortBy() {
       this.isFilter = false;
