@@ -181,7 +181,13 @@ export default {
   },
   watch: {
     userType() {
-      this.isResetFilter = true;
+      if (this.userType == "General") {
+        this.isResetFilter = true;
+      } else {
+        this.usernameFilter = [];
+        this.isFilter = false;
+        this.actionFilterMedia();
+      }
     },
     tab() {
       this.$emit("changeTab", this.tab);
@@ -340,6 +346,30 @@ export default {
       };
       this.$emit("onActionFilter", filterPayload);
       this.isFilter = true;
+    },
+    actionFilterMedia() {
+      const filterPayload = {
+        direction: "DESC",
+        sort: this.sortBy
+          ? this.sortBy == "Waktu Publish"
+            ? "createAt,desc"
+            : "levellingAt,desc"
+          : "createAt,desc",
+        keyword: this.keywordSearchTrending,
+        search: this.keywordSearchTrending,
+        levelPriority: this.levelPriority,
+        usernames: listMedia,
+        channelCodes: this.paramsChannelTrending.join(","),
+        startAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[0], 0, 0)
+            : "",
+        endAt:
+          this.paramsDateTrending.length > 0
+            ? this.convertEpoch(this.paramsDateTrending[1], 23, 59)
+            : "",
+      };
+      this.$emit("onActionFilter", filterPayload);
     },
   },
 };
