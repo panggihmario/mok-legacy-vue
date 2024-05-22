@@ -19,7 +19,7 @@ export default {
       const file = e.target.files[0];
       const currentDateEpoch = moment(new Date).valueOf()
       const fileType = file.type.split("/")[1]
-      const filePath = `tmp/source/${currentDateEpoch}.${fileType}`
+      const filePath = `poc/${currentDateEpoch}.${fileType}`
       cos.uploadFile({
         Bucket: process.env.VUE_APP_TENCENT_BUCKET, /* Required */
         Region: process.env.VUE_APP_TENCENT_REGION, /* Required */
@@ -29,7 +29,7 @@ export default {
           console.log(JSON.stringify(progressData));
         }
       }, function (err, data) {
-        console.log(err || JSON.stringify(data));
+        console.log(err || data);
       });
     }
   }

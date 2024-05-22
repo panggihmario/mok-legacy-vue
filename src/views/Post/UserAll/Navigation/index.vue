@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-space-between mb-2">
+      {{ tab }}
       <v-tabs v-model="tab">
         <v-tabs-slider></v-tabs-slider>
 
