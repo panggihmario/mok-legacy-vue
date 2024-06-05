@@ -20,6 +20,11 @@ const pathUser = [
     name: "userEdit",
     component: () => import("../../views/AccountManage/User/UserEdit") ,
   },
+  {
+    path : '/verification',
+    name : 'verification',
+    component : () => import('../../views/AccountManage/Verification/index.vue')
+  }
 ]
 
 export default pathUser

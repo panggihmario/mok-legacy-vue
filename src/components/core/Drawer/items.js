@@ -33,6 +33,12 @@ export default [
         role: ["ROLE_ADMIN", "ROLE_ADMIN_SOCIAL"],
         active : false
       },
+      {
+        title : 'Verifikasi ID',
+        path :'/verification',
+        role : ['ROLE_ADMIN'],
+        active : false
+      }
     ],
   },
   {
