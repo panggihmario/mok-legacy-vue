@@ -93,6 +93,10 @@
   display: grid;
 }
 
+.grid-cols-2 { 
+  grid-template-columns: 1fr 1fr;
+}
+
 .text {
   &-capitalize {
     text-transform: capitalize;
@@ -104,6 +108,12 @@
     &-grey {
       color: var(--grey-color);
     }
+  }
+}
+
+.bg {
+  &-grey {
+    background-color: var(--grey-color);
   }
 }
 

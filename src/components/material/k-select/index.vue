@@ -23,9 +23,9 @@
             :key="index" 
             @click="selectItem(item)"
             class="select__option pointer"
-            :class="{'select__active'  :  item.id === itemValue.id }"
+            :class="{'select__active' : (item.id === itemValue.id || item === itemValue ) }"
           >  
-            {{ item[labelText as keyof LooseObject] }} 
+            {{ item.id ? item[labelText as keyof LooseObject] : item }} 
           </li>
         </ul>
       </div>
@@ -53,7 +53,7 @@ export default defineComponent({
       type : [String ,Object ]
     },
     items : {
-      type : Array as PropType <LooseObject[] > ,
+      type : Array as PropType <LooseObject[]> ,
     },
     size : {
       type : String,
@@ -78,7 +78,7 @@ export default defineComponent({
     const root = ref(null)
     const isOpen = ref(false)
     const { labelText , modelValue, mode } = toRefs(props)
-    const itemValue : Ref<LooseObject> = ref({})
+    const itemValue : Ref<LooseObject | String > = ref({})
     
     const openOptions = function () {
       isOpen.value = !isOpen.value
@@ -98,7 +98,7 @@ export default defineComponent({
     })
 
     const value = computed(() => {
-      if(modelValue.value  ) {
+      if(modelValue.value ) {
         const key = labelText.value;
         const c = (modelValue.value as LooseObject)[key]
         return c
@@ -109,6 +109,7 @@ export default defineComponent({
       emit('update:modelValue', item)
       isOpen.value = false
       itemValue.value = item
+      console.log(item)
     }
 
     return {

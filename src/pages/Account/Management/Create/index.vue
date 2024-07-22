@@ -3,13 +3,12 @@
     <k-page-title
       title="Create Management User"
       :breadCrumbs="breadcrumbs"
-    >
-
-    </k-page-title>
+    />
+    <form  @submit.prevent="handleSubmit">
     <div class="grid gap-16"  style="width : 300px">
       <div class="flex gap-16 align-center">
-        <div class="avatar">
-
+        <div class="avatar" :class="!avatar && 'bg-grey'" >
+          <img :src="avatar" />
         </div>
         <div class="grid gap-4">
           <div class="text-grey text-md font-normal">Unggah Foto Profil</div>
@@ -19,6 +18,7 @@
           />
         </div>
       </div>
+      {{ userValue.accountType }}
       <k-select 
         placeholder="Pilih jenis Akun" 
         mode="outline"
@@ -27,7 +27,7 @@
         size="md" 
         :items="items"
         labelText="label"
-        v-model="item"
+        v-model="userValue.accountType"
       />
       <k-select 
         placeholder="Pilih salah satu" 
@@ -37,7 +37,7 @@
         size="md" 
         :items="genders"
         labelText="name"
-        v-model=gender
+        v-model=userValue.gender
       />
       <k-input
         placeholder="Nama user"
@@ -81,16 +81,17 @@
         rows="4"
         placeholder="Note"
       />
-      <div>
+      <div class="grid grid-cols-2 gap-8">
         <k-button color="whitesnow">Batalkan</k-button>
-        <k-button color="kellygreen">Tambah Akun</k-button>
+        <k-button type="submit" color="kellygreen">Tambah Akun</k-button>
       </div>
     </div>
+ </form>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted, reactive } from "vue"
 import { ResponseUpload } from "@/models"
 import { useAccountStore } from "../../../../stores/account"
 const props = defineProps({
@@ -125,15 +126,31 @@ const genders = ref([
   }
 ])
 
-
-
-const item = ref({})
 const items = ref([])
-const gender = ref({})
 const name = ref('')
+const avatar = ref('')
 const typeInput = ref('password')
+const userValue = reactive({
+  username: "",
+  name: "",
+  photo: "",
+  birthDate: "2020-04-22T14:39:59.608Z",
+  gender: "",
+  mobile: "",
+  email: "",
+  accountType: "",
+  note: "",
+  password: "",
+  role: "",
+})
 const handleResponse = function (data : ResponseUpload) {
   console.log(data)
+  userValue.photo = data.media.url
+  avatar.value = data.media.url
+}
+
+const handleSubmit = function () {
+  console.log(userValue)
 }
 
 const getRoles = function () {
@@ -142,11 +159,11 @@ const getRoles = function () {
       const newResponse = response.map((r : string, idx : number) => {
         return {
           id : idx,
-          label : r,
+          label : r.replace("ROLE_", ""),
         }
       })
-      console.log(newResponse)
-      items.value = newResponse
+      console.log(response)
+      items.value = response
     })
     .catch(err => {
       console.log(err)
@@ -179,7 +196,8 @@ onMounted(getRoles)
 .avatar {
   width: 60px;
   height: 60px;
-  background-color: var(--grey-color);
+  // background-color: var(--grey-color);
   border-radius: 50%;
+  overflow: hidden;
 }
 </style>
